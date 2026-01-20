@@ -19,7 +19,7 @@ class Protiva502 extends StatelessWidget {
       builder: (_, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          initialRoute: AppRoute.getLoginScreen(),
+          initialRoute: AppRoute.getSplashoScreen(),
           getPages: AppRoute.routes,
           initialBinding: ControllerBinder(),
           themeMode: ThemeMode.system,

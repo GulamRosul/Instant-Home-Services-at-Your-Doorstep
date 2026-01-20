@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:protiva502/features/authentication/screen/login_screen.dart';
-import 'package:protiva502/features/splasho_screen/screen/splasho_screen.dart';
+import 'package:protiva502/features/user/authentication/screen/login_screen.dart';
+import 'package:protiva502/features/user/splasho_screen/screen/splasho_screen.dart';
 
 class AppRoute {
   static String loginScreen = "/loginScreen";

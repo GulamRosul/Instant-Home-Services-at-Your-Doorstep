@@ -27,7 +27,9 @@ class AppColors {
   static const Color backgroundLight = Color(0xFFF9FAFB); // Light neutral for clean look
   static const Color backgroundDark = Color(0xFF121212); // Dark background for contrast in dark mode
   static const Color primaryBackground = Color(0xFFFFFFFF); // Pure white for primary content areas
-
+  
+  //border Colors
+  static const Color defaultBorder = Color(0xFFBDBDBD); // Neutral
   // Surface Colors
   static const Color surfaceLight = Color(0xFFE0E0E0); // Light grey for elevated surfaces
   static const Color surfaceDark = Color(0xFF2C2C2C); // Dark grey for elevated surfaces in dark mode

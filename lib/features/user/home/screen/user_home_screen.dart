@@ -9,6 +9,7 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
+import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 
 class UserHomeScreen extends StatelessWidget {
   const UserHomeScreen({super.key});
@@ -360,14 +361,20 @@ class UserHomeScreen extends StatelessWidget {
                     lineHeight: 15.sp,
                   ),
                 ),
-                Text(
-                  "Mike Handyman service",
-                  style: getTextStyle(
-                    fontSize: 10.sp,
-                    color: AppColors.textBlue,
-                    // decoration: TextDecoration.underline,
-                    fontWeight: FontWeight.w600,
-                    lineHeight: 15.sp,
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => ProviderDetailsScreen());
+                  },
+                  child: Text(
+                    "Mike Handyman service",
+                    style: getTextStyle(
+                      fontSize: 10.sp,
+                      color: AppColors.textBlue,
+                      decorationColor: AppColors.textBlue,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w600,
+                      lineHeight: 15.sp,
+                    ),
                   ),
                 ),
                 // SizedBox(height: 4.h),
@@ -375,7 +382,7 @@ class UserHomeScreen extends StatelessWidget {
                   children: [
                     Icon(Icons.location_on, size: 10.sp, color: Colors.blue),
                     Text(
-                      " Toronto, Canada",
+                      " Dhaka, Bangladesh",
                       style: getTextStyle(
                         fontSize: 10.sp,
                         color: AppColors.textSecondary,
@@ -405,7 +412,7 @@ class UserHomeScreen extends StatelessWidget {
                 ),
                 // SizedBox(height: 4.h),
                 Text(
-                  "Start From 450.0\$",
+                  "Start From 450.0 ৳",
                   style: getTextStyle(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
@@ -470,7 +477,7 @@ class UserHomeScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "– Toronto, Canada",
+                  "– Dhaka, Canada",
                   style: getTextStyle(
                     fontSize: 11.sp,
                     color: Colors.black,
@@ -492,7 +499,7 @@ class UserHomeScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "\$20.00",
+                      "৳ 20.00",
                       style: getTextStyle(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,

@@ -7,6 +7,8 @@ TextStyle getTextStyle({
   FontWeight fontWeight = FontWeight.w400,
   double lineHeight = 21.0,
   Color color = Colors.black,
+  TextDecoration? decoration,
+  TextDecorationStyle? decorationStyle,
 }) {
   return TextStyle(
     fontFamily: 'Geist',
@@ -14,5 +16,8 @@ TextStyle getTextStyle({
     fontWeight: fontWeight,
     height: lineHeight / fontSize,
     color: color,
+    decoration: decoration,
+    decorationStyle: decorationStyle,
   );
+ 
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
 
 class SecondOnboardingScreen extends StatelessWidget {
   const SecondOnboardingScreen({super.key});
@@ -15,13 +18,21 @@ class SecondOnboardingScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 40.h),
+            // SizedBox(height: 40.h),
             // Image Container
-            Container(
-              height: 300.h,
+            // Image Container
+            SizedBox(
+              height:
+                  MediaQuery.of(context).size.height *
+                  0.5, // Takes exactly half the screen height
               width: double.infinity,
-              // padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Image.asset(ImagePath.onboardingtwo, fit: BoxFit.contain),
+              child: Image.asset(
+                ImagePath.onboardingtwo,
+                fit: BoxFit
+                    .cover, // Ensures the image fills the width and height area
+                alignment:
+                    Alignment.topCenter, // Keeps the focus on the illustration
+              ),
             ),
             SizedBox(height: 40.h),
             // Language Selector
@@ -50,8 +61,10 @@ class SecondOnboardingScreen extends StatelessWidget {
                         vertical: 6.h,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(20.r),
+                        border: Border.all(
+                          color: AppColors.textSecondary.withValues(alpha: 0.5),
+                        ),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -59,7 +72,7 @@ class SecondOnboardingScreen extends StatelessWidget {
                           Icon(
                             Icons.language,
                             size: 16.sp,
-                            color: Colors.grey.shade600,
+                            color: AppColors.textSecondary,
                           ),
                           SizedBox(width: 4.w),
                           Text(
@@ -67,13 +80,13 @@ class SecondOnboardingScreen extends StatelessWidget {
                             style: getTextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w500,
-                              color: Colors.grey.shade600,
+                              color: AppColors.textSecondary,
                             ),
                           ),
                           Icon(
                             Icons.keyboard_arrow_down,
                             size: 16.sp,
-                            color: Colors.grey.shade600,
+                            color: AppColors.textSecondary,
                           ),
                         ],
                       ),
@@ -102,17 +115,20 @@ class SecondOnboardingScreen extends StatelessWidget {
             SizedBox(height: 24.h),
             // Title
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
               child: CustomButton(
                 text: 'Sign Up to continue as a client',
                 backgroundColor: Colors.white,
                 borderColor: Colors.black,
                 textColor: Colors.black,
+                onPressed: () {
+                  Get.to(() => UserRegScreen());
+                },
               ),
             ),
             SizedBox(height: 12.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
               child: CustomButton(
                 text: 'Sign Up to continue as Service Provider',
                 backgroundColor: Colors.white,
@@ -132,8 +148,8 @@ class SecondOnboardingScreen extends StatelessWidget {
                   style: getTextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    lineHeight: 24.sp,
-                    color: Colors.grey.shade600,
+                    lineHeight: 15.sp,
+                    color: AppColors.textSecondary,
                   ),
                 ),
                 TextButton(
@@ -145,14 +161,15 @@ class SecondOnboardingScreen extends StatelessWidget {
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      lineHeight: 24.sp,
+                      lineHeight: 15.sp,
                       color: AppColors.textPurple,
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16.h),
+            // SizedBox(height: 5.h),
+
             // Already have an account
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -161,9 +178,9 @@ class SecondOnboardingScreen extends StatelessWidget {
                   'Already have an account? ',
                   style: getTextStyle(
                     fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    lineHeight: 20.sp,
-                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w600,
+                    lineHeight: 15.sp,
+                    color: AppColors.textSecondary,
                   ),
                 ),
                 TextButton(
@@ -180,8 +197,8 @@ class SecondOnboardingScreen extends StatelessWidget {
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      lineHeight: 20.sp,
-                      color: const Color(0xFF4CAF50),
+                      lineHeight: 15.sp,
+                      color: AppColors.textPurple,
                     ),
                   ),
                 ),

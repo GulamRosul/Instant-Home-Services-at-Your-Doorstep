@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AppHelperFunctions{
@@ -9,6 +10,69 @@ class AppHelperFunctions{
    SnackBar(content: Text(message)),
   );
  }
+
+   static Future<XFile?> showImageSourceDialog() async {
+    try {
+      return await Get.bottomSheet<XFile>(
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text("Take Photo"),
+                onTap: () async {
+                  try {
+                    final pickedFile = await ImagePicker().pickImage(
+                      source: ImageSource.camera,
+                      imageQuality: 85,
+                      maxWidth: 1920,
+                      maxHeight: 1920,
+                    );
+                    Get.back(result: pickedFile);
+                  } catch (e) {
+                    Get.back();
+                    showSnackBar('Failed to access camera: ${e.toString()}');
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text("Choose from Gallery"),
+                // subtitle: const Text(
+                //   "No storage permission required",
+                //   style: TextStyle(fontSize: 12, color: Colors.grey),
+                // ),
+                onTap: () async {
+                  try {
+                    // Uses Android Photo Picker API (Android 11+)
+                    // No storage permission needed
+                    final pickedFile = await ImagePicker().pickImage(
+                      source: ImageSource.gallery,
+                      imageQuality: 85,
+                      maxWidth: 1920,
+                      maxHeight: 1920,
+                    );
+                    Get.back(result: pickedFile);
+                  } catch (e) {
+                    Get.back();
+                    showSnackBar('Failed to access gallery: ${e.toString()}');
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      showSnackBar('Error opening image picker: ${e.toString()}');
+      return null;
+    }
+  }
 
  static void showAlert(String title, String message) {
   showDialog(

@@ -8,7 +8,10 @@ import 'package:protiva502/features/user/authentication/screen/user_otp_screen.d
 import 'package:protiva502/features/user/authentication/screen/user_profile_pic_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
+import 'package:protiva502/features/user/home/screen/category_service_details_screen.dart';
+import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
 import 'package:protiva502/features/user/home/screen/user_home_screen.dart';
+import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 
 class AppRoute {
   static String splashScreen = "/splashScreen";
@@ -20,6 +23,11 @@ class AppRoute {
   static String userOtpScreen = "/userOtpScreen";
   static String userHomeScreen() => "/userHomeScreen";
   static String availableCategoryScreen() => "/availableCategoryScreen";
+  static String subcategoryServiceListScreen() =>
+      "/subcategoryServiceListScreen";
+  static String categoryServiceDetailsScreen() =>
+      "/categoryServiceDetailsScreen";
+  static String providerDetailsScreen() => "/providerDetailsScreen";
 
   // Service prover sections
   static String providerRegistration = "/providerRegistration";
@@ -33,6 +41,11 @@ class AppRoute {
   static String getUserOtpScreen() => userOtpScreen;
   static String getUserHomeScreen() => userHomeScreen();
   static String getAvailableCategoryScreen() => availableCategoryScreen();
+  static String getSubcategoryServiceListScreen() =>
+      subcategoryServiceListScreen();
+  static String getCategoryServiceDetailsScreen() =>
+      categoryServiceDetailsScreen();
+  static String getProviderDetailsScreen() => providerDetailsScreen();
 
   // Service prover sections
   static String getProviderRegistration() => providerRegistration;
@@ -87,6 +100,24 @@ class AppRoute {
     GetPage(
       name: availableCategoryScreen(),
       page: () => AvailableCategoryScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: subcategoryServiceListScreen(),
+      page: () => SubcategoryServiceListScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: categoryServiceDetailsScreen(),
+      page: () => CategoryServiceDetailsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: providerDetailsScreen(),
+      page: () => ProviderDetailsScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

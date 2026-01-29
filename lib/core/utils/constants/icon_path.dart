@@ -15,4 +15,5 @@ class IconPath {
   static const String cleaner = 'assets/icons/Cleaner.svg';
   static const String painter = 'assets/icons/Painter.svg';
   static const String technician = 'assets/icons/Technician.svg';
+  static const String provider = 'assets/icons/provider.svg';
 }

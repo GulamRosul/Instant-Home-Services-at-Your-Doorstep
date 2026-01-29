@@ -9,6 +9,7 @@ TextStyle getTextStyle({
   Color color = Colors.black,
   TextDecoration? decoration,
   TextDecorationStyle? decorationStyle,
+  Color? decorationColor,
 }) {
   return TextStyle(
     fontFamily: 'Geist',
@@ -18,6 +19,7 @@ TextStyle getTextStyle({
     color: color,
     decoration: decoration,
     decorationStyle: decorationStyle,
+    decorationColor: decorationColor,
   );
  
 }

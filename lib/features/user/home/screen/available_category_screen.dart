@@ -6,6 +6,7 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/user/home/controller/available_category_controller.dart';
+import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
 
 class AvailableCategoryScreen extends StatelessWidget {
   const AvailableCategoryScreen({super.key});
@@ -146,13 +147,24 @@ class AvailableCategoryScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 10.h),
-                              Text(
-                                item['count']!,
-                                style: getTextStyle(
-                                  fontSize: 12.sp,
-                                  color: AppColors.textPurple,
-                                  fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.underline,
+                              GestureDetector(
+                                onTap: () {
+                                  Get.to(
+                                    () => const SubcategoryServiceListScreen(),
+                                    arguments: {
+                                      'title': item['title']!,
+                                      'count': item['count']!,
+                                    },
+                                  );
+                                },
+                                child: Text(
+                                  item['count']!,
+                                  style: getTextStyle(
+                                    fontSize: 12.sp,
+                                    color: AppColors.textPurple,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.underline,
+                                  ),
                                 ),
                               ),
                             ],

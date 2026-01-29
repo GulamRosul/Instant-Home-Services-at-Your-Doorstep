@@ -36,7 +36,7 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        height: height ?? 60.0, // Default height if not provided
+        height: height ?? 50.0, // Default height if not provided
         width: double.infinity, // Make the width infinity (full width)
         decoration: BoxDecoration(
           color:
@@ -83,8 +83,8 @@ class CustomButton extends StatelessWidget {
                   text!,
                   style: getTextStyle(
                     color: textColor ?? Colors.black, // Default text color
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
                     // lineHeight: 11.sp,
                   ),
                 ),

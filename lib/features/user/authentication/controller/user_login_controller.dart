@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
 
 class UserLoginController extends GetxController {
@@ -18,16 +19,12 @@ class UserLoginController extends GetxController {
     final password = passwordController.text;
 
     if (username.isNotEmpty && password.isNotEmpty) {
-      debugPrint("Signing in with: $username");
-      // Add your authentication logic or API call here
+      // 1. Perform your API call logic here...
+
+      // 2. Navigate to the Main Screen and clear the navigation stack
+      Get.offAll(() => const MainNavigationScreen());
     } else {
-      Get.snackbar(
-        "Required",
-        "Please enter both username and password",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
+      Get.snackbar("Error", "Please fill in all fields");
     }
   }
 

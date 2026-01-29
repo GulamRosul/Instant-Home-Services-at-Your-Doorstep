@@ -7,6 +7,8 @@ import 'package:protiva502/features/user/authentication/screen/user_login_screen
 import 'package:protiva502/features/user/authentication/screen/user_otp_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_profile_pic_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
+import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
+import 'package:protiva502/features/user/home/screen/user_home_screen.dart';
 
 class AppRoute {
   static String splashScreen = "/splashScreen";
@@ -16,6 +18,8 @@ class AppRoute {
   static String userRegScreen = "/userRegScreen";
   static String userProfilePicScreen = "/userProfilePicScreen";
   static String userOtpScreen = "/userOtpScreen";
+  static String userHomeScreen() => "/userHomeScreen";
+  static String availableCategoryScreen() => "/availableCategoryScreen";
 
   // Service prover sections
   static String providerRegistration = "/providerRegistration";
@@ -27,6 +31,8 @@ class AppRoute {
   static String getUserRegScreen() => userRegScreen;
   static String getUserProfilePicScreen() => userProfilePicScreen;
   static String getUserOtpScreen() => userOtpScreen;
+  static String getUserHomeScreen() => userHomeScreen();
+  static String getAvailableCategoryScreen() => availableCategoryScreen();
 
   // Service prover sections
   static String getProviderRegistration() => providerRegistration;
@@ -69,6 +75,18 @@ class AppRoute {
     GetPage(
       name: userOtpScreen,
       page: () => UserOtpScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: userHomeScreen(),
+      page: () => UserHomeScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: availableCategoryScreen(),
+      page: () => AvailableCategoryScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

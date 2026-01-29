@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
 
 class UserLoginController extends GetxController {
   // Text Editing Controllers
@@ -9,7 +10,8 @@ class UserLoginController extends GetxController {
   // Password Visibility State
   var isPasswordVisible = false.obs;
 
-  void togglePasswordVisibility() => isPasswordVisible.value = !isPasswordVisible.value;
+  void togglePasswordVisibility() =>
+      isPasswordVisible.value = !isPasswordVisible.value;
 
   void handleSignIn() {
     final username = usernameController.text;
@@ -20,7 +22,7 @@ class UserLoginController extends GetxController {
       // Add your authentication logic or API call here
     } else {
       Get.snackbar(
-        "Required", 
+        "Required",
         "Please enter both username and password",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
@@ -31,7 +33,7 @@ class UserLoginController extends GetxController {
 
   void navigateToSignUp() {
     // Navigate back to role selection or registration
-    Get.back(); 
+    Get.to(() => UserRegScreen());
   }
 
   @override

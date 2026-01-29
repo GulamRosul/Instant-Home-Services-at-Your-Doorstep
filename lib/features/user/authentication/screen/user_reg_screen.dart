@@ -9,6 +9,7 @@ import 'package:protiva502/core/common/widgets/custom_textfield.dart'; // Ensure
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/user/authentication/controller/user_reg_controller.dart';
+import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 
 class UserRegScreen extends StatelessWidget {
   const UserRegScreen({super.key});
@@ -40,8 +41,8 @@ class UserRegScreen extends StatelessWidget {
             CustomTextField(
               controller: controller.firstNameController,
               hintText: 'Sarah',
-              backgroundColor: const Color(0xFFF8FAFC),
-              borderColor: Colors.grey.shade200,
+              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
 
@@ -50,8 +51,8 @@ class UserRegScreen extends StatelessWidget {
             CustomTextField(
               controller: controller.lastNameController,
               hintText: 'Sarah',
-              backgroundColor: const Color(0xFFF8FAFC),
-              borderColor: Colors.grey.shade200,
+              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
 
@@ -61,8 +62,8 @@ class UserRegScreen extends StatelessWidget {
               controller: controller.emailController,
               hintText: 'sarah.johnson@email.com',
               keyboardType: TextInputType.emailAddress,
-              backgroundColor: const Color(0xFFF8FAFC),
-              borderColor: Colors.grey.shade200,
+              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
 
@@ -72,8 +73,8 @@ class UserRegScreen extends StatelessWidget {
               controller: controller.phoneController,
               hintText: '+1 (555) 123-4567',
               keyboardType: TextInputType.phone,
-              backgroundColor: const Color(0xFFF8FAFC),
-              borderColor: Colors.grey.shade200,
+              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
 
@@ -82,8 +83,8 @@ class UserRegScreen extends StatelessWidget {
             CustomTextField(
               controller: controller.cityController,
               hintText: 'Canada',
-              backgroundColor: const Color(0xFFF8FAFC),
-              borderColor: Colors.grey.shade200,
+              backgroundColor: const Color(0xFFF1F5F9),
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
 
@@ -96,8 +97,8 @@ class UserRegScreen extends StatelessWidget {
                 isPasswordField: true,
                 isPasswordVisible: controller.isPasswordVisible.value,
                 onIconPressed: controller.togglePasswordVisibility,
-                backgroundColor: const Color(0xFFF8FAFC),
-                borderColor: Colors.grey.shade200,
+                backgroundColor: const Color(0xFFF1F5F9),
+                borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
                 textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
               ),
             ),
@@ -114,8 +115,8 @@ class UserRegScreen extends StatelessWidget {
                 isPasswordField: true,
                 isPasswordVisible: controller.isConfirmPasswordVisible.value,
                 onIconPressed: controller.toggleConfirmPasswordVisibility,
-                backgroundColor: const Color(0xFFF8FAFC),
-                borderColor: Colors.grey.shade200,
+                backgroundColor: const Color(0xFFF1F5F9),
+                borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
                 textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
               ),
             ),
@@ -141,7 +142,7 @@ class UserRegScreen extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Get.back(),
+                  onTap: () => Get.to(() => UserLoginScreen()),
                   child: Text(
                     'Sign In',
                     style: getTextStyle(
@@ -195,22 +196,6 @@ class UserRegScreen extends StatelessWidget {
               color: Colors.grey.shade700,
             ),
           ),
-          // Obx(
-          //   () => Row(
-          //     children: [
-          //       Icon(
-          //         visibility.value ? Icons.visibility : Icons.visibility_off,
-          //         size: 14.sp,
-          //         color: Colors.grey,
-          //       ),
-          //       SizedBox(width: 4.w),
-          //       Text(
-          //         visibility.value ? 'Hide' : 'Show',
-          //         style: getTextStyle(fontSize: 12.sp, color: Colors.grey),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 
 class BottomNavController extends GetxController {
   // Current active tab index
@@ -11,9 +12,9 @@ class BottomNavController extends GetxController {
 
   // Icons and Labels for the tabs
   final List<Map<String, dynamic>> navItems = [
-    {'icon': 'assets/icons/home.png', 'label': 'Home'},
-    {'icon': 'assets/icons/booking.png', 'label': 'Booking'},
-    {'icon': 'assets/icons/notification.png', 'label': 'Notification'},
-    {'icon': 'assets/icons/more.png', 'label': 'More'},
+    {'icon': IconPath.home, 'label': 'Home'},
+    {'icon': IconPath.booking, 'label': 'Booking'},
+    {'icon': IconPath.notification, 'label': 'Notification'},
+    {'icon': IconPath.more, 'label': 'More'},
   ];
 }

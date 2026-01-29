@@ -34,6 +34,9 @@ class AppColors {
   static const Color textGrey = Color(
     0xFF666666,
   ); // Light grey for less emphasis
+  static const Color textBlue = Color(
+    0xFF1D4ED8,
+  ); // Light blue for less emphasis
 
   // Background Colors
   static const Color backgroundLight = Color(

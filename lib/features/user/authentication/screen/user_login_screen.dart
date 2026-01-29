@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart'; // Ensure illustration path is here
 import 'package:protiva502/features/user/authentication/controller/user_login_controller.dart';
 
@@ -20,20 +21,6 @@ class UserLoginScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              'Skip',
-              style: getTextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.grey.shade300, // Matching the light "Skip" color
-              ),
-            ),
-          ),
-          SizedBox(width: 10.w),
-        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -41,11 +28,8 @@ class UserLoginScreen extends StatelessWidget {
           children: [
             // Top Illustration
             SizedBox(
-              height: 200.h,
-              child: Image.asset(
-                ImagePath.signin, // Update with your actual asset path
-                fit: BoxFit.contain,
-              ),
+              height: 120.h,
+              child: Image.asset(ImagePath.signin, fit: BoxFit.contain),
             ),
             SizedBox(height: 24.h),
 
@@ -75,7 +59,7 @@ class UserLoginScreen extends StatelessWidget {
               controller: controller.usernameController,
               hintText: 'Sarah',
               backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
-              borderColor: Colors.transparent,
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
             SizedBox(height: 20.h),
@@ -89,8 +73,10 @@ class UserLoginScreen extends StatelessWidget {
                 isPasswordField: true,
                 isPasswordVisible: controller.isPasswordVisible.value,
                 onIconPressed: controller.togglePasswordVisibility,
-                backgroundColor: const Color(0xFFF1F5F9),
-                borderColor: Colors.transparent,
+                backgroundColor: const Color(
+                  0xFFF1F5F9,
+                ), // Very light grey input
+                borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
                 textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
               ),
             ),
@@ -169,24 +155,6 @@ class UserLoginScreen extends StatelessWidget {
               color: Colors.grey.shade600,
             ),
           ),
-          // Obx(
-          //   () => Row(
-          //     children: [
-          //       Icon(
-          //         controller.isPasswordVisible.value
-          //             ? Icons.visibility
-          //             : Icons.visibility_off,
-          //         size: 16.sp,
-          //         color: Colors.grey,
-          //       ),
-          //       SizedBox(width: 4.w),
-          //       Text(
-          //         controller.isPasswordVisible.value ? 'Hide' : 'Show',
-          //         style: getTextStyle(fontSize: 12.sp, color: Colors.grey),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );

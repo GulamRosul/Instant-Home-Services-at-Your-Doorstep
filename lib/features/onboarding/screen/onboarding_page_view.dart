@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:protiva502/features/onboarding/screen/onboarding_screen.dart';
 import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
 

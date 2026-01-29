@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:protiva502/core/utils/helpers/app_helper.dart';
 import 'package:protiva502/features/user/authentication/screen/user_otp_screen.dart';
-import 'package:protiva502/routes/app_routes.dart';
 
 class UserProfilePicController extends GetxController {
   final bioController = TextEditingController();

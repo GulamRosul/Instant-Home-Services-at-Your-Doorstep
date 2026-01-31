@@ -40,7 +40,7 @@ class AppColors {
 
   // Background Colors
   static const Color backgroundLight = Color(
-    0xFFF9FAFB,
+    0xFFF8F9FA,
   ); // Light neutral for clean look
   static const Color backgroundDark = Color(
     0xFF121212,

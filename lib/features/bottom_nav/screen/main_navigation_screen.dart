@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/features/bottom_nav/bottom_nav_bar.dart';
 import 'package:protiva502/features/bottom_nav/controller/bottom_nav_controller.dart';
+import 'package:protiva502/features/user/all_bookings/screen/all_booking_screen.dart';
 import 'package:protiva502/features/user/home/screen/user_home_screen.dart';
 
 // Import your actual page widgets here
@@ -20,7 +21,7 @@ class MainNavigationScreen extends StatelessWidget {
     final List<Widget> pages = [
       const Center(child: UserHomeScreen()), // Replace with actual HomePage()
       const Center(
-        child: Text("Booking Page"),
+        child: AllBookingScreen(),
       ), // Replace with actual BookingPage()
       const Center(
         child: Text("Notification"),

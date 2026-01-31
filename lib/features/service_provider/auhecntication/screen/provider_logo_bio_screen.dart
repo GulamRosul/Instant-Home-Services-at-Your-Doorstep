@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/features/service_provider/auhecntication/controller/provider_login_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_logo_bio_controller.dart';
-import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 
 class ProviderLogoBioScreen extends StatelessWidget {
   const ProviderLogoBioScreen({super.key});
@@ -71,60 +71,60 @@ class ProviderLogoBioScreen extends StatelessWidget {
             Center(
               child: GestureDetector(
                 onTap: controller.pickLogo,
-                child: Obx(
-                  () {
-                    final path = controller.logoPath.value;
-                    return Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Container(
-                          width: 120.w,
-                          height: 120.w,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE5E7EB),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.defaultBorder.withValues(alpha: 0.3),
-                              width: 1,
+                child: Obx(() {
+                  final path = controller.logoPath.value;
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: 120.w,
+                        height: 120.w,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE5E7EB),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.defaultBorder.withValues(
+                              alpha: 0.3,
                             ),
+                            width: 1,
                           ),
-                          child: path != null
-                              ? ClipOval(
-                                  child: Image.file(
-                                    File(path),
-                                    fit: BoxFit.cover,
-                                    width: 120.w,
-                                    height: 120.w,
-                                  ),
-                                )
-                              : Icon(
-                                  Icons.person_outline,
-                                  size: 56.sp,
-                                  color: AppColors.textGrey,
+                        ),
+                        child: path != null
+                            ? ClipOval(
+                                child: Image.file(
+                                  File(path),
+                                  fit: BoxFit.cover,
+                                  width: 120.w,
+                                  height: 120.w,
                                 ),
-                        ),
-                        // Small plus circle at bottom right
-                        Positioned(
-                          right: 0,
-                          bottom: 0,
-                          child: Container(
-                            width: 36.w,
-                            height: 36.w,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF9CA3AF),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 22.sp,
-                            ),
+                              )
+                            : Icon(
+                                Icons.person_outline,
+                                size: 56.sp,
+                                color: AppColors.textGrey,
+                              ),
+                      ),
+                      // Small plus circle at bottom right
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 36.w,
+                          height: 36.w,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF9CA3AF),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 22.sp,
                           ),
                         ),
-                      ],
-                    );
-                  },
-                ),
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
             SizedBox(height: 16.h),
@@ -229,7 +229,7 @@ class ProviderLogoBioScreen extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Get.off(() => const UserLoginScreen()),
+                  onTap: () => Get.off(() => const ProviderLoginScreen()),
                   child: Text(
                     'Sign In',
                     style: getTextStyle(

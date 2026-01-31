@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
-import 'package:protiva502/features/service_provider/auhecntication/controller/provider_pricing_controller.dart';
-import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
+import 'package:protiva502/features/service_provider/payment_system/controller/provider_pricing_controller.dart';
+import 'package:protiva502/features/service_provider/auhecntication/controller/provider_login_screen.dart';
 
 /// Teal color for checkmarks (matches screenshot).
 const Color _tealCheck = Color(0xFF14B8A6);
@@ -73,8 +73,8 @@ class ProviderPricingScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _buildBasicCheckbox(
-                            controller.selectedPlan.value ==
-                                PricingPlan.basic),
+                          controller.selectedPlan.value == PricingPlan.basic,
+                        ),
                         SizedBox(width: 8.w),
                         Text(
                           'Basic',
@@ -94,8 +94,9 @@ class ProviderPricingScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _buildUnlimitedRadio(
-                            controller.selectedPlan.value ==
-                                PricingPlan.unlimited),
+                          controller.selectedPlan.value ==
+                              PricingPlan.unlimited,
+                        ),
                         SizedBox(width: 8.w),
                         Text(
                           'Unlimited',
@@ -118,13 +119,9 @@ class ProviderPricingScreen extends StatelessWidget {
               planName: 'Basic',
               price: '\$29',
               perMonth: '/per month',
-              description:
-                  'Best for professional freelancers and small teams.',
+              description: 'Best for professional freelancers and small teams.',
               showDottedDivider: true,
-              features: [
-                'cap 2 applications/mo',
-                '1 active listing',
-              ],
+              features: ['cap 2 applications/mo', '1 active listing'],
               onTap: controller.selectBasic,
             ),
             SizedBox(height: 16.h),
@@ -134,8 +131,7 @@ class ProviderPricingScreen extends StatelessWidget {
               planName: 'Unlimited',
               price: '\$99',
               perMonth: '/per month',
-              description:
-                  'Best for professional freelancers and small teams.',
+              description: 'Best for professional freelancers and small teams.',
               showDottedDivider: false,
               features: [
                 'Unlimited applications & listings',
@@ -165,7 +161,7 @@ class ProviderPricingScreen extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Get.off(() => const UserLoginScreen()),
+                  onTap: () => Get.off(() => const ProviderLoginScreen()),
                   child: Text(
                     'Sign In',
                     style: getTextStyle(
@@ -197,9 +193,7 @@ class ProviderPricingScreen extends StatelessWidget {
           width: 1.5,
         ),
       ),
-      child: checked
-          ? Icon(Icons.check, size: 16.sp, color: _tealCheck)
-          : null,
+      child: checked ? Icon(Icons.check, size: 16.sp, color: _tealCheck) : null,
     );
   }
 
@@ -241,7 +235,8 @@ class ProviderPricingScreen extends StatelessWidget {
   }) {
     return Obx(() {
       final controller = Get.find<ProviderPricingController>();
-      final isThisSelected = (planName == 'Basic' &&
+      final isThisSelected =
+          (planName == 'Basic' &&
               controller.selectedPlan.value == PricingPlan.basic) ||
           (planName == 'Unlimited' &&
               controller.selectedPlan.value == PricingPlan.unlimited);
@@ -321,11 +316,7 @@ class ProviderPricingScreen extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.check,
-                        size: 20.sp,
-                        color: _tealCheck,
-                      ),
+                      Icon(Icons.check, size: 20.sp, color: _tealCheck),
                       SizedBox(width: 8.w),
                       Expanded(
                         child: Text(

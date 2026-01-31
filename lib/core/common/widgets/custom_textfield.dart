@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 
-
 /// A robust, reusable custom text field.
 ///
 /// Key improvements over the original version:
@@ -45,6 +44,7 @@ class CustomTextField extends StatefulWidget {
   final ValueChanged<String>? onSubmitted;
   final bool enabled;
   final Widget? suffixIcon;
+
   /// When true and [isPasswordField] is true, shows "Hide"/"Show" text next to the eye icon.
   final bool showPasswordToggleText;
 
@@ -77,8 +77,11 @@ class CustomTextField extends StatefulWidget {
     this.onSubmitted,
     this.enabled = true,
     this.suffixIcon,
+    this.prefixIcon,
     this.showPasswordToggleText = false,
   });
+
+  final Widget? prefixIcon;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -163,6 +166,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         filled: true,
         fillColor: widget.backgroundColor ?? Color(0xFF6A7282),
         contentPadding: contentPad,
+        prefixIcon: widget.prefixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius),
           borderSide: BorderSide(

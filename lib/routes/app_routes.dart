@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
+import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 import 'package:protiva502/features/splash_screen/controller/splash_controller.dart';
 import 'package:protiva502/features/onboarding/screen/onboarding_page_view.dart';
 import 'package:protiva502/features/splash_screen/screen/splash_screen.dart';
+import 'package:protiva502/features/user/all_bookings/screen/all_booking_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_otp_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_profile_pic_screen.dart';
@@ -15,6 +17,7 @@ import 'package:protiva502/features/user/provoder_details/screen/provoder_detail
 
 class AppRoute {
   static String splashScreen = "/splashScreen";
+  static String mainNavigationScreen = "/mainNavigationScreen";
   // User sections
   static String onboardingScreen = "/onboardingScreen";
   static String userLoginScreen = "/userLoginScreen";
@@ -28,11 +31,13 @@ class AppRoute {
   static String categoryServiceDetailsScreen() =>
       "/categoryServiceDetailsScreen";
   static String providerDetailsScreen() => "/providerDetailsScreen";
+  static String allBookingScreen() => "/allBookingScreen";
 
   // Service prover sections
   static String providerRegistration = "/providerRegistration";
 
   static String getSplashScreen() => splashScreen;
+  static String getMainNavigationScreen() => mainNavigationScreen;
   // User Sections
   static String getOnboardingScreen() => onboardingScreen;
   static String getUserLoginScreen() => userLoginScreen;
@@ -46,6 +51,7 @@ class AppRoute {
   static String getCategoryServiceDetailsScreen() =>
       categoryServiceDetailsScreen();
   static String getProviderDetailsScreen() => providerDetailsScreen();
+  static String getAllBookingScreen() => allBookingScreen();
 
   // Service prover sections
   static String getProviderRegistration() => providerRegistration;
@@ -54,6 +60,15 @@ class AppRoute {
     GetPage(
       name: splashScreen,
       page: () => const SplashScreen(),
+      binding: BindingsBuilder(() {
+        Get.put(SplashController());
+      }),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: mainNavigationScreen,
+      page: () => const MainNavigationScreen(),
       binding: BindingsBuilder(() {
         Get.put(SplashController());
       }),
@@ -118,6 +133,12 @@ class AppRoute {
     GetPage(
       name: providerDetailsScreen(),
       page: () => ProviderDetailsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: allBookingScreen(),
+      page: () => AllBookingScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

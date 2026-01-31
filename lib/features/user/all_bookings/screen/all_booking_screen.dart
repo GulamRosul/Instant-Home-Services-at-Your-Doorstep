@@ -6,6 +6,7 @@ import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/all_bookings/controller/all_booking_controller.dart';
+import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart';
 
 class AllBookingScreen extends StatelessWidget {
   const AllBookingScreen({super.key});
@@ -90,7 +91,7 @@ class AllBookingScreen extends StatelessWidget {
                 itemCount: controller.filteredBookings.length,
                 itemBuilder: (context, index) {
                   final booking = controller.filteredBookings[index];
-                  return _buildBookingCard(booking);
+                  return _buildBookingCard(context, booking);
                 },
               ),
             ),
@@ -204,7 +205,7 @@ class AllBookingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBookingCard(Map<String, dynamic> booking) {
+  Widget _buildBookingCard(BuildContext context, Map<String, dynamic> booking) {
     Color statusColor = _getStatusColor(booking['status']);
 
     return Container(
@@ -297,9 +298,14 @@ class AllBookingScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildActionText("View Details"),
-                _buildActionText("Book Again"),
-                _buildActionText("Write Review"),
+                _buildActionText("View Details", () {}),
+                _buildActionText("Book Again", () {}),
+                _buildActionText("Write Review", () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const ReviewWidget(),
+                  );
+                }),
               ],
             ),
           ] else
@@ -322,14 +328,17 @@ class AllBookingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionText(String label) {
-    return Text(
-      label,
-      style: getTextStyle(
-        fontSize: 12.sp,
-        color: AppColors.textPurple,
-        decoration: TextDecoration.underline,
-        decorationColor: AppColors.textPurple,
+  Widget _buildActionText(String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Text(
+        label,
+        style: getTextStyle(
+          fontSize: 12.sp,
+          color: AppColors.textPurple,
+          decoration: TextDecoration.underline,
+          decorationColor: AppColors.textPurple,
+        ),
       ),
     );
   }

@@ -16,4 +16,10 @@ class IconPath {
   static const String painter = 'assets/icons/Painter.svg';
   static const String technician = 'assets/icons/Technician.svg';
   static const String provider = 'assets/icons/provider.svg';
+  static const String settings = 'assets/icons/settings.svg';
+  static const String logout = 'assets/icons/logout.svg';
+  static const String language = 'assets/icons/language.svg';
+  static const String privacy = 'assets/icons/privacy.svg';
+  static const String profilePic = 'assets/icons/profilePic.svg';
+  static const String help = 'assets/icons/help.svg';
 }

@@ -5,8 +5,8 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/features/service_provider/auhecntication/controller/provider_login_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_reg_controller.dart';
-import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 
 class ProviderRegistration extends StatelessWidget {
   const ProviderRegistration({super.key});
@@ -139,7 +139,7 @@ class ProviderRegistration extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Get.off(() => const UserLoginScreen()),
+                  onTap: () => Get.off(() => const ProviderLoginScreen()),
                   child: Text(
                     'Sign In',
                     style: getTextStyle(
@@ -203,12 +203,7 @@ class ProviderRegistration extends StatelessWidget {
             color: Colors.black,
           ),
           items: items
-              .map(
-                (e) => DropdownMenuItem<String>(
-                  value: e,
-                  child: Text(e),
-                ),
-              )
+              .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
               .toList(),
           onChanged: onChanged,
         ),

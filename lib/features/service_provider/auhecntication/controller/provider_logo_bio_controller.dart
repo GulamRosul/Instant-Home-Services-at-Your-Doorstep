@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:protiva502/features/service_provider/auhecntication/screen/provider_pricing_screen.dart';
+import 'package:protiva502/features/service_provider/payment_system/screen/provider_pricing_screen.dart';
 
 class ProviderLogoBioController extends GetxController {
   static const int maxBioLength = 300;

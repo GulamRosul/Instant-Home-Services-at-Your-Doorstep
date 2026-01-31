@@ -6,6 +6,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
+import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 
 class SecondOnboardingScreen extends StatelessWidget {
   const SecondOnboardingScreen({super.key});
@@ -129,6 +130,9 @@ class SecondOnboardingScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15.w),
               child: CustomButton(
+                onPressed: () {
+                  Get.to(() => ProviderRegistration());
+                },
                 text: 'Sign Up to continue as Service Provider',
                 backgroundColor: Colors.white,
                 borderColor: Colors.black,

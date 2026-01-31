@@ -45,6 +45,8 @@ class CustomTextField extends StatefulWidget {
   final ValueChanged<String>? onSubmitted;
   final bool enabled;
   final Widget? suffixIcon;
+  /// When true and [isPasswordField] is true, shows "Hide"/"Show" text next to the eye icon.
+  final bool showPasswordToggleText;
 
   const CustomTextField({
     super.key,
@@ -75,6 +77,7 @@ class CustomTextField extends StatefulWidget {
     this.onSubmitted,
     this.enabled = true,
     this.suffixIcon,
+    this.showPasswordToggleText = false,
   });
 
   @override
@@ -183,9 +186,31 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
         suffixIcon: widget.isPasswordField
             ? IconButton(
-                icon: Icon(
-                  _obscureText ? Icons.visibility_off : Icons.visibility,
-                ),
+                icon: widget.showPasswordToggleText
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _obscureText
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            size: 20.sp,
+                            color: AppColors.textGrey,
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            _obscureText ? 'Show' : 'Hide',
+                            style: getTextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textGrey,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                      ),
                 onPressed: () {
                   if (widget.isPasswordVisible == null) {
                     setState(() => _obscureText = !_obscureText);

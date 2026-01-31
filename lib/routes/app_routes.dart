@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
+import 'package:protiva502/features/service_provider/auhecntication/screen/provider_logo_bio_screen.dart';
+import 'package:protiva502/features/service_provider/auhecntication/screen/provider_pricing_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
+import 'package:protiva502/features/service_provider/payment_system/screen/payment_method.dart';
 import 'package:protiva502/features/splash_screen/controller/splash_controller.dart';
 import 'package:protiva502/features/onboarding/screen/onboarding_page_view.dart';
 import 'package:protiva502/features/splash_screen/screen/splash_screen.dart';
@@ -33,8 +36,11 @@ class AppRoute {
   static String providerDetailsScreen() => "/providerDetailsScreen";
   static String allBookingScreen() => "/allBookingScreen";
 
-  // Service prover sections
+  // Service provider sections
   static String providerRegistration = "/providerRegistration";
+  static String providerLogoBio = "/providerLogoBio";
+  static String providerPricing = "/providerPricing";
+  static String paymentMethod = "/paymentMethod";
 
   static String getSplashScreen() => splashScreen;
   static String getMainNavigationScreen() => mainNavigationScreen;
@@ -53,8 +59,11 @@ class AppRoute {
   static String getProviderDetailsScreen() => providerDetailsScreen();
   static String getAllBookingScreen() => allBookingScreen();
 
-  // Service prover sections
+  // Service provider sections
   static String getProviderRegistration() => providerRegistration;
+  static String getProviderLogoBio() => providerLogoBio;
+  static String getProviderPricing() => providerPricing;
+  static String getPaymentMethod() => paymentMethod;
 
   static List<GetPage> routes = [
     GetPage(
@@ -143,10 +152,28 @@ class AppRoute {
       transitionDuration: const Duration(milliseconds: 500),
     ),
 
-    //Provider Sections
+    // Provider Sections
     GetPage(
       name: providerRegistration,
       page: () => const ProviderRegistration(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: providerLogoBio,
+      page: () => const ProviderLogoBioScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: providerPricing,
+      page: () => const ProviderPricingScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: paymentMethod,
+      page: () => const PaymentMethodScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

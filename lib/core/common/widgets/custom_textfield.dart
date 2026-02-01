@@ -25,7 +25,7 @@ class CustomTextField extends StatefulWidget {
   final TextStyle? textStyle;
   final Color? backgroundColor;
   final Color? borderColor;
-  final double borderRadius;
+  final double? borderRadius;
   final bool isPasswordField;
   final bool? isPasswordVisible;
   final VoidCallback? onIconPressed;
@@ -58,7 +58,7 @@ class CustomTextField extends StatefulWidget {
     this.textStyle,
     this.backgroundColor,
     this.borderColor,
-    this.borderRadius = 12.0,
+    this.borderRadius,
     this.isPasswordField = false,
     this.isPasswordVisible,
     this.onIconPressed,
@@ -168,21 +168,21 @@ class _CustomTextFieldState extends State<CustomTextField> {
         contentPadding: contentPad,
         prefixIcon: widget.prefixIcon,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 12.r),
           borderSide: BorderSide(
             color: widget.borderColor ?? AppColors.defaultBorder,
             width: 1.5,
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 12.r),
           borderSide: BorderSide(
             color: widget.borderColor ?? AppColors.defaultBorder,
             width: 1.5,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 12.r),
           borderSide: BorderSide(
             color: widget.borderColor ?? AppColors.defaultBorder,
             width: 2.0,
@@ -237,25 +237,3 @@ class _CustomTextFieldState extends State<CustomTextField> {
     );
   }
 }
-
-
-
-// CustomTextField(
-//   isPasswordField: true,
-//   hintText: 'Enter password',
-// )
-
-// CustomTextField(
-//   hintText: 'Search here',
-//   suffixIcon: IconButton(
-//     icon: Icon(Icons.search, color: Colors.grey),
-//     onPressed: () {},
-//   ),
-// )
-
-// CustomTextField(
-//   hintText: 'Username',
-//   icon: Icons.person,
-// )
-
-

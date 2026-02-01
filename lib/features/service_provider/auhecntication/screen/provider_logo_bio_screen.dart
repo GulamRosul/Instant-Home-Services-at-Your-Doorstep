@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
-import 'package:protiva502/features/service_provider/auhecntication/controller/provider_login_screen.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_logo_bio_controller.dart';
+import 'package:protiva502/features/service_provider/payment_system/screen/provider_pricing_screen.dart';
 
 class ProviderLogoBioScreen extends StatelessWidget {
   const ProviderLogoBioScreen({super.key});
@@ -22,31 +25,20 @@ class ProviderLogoBioScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFF5F5F7),
         elevation: 0,
         surfaceTintColor: const Color(0xFFF5F5F7),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20.sp),
-          onPressed: () => Get.back(),
-        ),
+        leading: SizedBox(),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 12.w),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // Faded Skip (top)
-                Text(
-                  'Skip',
-                  style: getTextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textGrey.withValues(alpha: 0.6),
-                  ),
-                ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 10.h),
                 // Main Skip (underlined, darker)
                 GestureDetector(
-                  onTap: controller.handleSkip,
+                  onTap: () async {
+                    await Get.to(() => const ProviderPricingScreen());
+                  },
                   child: Text(
                     'Skip',
                     style: getTextStyle(
@@ -63,32 +55,75 @@ class ProviderLogoBioScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Logo upload section (centered)
             Center(
               child: GestureDetector(
-                onTap: controller.pickLogo,
+                onTap: () {
+                  Get.bottomSheet(
+                    Container(
+                      padding: EdgeInsets.all(20.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.r),
+                          topRight: Radius.circular(20.r),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Select Image Source',
+                            style: getTextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 20.h),
+                          ListTile(
+                            leading: const Icon(Icons.camera_alt),
+                            title: Text(
+                              'Camera',
+                              style: getTextStyle(
+                                color: Colors.black,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                            onTap: () {
+                              Get.back();
+                              controller.pickLogo(ImageSource.camera);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.photo_library),
+                            title: Text(
+                              'Gallery',
+                              style: getTextStyle(
+                                color: Colors.black,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                            onTap: () {
+                              Get.back();
+                              controller.pickLogo(ImageSource.gallery);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
                 child: Obx(() {
                   final path = controller.logoPath.value;
                   return Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Container(
-                        width: 120.w,
-                        height: 120.w,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE5E7EB),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AppColors.defaultBorder.withValues(
-                              alpha: 0.3,
-                            ),
-                            width: 1,
-                          ),
-                        ),
+                      SizedBox(
+                        width: 100.w,
+                        height: 100.w,
                         child: path != null
                             ? ClipOval(
                                 child: Image.file(
@@ -98,29 +133,11 @@ class ProviderLogoBioScreen extends StatelessWidget {
                                   height: 120.w,
                                 ),
                               )
-                            : Icon(
-                                Icons.person_outline,
-                                size: 56.sp,
-                                color: AppColors.textGrey,
+                            : SvgPicture.asset(
+                                IconPath.person,
+                                width: 120.w,
+                                height: 120.w,
                               ),
-                      ),
-                      // Small plus circle at bottom right
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          width: 36.w,
-                          height: 36.w,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF9CA3AF),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 22.sp,
-                          ),
-                        ),
                       ),
                     ],
                   );
@@ -133,14 +150,12 @@ class ProviderLogoBioScreen extends StatelessWidget {
                 'Upload Your Logo',
                 style: getTextStyle(
                   fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
               ),
             ),
             SizedBox(height: 28.h),
-
-            // About Service
             Padding(
               padding: EdgeInsets.only(bottom: 8.h),
               child: Text(
@@ -148,7 +163,7 @@ class ProviderLogoBioScreen extends StatelessWidget {
                 style: getTextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.textGrey,
+                  color: Color(0xFF18181B),
                 ),
               ),
             ),
@@ -179,14 +194,20 @@ class ProviderLogoBioScreen extends StatelessWidget {
                       hintText: 'Enter your bio',
                       hintStyle: getTextStyle(
                         fontSize: 14.sp,
-                        color: AppColors.textSecondary,
+                        color: Color(0xFF3F3F3F),
                       ),
-                      border: InputBorder.none,
+
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 221, 223, 226),
+                        ),
+                      ),
                       contentPadding: EdgeInsets.fromLTRB(
-                        14.w,
-                        14.h,
-                        14.w,
-                        32.h,
+                        10.w,
+                        10.h,
+                        10.w,
+                        30.h,
                       ),
                       counterText: '',
                     ),
@@ -200,47 +221,21 @@ class ProviderLogoBioScreen extends StatelessWidget {
                       '${controller.bioCharCount.value}/${ProviderLogoBioController.maxBioLength}',
                       style: getTextStyle(
                         fontSize: 12.sp,
-                        color: AppColors.textSecondary,
+                        color: Color.fromARGB(255, 135, 133, 133),
                       ),
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 30.h),
+            SizedBox(height: 61.h),
 
             CustomButton(
+              borderRadius: 6.r,
               text: 'Next',
               onPressed: controller.handleNext,
-              backgroundColor: AppColors.primary,
+              backgroundColor: Color(0xFF334155),
               textColor: Colors.white,
-            ),
-            SizedBox(height: 20.h),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Already have an account? ',
-                  style: getTextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => Get.off(() => const ProviderLoginScreen()),
-                  child: Text(
-                    'Sign In',
-                    style: getTextStyle(
-                      fontSize: 14.sp,
-                      color: const Color(0xFF6366F1),
-                      fontWeight: FontWeight.w600,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              ],
             ),
             SizedBox(height: 40.h),
           ],

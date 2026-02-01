@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:protiva502/features/service_provider/payment_system/screen/provider_pricing_screen.dart';
 
 class ProviderLogoBioController extends GetxController {
@@ -15,14 +16,28 @@ class ProviderLogoBioController extends GetxController {
 
   void updateBioCount(int count) => bioCharCount.value = count;
 
-  void pickLogo() {
-    // TODO: Implement image_picker for logo
-    // For now just trigger so UI can show dialog or picker
-  }
+  final ImagePicker _picker = ImagePicker();
 
-  void handleSkip() {
-    // Skip this step, go to next or home
-    Get.back();
+  Future<void> pickLogo(ImageSource source) async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+      if (image != null) {
+        logoPath.value = image.path;
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Failed to pick image: $e",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withValues(alpha: 0.1),
+        colorText: Colors.red,
+      );
+    }
   }
 
   void handleNext() {

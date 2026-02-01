@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreateJobController extends GetxController {
+  final ImagePicker _picker = ImagePicker();
   // Step Management
   var currentStep = 0.obs;
 
@@ -47,10 +49,33 @@ class CreateJobController extends GetxController {
     includedServices.removeAt(index);
   }
 
-  void pickImage() {
-    // Mock image picking
-    uploadedImagePath.value = "assets/images/placeholder.png";
-    Get.snackbar("Success", "Image uploaded successfully!");
+  Future<void> pickImage() async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+      if (image != null) {
+        uploadedImagePath.value = image.path;
+        Get.snackbar(
+          "Success",
+          "Image selected successfully!",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green.withValues(alpha: 0.1),
+          colorText: Colors.green,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Failed to pick image: $e",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withValues(alpha: 0.1),
+        colorText: Colors.red,
+      );
+    }
   }
 
   void publishJob() {

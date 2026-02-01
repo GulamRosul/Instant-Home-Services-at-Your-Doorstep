@@ -20,5 +20,4 @@ TextStyle getTextStyle({
     decorationStyle: decorationStyle,
     decorationColor: decorationColor,
   );
- 
 }

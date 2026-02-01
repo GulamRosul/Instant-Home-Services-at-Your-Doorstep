@@ -1,0 +1,165 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/image_path.dart'; // Ensure illustration path is here
+import 'package:protiva502/features/service_provider/auhecntication/screen/providerLoginController.dart';
+
+class ProviderLoginScreen extends StatelessWidget {
+  const ProviderLoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.put(ProviderLoginController());
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA), // Subtle grey background
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: Column(
+          children: [
+            // Top Illustration
+            SizedBox(
+              height: 120.h,
+              child: Image.asset(ImagePath.signin, fit: BoxFit.contain),
+            ),
+            SizedBox(height: 24.h),
+
+            // Header Text
+            Text(
+              'Welcome back!',
+              style: getTextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              'Please Sign in to continue.',
+              style: getTextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 32.h),
+
+            // Username Field
+            _buildLabel("Username"),
+            CustomTextField(
+              controller: controller.usernameController,
+              hintText: 'Sarah',
+              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
+              textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
+            ),
+            SizedBox(height: 20.h),
+
+            // Password Field
+            _buildPasswordFieldLabel("Password", controller),
+            Obx(
+              () => CustomTextField(
+                controller: controller.passwordController,
+                hintText: '***********',
+                isPasswordField: true,
+                isPasswordVisible: controller.isPasswordVisible.value,
+                onIconPressed: controller.togglePasswordVisibility,
+                backgroundColor: const Color(
+                  0xFFF1F5F9,
+                ), // Very light grey input
+                borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
+                textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
+              ),
+            ),
+
+            SizedBox(height: 48.h),
+
+            // Sign In Button
+            CustomButton(
+              text: 'Sign In',
+              onPressed: controller.handleSignIn,
+              backgroundColor: const Color(
+                0xFF7079F0,
+              ), // Matching purple from screenshot
+              textColor: Colors.white,
+            ),
+
+            SizedBox(height: 24.h),
+
+            // Footer Sign Up Link
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Don’t have an account? ",
+                  style: getTextStyle(fontSize: 14.sp, color: Colors.black),
+                ),
+                GestureDetector(
+                  onTap: controller.navigateToSignUp,
+                  child: Text(
+                    'Sign Up',
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      color: const Color(0xFF7079F0),
+                      fontWeight: FontWeight.w600,
+                      // decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 40.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: 8.h),
+        child: Text(
+          text,
+          style: getTextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordFieldLabel(
+    String text,
+    ProviderLoginController controller,
+  ) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            text,
+            style: getTextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

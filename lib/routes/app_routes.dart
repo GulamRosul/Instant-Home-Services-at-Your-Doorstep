@@ -25,6 +25,10 @@ import 'package:protiva502/features/user/home/screen/category_service_details_sc
 import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
 import 'package:protiva502/features/user/home/screen/user_home_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
+import 'package:protiva502/features/service_provider/language_settings/screen/language_settings_screen.dart';
+import 'package:protiva502/features/service_provider/settings/screen/settings_screen.dart';
+import 'package:protiva502/features/service_provider/wallet/screen/wallet_screen.dart';
+import 'package:protiva502/features/service_provider/profile/screen/profile_screen.dart';
 
 class AppRoute {
   static String splashScreen = "/splashScreen";
@@ -57,6 +61,10 @@ class AppRoute {
   static String postJob = "/postJob";
   static String jobPublishSuccess = "/jobPublishSuccess";
   static String booking = "/booking";
+  static String languageSettings = "/languageSettings";
+  static String settings = "/settings";
+  static String profile = "/profile";
+  static String myWallet = "/myWallet";
 
   static String getSplashScreen() => splashScreen;
   static String getMainNavigationScreen() => mainNavigationScreen;
@@ -88,6 +96,10 @@ class AppRoute {
   static String getPostJob() => postJob;
   static String getJobPublishSuccess() => jobPublishSuccess;
   static String getBooking() => booking;
+  static String getLanguageSettings() => languageSettings;
+  static String getSettings() => settings;
+  static String getProfile() => profile;
+  static String getMyWallet() => myWallet;
 
   static List<GetPage> routes = [
     GetPage(
@@ -247,6 +259,30 @@ class AppRoute {
       name: booking,
       page: () => const BookingScreen(),
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: languageSettings,
+      page: () => const LanguageSettingsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: settings,
+      page: () => const SettingsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: profile,
+      page: () => const ProfileScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: myWallet,
+      page: () => const WalletScreen(),
+      transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 500),
     ),
   ];

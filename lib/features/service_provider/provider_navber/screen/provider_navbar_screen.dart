@@ -16,7 +16,7 @@ class ProviderNavbarScreen extends StatelessWidget {
     final controller = Get.put(ProviderNavbarController());
 
     final List<Widget> pages = [
-      const ProviderHomeScreen(),
+      Obx(() => controller.homeSubPage.value ?? const ProviderHomeScreen()),
       const MyJobListScreen(),
       const BookingScreen(),
       const Center(child: Text("Provider Settings")),
@@ -115,7 +115,7 @@ class ProviderBottomNavBar extends StatelessWidget {
       case 2:
         return Icons.account_balance_wallet_rounded;
       case 3:
-        return Icons.person_rounded;
+        return Icons.grid_view_rounded;
       default:
         return Icons.home;
     }

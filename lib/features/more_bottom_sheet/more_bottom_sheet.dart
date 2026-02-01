@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
+import 'package:protiva502/routes/app_routes.dart';
 
 class MoreBottomSheet extends StatelessWidget {
   const MoreBottomSheet({super.key});
@@ -50,7 +51,9 @@ class MoreBottomSheet extends StatelessWidget {
                       label: 'Profile',
                       onTap: () {
                         Get.back();
-                        // Navigate to profile
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          Get.toNamed(AppRoute.getProfile());
+                        });
                       },
                     ),
                     _buildMenuItem(
@@ -58,7 +61,9 @@ class MoreBottomSheet extends StatelessWidget {
                       label: 'Language',
                       onTap: () {
                         Get.back();
-                        // Navigate to language settings
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          Get.toNamed(AppRoute.getLanguageSettings());
+                        });
                       },
                     ),
                     _buildMenuItem(
@@ -66,16 +71,11 @@ class MoreBottomSheet extends StatelessWidget {
                       label: 'Settings',
                       onTap: () {
                         Get.back();
-                        // Navigate to settings
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          Get.toNamed(AppRoute.getSettings());
+                        });
                       },
                     ),
-                  ],
-                ),
-                SizedBox(height: 24.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
                     _buildMenuItem(
                       iconPath: IconPath.help,
                       label: 'Help & Support',
@@ -84,6 +84,14 @@ class MoreBottomSheet extends StatelessWidget {
                         // Navigate to help
                       },
                     ),
+                  ],
+                ),
+                SizedBox(height: 24.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(width: 15.w),
                     _buildMenuItem(
                       iconPath: IconPath.privacy,
                       label: 'Privacy & Policy',
@@ -92,6 +100,7 @@ class MoreBottomSheet extends StatelessWidget {
                         // Navigate to privacy policy
                       },
                     ),
+                    SizedBox(width: 20.w),
                     _buildMenuItem(
                       iconPath: IconPath.logout,
                       label: 'Logout',

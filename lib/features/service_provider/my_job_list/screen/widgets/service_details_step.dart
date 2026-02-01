@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/create_job_controller.dart';
+import 'package:protiva502/core/common/widgets/custom_dashed_border.dart';
 
 class ServiceDetailsStep extends StatelessWidget {
   const ServiceDetailsStep({super.key});
@@ -93,100 +95,104 @@ class ServiceDetailsStep extends StatelessWidget {
           ),
         ),
         SizedBox(height: 16.h),
-        GestureDetector(
-          onTap: () => controller.pickImage(),
-          child: Container(
-            width: double.infinity,
-            height: 200.h,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(
-                color: Colors.grey.shade300,
-                style: BorderStyle
-                    .solid, // Should be dashed, but hard to do in vanilla BoxDecoration
-              ),
-            ),
-            child: Obx(
-              () => controller.uploadedImagePath.value.isEmpty
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(16.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(
-                              color: Colors.grey.shade200,
-                              style: BorderStyle.none,
-                            ),
-                          ),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(24.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+          ),
+          child: Column(
+            children: [
+              Obx(
+                () => controller.uploadedImagePath.value.isEmpty
+                    ? CustomDashedBorder(
+                        color: const Color(0xFFCBD5E1),
+                        strokeWidth: 1.5,
+                        dashWidth: 4,
+                        dashSpace: 4,
+                        borderRadius: 8.r,
+                        child: Container(
+                          padding: EdgeInsets.all(20.w),
                           child: Icon(
                             Icons.image_outlined,
-                            size: 40.sp,
-                            color: Colors.grey.shade400,
+                            size: 60.sp,
+                            color: const Color(0xFFCBD5E1),
                           ),
                         ),
-                        SizedBox(height: 16.h),
-                        Text(
-                          'Please upload square image, size less than 100KB',
-                          style: getTextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 16.h),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 8.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8.r),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Choose File',
-                                style: getTextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              SizedBox(width: 12.w),
-                              Text(
-                                'No File Chosen',
-                                style: getTextStyle(
-                                  fontSize: 12.sp,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(12.r),
-                      child:
-                          controller.uploadedImagePath.value.startsWith(
-                            'assets',
-                          )
-                          ? Image.asset(
-                              controller.uploadedImagePath.value,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.network(
-                              controller.uploadedImagePath.value,
-                              fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: 140.w,
+                        height: 140.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.r),
+                          image: DecorationImage(
+                            image: FileImage(
+                              File(controller.uploadedImagePath.value),
                             ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+              ),
+              SizedBox(height: 20.h),
+              Text(
+                'Please upload square image, size less than 100KB',
+                style: getTextStyle(
+                  fontSize: 13.sp,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 20.h),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkWell(
+                      onTap: () => controller.pickImage(),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(color: const Color(0xFF475569)),
+                        ),
+                        child: Text(
+                          'Choose File',
+                          style: getTextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1E293B),
+                          ),
+                        ),
+                      ),
                     ),
-            ),
+                    SizedBox(width: 16.w),
+                    Obx(
+                      () => Text(
+                        controller.uploadedImagePath.value.isEmpty
+                            ? 'No File Chosen'
+                            : 'File Selected',
+                        style: getTextStyle(
+                          fontSize: 14.sp,
+                          color: const Color(0xFF64748B),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ],

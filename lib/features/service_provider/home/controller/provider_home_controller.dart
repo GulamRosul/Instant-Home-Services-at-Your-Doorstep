@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:protiva502/features/service_provider/provider_navber/controller/provider_navbar_controller.dart';
+import 'package:protiva502/features/service_provider/wallet/screen/wallet_screen.dart';
 import 'package:protiva502/routes/app_routes.dart';
 
 class ProviderHomeController extends GetxController {
@@ -30,5 +32,9 @@ class ProviderHomeController extends GetxController {
 
   void handleViewAllRecentBookings() {
     Get.toNamed(AppRoute.recentBookings);
+  }
+
+  void handleViewWallet() {
+    Get.find<ProviderNavbarController>().showHomeSubPage(const WalletScreen());
   }
 }

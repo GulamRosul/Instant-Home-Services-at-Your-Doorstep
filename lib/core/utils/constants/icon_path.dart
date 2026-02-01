@@ -24,4 +24,6 @@ class IconPath {
   static const String help = 'assets/icons/help.svg';
   static const String business = 'assets/icons/business.svg';
   static const String person = 'assets/icons/person.svg';
+  static const String mastercard = 'assets/icons/mastercard.svg';
+  static const String visa = 'assets/icons/visa.svg';
 }

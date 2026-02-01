@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/common/widgets/custom_popupmenu_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_login_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_reg_controller.dart';
+import 'package:protiva502/features/service_provider/auhecntication/widget/build_field_label.dart';
 
 class ProviderRegistration extends StatelessWidget {
   const ProviderRegistration({super.key});
@@ -18,11 +22,10 @@ class ProviderRegistration extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF1F5F9),
         elevation: 0,
         surfaceTintColor: const Color(0xFFF1F5F9),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20.sp),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 24.sp),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -30,101 +33,96 @@ class ProviderRegistration extends StatelessWidget {
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: Color(0xFF3F3F3F),
           ),
         ),
+        centerTitle: false,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title: Get Started as a Provider (underlined)
             Text(
               'Get Started as a Provider',
               style: getTextStyle(
-                fontSize: 22.sp,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
                 decoration: TextDecoration.underline,
               ),
             ),
             SizedBox(height: 24.h),
-
-            // Section: Business Information (briefcase icon)
             Row(
               children: [
-                Icon(
-                  Icons.business_center_outlined,
-                  size: 20.sp,
-                  color: AppColors.textGrey,
-                ),
+                SvgPicture.asset(IconPath.business, width: 20.w, height: 20.h),
                 SizedBox(width: 8.w),
                 Text(
                   'Business Information',
                   style: getTextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textGrey,
+                    color: Color(0xFF2D2D2D),
                   ),
                 ),
               ],
             ),
             SizedBox(height: 24.h),
-
-            // Service Category (dropdown)
-            _buildFieldLabel('Service Category'),
+            FieldLabel(label: 'Service Category'),
             Obx(
-              () => _buildDropdown(
+              () => CustomPopupMenu(
                 value: controller.selectedServiceCategory.value,
                 items: controller.serviceCategories,
-                onChanged: controller.onServiceCategoryChanged,
+                onSelected: controller.onServiceCategoryChanged,
               ),
             ),
             SizedBox(height: 16.h),
 
             // Sub-Category (dropdown)
-            _buildFieldLabel('Sub-Category'),
+            FieldLabel(label: 'Sub-Category'),
             Obx(
-              () => _buildDropdown(
+              () => CustomPopupMenu(
                 value: controller.selectedSubCategory.value,
                 items: controller.subCategories,
-                onChanged: controller.onSubCategoryChanged,
+                onSelected: controller.onSubCategoryChanged,
               ),
             ),
             SizedBox(height: 16.h),
 
             // Service location
-            _buildFieldLabel('Service location'),
+            FieldLabel(label: 'Service location'),
             CustomTextField(
+              borderRadius: 4.r,
               controller: controller.serviceLocationController,
               hintText: 'Canada',
               backgroundColor: const Color(0xFFF1F5F9),
-              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.3),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
             SizedBox(height: 16.h),
 
             // Year of Experience
-            _buildFieldLabel('Year of Experience'),
+            FieldLabel(label: 'Year of Experience'),
             CustomTextField(
+              borderRadius: 4.r,
               controller: controller.yearOfExperienceController,
               hintText: 'e.g. 5',
               keyboardType: TextInputType.number,
               backgroundColor: const Color(0xFFF1F5F9),
-              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.3),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
-            SizedBox(height: 30.h),
+            SizedBox(height: 24.h),
 
             // Next button
             CustomButton(
+              borderRadius: 6.r,
               text: 'Next',
               onPressed: controller.handleNext,
               backgroundColor: AppColors.primary,
               textColor: Colors.white,
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 12.h),
 
             // Sign In link
             Row(
@@ -134,8 +132,8 @@ class ProviderRegistration extends StatelessWidget {
                   'Already have an account? ',
                   style: getTextStyle(
                     fontSize: 14.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF333333),
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 GestureDetector(
@@ -144,9 +142,10 @@ class ProviderRegistration extends StatelessWidget {
                     'Sign In',
                     style: getTextStyle(
                       fontSize: 14.sp,
-                      color: const Color(0xFF6366F1),
+                      color: const Color(0xFF787BEB),
                       fontWeight: FontWeight.w600,
                       decoration: TextDecoration.underline,
+                      decorationColor: const Color(0xFF787BEB),
                     ),
                   ),
                 ),
@@ -154,58 +153,6 @@ class ProviderRegistration extends StatelessWidget {
             ),
             SizedBox(height: 40.h),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFieldLabel(String label) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Text(
-        label,
-        style: getTextStyle(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w500,
-          color: AppColors.textGrey,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropdown({
-    required String value,
-    required List<String> items,
-    required void Function(String?) onChanged,
-  }) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF1F5F9),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: AppColors.defaultBorder.withValues(alpha: 0.2),
-          width: 1.5,
-        ),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isExpanded: true,
-          icon: Icon(
-            Icons.keyboard_arrow_down,
-            color: AppColors.textGrey,
-            size: 24.sp,
-          ),
-          style: getTextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-            color: Colors.black,
-          ),
-          items: items
-              .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
-              .toList(),
-          onChanged: onChanged,
         ),
       ),
     );

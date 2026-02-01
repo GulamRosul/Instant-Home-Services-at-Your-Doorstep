@@ -16,6 +16,7 @@ class ReviewWidget extends StatelessWidget {
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      backgroundColor: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(20.r),
         child: Column(
@@ -77,7 +78,8 @@ class ReviewWidget extends StatelessWidget {
                 CustomTextField(
                   controller: controller.feedbackController,
                   hintText: "Add feedback",
-                  maxLines: 4,
+                  maxLines: 5,
+                  backgroundColor: Colors.white,
                 ),
                 Positioned(
                   bottom: 10.h,
@@ -173,7 +175,11 @@ class ReviewWidget extends StatelessWidget {
                     ),
                     child: Text(
                       "Cancel",
-                      style: getTextStyle(color: Colors.black),
+                      style: getTextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ),
                 ),
@@ -181,16 +187,26 @@ class ReviewWidget extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: controller.submitReview,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.textPurple,
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                    ),
+                    style:
+                        ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.textPurple,
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                        ).copyWith(
+                          overlayColor: WidgetStateProperty.all(
+                            Colors.transparent,
+                          ),
+                          side: WidgetStateProperty.all(BorderSide.none),
+                        ),
                     child: Text(
                       "Submit",
-                      style: getTextStyle(color: Colors.white),
+                      style: getTextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ),
                 ),

@@ -14,6 +14,7 @@ import 'package:protiva502/features/user/home/screen/category_service_details_sc
 import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
 import 'package:protiva502/features/user/home/screen/user_home_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
 class AppRoute {
   static String splashScreen = "/splashScreen";
@@ -32,6 +33,7 @@ class AppRoute {
       "/categoryServiceDetailsScreen";
   static String providerDetailsScreen() => "/providerDetailsScreen";
   static String allBookingScreen() => "/allBookingScreen";
+  static String bookingDetailsScreen() => "/bookingDetailsScreen";
 
   // Service prover sections
   static String providerRegistration = "/providerRegistration";
@@ -52,6 +54,7 @@ class AppRoute {
       categoryServiceDetailsScreen();
   static String getProviderDetailsScreen() => providerDetailsScreen();
   static String getAllBookingScreen() => allBookingScreen();
+  static String getBookingDetailsScreen() => bookingDetailsScreen();
 
   // Service prover sections
   static String getProviderRegistration() => providerRegistration;
@@ -139,6 +142,12 @@ class AppRoute {
     GetPage(
       name: allBookingScreen(),
       page: () => AllBookingScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: bookingDetailsScreen(),
+      page: () => BookingDetailsScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

@@ -10,6 +10,7 @@ import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
 class UserHomeScreen extends StatelessWidget {
   const UserHomeScreen({super.key});
@@ -427,7 +428,9 @@ class UserHomeScreen extends StatelessWidget {
                   // fontSize: 10.sp,
                   backgroundColor: AppColors.textPurple,
                   borderRadius: 6.r,
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(() => BookingDetailsScreen());
+                  },
                   textColor: Colors.white,
                 ),
               ],

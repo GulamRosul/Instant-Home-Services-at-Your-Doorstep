@@ -7,12 +7,14 @@ class CustomPopupMenu extends StatelessWidget {
   final String value;
   final List<String> items;
   final void Function(String) onSelected;
+  final String? backgroundcolor;
 
   const CustomPopupMenu({
     super.key,
     required this.value,
     required this.items,
     required this.onSelected,
+    this.backgroundcolor,
   });
 
   @override
@@ -40,7 +42,9 @@ class CustomPopupMenu extends StatelessWidget {
         final selected = await showMenu<String>(
           context: context,
           position: position,
-          color: Colors.white,
+          color: backgroundcolor != null
+              ? Color(int.parse(backgroundcolor!))
+              : Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.r),
           ),

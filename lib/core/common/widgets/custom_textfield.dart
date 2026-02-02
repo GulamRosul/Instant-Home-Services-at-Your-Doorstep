@@ -149,7 +149,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
-            color: Colors.white,
+            color: Colors.black,
             lineHeight: 12.sp,
           ),
       decoration: InputDecoration(

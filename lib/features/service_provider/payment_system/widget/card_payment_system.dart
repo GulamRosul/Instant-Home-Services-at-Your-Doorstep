@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/common/widgets/custom_popupmenu_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
@@ -13,7 +14,6 @@ class CardPaymentSection extends StatelessWidget {
   final PaymentMethodController controller;
 
   const CardPaymentSection({super.key, required this.controller});
-  static const Color _successGreen = Color(0xFF4CAF50);
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +35,8 @@ class CardPaymentSection extends StatelessWidget {
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: AppColors.defaultBorder.withValues(alpha: 0.3),
-              width: 1.5,
-            ),
+            borderRadius: BorderRadius.circular(6.r),
+            border: Border.all(color: Color(0xFFCBD5E1), width: 1.5),
           ),
           child: Column(
             children: [
@@ -84,6 +81,11 @@ class CardPaymentSection extends StatelessWidget {
                         IconPath.mastercard,
                         width: 40.w,
                         height: 28.h,
+                        placeholderBuilder: (context) => Container(
+                          width: 40.w,
+                          height: 28.h,
+                          color: Colors.grey.shade200,
+                        ),
                       ),
                       SizedBox(width: 12.w),
                       Text(
@@ -142,6 +144,11 @@ class CardPaymentSection extends StatelessWidget {
                         IconPath.visa,
                         width: 40.w,
                         height: 28.h,
+                        placeholderBuilder: (context) => Container(
+                          width: 40.w,
+                          height: 28.h,
+                          color: Colors.grey.shade200,
+                        ),
                       ),
                       SizedBox(width: 12.w),
                       Text(
@@ -162,177 +169,187 @@ class CardPaymentSection extends StatelessWidget {
         SizedBox(height: 24.h),
 
         // Large card logo placeholder
-        Center(
-          child: Obx(
-            () => Container(
-              width: 120.w,
-              height: 75.h,
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(
-                  color: AppColors.defaultBorder.withValues(alpha: 0.2),
-                  width: 1.5,
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(6.r),
+            border: Border.all(color: Color(0xFFCBD5E1), width: 1.5),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            child: Column(
+              children: [
+                Center(
+                  child: Obx(
+                    () => Container(
+                      width: 120.w,
+                      height: 75.h,
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6.r),
+                        border: Border.all(
+                          color: AppColors.defaultBorder.withValues(alpha: 0.2),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          controller.selectedGateway.value ==
+                                  PaymentGateway.mastercard
+                              ? IconPath.mastercard
+                              : IconPath.visa,
+                          width: 80.w,
+                          height: 50.h,
+                          fit: BoxFit.contain,
+                          placeholderBuilder: (context) => Container(
+                            width: 80.w,
+                            height: 50.h,
+                            color: Colors.grey.shade200,
+                            child: Center(
+                              child: Icon(
+                                Icons.credit_card,
+                                size: 30.sp,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  controller.selectedGateway.value == PaymentGateway.mastercard
-                      ? IconPath.mastercard
-                      : IconPath.visa,
-                  fit: BoxFit.contain,
+                SizedBox(height: 24.h),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: FieldLabel(label: "Card Number:"),
                 ),
-              ),
+
+                Obx(
+                  () => CustomTextField(
+                    controller: controller.cardNumberController,
+                    hintText: '01234 5678 9100',
+                    keyboardType: TextInputType.number,
+                    backgroundColor: Colors.white,
+                    borderRadius: 6.r,
+                    borderColor: Color(0xFFCBD5E1),
+                    textStyle: getTextStyle(
+                      color: Colors.black,
+                      fontSize: 14.sp,
+                    ),
+                    onChanged: controller.onCardNumberChanged,
+                    suffixIcon: controller.isCardNumberValid.value
+                        ? Padding(
+                            padding: EdgeInsets.all(14.r),
+                            child: SvgPicture.asset(
+                              IconPath.chack,
+                              width: 16.w,
+                              height: 16.h,
+                            ),
+                          )
+                        : null,
+                  ),
+                ),
+                SizedBox(height: 16.h),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FieldLabel(label: "Country:"),
+                          Obx(
+                            () => CustomPopupMenu(
+                              backgroundcolor: Colors.white.value.toString(),
+                              value:
+                                  controller.selectedCountry.value ??
+                                  'Select Country',
+                              items: controller.countries,
+                              onSelected: (value) {
+                                controller.selectCountry(value);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FieldLabel(label: "Expiry Date:"),
+                          CustomTextField(
+                            controller: controller.expiryController,
+                            hintText: 'MM/YY',
+                            borderRadius: 6.r,
+                            keyboardType: TextInputType.streetAddress,
+                            backgroundColor: Colors.white,
+                            borderColor: const Color(0xFFCBD5E1),
+                            textStyle: getTextStyle(
+                              color: Colors.black,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FieldLabel(label: "CVC:"),
+                          CustomTextField(
+                            controller: controller.cvcController,
+                            hintText: '123',
+                            keyboardType: TextInputType.number,
+                            backgroundColor: Colors.white,
+                            borderRadius: 6.r,
+                            borderColor: const Color(0xFFCBD5E1),
+                            textStyle: getTextStyle(
+                              color: Colors.black,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FieldLabel(label: "ZIP:"),
+                          CustomTextField(
+                            borderRadius: 6.r,
+                            controller: controller.zipController,
+                            hintText: '12345',
+                            keyboardType: TextInputType.number,
+                            backgroundColor: Colors.white,
+                            borderColor: const Color(0xFFCBD5E1),
+                            textStyle: getTextStyle(
+                              color: Colors.black,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
-        SizedBox(height: 24.h),
-
-        FieldLabel(label: "Card Number:"),
-
-        Obx(
-          () => CustomTextField(
-            controller: controller.cardNumberController,
-            hintText: '01234 5678 9100',
-            keyboardType: TextInputType.number,
-            backgroundColor: const Color(0xFFE8ECF1),
-            borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
-            textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
-            onChanged: controller.onCardNumberChanged,
-            suffixIcon: controller.isCardNumberValid.value
-                ? Icon(Icons.check_circle, color: _successGreen, size: 22.sp)
-                : null,
-          ),
-        ),
-        SizedBox(height: 16.h),
-
-        Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FieldLabel(label: "Country:"),
-                  Obx(
-                    () => _buildDropdown(
-                      value: controller.selectedCountry.value,
-                      hint: 'Select Country',
-                      items: controller.countries,
-                      onChanged: controller.selectCountry,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FieldLabel(label: "Expiry Date:"),
-                  CustomTextField(
-                    controller: controller.expiryController,
-                    hintText: 'MM/YY',
-                    keyboardType: TextInputType.streetAddress,
-                    backgroundColor: const Color(0xFFE8ECF1),
-                    borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
-                    textStyle: getTextStyle(
-                      color: Colors.black,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 16.h),
-
-        Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FieldLabel(label: "CVC:"),
-                  CustomTextField(
-                    controller: controller.cvcController,
-                    hintText: '123',
-                    keyboardType: TextInputType.number,
-                    backgroundColor: const Color(0xFFE8ECF1),
-                    borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
-                    textStyle: getTextStyle(
-                      color: Colors.black,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FieldLabel(label: "ZIP:"),
-                  CustomTextField(
-                    controller: controller.zipController,
-                    hintText: '12345',
-                    keyboardType: TextInputType.number,
-                    backgroundColor: const Color(0xFFE8ECF1),
-                    borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
-                    textStyle: getTextStyle(
-                      color: Colors.black,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 30.h),
+        SizedBox(height: 20.h),
       ],
     );
   }
-}
-
-Widget _buildDropdown({
-  required String? value,
-  required String hint,
-  required List<String> items,
-  required void Function(String?) onChanged,
-}) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-    decoration: BoxDecoration(
-      color: const Color(0xFFE8ECF1),
-      borderRadius: BorderRadius.circular(12.r),
-      border: Border.all(
-        color: AppColors.defaultBorder.withValues(alpha: 0.2),
-        width: 1.5,
-      ),
-    ),
-    child: DropdownButtonHideUnderline(
-      child: DropdownButton<String>(
-        value: value,
-        isExpanded: true,
-        hint: Text(
-          hint,
-          style: getTextStyle(fontSize: 14.sp, color: AppColors.textSecondary),
-        ),
-        icon: Icon(
-          Icons.keyboard_arrow_down,
-          color: AppColors.textGrey,
-          size: 24.sp,
-        ),
-        style: getTextStyle(fontSize: 14.sp, color: Colors.black),
-        items: items
-            .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
-            .toList(),
-        onChanged: onChanged,
-      ),
-    ),
-  );
 }

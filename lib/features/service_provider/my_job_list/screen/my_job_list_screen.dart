@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/my_job_list_controller.dart';
 
@@ -17,22 +19,18 @@ class MyJobListScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
-          onPressed: () => Get.back(),
-        ),
         title: Text(
           'My listing',
           style: getTextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF3F3F3F),
           ),
         ),
         centerTitle: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Divider(color: Colors.grey.shade200, height: 1),
+          child: Divider(color: Color(0xFFCBD5E1), height: 1),
         ),
       ),
       body: Padding(
@@ -43,6 +41,7 @@ class MyJobListScreen extends StatelessWidget {
             SizedBox(height: 24.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,17 +49,18 @@ class MyJobListScreen extends StatelessWidget {
                     Text(
                       'My Jobs',
                       style: getTextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF0F172A),
                       ),
                     ),
                     SizedBox(height: 10.h),
                     Text(
                       'View all your currently\nactive job postings',
                       style: getTextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.grey.shade600,
+                        fontSize: 12.sp,
+                        color: Color(0xFF334155),
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ],
@@ -72,15 +72,15 @@ class MyJobListScreen extends StatelessWidget {
                     'New listing',
                     style: getTextStyle(
                       fontSize: 14.sp,
-                      color: Colors.white,
+                      color: Color(0xFFFAFAFA),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF7079F0),
+                    backgroundColor: const Color(0xFF787BEB),
                     padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 12.h,
+                      horizontal: 14.w,
+                      vertical: 10.h,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r),
@@ -116,25 +116,43 @@ class MyJobListScreen extends StatelessWidget {
     int index,
   ) {
     return Container(
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.grey.shade100),
+        borderRadius: BorderRadius.circular(6.r),
+        border: Border.all(color: Color(0xFFCBD5E1)),
       ),
       child: Column(
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.r),
-                child: Image.asset(
-                  ImagePath.servicecard,
-                  width: 60.w,
-                  height: 60.w,
-                  fit: BoxFit.cover,
-                ),
+              Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4.r),
+                    child: Image.asset(
+                      ImagePath.servicecard,
+                      width: 60.w,
+                      height: 40.w,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(IconPath.star, height: 14.h),
+                      Text(
+                        ' ${item['rating']} ',
+                        style: getTextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               SizedBox(width: 12.w),
               Expanded(
@@ -142,53 +160,64 @@ class MyJobListScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Text(
                             item['title']!,
                             style: getTextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF0F172A),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        PopupMenuButton<String>(
-                          icon: const Icon(Icons.more_vert, color: Colors.grey),
-                          onSelected: (value) {
-                            if (value == 'edit') {
-                              controller.handleEditListing(index);
-                            } else if (value == 'delete') {
-                              controller.handleDeleteListing(index);
-                            }
-                          },
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.r),
+                        SizedBox(
+                          height: 24.h,
+                          width: 24.w,
+                          child: PopupMenuButton<String>(
+                            padding: EdgeInsets.zero,
+                            color: Colors.white,
+                            icon: Icon(
+                              Icons.more_vert,
+                              color: Colors.grey,
+                              size: 20.sp,
+                            ),
+                            onSelected: (value) {
+                              if (value == 'edit') {
+                                controller.handleEditListing(index);
+                              } else if (value == 'delete') {
+                                controller.handleDeleteListing(index);
+                              }
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'edit',
+                                child: Text(
+                                  'Edit',
+                                  style: getTextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Text(
+                                  'Delete',
+                                  style: getTextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: 'edit',
-                              child: Text(
-                                'Edit',
-                                style: getTextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 'delete',
-                              child: Text(
-                                'Delete',
-                                style: getTextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
                       ],
                     ),
@@ -197,15 +226,16 @@ class MyJobListScreen extends StatelessWidget {
                         Icon(
                           Icons.location_on_outlined,
                           size: 12.sp,
-                          color: Colors.blue,
+                          color: Color(0xFF1D4ED8),
                         ),
                         SizedBox(width: 4.w),
                         Expanded(
                           child: Text(
                             item['location']!,
                             style: getTextStyle(
-                              fontSize: 11.sp,
-                              color: Colors.grey,
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF475569),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -214,53 +244,31 @@ class MyJobListScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 4.h),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.star_rounded,
-                          color: Colors.amber,
-                          size: 14.sp,
+                    RichText(
+                      text: TextSpan(
+                        text: 'Start From ',
+                        style: getTextStyle(
+                          fontSize: 10.sp,
+                          color: Color(0xFF475569),
                         ),
-                        Text(
-                          ' ${item['rating']} ',
-                          style: getTextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const Spacer(),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: RichText(
-                            text: TextSpan(
-                              text: 'Start From ',
-                              style: getTextStyle(
-                                fontSize: 11.sp,
-                                color: Colors.grey,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: item['price'],
-                                  style: getTextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
+                        children: [
+                          TextSpan(
+                            text: item['price'],
+                            style: getTextStyle(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
-          const Divider(),
-          SizedBox(height: 8.h),
+          SizedBox(height: 12.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -298,7 +306,11 @@ class MyJobListScreen extends StatelessWidget {
         Flexible(
           child: Text(
             text,
-            style: getTextStyle(fontSize: 11.sp, color: Colors.black87),
+            style: getTextStyle(
+              fontSize: 12.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w400,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/features/service_provider/provider_navber/controller/provider_navbar_controller.dart';
 import 'package:protiva502/features/service_provider/wallet/screen/confirm_withdrawal_screen.dart';
 
 class WalletController extends GetxController {
+  TextEditingController withdrawalAmountController = TextEditingController();
+  TextEditingController accountNumberController = TextEditingController();
   var totalEarnings = "12,450.50".obs;
   var pendingAmount = "850.00".obs;
 
@@ -27,7 +30,7 @@ class WalletController extends GetxController {
   }
 
   void goToConfirmation() {
-    if (accountNumber.value.isEmpty) {
+    if (accountNumberController.text.isEmpty) {
       Get.snackbar("Error", "Please enter bank account number");
       return;
     }

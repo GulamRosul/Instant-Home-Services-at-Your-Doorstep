@@ -35,4 +35,5 @@ class IconPath {
   static const String one = 'assets/icons/1W.svg';
   static const String two = 'assets/icons/2.svg';
   static const String three = 'assets/icons/3.svg';
+  static const String ok = 'assets/icons/ok.svg';
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/wallet/controller/wallet_controller.dart';
 import 'package:protiva502/features/service_provider/provider_navber/controller/provider_navbar_controller.dart';
 
@@ -16,83 +18,129 @@ class WalletScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
               children: [
-                Container(
-                  height: 250.h,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(color: Color(0xFF7079F0)),
-                ),
-                SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Get.find<ProviderNavbarController>()
-                                .resetHomeSubPage();
-                          },
-                          icon: const Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.white,
-                          ),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      height: 435.h,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            const Color(0xFF787BEB),
+                            const Color(0xFF5B5FC7),
+                          ],
                         ),
-                        Text(
-                          'My Wallet',
-                          style: getTextStyle(
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    SafeArea(
+                      bottom: false,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 50.h),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              child: Text(
+                                'My Wallet',
+                                style: getTextStyle(
+                                  color: Colors.white,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // card
+                    Positioned(
+                      bottom: 26.h,
+                      left: 20.w,
+                      right: 20.w,
+                      child: Column(
+                        children: [
+                          _buildWalletInfoCard(controller),
+                          SizedBox(height: 24.h),
+                          _buildWithdrawButton(controller),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                Positioned(
-                  bottom: -40.h,
-                  left: 20.w,
-                  right: 20.w,
-                  child: _buildWalletInfoCard(controller),
+                SizedBox(height: 20.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Withdrawal History',
+                        style: getTextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF0F172A),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Obx(
+                        () => Column(
+                          children: controller.withdrawalHistory.map((item) {
+                            return _buildHistoryItem(item);
+                          }).toList(),
+                        ),
+                      ),
+                      SizedBox(height: 90.h),
+                    ],
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: 60.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildWithdrawButton(controller),
-                  SizedBox(height: 32.h),
-                  Text(
-                    'Withdrawal History',
-                    style: getTextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
+          ),
+
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Get.find<ProviderNavbarController>().resetHomeSubPage();
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16.h),
-                  Obx(
-                    () => Column(
-                      children: controller.withdrawalHistory.map((item) {
-                        return _buildHistoryItem(item);
-                      }).toList(),
+                    Text(
+                      'Back',
+                      style: getTextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 120.h),
-                ],
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -114,15 +162,16 @@ class WalletScreen extends StatelessWidget {
           Text(
             'Total Earnings',
             style: getTextStyle(
-              fontSize: 14.sp,
-              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
             ),
           ),
           SizedBox(height: 8.h),
           Text(
             '৳ ${controller.totalEarnings.value}',
             style: getTextStyle(
-              fontSize: 32.sp,
+              fontSize: 36.sp,
               fontWeight: FontWeight.w700,
               color: Colors.white,
             ),
@@ -131,25 +180,27 @@ class WalletScreen extends StatelessWidget {
           Text(
             'From completed services',
             style: getTextStyle(
-              fontSize: 12.sp,
-              color: Colors.white.withValues(alpha: 0.6),
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
             ),
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: 15.h),
           Divider(color: Colors.white.withValues(alpha: 0.2)),
-          SizedBox(height: 16.h),
+          SizedBox(height: 15.h),
           Text(
             'Pending Amount',
             style: getTextStyle(
-              fontSize: 14.sp,
-              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
             ),
           ),
           Text(
             '৳ ${controller.pendingAmount.value}',
             style: getTextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w700,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
           ),
@@ -167,7 +218,7 @@ class WalletScreen extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        height: 56.h,
+        height: 45.h,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
@@ -202,7 +253,7 @@ class WalletScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.grey.shade100),
+        border: Border.all(color: Color(0xFFE2E8F0)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,32 +267,36 @@ class WalletScreen extends StatelessWidget {
                     '৳ ${item['amount']}',
                     style: getTextStyle(
                       fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF0F172A),
                     ),
                   ),
                   SizedBox(width: 8.w),
-                  Icon(Icons.check_circle, color: Colors.green, size: 16.sp),
+                  SvgPicture.asset(IconPath.ok, width: 16.sp, height: 16.sp),
                 ],
               ),
               SizedBox(height: 4.h),
               Text(
                 item['date']!,
-                style: getTextStyle(fontSize: 12.sp, color: Colors.grey),
+                style: getTextStyle(
+                  fontSize: 12.sp,
+                  color: Color(0xFF64748B),
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ],
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
             decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.1),
+              color: Color(0xFFDCFCE7),
               borderRadius: BorderRadius.circular(20.r),
             ),
             child: Text(
               item['status']!,
               style: getTextStyle(
                 fontSize: 12.sp,
-                color: Colors.green,
+                color: Color(0xFF16A34A),
                 fontWeight: FontWeight.w500,
               ),
             ),

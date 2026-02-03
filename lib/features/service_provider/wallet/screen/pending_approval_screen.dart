@@ -22,8 +22,8 @@ class PendingApprovalScreen extends StatelessWidget {
             children: [
               // Pending Icon
               Container(
-                width: 80.w,
-                height: 80.w,
+                width: 70.w,
+                height: 70.w,
                 decoration: BoxDecoration(
                   color: Colors.grey.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
@@ -35,12 +35,11 @@ class PendingApprovalScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 24.h),
-
               // Title & Subtitle
               Text(
                 'Pending Approval',
                 style: getTextStyle(
-                  fontSize: 24.sp,
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.w700,
                   color: Colors.black,
                 ),
@@ -51,7 +50,8 @@ class PendingApprovalScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: getTextStyle(
                   fontSize: 14.sp,
-                  color: Colors.grey.shade600,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
               SizedBox(height: 40.h),
@@ -70,14 +70,15 @@ class PendingApprovalScreen extends StatelessWidget {
                       'Withdrawal Amount',
                       style: getTextStyle(
                         fontSize: 12.sp,
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(
                       '৳ ${controller.withdrawalAmount.value}',
                       style: getTextStyle(
-                        fontSize: 32.sp,
+                        fontSize: 36.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
@@ -92,7 +93,7 @@ class PendingApprovalScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: Colors.grey.shade100),
+                  border: Border.all(color: Color(0xFFE2E8F0)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,25 +127,19 @@ class PendingApprovalScreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.lightbulb_outline,
-                      size: 18.sp,
-                      color: const Color(0xFF3B82F6),
-                    ),
-                    SizedBox(width: 10.w),
                     Expanded(
                       child: Text(
-                        "You'll receive a notification once the admin reviews your request. The funds will be transferred to your account within 1-2 business days after approval.",
+                        "💡 You'll receive a notification once the admin reviews your request. The funds will be transferred to your account within 1-2 business days after approval.",
                         style: getTextStyle(
-                          fontSize: 12.sp,
-                          color: const Color(0xFF1E40AF).withValues(alpha: 0.8),
+                          fontSize: 13.sp,
+                          color: const Color(0xFF1E40AF),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 48.h),
+              SizedBox(height: 35.h),
 
               // Back to Home Button
               ElevatedButton(
@@ -153,10 +148,10 @@ class PendingApprovalScreen extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  minimumSize: Size(double.infinity, 56.h),
+                  minimumSize: Size(double.infinity, 40.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
-                    side: BorderSide(color: Colors.grey.shade200),
+                    side: BorderSide(color: Color(0xFFE2E8F0)),
                   ),
                   elevation: 0,
                 ),
@@ -176,7 +171,6 @@ class PendingApprovalScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 100.h),
             ],
           ),
         ),

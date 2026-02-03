@@ -22,6 +22,7 @@ class WalletController extends GetxController {
     selectedPercentage.value = percentage;
     double balance = double.parse(totalEarnings.value.replaceAll(',', ''));
     withdrawalAmount.value = (balance * (percentage / 100)).toStringAsFixed(2);
+    withdrawalAmountController.text = withdrawalAmount.value;
   }
 
   void handleWithdrawFunds() {
@@ -34,6 +35,10 @@ class WalletController extends GetxController {
       Get.snackbar("Error", "Please enter bank account number");
       return;
     }
+    // Update observable variables for the next screen
+    accountNumber.value = accountNumberController.text;
+    withdrawalAmount.value = withdrawalAmountController.text;
+
     Get.find<ProviderNavbarController>().showHomeSubPage(
       const ConfirmWithdrawalScreen(),
     );

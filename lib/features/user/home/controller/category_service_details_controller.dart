@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
-class CategoryServiceDetailsController extends GetxController with GetSingleTickerProviderStateMixin {
+class CategoryServiceDetailsController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   late TabController tabController;
-  
+
   // Observable for current tab index
   var activeTabIndex = 0.obs;
 
@@ -18,7 +20,8 @@ class CategoryServiceDetailsController extends GetxController with GetSingleTick
   }
 
   void handleBooking() {
-    print("Proceeding to booking...");
+    // print("Proceeding to booking...");
+    Get.to(() => BookingDetailsScreen());
   }
 
   void handleMessaging() {

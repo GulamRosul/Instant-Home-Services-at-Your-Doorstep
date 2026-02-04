@@ -39,6 +39,9 @@ class AppColors {
   ); // Light blue for less emphasis
 
   // Background Colors
+  static const Color backgroundDefault = Color(
+    0xFFF5F5F7,
+  ); // Clean white for a modern look
   static const Color backgroundLight = Color(
     0xFFF8F9FA,
   ); // Light neutral for clean look

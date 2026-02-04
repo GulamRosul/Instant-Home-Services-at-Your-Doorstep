@@ -22,12 +22,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Check if the current navigator can pop
+    final bool canPop = Navigator.canPop(context);
+
     return AppBar(
       centerTitle: centerTitle,
       backgroundColor: Colors.white,
       elevation: 0,
-      surfaceTintColor: Colors.white, // Prevents color change on scroll
-      leading: showBackButton
+      surfaceTintColor: Colors.white,
+      // Only show the button if explicitly requested AND the navigator has a page to go back to
+      leading: (showBackButton && canPop)
           ? IconButton(
               icon: Icon(
                 Icons.arrow_back_ios,
@@ -57,5 +61,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

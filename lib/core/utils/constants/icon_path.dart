@@ -28,6 +28,7 @@ class IconPath {
   static const String visa = 'assets/icons/visa.svg';
   static const String chack = 'assets/icons/chack.svg';
   static const String profile = 'assets/icons/profile.png';
+  static const String celebration = 'assets/icons/celebration.png';
   static const String search = 'assets/icons/search.svg';
   static const String wallet = 'assets/icons/wallet.svg';
   static const String warning = 'assets/icons/worning.svg';
@@ -36,4 +37,7 @@ class IconPath {
   static const String two = 'assets/icons/2.svg';
   static const String three = 'assets/icons/3.svg';
   static const String ok = 'assets/icons/ok.svg';
+  static const String curve2 = 'assets/icons/curve2.svg';
+  static const String curve1 = 'assets/icons/curve1.svg';
+  static const String checkcircle = 'assets/icons/checkcircle.svg';
 }

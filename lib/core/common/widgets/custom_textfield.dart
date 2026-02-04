@@ -44,6 +44,7 @@ class CustomTextField extends StatefulWidget {
   final ValueChanged<String>? onSubmitted;
   final bool enabled;
   final Widget? suffixIcon;
+  final Color? hintTextColor;
 
   /// When true and [isPasswordField] is true, shows "Hide"/"Show" text next to the eye icon.
   final bool showPasswordToggleText;
@@ -79,6 +80,7 @@ class CustomTextField extends StatefulWidget {
     this.suffixIcon,
     this.prefixIcon,
     this.showPasswordToggleText = false,
+    this.hintTextColor,
   });
 
   final Widget? prefixIcon;
@@ -159,7 +161,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
         hintText: widget.hintText,
         hintStyle: getTextStyle(
-          color: AppColors.textSecondary,
+          color: widget.hintTextColor ?? AppColors.textSecondary,
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
         ),

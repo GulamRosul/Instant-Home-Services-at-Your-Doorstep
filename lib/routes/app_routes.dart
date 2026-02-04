@@ -32,7 +32,7 @@ import 'package:protiva502/features/service_provider/language_settings/screen/la
 import 'package:protiva502/features/service_provider/settings/screen/settings_screen.dart';
 import 'package:protiva502/features/service_provider/wallet/screen/wallet_screen.dart';
 import 'package:protiva502/features/service_provider/profile/screen/profile_screen.dart';
-
+import 'package:protiva502/features/user/user_booking_confirmation/screen/confirm_booking_screen.dart';
 
 class AppRoute {
   static String splashScreen = "/splashScreen";
@@ -52,6 +52,7 @@ class AppRoute {
   static String providerDetailsScreen() => "/providerDetailsScreen";
   static String allBookingScreen() => "/allBookingScreen";
   static String bookingDetailsScreen() => "/bookingDetailsScreen";
+  static String confirmBookingScreen() => "/confirmBookingScreen";
 
   // Service provider sections
   static String providerRegistration = "/providerRegistration";
@@ -88,6 +89,7 @@ class AppRoute {
   static String getProviderDetailsScreen() => providerDetailsScreen();
   static String getAllBookingScreen() => allBookingScreen();
   static String getBookingDetailsScreen() => bookingDetailsScreen();
+  static String getConfirmBookingScreen() => confirmBookingScreen();
 
   // Service provider sections
   static String getProviderRegistration() => providerRegistration;
@@ -126,6 +128,7 @@ class AppRoute {
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),
+
     // User Sections
     GetPage(
       name: onboardingScreen,
@@ -196,6 +199,12 @@ class AppRoute {
     GetPage(
       name: bookingDetailsScreen(),
       page: () => BookingDetailsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: confirmBookingScreen(),
+      page: () => ConfirmBookingScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

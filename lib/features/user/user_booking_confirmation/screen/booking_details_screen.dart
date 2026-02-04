@@ -18,22 +18,30 @@ class BookingDetailsScreen extends StatelessWidget {
     final controller = Get.put(BookingDetailsController());
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFF5F5F7),
       appBar: const CustomAppBar(title: 'Book Service'),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.r),
+        padding: EdgeInsets.all(10.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "Book Service",
-              style: getTextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
+              style: getTextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+                lineHeight: 15.sp,
+              ),
             ),
+            SizedBox(height: 8.h),
             Text(
               "Book Your Service in Just a Few Clicks",
               style: getTextStyle(
                 fontSize: 12.sp,
                 color: AppColors.textSecondary,
+                lineHeight: 15.sp,
+                fontWeight: FontWeight.w400,
               ),
             ),
             SizedBox(height: 24.h),
@@ -49,6 +57,8 @@ class BookingDetailsScreen extends StatelessWidget {
               hintText: "Carpentry & Woodwork",
               readOnly: true,
               backgroundColor: Colors.white,
+              // textStyle: getTextStyle(fontSize: 14.sp, color: Colors.black),
+              hintTextColor: Colors.black,
             ),
 
             SizedBox(height: 16.h),
@@ -60,8 +70,9 @@ class BookingDetailsScreen extends StatelessWidget {
                 size: 20.sp,
                 color: Colors.blueGrey,
               ),
-              readOnly: true,
+              // readOnly: true,
               backgroundColor: Colors.white,
+              // hintTextColor: Colors.black,
             ),
 
             SizedBox(height: 16.h),
@@ -70,6 +81,7 @@ class BookingDetailsScreen extends StatelessWidget {
               controller: controller.phoneController,
               keyboardType: TextInputType.phone,
               backgroundColor: Colors.white,
+              // hintTextColor: Colors.black,
             ),
 
             SizedBox(height: 16.h),
@@ -149,6 +161,7 @@ class BookingDetailsScreen extends StatelessWidget {
               onPressed: controller.goToNextStep,
               textColor: Colors.white,
             ),
+            100.h.verticalSpace,
             // SizedBox(
             //   width: double.infinity,
             //   height: 50.h,
@@ -263,6 +276,31 @@ class BookingDetailsScreen extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+                SizedBox(height: 8.h),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        ...List.generate(
+                          5,
+                          (i) => Icon(
+                            Icons.star,
+                            color: Colors.orange,
+                            size: 14.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Text(
+                  " 4.8 (170 Reviews)",
+                  style: getTextStyle(
+                    fontSize: 11.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ],
             ),

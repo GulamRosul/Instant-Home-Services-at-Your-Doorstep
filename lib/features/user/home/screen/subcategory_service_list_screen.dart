@@ -9,6 +9,7 @@ import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/controller/subcategory_service_list_controller.dart';
 import 'package:protiva502/features/user/home/screen/category_service_details_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
 class SubcategoryServiceListScreen extends StatelessWidget {
   const SubcategoryServiceListScreen({super.key});
@@ -106,7 +107,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                   onTap: () {
+                  onTap: () {
                     Get.to(() => ProviderDetailsScreen());
                   },
                   child: Text(
@@ -171,7 +172,9 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                   // fontSize: 10.sp,
                   backgroundColor: AppColors.textPurple,
                   borderRadius: 6.r,
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(() => BookingDetailsScreen());
+                  },
                   textColor: Colors.white,
                 ),
               ],

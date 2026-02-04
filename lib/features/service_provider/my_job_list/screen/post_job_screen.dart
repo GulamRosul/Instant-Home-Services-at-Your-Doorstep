@@ -6,6 +6,7 @@ import 'package:protiva502/features/service_provider/my_job_list/controller/crea
 import 'package:protiva502/features/service_provider/my_job_list/screen/widgets/job_details_step.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/widgets/service_details_step.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/widgets/preview_step.dart';
+import 'package:protiva502/features/service_provider/my_job_list/screen/widgets/tabItem.dart';
 
 class PostJobScreen extends StatelessWidget {
   const PostJobScreen({super.key});
@@ -15,39 +16,35 @@ class PostJobScreen extends StatelessWidget {
     final controller = Get.put(CreateJobController());
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xFF09090B),
+            size: 20,
+          ),
           onPressed: () => controller.previousStep(),
         ),
         title: Text(
           'job Post',
           style: getTextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF3F3F3F),
           ),
         ),
         centerTitle: false,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4),
-          child: Obx(
-            () => LinearProgressIndicator(
-              value: (controller.currentStep.value + 1) / 3,
-              backgroundColor: Colors.transparent,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFF7079F0),
-              ),
-            ),
-          ),
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(color: Color(0xFFCBD5E1), height: 1),
         ),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -55,8 +52,8 @@ class PostJobScreen extends StatelessWidget {
               Text(
                 'Post a Job in Minutes',
                 style: getTextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
               ),
@@ -65,8 +62,8 @@ class PostJobScreen extends StatelessWidget {
                 'Post a job, receive proposals, and hire the right professional with confidence.',
                 style: getTextStyle(
                   fontSize: 14.sp,
-                  color: Colors.grey.shade600,
-                  lineHeight: 1.4,
+                  color: Color(0xFF475569),
+                  fontWeight: FontWeight.w400,
                 ),
               ),
               SizedBox(height: 24.h),
@@ -95,41 +92,12 @@ class PostJobScreen extends StatelessWidget {
   }
 
   Widget _buildStepIndicator(CreateJobController controller) {
-    return Obx(
-      () => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _buildTabItem("Jobs details", 0, controller),
-          _buildTabItem("Service details", 1, controller),
-          _buildTabItem("Preview", 2, controller),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTabItem(
-    String label,
-    int index,
-    CreateJobController controller,
-  ) {
-    bool isActive = controller.currentStep.value == index;
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: getTextStyle(
-            fontSize: 14.sp,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-            color: isActive ? const Color(0xFF7079F0) : Colors.grey.shade600,
-          ),
-        ),
-        if (isActive)
-          Container(
-            margin: EdgeInsets.only(top: 4.h),
-            height: 2.h,
-            width: 40.w,
-            color: const Color(0xFF7079F0),
-          ),
+        TabItem(label: "Jobs details", index: 0, controller: controller),
+        TabItem(label: "Service details", index: 1, controller: controller),
+        TabItem(label: "Preview", index: 2, controller: controller),
       ],
     );
   }

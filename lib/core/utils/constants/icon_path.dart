@@ -37,6 +37,13 @@ class IconPath {
   static const String two = 'assets/icons/2.svg';
   static const String three = 'assets/icons/3.svg';
   static const String ok = 'assets/icons/ok.svg';
+  static const String delete = 'assets/icons/delete.svg';
+  static const String add = 'assets/icons/add.svg';
+  static const String galary = 'assets/icons/galary.svg';
+  static const String edit = 'assets/icons/edit.svg';
+  static const String x1 = 'assets/icons/x1.svg';
+  static const String x2 = 'assets/icons/x2.svg';
+  static const String x3 = 'assets/icons/x3.svg';
   static const String curve2 = 'assets/icons/curve2.svg';
   static const String curve1 = 'assets/icons/curve1.svg';
   static const String checkcircle = 'assets/icons/checkcircle.svg';

@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
-import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/create_job_controller.dart';
 
 class PreviewStep extends StatelessWidget {
@@ -20,73 +22,167 @@ class PreviewStep extends StatelessWidget {
           icon: Icons.description_outlined,
           onEdit: () => controller.currentStep.value = 0,
           children: [
-            _buildDetailRow('Job Title', controller.jobTitleController.text),
+            _buildLabel('Job Title'),
+            SizedBox(height: 12.h),
+            Text(
+              controller.jobTitleController.text,
+              style: getTextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF2D2D2D),
+              ),
+            ),
+            SizedBox(height: 8.h),
+            const Divider(color: Color(0xFFE2E8F0)),
             SizedBox(height: 16.h),
-            _buildDetailRow(
-              'Description',
+            _buildLabel('Description'),
+            SizedBox(height: 12.h),
+            Text(
               controller.jobDescriptionController.text,
+              style: getTextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF2D2D2D),
+                lineHeight: 1.5,
+              ),
             ),
             SizedBox(height: 16.h),
+            _buildLabel('Service Category'),
+            SizedBox(height: 12.h),
             Row(
               children: [
-                Expanded(
-                  child: _buildDetailRow(
-                    'Service Category',
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(color: const Color(0xFFD9D9D9)),
+                  ),
+                  child: Text(
                     controller.selectedCategory.value,
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF1E293B),
+                    ),
                   ),
                 ),
-                Expanded(
-                  child: _buildDetailRow(
-                    '',
-                    controller.selectedSpecificService.value,
-                    isBullet: true,
+                SizedBox(width: 24.w),
+                Container(
+                  width: 3.w,
+                  height: 3.w,
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Text(
+                  controller.selectedSpecificService.value,
+                  style: getTextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    color: const Color(0xFF1E293B),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16.h),
-            _buildDetailRow('Budget', controller.priceType.value),
+            SizedBox(height: 20.h),
+            _buildLabel('Budget'),
+            SizedBox(height: 12.h),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4.r),
+                border: Border.all(color: const Color(0xFFD9D9D9)),
+              ),
+              child: Text(
+                controller.priceType.value,
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF2D2D2D),
+                ),
+              ),
+            ),
+            SizedBox(height: 12.h),
             Text(
               'Maximum : \$${controller.basePriceController.text}/hour',
-              style: getTextStyle(fontSize: 12.sp, color: Colors.grey),
-            ),
-          ],
-        ),
-        SizedBox(height: 20.h),
-        _buildSectionCard(
-          title: 'image',
-          icon: Icons.image_outlined,
-          showIconTitle: true,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12.r),
-              child: Image.asset(
-                ImagePath.servicecard, // Mocking image from path
-                width: double.infinity,
-                height: 180.h,
-                fit: BoxFit.cover,
+              style: getTextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF2D2D2D),
               ),
             ),
           ],
         ),
+
         SizedBox(height: 20.h),
-        _buildSectionCard(
-          title: 'Include in your service',
-          onEdit: () => controller.currentStep.value = 1,
-          children: controller.includedServices
-              .map(
+        Obx(
+          () => _buildSectionCard(
+            title: 'image',
+            icon: Icons.image_outlined,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12.r),
+                child: controller.uploadedImagePath.value.isNotEmpty
+                    ? Image.file(
+                        File(controller.uploadedImagePath.value),
+                        width: double.infinity,
+                        height: 180.h,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: double.infinity,
+                        height: 180.h,
+                        color: Colors.grey.shade200,
+                        child: Icon(
+                          Icons.image,
+                          size: 50.sp,
+                          color: Colors.grey,
+                        ),
+                      ),
+              ),
+              SizedBox(height: 24.h),
+              Row(
+                children: [
+                  Text(
+                    'Include in your service',
+                    style: getTextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF09090B),
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => controller.currentStep.value = 1,
+                    child: SvgPicture.asset(
+                      IconPath.edit,
+                      height: 20.h,
+                      width: 20.w,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12.h),
+              ...controller.includedServices.map(
                 (s) => Padding(
                   padding: EdgeInsets.only(bottom: 4.h),
                   child: Text(
                     s,
                     style: getTextStyle(
                       fontSize: 14.sp,
-                      color: Colors.grey.shade700,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF475569),
                     ),
                   ),
                 ),
-              )
-              .toList(),
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 24.h),
         _buildNextStepsInfo(),
@@ -97,7 +193,6 @@ class PreviewStep extends StatelessWidget {
   Widget _buildSectionCard({
     required String title,
     IconData? icon,
-    bool showIconTitle = false,
     VoidCallback? onEdit,
     required List<Widget> children,
   }) {
@@ -106,8 +201,8 @@ class PreviewStep extends StatelessWidget {
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.grey.shade100),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: const Color(0xFFD9D9D9)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -122,25 +217,25 @@ class PreviewStep extends StatelessWidget {
           Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 20.sp, color: Colors.grey.shade600),
+                Icon(icon, size: 20.sp, color: const Color(0xFF2D2D2D)),
                 SizedBox(width: 8.w),
               ],
               Text(
                 title,
                 style: getTextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF2D2D2D),
                 ),
               ),
               const Spacer(),
               if (onEdit != null)
                 GestureDetector(
                   onTap: onEdit,
-                  child: Icon(
-                    Icons.edit_note_rounded,
-                    size: 24.sp,
-                    color: Colors.black,
+                  child: SvgPicture.asset(
+                    IconPath.edit,
+                    height: 20.h,
+                    width: 20.w,
                   ),
                 ),
             ],
@@ -152,46 +247,14 @@ class PreviewStep extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value, {bool isBullet = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (label.isNotEmpty)
-          Text(
-            label,
-            style: getTextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-        if (label.isNotEmpty) SizedBox(height: 4.h),
-        Row(
-          children: [
-            if (isBullet) ...[
-              Container(
-                width: 4.w,
-                height: 4.w,
-                decoration: const BoxDecoration(
-                  color: Colors.grey,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              SizedBox(width: 8.w),
-            ],
-            Expanded(
-              child: Text(
-                value,
-                style: getTextStyle(
-                  fontSize: 13.sp,
-                  color: Colors.grey.shade600,
-                  lineHeight: 1.5,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: getTextStyle(
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w500,
+        color: const Color(0xFF2D2D2D),
+      ),
     );
   }
 
@@ -199,9 +262,9 @@ class PreviewStep extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F7FF),
+        color: const Color(0xFFF6FAFF),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: const Color(0xFFD0E7FF)),
+        border: Border.all(color: const Color(0xFFCBD5E1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,12 +272,12 @@ class PreviewStep extends StatelessWidget {
           Text(
             'What happens next?',
             style: getTextStyle(
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF0050B3),
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF1D4ED8),
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 10.h),
           _buildInfoItem('Your job will be posted and visible to Clients'),
           _buildInfoItem('You\'ll receive quotes and proposals'),
           _buildInfoItem('Review provider profiles, ratings, and proposals'),
@@ -224,26 +287,24 @@ class PreviewStep extends StatelessWidget {
   }
 
   Widget _buildInfoItem(String text) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '• ',
-            style: TextStyle(fontSize: 14.sp, color: const Color(0xFF0050B3)),
-          ),
-          Expanded(
-            child: Text(
-              text,
-              style: getTextStyle(
-                fontSize: 13.sp,
-                color: const Color(0xFF0050B3),
-              ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '• ',
+          style: TextStyle(fontSize: 14.sp, color: Color(0xFF2D2D2D)),
+        ),
+        Expanded(
+          child: Text(
+            text,
+            style: getTextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF2D2D2D),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

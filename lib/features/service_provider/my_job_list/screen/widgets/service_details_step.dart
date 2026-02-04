@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/create_job_controller.dart';
 import 'package:protiva502/core/common/widgets/custom_dashed_border.dart';
 
@@ -20,8 +23,8 @@ class ServiceDetailsStep extends StatelessWidget {
           'What include in your service',
           style: getTextStyle(
             fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF2D2D2D),
           ),
         ),
         SizedBox(height: 16.h),
@@ -30,9 +33,6 @@ class ServiceDetailsStep extends StatelessWidget {
             children: controller.includedServices.asMap().entries.map((entry) {
               int idx = entry.key;
               String val = entry.value;
-              // Use local controller for each field if we want live editing,
-              // but for simplicity here we show as static or editable via dialog.
-              // Following image, it looks like text fields with buttons.
               return Padding(
                 padding: EdgeInsets.only(bottom: 12.h),
                 child: Row(
@@ -46,7 +46,7 @@ class ServiceDetailsStep extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10.r),
-                          border: Border.all(color: Colors.grey.shade200),
+                          border: Border.all(color: Color(0xFFCBD5E1)),
                         ),
                         child: Text(
                           val,
@@ -63,17 +63,16 @@ class ServiceDetailsStep extends StatelessWidget {
                           ? _showAddServiceDialog(context, controller)
                           : controller.removeService(idx),
                       child: Container(
-                        padding: EdgeInsets.all(12.w),
+                        padding: EdgeInsets.all(10.w),
                         decoration: BoxDecoration(
                           color: idx == 0
                               ? const Color(0xFF7079F0)
-                              : const Color(0xFFFFF1F1),
-                          borderRadius: BorderRadius.circular(10.r),
+                              : const Color(0xFFFEF2F2),
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
-                        child: Icon(
-                          idx == 0 ? Icons.add : Icons.delete_outline_rounded,
-                          color: idx == 0 ? Colors.white : Colors.red,
-                          size: 24.sp,
+                        child: SvgPicture.asset(
+                          idx == 0 ? IconPath.add : IconPath.delete,
+                          color: idx == 0 ? Colors.white : Color(0xFFB91C1C),
                         ),
                       ),
                     ),
@@ -84,14 +83,14 @@ class ServiceDetailsStep extends StatelessWidget {
           ),
         ),
         SizedBox(height: 24.h),
-        const Divider(),
+        Divider(color: Color(0xFFCBD5E1)),
         SizedBox(height: 24.h),
         Text(
           'Upload an image',
           style: getTextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF2D2D2D),
           ),
         ),
         SizedBox(height: 16.h),
@@ -100,8 +99,8 @@ class ServiceDetailsStep extends StatelessWidget {
           padding: EdgeInsets.all(24.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10.r),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            borderRadius: BorderRadius.circular(6.r),
+            border: Border.all(color: Color(0xFFCBD5E1)),
           ),
           child: Column(
             children: [
@@ -114,17 +113,20 @@ class ServiceDetailsStep extends StatelessWidget {
                         dashSpace: 4,
                         borderRadius: 8.r,
                         child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF475569).withValues(alpha: 0.1),
+                          ),
                           padding: EdgeInsets.all(20.w),
-                          child: Icon(
-                            Icons.image_outlined,
-                            size: 60.sp,
-                            color: const Color(0xFFCBD5E1),
+                          child: SvgPicture.asset(
+                            IconPath.galary,
+                            height: 50.h,
+                            width: 50.w,
                           ),
                         ),
                       )
                     : Container(
-                        width: 140.w,
-                        height: 140.w,
+                        width: 120.w,
+                        height: 120.w,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.r),
                           image: DecorationImage(
@@ -140,9 +142,9 @@ class ServiceDetailsStep extends StatelessWidget {
               Text(
                 'Please upload square image, size less than 100KB',
                 style: getTextStyle(
-                  fontSize: 13.sp,
+                  fontSize: 12.sp,
                   color: Colors.black,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 20.h),
@@ -164,8 +166,8 @@ class ServiceDetailsStep extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(color: const Color(0xFF475569)),
+                          borderRadius: BorderRadius.circular(4.r),
+                          border: Border.all(color: const Color(0xFF1E293B)),
                         ),
                         child: Text(
                           'Choose File',
@@ -184,7 +186,8 @@ class ServiceDetailsStep extends StatelessWidget {
                             ? 'No File Chosen'
                             : 'File Selected',
                         style: getTextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
                           color: const Color(0xFF64748B),
                         ),
                       ),
@@ -206,13 +209,16 @@ class ServiceDetailsStep extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
         title: Text(
           'Add Service',
           style: getTextStyle(fontWeight: FontWeight.w700),
         ),
-        content: TextField(
+        content: CustomTextField(
           controller: controller.serviceInputController,
-          decoration: const InputDecoration(hintText: 'Enter service name'),
+          hintText: 'Enter service name',
+          backgroundColor: Colors.white,
+          borderColor: Color(0xFF666659).withValues(alpha: 0.3),
         ),
         actions: [
           TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),

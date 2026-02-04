@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -24,9 +25,46 @@ class CreateJobController extends GetxController {
   final categories = ["Home Improvement", "Cleaning", "Plumbing", "Electrical"];
   final specificServices = ["Installation", "Repair", "Maintenance"];
 
+  bool validateStep() {
+    if (currentStep.value == 0) {
+      if (jobTitleController.text.trim().isEmpty) {
+        EasyLoading.showError("Please enter job title");
+        return false;
+      }
+      if (selectedCategory.value.isEmpty) {
+        EasyLoading.showError("Please select a category");
+        return false;
+      }
+      if (selectedSpecificService.value.isEmpty) {
+        EasyLoading.showError("Please select a specific service");
+        return false;
+      }
+      if (jobDescriptionController.text.trim().isEmpty) {
+        EasyLoading.showError("Please enter job description");
+        return false;
+      }
+      if (basePriceController.text.trim().isEmpty) {
+        EasyLoading.showError("Please enter base price");
+        return false;
+      }
+    } else if (currentStep.value == 1) {
+      if (includedServices.isEmpty) {
+        EasyLoading.showError("Please add at least one included service");
+        return false;
+      }
+      if (uploadedImagePath.value.isEmpty) {
+        EasyLoading.showError("Please upload an image");
+        return false;
+      }
+    }
+    return true;
+  }
+
   void nextStep() {
-    if (currentStep.value < 2) {
-      currentStep.value++;
+    if (validateStep()) {
+      if (currentStep.value < 2) {
+        currentStep.value++;
+      }
     }
   }
 
@@ -79,8 +117,10 @@ class CreateJobController extends GetxController {
   }
 
   void publishJob() {
-    // Logic to save job
-    Get.offAllNamed('/jobPublishSuccess');
+    if (validateStep()) {
+      // Logic to save job
+      Get.offAllNamed('/jobPublishSuccess');
+    }
   }
 
   @override

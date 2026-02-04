@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:protiva502/core/common/styles/global_text_style.dart';
 
 class CreateJobController extends GetxController {
   final ImagePicker _picker = ImagePicker();
@@ -97,30 +99,87 @@ class CreateJobController extends GetxController {
       );
       if (image != null) {
         uploadedImagePath.value = image.path;
-        Get.snackbar(
-          "Success",
-          "Image selected successfully!",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green.withValues(alpha: 0.1),
-          colorText: Colors.green,
-        );
+        EasyLoading.showSuccess("Image selected successfully!");
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to pick image: $e",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withValues(alpha: 0.1),
-        colorText: Colors.red,
-      );
+      EasyLoading.showError("Failed to pick image: $e");
     }
   }
 
   void publishJob() {
     if (validateStep()) {
       // Logic to save job
-      Get.offAllNamed('/jobPublishSuccess');
+      _showSuccessDialog();
     }
+  }
+
+  void _showSuccessDialog() {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(24.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.back();
+                      Get.back(); // Back to job list screen
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(4.w),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE2E8F0),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        size: 16.sp,
+                        color: const Color(0xFF64748B),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8.h),
+              Container(
+                width: 120.w,
+                height: 120.w,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF818CF8),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text('🎉', style: TextStyle(fontSize: 50.sp)),
+                ),
+              ),
+              SizedBox(height: 24.h),
+              Text(
+                'Congratulations! Your Job has been published.',
+                textAlign: TextAlign.center,
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF09090B),
+                ),
+              ),
+              SizedBox(height: 16.h),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
   }
 
   @override

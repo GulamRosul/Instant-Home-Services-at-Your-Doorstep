@@ -10,7 +10,6 @@ import 'package:protiva502/features/service_provider/payment_system/screen/payme
 import 'package:protiva502/features/service_provider/home/screen/recent_bookings_screen.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/my_job_list_screen.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/post_job_screen.dart';
-import 'package:protiva502/features/service_provider/my_job_list/screen/job_publish_success_screen.dart';
 import 'package:protiva502/features/service_provider/booking/screen/booking_screen.dart';
 import 'package:protiva502/features/splash_screen/controller/splash_controller.dart';
 import 'package:protiva502/features/onboarding/screen/onboarding_page_view.dart';
@@ -32,7 +31,6 @@ import 'package:protiva502/features/service_provider/language_settings/screen/la
 import 'package:protiva502/features/service_provider/settings/screen/settings_screen.dart';
 import 'package:protiva502/features/service_provider/wallet/screen/wallet_screen.dart';
 import 'package:protiva502/features/service_provider/profile/screen/profile_screen.dart';
-
 
 class AppRoute {
   static String splashScreen = "/splashScreen";
@@ -64,7 +62,6 @@ class AppRoute {
   static String recentBookings = "/recentBookings";
   static String myJobList = "/myJobList";
   static String postJob = "/postJob";
-  static String jobPublishSuccess = "/jobPublishSuccess";
   static String booking = "/booking";
   static String languageSettings = "/languageSettings";
   static String settings = "/settings";
@@ -100,7 +97,6 @@ class AppRoute {
   static String getRecentBookings() => recentBookings;
   static String getMyJobList() => myJobList;
   static String getPostJob() => postJob;
-  static String getJobPublishSuccess() => jobPublishSuccess;
   static String getBooking() => booking;
   static String getLanguageSettings() => languageSettings;
   static String getSettings() => settings;
@@ -258,12 +254,6 @@ class AppRoute {
     GetPage(
       name: postJob,
       page: () => const PostJobScreen(),
-      transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 500),
-    ),
-    GetPage(
-      name: jobPublishSuccess,
-      page: () => const JobPublishSuccessScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

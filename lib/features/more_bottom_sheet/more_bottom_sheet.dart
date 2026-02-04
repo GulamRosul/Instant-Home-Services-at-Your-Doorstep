@@ -108,6 +108,7 @@ class MoreBottomSheet extends StatelessWidget {
                       onTap: () {
                         Get.back();
                         // Handle logout
+                        Get.offAllNamed(AppRoute.getOnboardingScreen());
                       },
                     ),
                   ],

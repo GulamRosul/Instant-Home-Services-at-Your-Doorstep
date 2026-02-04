@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/features/bottom_nav/bottom_nav_bar.dart';
 import 'package:protiva502/features/bottom_nav/controller/bottom_nav_controller.dart';
+import 'package:protiva502/features/notification/screen/notification_screen.dart';
 import 'package:protiva502/features/user/all_bookings/screen/all_booking_screen.dart';
 import 'package:protiva502/features/user/home/screen/user_home_screen.dart';
 
@@ -24,7 +25,7 @@ class MainNavigationScreen extends StatelessWidget {
         child: AllBookingScreen(),
       ), // Replace with actual BookingPage()
       const Center(
-        child: Text("Notification"),
+        child: NotificationScreen(),
       ), // Replace with actual NotificationPage()
       const Center(child: Text("More Page")), // Replace with actual MorePage()
     ];

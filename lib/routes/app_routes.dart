@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
+import 'package:protiva502/features/notification/screen/notification_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_logo_bio_screen.dart';
 import 'package:protiva502/features/service_provider/payment_system/screen/provider_pricing_screen.dart';
 import 'package:protiva502/features/service_provider/home/screen/active_jobs_screen.dart';
@@ -37,6 +38,8 @@ import 'package:protiva502/features/user/user_booking_confirmation/screen/confir
 class AppRoute {
   static String splashScreen = "/splashScreen";
   static String mainNavigationScreen = "/mainNavigationScreen";
+  static String notificationScreen = "/notificationScreen";
+
   // User sections
   static String onboardingScreen = "/onboardingScreen";
   static String userLoginScreen = "/userLoginScreen";
@@ -74,6 +77,8 @@ class AppRoute {
 
   static String getSplashScreen() => splashScreen;
   static String getMainNavigationScreen() => mainNavigationScreen;
+  static String getNotificationScreen() => notificationScreen;
+
   // User Sections
   static String getOnboardingScreen() => onboardingScreen;
   static String getUserLoginScreen() => userLoginScreen;
@@ -128,8 +133,15 @@ class AppRoute {
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),
+        GetPage(
+      name: notificationScreen,
+      page: () => const NotificationScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 800),
+    ),
 
     // User Sections
+
     GetPage(
       name: onboardingScreen,
       page: () => const OnboardingPageView(),

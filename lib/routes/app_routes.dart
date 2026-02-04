@@ -32,6 +32,8 @@ import 'package:protiva502/features/service_provider/settings/screen/settings_sc
 import 'package:protiva502/features/service_provider/wallet/screen/wallet_screen.dart';
 import 'package:protiva502/features/service_provider/profile/screen/profile_screen.dart';
 
+import 'package:protiva502/features/service_provider/booking/screen/provider_booking_details_screen.dart';
+
 class AppRoute {
   static String splashScreen = "/splashScreen";
   static String mainNavigationScreen = "/mainNavigationScreen";
@@ -63,6 +65,7 @@ class AppRoute {
   static String myJobList = "/myJobList";
   static String postJob = "/postJob";
   static String booking = "/booking";
+  static String providerBookingDetails = "/providerBookingDetails";
   static String languageSettings = "/languageSettings";
   static String settings = "/settings";
   static String profile = "/profile";
@@ -98,6 +101,7 @@ class AppRoute {
   static String getMyJobList() => myJobList;
   static String getPostJob() => postJob;
   static String getBooking() => booking;
+  static String getProviderBookingDetails() => providerBookingDetails;
   static String getLanguageSettings() => languageSettings;
   static String getSettings() => settings;
   static String getProfile() => profile;
@@ -260,6 +264,12 @@ class AppRoute {
     GetPage(
       name: booking,
       page: () => const BookingScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: providerBookingDetails,
+      page: () => const ProviderBookingDetailsScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

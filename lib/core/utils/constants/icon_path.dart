@@ -40,4 +40,7 @@ class IconPath {
   static const String add = 'assets/icons/add.svg';
   static const String galary = 'assets/icons/galary.svg';
   static const String edit = 'assets/icons/edit.svg';
+  static const String x1 = 'assets/icons/x1.svg';
+  static const String x2 = 'assets/icons/x2.svg';
+  static const String x3 = 'assets/icons/x3.svg';
 }

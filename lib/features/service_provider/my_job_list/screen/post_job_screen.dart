@@ -92,15 +92,13 @@ class PostJobScreen extends StatelessWidget {
   }
 
   Widget _buildStepIndicator(CreateJobController controller) {
-    return Obx(
-      () => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          TabItem(label: "Jobs details", index: 0, controller: controller),
-          TabItem(label: "Service details", index: 1, controller: controller),
-          TabItem(label: "Preview", index: 2, controller: controller),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        TabItem(label: "Jobs details", index: 0, controller: controller),
+        TabItem(label: "Service details", index: 1, controller: controller),
+        TabItem(label: "Preview", index: 2, controller: controller),
+      ],
     );
   }
 

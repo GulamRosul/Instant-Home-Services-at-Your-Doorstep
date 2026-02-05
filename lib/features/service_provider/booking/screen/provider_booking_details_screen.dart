@@ -35,7 +35,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
         centerTitle: false,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -49,8 +49,8 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                     Text(
                       'Booking Details',
                       style: getTextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
                         color: Colors.black,
                       ),
                     ),
@@ -58,7 +58,8 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                       'Booking # ${booking['bookingId']}',
                       style: getTextStyle(
                         fontSize: 12.sp,
-                        color: Colors.grey.shade600,
+                        color: Color(0xFF334155),
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
@@ -88,47 +89,62 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20.h),
-
+            SizedBox(height: 24.h),
             Container(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(color: Color(0xFFCBD5E1)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildInfoBlock(
-                        'Payment Method',
-                        'Amount : ${booking['budget']}\$',
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildInfoBlock(
+                            'Payment Method',
+                            'Amount : ${booking['budget']}\$',
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: _buildInfoBlock(
+                              'Schedule Date :',
+                              booking['date'],
+                            ),
+                          ),
+                        ],
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: _buildInfoBlock(
-                          'Schedule Date :',
-                          booking['date'],
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            'Pay Via : ',
+                            style: getTextStyle(
+                              color: Color(0xFF18181A),
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          Text(
+                            'Card',
+                            style: getTextStyle(
+                              color: Color(0xFF18181A),
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 20.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildInfoBlock('Booking Summary', ''),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: _buildInfoBlock(
-                          'Pay Via : ',
-                          booking['paymentMethod'],
-                        ),
-                      ),
-                    ],
+                    children: [_buildInfoBlock('Booking Summary', '')],
                   ),
                   SizedBox(height: 20.h),
                   _buildServiceTable(booking),
@@ -139,18 +155,19 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                     'Service amount (Vat Excluded)',
                     '315.00\$',
                   ),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 56.h),
                   _buildTotalRow('Grand Total', '482.50\$'),
                 ],
               ),
             ),
-            SizedBox(height: 24.h),
+            SizedBox(height: 70.h),
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
                 color: const Color(0xFFF0F4F8),
                 borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: Color(0xFFCBD5E1)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,25 +177,25 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                       'Service location',
                       style: getTextStyle(
                         fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF18181A),
                       ),
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 36.h),
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(12.w),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFDBA74).withValues(alpha: 0.8),
+                      color: const Color(0xFFFFBB38),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
                       'You need to go to the Customer Location to provide the service',
                       style: getTextStyle(
                         fontSize: 12.sp,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF18181A),
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
@@ -187,7 +204,8 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                     'Service Location:',
                     style: getTextStyle(
                       fontSize: 14.sp,
-                      color: Colors.grey.shade600,
+                      color: Color(0xFF18181A),
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                   SizedBox(height: 4.h),
@@ -195,30 +213,17 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                     booking['location'],
                     style: getTextStyle(
                       fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                       color: Colors.black,
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: status == 'Pending'
-          ? Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, -5),
-                  ),
-                ],
-              ),
-              child: Row(
+            SizedBox(height: 30.h),
+
+            if (status == 'Pending')
+              Row(
                 children: [
                   Expanded(
                     child: CustomButton(
@@ -259,8 +264,10 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            )
-          : null,
+            SizedBox(height: 20.h),
+          ],
+        ),
+      ),
     );
   }
 
@@ -272,19 +279,25 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
           label,
           style: getTextStyle(
             fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF18181A),
           ),
         ),
-        if (value.isNotEmpty) SizedBox(height: 8.h),
+        if (value.isNotEmpty) SizedBox(height: 6.h),
         if (value.isNotEmpty)
           SizedBox(
-            width: 150.w,
+            width: 130.w,
             child: Text(
               value,
-              style: getTextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+              style: getTextStyle(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
+        if (value.isNotEmpty) SizedBox(height: 6.h),
       ],
     );
   }
@@ -304,8 +317,8 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
           child: Row(
             children: [
               Expanded(child: _buildTableHeader('Service')),
-              SizedBox(width: 60.w, child: _buildTableHeader('Amount')),
-              SizedBox(width: 60.w, child: _buildTableHeader('Total')),
+              SizedBox(width: 110.w, child: _buildTableHeader('Amount')),
+              SizedBox(width: 40.w, child: _buildTableHeader('Total')),
             ],
           ),
         ),
@@ -316,21 +329,21 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
               Expanded(
                 child: Text(
                   booking['title'],
-                  style: getTextStyle(fontSize: 13.sp, color: Colors.black87),
+                  style: getTextStyle(fontSize: 12.sp, color: Colors.black87),
                 ),
               ),
               SizedBox(
-                width: 60.w,
+                width: 90.w,
                 child: Text(
-                  '350.00\$',
-                  style: getTextStyle(fontSize: 13.sp, color: Colors.black87),
+                  '৳ 350.00',
+                  style: getTextStyle(fontSize: 12.sp, color: Colors.black87),
                 ),
               ),
               SizedBox(
-                width: 60.w,
+                width: 55.w,
                 child: Text(
-                  '315.00\$',
-                  style: getTextStyle(fontSize: 13.sp, color: Colors.black87),
+                  '৳ 315.00',
+                  style: getTextStyle(fontSize: 12.sp, color: Colors.black87),
                 ),
               ),
             ],
@@ -357,13 +370,17 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
       children: [
         Text(
           label,
-          style: getTextStyle(fontSize: 13.sp, color: Colors.grey.shade700),
+          style: getTextStyle(
+            fontSize: 13.sp,
+            color: Color(0xFF18181A),
+            fontWeight: FontWeight.w500,
+          ),
         ),
         Text(
           value,
           style: getTextStyle(
             fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
             color: Colors.black,
           ),
         ),
@@ -378,17 +395,17 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
         Text(
           label,
           style: getTextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF18181A),
           ),
         ),
         Text(
           value,
           style: getTextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF18181A),
           ),
         ),
       ],
@@ -398,7 +415,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'Pending':
-        return const Color(0xFFEAB308);
+        return const Color(0xFFCA8A04);
       case 'Accepted':
         return const Color(0xFF22C55E);
       case 'Rejected':

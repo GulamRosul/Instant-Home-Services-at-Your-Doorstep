@@ -5,7 +5,6 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
 import 'package:protiva502/features/service_provider/home/widget/activeJob.dart';
 import 'package:protiva502/features/service_provider/home/widget/home_header_appber.dart';
-import 'package:protiva502/features/service_provider/home/widget/limiteWorningCard.dart';
 import 'package:protiva502/features/service_provider/home/widget/recentBookingCard.dart';
 import 'package:protiva502/features/service_provider/home/widget/search_ber_widget.dart';
 import 'package:protiva502/features/service_provider/home/widget/statesGride.dart';
@@ -34,12 +33,12 @@ class ProviderHomeScreen extends StatelessWidget {
             WalletCard(controller: controller),
             SizedBox(height: 24.h),
             // Application Limit Warning (Obx)
-            Obx(
-              () => controller.isLimitReached.value
-                  ? LimitWarningCard(controller: controller)
-                  : const SizedBox.shrink(),
-            ),
-            if (controller.isLimitReached.value) SizedBox(height: 20.h),
+            // Obx(
+            //   () => controller.isLimitReached.value
+            //       ? LimitWarningCard(controller: controller)
+            //       : const SizedBox.shrink(),
+            // ),
+            // if (controller.isLimitReached.value) SizedBox(height: 20.h),
 
             // Stats Grid
             StatsGrid(controller: controller),

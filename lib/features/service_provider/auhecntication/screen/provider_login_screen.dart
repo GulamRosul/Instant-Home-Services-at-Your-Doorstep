@@ -6,7 +6,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart'; // Ensure illustration path is here
-import 'package:protiva502/features/service_provider/auhecntication/screen/providerLoginController.dart';
+import 'package:protiva502/features/service_provider/auhecntication/controller/providerLoginController.dart';
 
 class ProviderLoginScreen extends StatelessWidget {
   const ProviderLoginScreen({super.key});
@@ -54,11 +54,11 @@ class ProviderLoginScreen extends StatelessWidget {
             SizedBox(height: 32.h),
 
             // Username Field
-            _buildLabel("Username"),
+            _buildLabel("Email"),
             CustomTextField(
               controller: controller.usernameController,
-              hintText: 'Sarah',
-              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              hintText: 'example@gmail.com',
+              backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),

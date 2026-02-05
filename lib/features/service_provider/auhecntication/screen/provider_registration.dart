@@ -8,7 +8,7 @@ import 'package:protiva502/core/common/widgets/custom_popupmenu_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
-import 'package:protiva502/features/service_provider/auhecntication/controller/provider_login_screen.dart';
+import 'package:protiva502/features/service_provider/auhecntication/screen/provider_login_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_reg_controller.dart';
 import 'package:protiva502/features/service_provider/auhecntication/widget/build_field_label.dart';
 
@@ -39,7 +39,7 @@ class ProviderRegistration extends StatelessWidget {
         centerTitle: false,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -118,7 +118,7 @@ class ProviderRegistration extends StatelessWidget {
             CustomButton(
               borderRadius: 6.r,
               text: 'Next',
-              onPressed: controller.handleNext,
+              onPressed: controller.handleNext2,
               backgroundColor: AppColors.primary,
               textColor: Colors.white,
             ),

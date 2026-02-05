@@ -55,7 +55,7 @@ class ProviderLogoBioScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

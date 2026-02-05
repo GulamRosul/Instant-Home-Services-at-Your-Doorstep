@@ -2,9 +2,10 @@ import 'package:get/get.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
 import 'package:protiva502/features/notification/screen/notification_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_logo_bio_screen.dart';
+import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration_screen_01.dart';
 import 'package:protiva502/features/service_provider/payment_system/screen/provider_pricing_screen.dart';
 import 'package:protiva502/features/service_provider/home/screen/active_jobs_screen.dart';
-import 'package:protiva502/features/service_provider/auhecntication/controller/provider_login_screen.dart';
+import 'package:protiva502/features/service_provider/auhecntication/screen/provider_login_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 import 'package:protiva502/features/service_provider/payment_system/screen/payment_method.dart';
@@ -59,6 +60,7 @@ class AppRoute {
 
   // Service provider sections
   static String providerRegistration = "/providerRegistration";
+  static String providerRegistration01 = "/providerRegistration01";
   static String providerLogoBio = "/providerLogoBio";
   static String providerPricing = "/providerPricing";
   static String providerLogin = "/providerLogin";
@@ -98,6 +100,7 @@ class AppRoute {
 
   // Service provider sections
   static String getProviderRegistration() => providerRegistration;
+  static String getProviderRegistration01() => providerRegistration01;
   static String getProviderLogoBio() => providerLogoBio;
   static String getProviderPricing() => providerPricing;
   static String getProviderLogin() => providerLogin;
@@ -133,7 +136,7 @@ class AppRoute {
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),
-        GetPage(
+    GetPage(
       name: notificationScreen,
       page: () => const NotificationScreen(),
       transition: Transition.fadeIn,
@@ -141,7 +144,6 @@ class AppRoute {
     ),
 
     // User Sections
-
     GetPage(
       name: onboardingScreen,
       page: () => const OnboardingPageView(),
@@ -225,6 +227,12 @@ class AppRoute {
     GetPage(
       name: providerRegistration,
       page: () => const ProviderRegistration(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: providerRegistration01,
+      page: () => const ProviderRegistrationScreen01(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

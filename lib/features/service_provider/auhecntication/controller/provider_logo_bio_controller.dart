@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:protiva502/features/service_provider/payment_system/screen/provider_pricing_screen.dart';
+import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 
 class ProviderLogoBioController extends GetxController {
   static const int maxBioLength = 300;
@@ -41,7 +41,7 @@ class ProviderLogoBioController extends GetxController {
   }
 
   void handleNext() {
-    Get.to(() => const ProviderPricingScreen());
+    Get.to(() => const ProviderNavbarScreen());
   }
 
   @override

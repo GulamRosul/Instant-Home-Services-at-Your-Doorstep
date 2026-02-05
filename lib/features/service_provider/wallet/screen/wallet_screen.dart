@@ -27,7 +27,7 @@ class WalletScreen extends StatelessWidget {
                   clipBehavior: Clip.none,
                   children: [
                     Container(
-                      height: 435.h,
+                      height: 470.h,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(

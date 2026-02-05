@@ -42,7 +42,7 @@ class UserLoginScreen extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 12.h),
             Text(
               'Please Sign in to continue.',
               style: getTextStyle(
@@ -53,11 +53,11 @@ class UserLoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 32.h),
 
-            // Username Field
-            _buildLabel("Username"),
+            // Email Field
+            _buildLabel("Email"),
             CustomTextField(
-              controller: controller.usernameController,
-              hintText: 'Sarah',
+              controller: controller.emailController,
+              hintText: 'sarah@example.com',
               backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),

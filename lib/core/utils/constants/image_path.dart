@@ -7,4 +7,5 @@ class ImagePath {
   static const String profile = 'assets/images/profile.png';
   static const String servicecard = 'assets/images/servicecard.png';
   static const String homeServ = 'assets/images/homeServ.png';
+  static const String mapview = 'assets/images/mapview.png';
 }

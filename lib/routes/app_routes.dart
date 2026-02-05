@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
+import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 import 'package:protiva502/features/notification/screen/notification_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_logo_bio_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration_screen_01.dart';
@@ -26,6 +27,7 @@ import 'package:protiva502/features/user/home/screen/category_service_details_sc
 import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
 import 'package:protiva502/features/user/home/screen/user_home_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
+import 'package:protiva502/features/user/track_provider/screen/track_provider_screen.dart';
 
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
@@ -40,6 +42,7 @@ class AppRoute {
   static String splashScreen = "/splashScreen";
   static String mainNavigationScreen = "/mainNavigationScreen";
   static String notificationScreen = "/notificationScreen";
+  static String singleChatScreen = "/singleChatScreen";
 
   // User sections
   static String onboardingScreen = "/onboardingScreen";
@@ -57,6 +60,7 @@ class AppRoute {
   static String allBookingScreen() => "/allBookingScreen";
   static String bookingDetailsScreen() => "/bookingDetailsScreen";
   static String confirmBookingScreen() => "/confirmBookingScreen";
+  static String trackProviderScreen() => "/trackProviderScreen";
 
   // Service provider sections
   static String providerRegistration = "/providerRegistration";
@@ -80,6 +84,7 @@ class AppRoute {
   static String getSplashScreen() => splashScreen;
   static String getMainNavigationScreen() => mainNavigationScreen;
   static String getNotificationScreen() => notificationScreen;
+  static String getSingleChatScreen() => singleChatScreen;
 
   // User Sections
   static String getOnboardingScreen() => onboardingScreen;
@@ -97,6 +102,7 @@ class AppRoute {
   static String getAllBookingScreen() => allBookingScreen();
   static String getBookingDetailsScreen() => bookingDetailsScreen();
   static String getConfirmBookingScreen() => confirmBookingScreen();
+  static String getTrackProviderScreen() => trackProviderScreen();
 
   // Service provider sections
   static String getProviderRegistration() => providerRegistration;
@@ -139,6 +145,12 @@ class AppRoute {
     GetPage(
       name: notificationScreen,
       page: () => const NotificationScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 800),
+    ),
+    GetPage(
+      name: singleChatScreen,
+      page: () => const SingleChatScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 800),
     ),
@@ -219,6 +231,12 @@ class AppRoute {
     GetPage(
       name: confirmBookingScreen(),
       page: () => ConfirmBookingScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: trackProviderScreen(),
+      page: () => const TrackProviderScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

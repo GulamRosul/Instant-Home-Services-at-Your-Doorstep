@@ -5,7 +5,7 @@ import 'package:protiva502/features/user/authentication/screen/user_reg_screen.d
 
 class UserLoginController extends GetxController {
   // Text Editing Controllers
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   // Password Visibility State
@@ -15,7 +15,7 @@ class UserLoginController extends GetxController {
       isPasswordVisible.value = !isPasswordVisible.value;
 
   void handleSignIn() {
-    final username = usernameController.text;
+    final username = emailController.text;
     final password = passwordController.text;
 
     if (username.isNotEmpty && password.isNotEmpty) {
@@ -35,7 +35,7 @@ class UserLoginController extends GetxController {
 
   @override
   void onClose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.onClose();
   }

@@ -22,169 +22,173 @@ class BookingDetailsScreen extends StatelessWidget {
       appBar: const CustomAppBar(title: 'Book Service'),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10.r),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Book Service",
-              style: getTextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-                lineHeight: 15.sp,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              "Book Your Service in Just a Few Clicks",
-              style: getTextStyle(
-                fontSize: 12.sp,
-                color: AppColors.textSecondary,
-                lineHeight: 15.sp,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            SizedBox(height: 24.h),
-
-            const BookingStepProgress(currentStep: 1), // Step 1 Active
-            SizedBox(height: 24.h),
-
-            _buildServiceBriefCard(),
-            SizedBox(height: 24.h),
-
-            _buildLabel("Service name"),
-            CustomTextField(
-              hintText: "Carpentry & Woodwork",
-              readOnly: true,
-              backgroundColor: Colors.white,
-              // textStyle: getTextStyle(fontSize: 14.sp, color: Colors.black),
-              hintTextColor: Colors.black,
-            ),
-
-            SizedBox(height: 16.h),
-            _buildLabel("Preferable Date & Time"),
-            CustomTextField(
-              hintText: "09 Dec 2022 || 10.00 Am",
-              suffixIcon: Icon(
-                Icons.access_time,
-                size: 20.sp,
-                color: Colors.blueGrey,
-              ),
-              // readOnly: true,
-              backgroundColor: Colors.white,
-              // hintTextColor: Colors.black,
-            ),
-
-            SizedBox(height: 16.h),
-            _buildLabel("Phone"),
-            CustomTextField(
-              controller: controller.phoneController,
-              keyboardType: TextInputType.phone,
-              backgroundColor: Colors.white,
-              // hintTextColor: Colors.black,
-            ),
-
-            SizedBox(height: 16.h),
-            _buildLabel("Getting Service at"),
-            Obx(
-              () => Row(
-                children: [
-                  _buildRadioButton("My Location", controller),
-                  SizedBox(width: 20.w),
-                  _buildRadioButton("Provider Location", controller),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 16.h),
-            _buildLabel("Location details"),
-            CustomTextField(
-              controller: controller.locationController,
-              suffixIcon: Icon(
-                Icons.edit_note,
-                size: 24.sp,
-                color: Colors.black87,
-              ),
-              backgroundColor: Colors.white,
-              // prefixIcon: Icon(Icons.location_on_outlined, color: Colors.blue, size: 20.sp),
-            ),
-
-            SizedBox(height: 16.h),
-            _buildLabel("Message"),
-            CustomTextField(
-              controller: controller.messageController,
-              hintText: "Add short description..",
-              maxLines: 4,
-              backgroundColor: Colors.white,
-            ),
-
-            SizedBox(height: 20.h),
-            Row(
-              children: [
-                Obx(
-                  () => Checkbox(
-                    value: controller.isAgreed.value,
-                    onChanged: (val) => controller.isAgreed.value = val!,
-                    activeColor: const Color(0xFF334155),
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10.h),
+              Text(
+                "Book Service",
+                style: getTextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                  lineHeight: 15.sp,
                 ),
-                Expanded(
-                  child: RichText(
-                    text: TextSpan(
-                      style: getTextStyle(
-                        fontSize: 12.sp,
-                        color: Colors.black87,
-                      ),
-                      children: [
-                        const TextSpan(
-                          text:
-                              "By clicking \"Go to checkout\", you agree to our ",
-                        ),
-                        TextSpan(
-                          text: "Terms of Service",
-                          style: getTextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ],
+              ),
+              SizedBox(height: 8.h),
+              Text(
+                "Book Your Service in Just a Few Clicks",
+                style: getTextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textSecondary,
+                  lineHeight: 15.sp,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              SizedBox(height: 24.h),
+
+              const BookingStepProgress(currentStep: 1), // Step 1 Active
+              SizedBox(height: 24.h),
+
+              _buildServiceBriefCard(),
+              SizedBox(height: 24.h),
+
+              _buildLabel("Service name"),
+              CustomTextField(
+                hintText: "Carpentry & Woodwork",
+                readOnly: true,
+                backgroundColor: Colors.white,
+                // textStyle: getTextStyle(fontSize: 14.sp, color: Colors.black),
+                hintTextColor: Colors.black,
+              ),
+
+              SizedBox(height: 16.h),
+              _buildLabel("Preferable Date & Time"),
+              CustomTextField(
+                hintText: "09 Dec 2022 || 10.00 Am",
+                suffixIcon: Icon(
+                  Icons.access_time,
+                  size: 20.sp,
+                  color: Colors.blueGrey,
+                ),
+                // readOnly: true,
+                backgroundColor: Colors.white,
+                // hintTextColor: Colors.black,
+              ),
+
+              SizedBox(height: 16.h),
+              _buildLabel("Phone"),
+              CustomTextField(
+                controller: controller.phoneController,
+                keyboardType: TextInputType.phone,
+                backgroundColor: Colors.white,
+                // hintTextColor: Colors.black,
+              ),
+
+              SizedBox(height: 16.h),
+              _buildLabel("Getting Service at"),
+              Obx(
+                () => Row(
+                  children: [
+                    _buildRadioButton("My Location", controller),
+                    SizedBox(width: 20.w),
+                    _buildRadioButton("Provider Location", controller),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 16.h),
+              _buildLabel("Location details"),
+              CustomTextField(
+                controller: controller.locationController,
+                suffixIcon: Icon(
+                  Icons.edit_note,
+                  size: 24.sp,
+                  color: Colors.black87,
+                ),
+                backgroundColor: Colors.white,
+                // prefixIcon: Icon(Icons.location_on_outlined, color: Colors.blue, size: 20.sp),
+              ),
+
+              SizedBox(height: 16.h),
+              _buildLabel("Message"),
+              CustomTextField(
+                controller: controller.messageController,
+                hintText: "Add short description..",
+                maxLines: 4,
+                backgroundColor: Colors.white,
+              ),
+
+              SizedBox(height: 20.h),
+              Row(
+                children: [
+                  Obx(
+                    () => Checkbox(
+                      value: controller.isAgreed.value,
+                      onChanged: (val) => controller.isAgreed.value = val!,
+                      activeColor: const Color(0xFF334155),
                     ),
                   ),
-                ),
-              ],
-            ),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: getTextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.black87,
+                        ),
+                        children: [
+                          const TextSpan(
+                            text:
+                                "By clicking \"Go to checkout\", you agree to our ",
+                          ),
+                          TextSpan(
+                            text: "Terms of Service",
+                            style: getTextStyle(
+                              fontSize: 12.sp,
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
-            SizedBox(height: 24.h),
-            CustomButton(
-              text: 'Next',
-              onPressed: controller.goToNextStep,
-              textColor: Colors.white,
-            ),
-            100.h.verticalSpace,
-            // SizedBox(
-            //   width: double.infinity,
-            //   height: 50.h,
-            //   child: ElevatedButton(
-            //     onPressed: controller.goToNextStep,
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: const Color(
-            //         0xFF1E293B,
-            //       ), // Dark navy as per screenshot
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(8.r),
-            //       ),
-            //     ),
-            //     child: Text(
-            //       "Next",
-            //       style: getTextStyle(
-            //         color: Colors.white,
-            //         fontWeight: FontWeight.w600,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-          ],
+              SizedBox(height: 24.h),
+              CustomButton(
+                text: 'Next',
+                onPressed: controller.goToNextStep,
+                textColor: Colors.white,
+              ),
+              100.h.verticalSpace,
+              // SizedBox(
+              //   width: double.infinity,
+              //   height: 50.h,
+              //   child: ElevatedButton(
+              //     onPressed: controller.goToNextStep,
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor: const Color(
+              //         0xFF1E293B,
+              //       ), // Dark navy as per screenshot
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(8.r),
+              //       ),
+              //     ),
+              //     child: Text(
+              //       "Next",
+              //       style: getTextStyle(
+              //         color: Colors.white,
+              //         fontWeight: FontWeight.w600,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
         ),
       ),
     );

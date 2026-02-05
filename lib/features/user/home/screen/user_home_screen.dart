@@ -27,7 +27,7 @@ class UserHomeScreen extends StatelessWidget {
           children: [
             SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                 child: _buildHeader(),
               ),
             ),
@@ -41,50 +41,53 @@ class UserHomeScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 8.h),
-              _buildSearchBar(),
-              SizedBox(height: 20.h),
-              _buildPromoBanner(controller),
-              SizedBox(height: 24.h),
-              _buildSectionHeader(
-                "All Categories",
-                onSeeAllTap: () {
-                  Get.to(() => const AvailableCategoryScreen());
-                },
-              ),
-              SizedBox(height: 16.h),
-              _buildCategoryGrid(controller),
-              SizedBox(height: 24.h),
-              _buildSectionHeader(
-                "Popular Services",
-                onSeeAllTap: () {
-                  Get.to(() => const AvailableCategoryScreen());
-                },
-              ),
-              SizedBox(height: 16.h),
-              _buildServiceHorizontalList(),
-              SizedBox(height: 24.h),
-              _buildSectionHeader(
-                "Recommended Expert For You",
-                onSeeAllTap: () {
-                  Get.to(() => const AvailableCategoryScreen());
-                },
-              ),
-              SizedBox(height: 16.h),
-              _buildExpertCard(),
-              SizedBox(height: 24.h),
-              _buildSectionHeader(
-                "All Services",
-                onSeeAllTap: () {
-                  Get.to(() => const AvailableCategoryScreen());
-                },
-              ),
-              _buildServiceGrid(), // From the bottom split screenshot
-              SizedBox(height: 100.h), // Space for floating nav bar
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 8.h),
+                _buildSearchBar(),
+                SizedBox(height: 20.h),
+                _buildPromoBanner(controller),
+                SizedBox(height: 24.h),
+                _buildSectionHeader(
+                  "All Categories",
+                  onSeeAllTap: () {
+                    Get.to(() => const AvailableCategoryScreen());
+                  },
+                ),
+                SizedBox(height: 16.h),
+                _buildCategoryGrid(controller),
+                SizedBox(height: 24.h),
+                _buildSectionHeader(
+                  "Popular Services",
+                  onSeeAllTap: () {
+                    Get.to(() => const AvailableCategoryScreen());
+                  },
+                ),
+                SizedBox(height: 16.h),
+                _buildServiceHorizontalList(),
+                SizedBox(height: 24.h),
+                _buildSectionHeader(
+                  "Recommended Expert For You",
+                  onSeeAllTap: () {
+                    Get.to(() => const AvailableCategoryScreen());
+                  },
+                ),
+                SizedBox(height: 16.h),
+                _buildExpertCard(),
+                SizedBox(height: 24.h),
+                _buildSectionHeader(
+                  "All Services",
+                  onSeeAllTap: () {
+                    Get.to(() => const AvailableCategoryScreen());
+                  },
+                ),
+                _buildServiceGrid(), // From the bottom split screenshot
+                SizedBox(height: 100.h), // Space for floating nav bar
+              ],
+            ),
           ),
         ),
       ),
@@ -121,17 +124,6 @@ class UserHomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        // const Spacer(),
-        // Stack(
-        //   children: [
-        //     Icon(Icons.notifications_none_rounded, size: 28.sp),
-        //     Positioned(
-        //       right: 4,
-        //       top: 4,
-        //       child: CircleAvatar(radius: 4.r, backgroundColor: Colors.red),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
@@ -313,7 +305,7 @@ class UserHomeScreen extends StatelessWidget {
                 category['name']!,
                 textAlign: TextAlign.center,
                 style: getTextStyle(
-                  fontSize: 11.sp,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
@@ -352,6 +344,7 @@ class UserHomeScreen extends StatelessWidget {
             padding: EdgeInsets.all(8.r),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   "Carpentry & Woodwork",
@@ -361,6 +354,8 @@ class UserHomeScreen extends StatelessWidget {
                     color: Colors.black,
                     lineHeight: 15.sp,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -376,6 +371,8 @@ class UserHomeScreen extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       lineHeight: 15.sp,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 // SizedBox(height: 4.h),
@@ -401,12 +398,15 @@ class UserHomeScreen extends StatelessWidget {
                       (i) =>
                           Icon(Icons.star, color: Colors.orange, size: 10.sp),
                     ),
-                    Text(
-                      " 4.8 (170 Reviews)",
-                      style: getTextStyle(
-                        fontSize: 9.sp,
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
+                    Flexible(
+                      child: Text(
+                        " 4.8 (170 Reviews)",
+                        style: getTextStyle(
+                          fontSize: 9.sp,
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -419,8 +419,10 @@ class UserHomeScreen extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: 6.h),
                 CustomButton(
                   text: "Book Now",
                   height: 30.h,

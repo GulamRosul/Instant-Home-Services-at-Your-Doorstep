@@ -33,10 +33,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       // Only show the button if explicitly requested AND the navigator has a page to go back to
       leading: (showBackButton && canPop)
           ? IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-                size: 20.sp,
+              icon: Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.black,
+                  size: 20.sp,
+                ),
               ),
               onPressed: onBackPressed ?? () => Get.back(),
             )

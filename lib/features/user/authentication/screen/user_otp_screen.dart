@@ -36,7 +36,7 @@ class UserOtpScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 40.h),
+            SizedBox(height: 20.h),
             Text(
               'Send OTP Code',
               style: getTextStyle(

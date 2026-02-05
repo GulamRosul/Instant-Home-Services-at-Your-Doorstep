@@ -16,7 +16,7 @@ class NotificationScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: CustomAppBar(
-        title: 'Notifications',
+        title: '  Notifications',
         actions: [
           TextButton(
             onPressed: () => controller.clearAll(),

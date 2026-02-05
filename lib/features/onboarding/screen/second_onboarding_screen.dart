@@ -40,7 +40,7 @@ class SecondOnboardingScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 15.w),
+                  padding: EdgeInsets.only(left: 20.w, right: 20.w),
                   child: Text(
                     'Select Role',
                     style: getTextStyle(
@@ -98,7 +98,7 @@ class SecondOnboardingScreen extends StatelessWidget {
             SizedBox(height: 10.h),
             // Subtitle
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.only(left: 20.w, right: 20.w),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -115,7 +115,7 @@ class SecondOnboardingScreen extends StatelessWidget {
             SizedBox(height: 24.h),
             // Title
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              padding: EdgeInsets.only(left: 20.w, right: 20.w),
               child: CustomButton(
                 text: 'Sign Up to continue as a client',
                 backgroundColor: Colors.white,
@@ -128,7 +128,7 @@ class SecondOnboardingScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              padding: EdgeInsets.only(left: 20.w, right: 20.w),
               child: CustomButton(
                 onPressed: () {
                   Get.to(() => ProviderRegistration());

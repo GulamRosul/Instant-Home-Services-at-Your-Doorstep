@@ -17,27 +17,35 @@ class OnboardingScreen extends StatelessWidget {
           children: [
             // SizedBox(height: 60.h),
             // Image Container
-            Container(
-              height: 345.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(ImagePath.onboarding),
-                  fit: BoxFit.contain,
+            Stack(
+              alignment: Alignment
+                  .bottomCenter, // Aligns children to the bottom center
+              children: [
+                Container(
+                  height: 450.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(ImagePath.onboarding),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            // SizedBox(height: 40.h),
-            // Title
-            Text(
-              'Find the Right Expert, Right Away',
-              textAlign: TextAlign.center,
-              style: getTextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                lineHeight: 10.sp,
-                color: Colors.black,
-              ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 40.h,
+                  ), // Adjust distance from the very bottom
+                  child: Text(
+                    'Find the Right Expert, Right Away',
+                    textAlign: TextAlign.center,
+                    style: getTextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
             ),
             // SizedBox(height: 16.h),
             // Subtitle

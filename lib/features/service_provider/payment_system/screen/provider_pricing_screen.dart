@@ -95,7 +95,7 @@ class ProviderPricingScreen extends StatelessWidget {
             // Basic plan card
             PlanCard(
               planName: 'Basic',
-              price: '\$29',
+              price: '৳ 29',
               perMonth: '/per month',
               description: 'Best for professional freelancers and small teams.',
               showDottedDivider: true,
@@ -110,7 +110,7 @@ class ProviderPricingScreen extends StatelessWidget {
             // Unlimited plan card
             PlanCard(
               planName: 'Unlimited',
-              price: '\$99',
+              price: '৳ 99',
               perMonth: '/per month',
               description: 'Perfect for starters',
               showDottedDivider: false,

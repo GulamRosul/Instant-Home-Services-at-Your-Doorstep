@@ -257,7 +257,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "450.0\$",
+                      "450.0 ৳",
                       style: getTextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,

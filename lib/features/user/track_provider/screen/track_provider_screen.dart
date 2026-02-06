@@ -254,7 +254,7 @@ class TrackProviderScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    '\$20.00',
+                    '৳ 20.00',
                     style: getTextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w700,

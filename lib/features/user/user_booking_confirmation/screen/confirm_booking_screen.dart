@@ -149,7 +149,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildDetailItem("Total", "450.0\$", isBold: true),
+                        _buildDetailItem("Total", "450.0 ৳", isBold: true),
                       ],
                     ),
                   ],
@@ -233,7 +233,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "450.0\$",
+                    "450.0 ৳",
                     style: getTextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w700,

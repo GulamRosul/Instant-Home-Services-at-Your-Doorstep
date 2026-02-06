@@ -137,10 +137,10 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                   SizedBox(height: 12.h),
                   _buildSubtotalRow(
                     'Service amount (Vat Excluded)',
-                    '315.00\$',
+                    '315.00 ৳',
                   ),
                   SizedBox(height: 24.h),
-                  _buildTotalRow('Grand Total', '482.50\$'),
+                  _buildTotalRow('Grand Total', '482.50 ৳'),
                 ],
               ),
             ),

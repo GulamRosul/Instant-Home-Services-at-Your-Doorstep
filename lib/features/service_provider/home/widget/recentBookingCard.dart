@@ -86,7 +86,7 @@ class RecentBookingCard extends StatelessWidget {
 
                 /// Price + View Details
                 Text(
-                  'Starting : \$20.00',
+                  'Starting : ৳ 20.00',
                   style: getTextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,

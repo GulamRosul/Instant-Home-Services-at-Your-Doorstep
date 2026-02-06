@@ -69,7 +69,7 @@ class JobDetailsStep extends StatelessWidget {
           backgroundColor: Colors.white,
           borderColor: Color(0xFF666659).withValues(alpha: 0.3),
           controller: controller.basePriceController,
-          hintText: '\$200',
+          hintText: ' ৳200',
         ),
         SizedBox(height: 20.h),
         _buildLabel('Price Type', isRequired: true),

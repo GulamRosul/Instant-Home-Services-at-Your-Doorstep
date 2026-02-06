@@ -109,7 +109,7 @@ class PreviewStep extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Maximum : \$${controller.basePriceController.text}/hour',
+              'Maximum : ৳ ${controller.basePriceController.text}/hour',
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,

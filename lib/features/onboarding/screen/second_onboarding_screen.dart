@@ -22,19 +22,31 @@ class SecondOnboardingScreen extends StatelessWidget {
             // Image Container
             // Image Container
             SizedBox(
-              height:
-                  MediaQuery.of(context).size.height *
-                  0.5, // Takes exactly half the screen height
+              height: MediaQuery.of(context).size.height * 0.6,
               width: double.infinity,
-              child: Image.asset(
-                ImagePath.onboardingtwo,
-                fit: BoxFit
-                    .cover, // Ensures the image fills the width and height area
-                alignment:
-                    Alignment.topCenter, // Keeps the focus on the illustration
+              child: ShaderMask(
+                shaderCallback: (rect) {
+                  return LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black, // Fully visible image
+                      Colors
+                          .transparent, // Fades to nothing (glow/blend effect)
+                    ],
+                    stops: [0.7, 1.0], // Image starts fading at 70% height
+                  ).createShader(rect);
+                },
+                blendMode:
+                    BlendMode.dstIn, // Important: applies the mask to the image
+                child: Image.asset(
+                  ImagePath.onboardingtwo,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                ),
               ),
             ),
-            SizedBox(height: 40.h),
+            SizedBox(height: 10.h),
             // Language Selector
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

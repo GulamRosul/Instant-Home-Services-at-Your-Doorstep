@@ -84,7 +84,7 @@ class LimitWarningCard extends StatelessWidget {
                       shadowColor: Colors.transparent,
                     ),
                     child: Text(
-                      'Upgrade to Unlimited - \$99/month',
+                      'Upgrade to Unlimited - ৳ 99/month',
                       style: getTextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,

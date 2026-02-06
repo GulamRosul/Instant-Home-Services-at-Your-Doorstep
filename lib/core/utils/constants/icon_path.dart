@@ -47,4 +47,5 @@ class IconPath {
   static const String curve2 = 'assets/icons/curve2.svg';
   static const String curve1 = 'assets/icons/curve1.svg';
   static const String checkcircle = 'assets/icons/checkcircle.svg';
+  static const String kaajbd = 'assets/icons/kaajbd.svg';
 }

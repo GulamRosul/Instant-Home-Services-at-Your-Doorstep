@@ -8,6 +8,7 @@ import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/all_bookings/controller/all_booking_controller.dart';
 import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart';
 import 'package:protiva502/features/user/track_provider/screen/track_provider_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 import 'package:protiva502/routes/app_routes.dart';
 
 class AllBookingScreen extends StatelessWidget {
@@ -303,7 +304,9 @@ class AllBookingScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildActionText("View Details", () {}),
-                _buildActionText("Book Again", () {}),
+                _buildActionText("Book Again", () {
+                  Get.to(() => BookingDetailsScreen());
+                }),
                 _buildActionText("Write Review", () {
                   showDialog(
                     context: context,

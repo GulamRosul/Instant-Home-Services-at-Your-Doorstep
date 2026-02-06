@@ -5,6 +5,7 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/chat/controller/single_chat_controller.dart';
 
 class SingleChatScreen extends StatelessWidget {
@@ -16,26 +17,19 @@ class SingleChatScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      // This ensures the body shrinks when the keyboard appears
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
-        title: 'Mike Handyman', // Name from screenshot
-        centerTitle: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      // 1. Remove the appBar property entirely
       body: Column(
         children: [
-          // Message List
+          // 2. Place your custom header here as the first element
+          _buildChatHeader(context),
+
+          // Message List (Takes up remaining space)
           Expanded(
             child: Obx(
               () => ListView.builder(
                 controller: controller.scrollController,
-                padding: EdgeInsets.all(20.r),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
                 itemCount: controller.messages.length,
                 itemBuilder: (context, index) {
                   final chat = controller.messages[index];
@@ -49,9 +43,105 @@ class SingleChatScreen extends StatelessWidget {
             ),
           ),
 
-          // Message Input Field
+          // Message Input Field (Stays at the bottom)
           _buildMessageInput(controller),
         ],
+      ),
+    );
+  }
+
+  Widget _buildChatHeader(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: Colors.grey.withOpacity(0.1), width: 1),
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Row(
+          children: [
+            // Back Button
+            GestureDetector(
+              onTap: () => Get.back(),
+              child: Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.black,
+                size: 20.sp,
+              ),
+            ),
+            SizedBox(width: 16.w),
+
+            // Avatar with Online Indicator
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                CircleAvatar(
+                  radius: 24.r,
+                  backgroundImage: AssetImage(
+                    ImagePath.profile,
+                  ), // Replace with your image asset or NetworkImage
+                  backgroundColor: Colors.grey.shade200,
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    height: 14.h,
+                    width: 14.w,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF22C55E), // Green for "Active"
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2.5),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(width: 12.w),
+
+            // Name and Status
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Mike Handyman service",
+                    style: getTextStyle(
+                      color: const Color(0xFF1E293B), // Dark Slate color
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    "Active now",
+                    style: getTextStyle(
+                      color: const Color(0xFF64748B), // Slate grey
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Info Button
+            GestureDetector(
+              onTap: () {
+                // Handle info tap
+              },
+              child: Icon(
+                Icons.info_outline_rounded,
+                color: AppColors.textBlue,
+                size: 20.sp,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -59,111 +149,114 @@ class SingleChatScreen extends StatelessWidget {
   Widget _buildChatBubble(String message, bool isMe, String time) {
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: EdgeInsets.only(bottom: 16.h),
-        constraints: BoxConstraints(maxWidth: Get.width * 0.75),
-        padding: EdgeInsets.all(14.r),
-        decoration: BoxDecoration(
-          color: isMe ? AppColors.textPurple : Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16.r),
-            topRight: Radius.circular(16.r),
-            bottomLeft: isMe ? Radius.circular(16.r) : Radius.zero,
-            bottomRight: isMe ? Radius.zero : Radius.circular(16.r),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 5,
-              offset: const Offset(0, 2),
+      child: Column(
+        crossAxisAlignment: isMe
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 4.h),
+            constraints: BoxConstraints(maxWidth: Get.width * 0.70),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: isMe ? AppColors.textPurple : Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16.r),
+                topRight: Radius.circular(16.r),
+                bottomLeft: isMe ? Radius.circular(16.r) : Radius.zero,
+                bottomRight: isMe ? Radius.zero : Radius.circular(16.r),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
+            child: Text(
               message,
               style: getTextStyle(
-                color: isMe ? Colors.white : Colors.black87,
+                color: isMe ? Colors.white : const Color(0xFF1E293B),
                 fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
               ),
             ),
-            SizedBox(height: 4.h),
-            Text(
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: 16.h,
+              left: isMe ? 0 : 4.w,
+              right: isMe ? 4.w : 0,
+            ),
+            child: Text(
               time,
               style: getTextStyle(
-                color: isMe ? Colors.white70 : Colors.grey,
+                color: AppColors.textSecondary,
                 fontSize: 10.sp,
+                fontWeight: FontWeight.w400,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildMessageInput(SingleChatController controller) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+      padding: EdgeInsets.fromLTRB(
+        10.w,
+        10.h,
+        20.w,
+        30.h,
+      ), // Adjusted for bottom safety
       decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24.r),
+          topRight: Radius.circular(24.r),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
           ),
         ],
       ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            // Attachment Button
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.add_circle_outline,
-                color: Colors.grey,
-                size: 28.sp,
-              ),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.add_circle_outline,
+              color: Colors.grey.shade400,
+              size: 26.sp,
             ),
-
-            // Text Field
-            // Expanded(
-            //   child: Container(
-            //     padding: EdgeInsets.symmetric(horizontal: 16.w),
-            //     decoration: BoxDecoration(
-            //       color: const Color(0xFFF3F4F6),
-            //       borderRadius: BorderRadius.circular(25.r),
-            //     ),
-            //     child: TextField(
-            //       controller: controller.messageController,
-            //       decoration: InputDecoration(
-            //         hintText: "Type a message...",
-            //         hintStyle: getTextStyle(
-            //           color: Colors.grey,
-            //           fontSize: 14.sp,
-            //         ),
-            //         border: InputBorder.none,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            Expanded(child: CustomTextField(backgroundColor: Colors.white)),
-            SizedBox(width: 10.w),
-
-            // Send Button
-            GestureDetector(
-              onTap: controller.sendMessage,
-              child: CircleAvatar(
-                radius: 22.r,
-                backgroundColor: AppColors.textPurple,
-                child: const Icon(Icons.send, color: Colors.white, size: 20),
-              ),
+          ),
+          Expanded(
+            child: CustomTextField(
+              controller: controller
+                  .messageController, // Crucial: Pass the controller here
+              hintText: "Type a message...",
+              backgroundColor: Colors.white,
             ),
-          ],
-        ),
+          ),
+          SizedBox(width: 12.w),
+          GestureDetector(
+            onTap: controller.sendMessage,
+            child: Container(
+              height: 45.h,
+              width: 45.w,
+              decoration: const BoxDecoration(
+                color: AppColors.textPurple,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.send, color: Colors.white, size: 20),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -37,6 +37,7 @@ import 'package:protiva502/features/service_provider/wallet/screen/wallet_screen
 import 'package:protiva502/features/service_provider/profile/screen/profile_screen.dart';
 import 'package:protiva502/features/service_provider/booking/screen/provider_booking_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/confirm_booking_screen.dart';
+import 'package:protiva502/features/service_provider/social_media/screen/social_media_screen.dart';
 
 class AppRoute {
   static String splashScreen = "/splashScreen";
@@ -80,6 +81,7 @@ class AppRoute {
   static String settings = "/settings";
   static String profile = "/profile";
   static String myWallet = "/myWallet";
+  static String socialMedia = "/socialMedia";
 
   static String getSplashScreen() => splashScreen;
   static String getMainNavigationScreen() => mainNavigationScreen;
@@ -122,6 +124,7 @@ class AppRoute {
   static String getSettings() => settings;
   static String getProfile() => profile;
   static String getMyWallet() => myWallet;
+  static String getSocialMedia() => socialMedia;
 
   static List<GetPage> routes = [
     GetPage(
@@ -342,6 +345,12 @@ class AppRoute {
       name: myWallet,
       page: () => const WalletScreen(),
       transition: Transition.rightToLeft,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: socialMedia,
+      page: () => const SocialMediaScreen(),
+      transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),
   ];

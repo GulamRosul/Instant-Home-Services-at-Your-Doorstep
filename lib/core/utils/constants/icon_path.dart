@@ -48,4 +48,9 @@ class IconPath {
   static const String curve1 = 'assets/icons/curve1.svg';
   static const String checkcircle = 'assets/icons/checkcircle.svg';
   static const String kaajbd = 'assets/icons/kaajbd.svg';
+  static const String facebook = 'assets/icons/facebook.svg';
+  static const String instragram = 'assets/icons/instragram.svg';
+  static const String youtube = 'assets/icons/youtube.svg';
+  static const String twitter = 'assets/icons/twitter.svg';
+  static const String msg = 'assets/icons/msg.svg';
 }

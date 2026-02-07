@@ -81,7 +81,9 @@ class MoreBottomSheet extends StatelessWidget {
                       label: 'Help & Support',
                       onTap: () {
                         Get.back();
-                        // Navigate to help
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          Get.toNamed(AppRoute.getSocialMedia());
+                        });
                       },
                     ),
                   ],

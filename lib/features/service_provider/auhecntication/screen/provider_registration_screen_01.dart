@@ -212,51 +212,49 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 20.h),
         decoration: BoxDecoration(
           color: const Color(0xFFF8F9FA),
           borderRadius: BorderRadius.circular(8.r),
           border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
-        child: Column(
-          children: [
-            if (imagePath != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.r),
-                child: Image.file(
-                  File(imagePath),
-                  height: 100.h,
-                  width: 200.w,
-                  fit: BoxFit.cover,
-                ),
+        clipBehavior: Clip.antiAlias,
+        child: imagePath != null
+            ? Image.file(
+                File(imagePath),
+                height: 120.h,
+                width: double.infinity,
+                fit: BoxFit.cover,
               )
-            else ...[
-              Icon(
-                Icons.camera_alt_outlined,
-                size: 24.sp,
-                color: Colors.grey[600],
-              ),
-              SizedBox(height: 10.h),
-              Text(
-                title,
-                style: getTextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey[600]!,
+            : Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.h),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.camera_alt_outlined,
+                      size: 24.sp,
+                      color: Colors.grey[600],
+                    ),
+                    SizedBox(height: 10.h),
+                    Text(
+                      title,
+                      style: getTextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[600]!,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      subtitle,
+                      style: getTextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[400]!,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 4.h),
-              Text(
-                subtitle,
-                style: getTextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey[400]!,
-                ),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }

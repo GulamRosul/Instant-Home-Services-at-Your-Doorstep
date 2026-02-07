@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TrackProviderController extends GetxController {
@@ -16,6 +17,6 @@ class TrackProviderController extends GetxController {
   }
 
   void messageProvider() {
-    print("Navigating to chat with $providerName...");
+    Get.to(() => SingleChatScreen());
   }
 }

@@ -9,15 +9,15 @@ class NotificationController extends GetxController {
       'time': '10:30 AM',
       'isRead': false,
       'type': 'booking',
-      'dateGroup': 'Today'
+      'dateGroup': 'Today',
     },
     {
       'title': 'Payment Successful',
-      'message': 'Your payment of \$450.00 was successful.',
+      'message': 'Your payment of ৳ 450.00 was successful.',
       'time': '09:15 AM',
       'isRead': true,
       'type': 'payment',
-      'dateGroup': 'Today'
+      'dateGroup': 'Today',
     },
     {
       'title': 'New Service Available',
@@ -25,7 +25,7 @@ class NotificationController extends GetxController {
       'time': 'Yesterday',
       'isRead': true,
       'type': 'system',
-      'dateGroup': 'Yesterday'
+      'dateGroup': 'Yesterday',
     },
   ].obs;
 

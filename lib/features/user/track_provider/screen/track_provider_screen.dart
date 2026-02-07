@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
+import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/track_provider/controller/track_provider_controller.dart';
 
 class TrackProviderScreen extends StatelessWidget {
@@ -15,52 +17,119 @@ class TrackProviderScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: const CustomAppBar(title: 'Track Provider'),
-      body: Stack(
-        children: [
-          // 1. Map View Placeholder
-          _buildMapView(controller),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // 1. Map View
+            _buildMapView(controller),
 
-          // 2. Back Button (If not using CustomAppBar leading)
-          Positioned(
-            top: 20.h,
-            left: 20.w,
-            child: _buildRoundIconButton(Icons.arrow_back, () => Get.back()),
-          ),
+            // 2. Estimated Arrival Card
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+              child: _buildEstimatedArrivalCard(controller),
+            ),
 
-          // 3. Provider Tracking Card
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: _buildTrackingCard(controller),
-          ),
-        ],
+            // 3. Provider Tracking Card
+            _buildTrackingCard(controller),
+            SizedBox(height: 40.h),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildMapView(TrackProviderController controller) {
     return Container(
-      color: Colors.grey.shade200, // Placeholder for Google Maps
-      child: const Center(
-        child: Icon(Icons.map, size: 100, color: Colors.grey),
+      height: 400.h,
+      width: double.infinity,
+      color: Colors.grey.shade200, // Placeholder background
+      child: Image.asset(
+        ImagePath.mapview,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return const Center(
+            child: Icon(Icons.broken_image, color: Colors.grey),
+          );
+        },
       ),
-      // Integrate GoogleMap widget here:
-      // child: GoogleMap(initialCameraPosition: ...),
+    );
+  }
+
+  Widget _buildEstimatedArrivalCard(TrackProviderController controller) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF0891B2), Color(0xFF06B6D4)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Estimated Arrival',
+                style: getTextStyle(fontSize: 11.sp, color: Colors.white70),
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                '11 mins',
+                style: getTextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'Distance',
+                style: getTextStyle(fontSize: 11.sp, color: Colors.white70),
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                '2.2 km',
+                style: getTextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildTrackingCard(TrackProviderController controller) {
     return Container(
-      margin: EdgeInsets.all(20.r),
-      padding: EdgeInsets.all(20.r),
+      margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 15,
             offset: const Offset(0, -5),
-          )
+          ),
         ],
       ),
       child: Column(
@@ -68,92 +137,226 @@ class TrackProviderScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 25.r,
-                backgroundImage: const NetworkImage('https://placeholder.com/mike'),
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 28.r,
+                    backgroundImage: AssetImage(ImagePath.profile),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.all(2.r),
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: 12.sp,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(controller.providerName,
-                        style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700)),
-                    Text("Handyman Service",
-                        style: getTextStyle(fontSize: 12.sp, color: AppColors.textSecondary)),
+                    Row(
+                      children: [
+                        Text(
+                          'John Anderson',
+                          style: getTextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(width: 4.w),
+                        Icon(Icons.verified, color: Colors.orange, size: 16.sp),
+                        const Spacer(),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade50,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          child: Text(
+                            'On the way',
+                            style: getTextStyle(
+                              fontSize: 10.sp,
+                              color: Colors.green,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      'Handyman service',
+                      style: getTextStyle(
+                        fontSize: 12.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      'Toronto, Canada',
+                      style: getTextStyle(
+                        fontSize: 11.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                        Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                        Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                        Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                        Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                        SizedBox(width: 4.w),
+                        Text(
+                          '4.8 (170 Reviews)',
+                          style: getTextStyle(
+                            fontSize: 11.sp,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              _buildActionIcon(Icons.phone, Colors.green, controller.callProvider),
-              SizedBox(width: 10.w),
-              _buildActionIcon(Icons.message, AppColors.textPurple, controller.messageProvider),
             ],
           ),
-          SizedBox(height: 20.h),
-          const Divider(),
-          SizedBox(height: 10.h),
+          SizedBox(height: 16.h),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildStatInfo(Icons.access_time, controller.estimatedTime, "Arrival"),
-              _buildStatInfo(Icons.directions_car, controller.distance, "Distance"),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Service Cost',
+                    style: getTextStyle(
+                      fontSize: 12.sp,
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    '৳ 20.00',
+                    style: getTextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'Booking ID',
+                    style: getTextStyle(
+                      fontSize: 12.sp,
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    '#BK12345',
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-          SizedBox(height: 20.h),
-          SizedBox(
-            width: double.infinity,
-            height: 48.h,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.textPurple,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+          SizedBox(height: 16.h),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 48.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.textPurple,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: controller.callProvider,
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: Center(
+                        child: Text(
+                          'Call',
+                          style: getTextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              child: Text("Service In-Progress",
-                  style: getTextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
-            ),
-          )
+              SizedBox(width: 12.w),
+              Expanded(
+                child: GestureDetector(
+                  onTap: controller.messageProvider,
+                  child: Container(
+                    height: 48.h,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.textPurple),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: controller.messageProvider,
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: Center(
+                          child: Text(
+                            'Message',
+                            style: getTextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPurple,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          CustomButton(
+            text: 'Help & Support',
+            backgroundColor: Colors.white,
+            textColor: AppColors.textSecondary,
+            borderColor: AppColors.textSecondary.withOpacity(0.5),
+            onPressed: () {},
+          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStatInfo(IconData icon, String value, String label) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 16.sp, color: AppColors.textPurple),
-            SizedBox(width: 4.w),
-            Text(value, style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700)),
-          ],
-        ),
-        Text(label, style: getTextStyle(fontSize: 11.sp, color: AppColors.textSecondary)),
-      ],
-    );
-  }
-
-  Widget _buildActionIcon(IconData icon, Color color, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(10.r),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icon, color: color, size: 20.sp),
-      ),
-    );
-  }
-
-  Widget _buildRoundIconButton(IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(10.r),
-        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-        child: Icon(icon, color: Colors.black, size: 20.sp),
       ),
     );
   }

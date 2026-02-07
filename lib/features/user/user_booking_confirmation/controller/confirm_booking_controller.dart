@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/features/bottom_nav/controller/bottom_nav_controller.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
-import 'package:protiva502/features/user/user_booking_confirmation/widget/confirm_dialogue.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
 
 class ConfirmBookingController extends GetxController {
   // You can pass the booking data from the previous screen via Get.arguments
   final bookingData = Get.arguments;
 
   void confirmBooking() {
-    // Logic to confirm the booking can be added here.
-    // For now, we just show the success dialog.
-    Get.dialog(BookingSuccessDialog(), barrierDismissible: false);
+    // Navigate to payment screen
+    Get.to(() => const PaymentScreen());
   }
 
   void goToHome() {

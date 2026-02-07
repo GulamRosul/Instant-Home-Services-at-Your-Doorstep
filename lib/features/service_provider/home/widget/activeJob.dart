@@ -105,7 +105,7 @@ class ActiveJobCard extends StatelessWidget {
                           ),
                           children: [
                             TextSpan(
-                              text: '450.0\$',
+                              text: '450.0 ৳',
                               style: getTextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,

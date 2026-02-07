@@ -25,138 +25,148 @@ class ConfirmBookingScreen extends StatelessWidget {
       appBar: const CustomAppBar(title: 'Book Service'),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10.r),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Book Service",
-              style: getTextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-                lineHeight: 15.sp,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10.h),
+              Text(
+                "Book Service",
+                style: getTextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                  lineHeight: 15.sp,
+                ),
               ),
-            ),
 
-            SizedBox(height: 8.h),
-            Text(
-              "Book Your Service in Just a Few Clicks",
-              style: getTextStyle(
-                fontSize: 12.sp,
-                color: AppColors.textSecondary,
-                lineHeight: 15.sp,
-                fontWeight: FontWeight.w400,
+              SizedBox(height: 8.h),
+              Text(
+                "Book Your Service in Just a Few Clicks",
+                style: getTextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textSecondary,
+                  lineHeight: 15.sp,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
-            SizedBox(height: 24.h),
+              SizedBox(height: 24.h),
 
-            // Using the Step Progress widget with Step 2 active
-            const BookingStepProgress(currentStep: 2),
-            SizedBox(height: 24.h),
+              // Using the Step Progress widget with Step 2 active
+              const BookingStepProgress(currentStep: 2),
+              SizedBox(height: 24.h),
 
-            // Confirmation Summary Card
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(20.r),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  SvgPicture.asset(
-                    IconPath.checkcircle,
-                    width: 60.w,
-                    height: 60.h,
-                  ),
-                  SizedBox(height: 16.h),
-                  Text(
-                    "Confirm Your Booking",
-                    style: getTextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                      lineHeight: 15.sp,
+              // Confirmation Summary Card
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(20.r),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    "Review your booking details before confirming",
-                    style: getTextStyle(
-                      fontSize: 12.sp,
-                      color: AppColors.textSecondary,
-                      lineHeight: 15.sp,
-                      fontWeight: FontWeight.w400,
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    SvgPicture.asset(
+                      IconPath.checkcircle,
+                      width: 60.w,
+                      height: 60.h,
                     ),
-                  ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      "Confirm Your Booking",
+                      style: getTextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                        lineHeight: 15.sp,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      "Review your booking details before confirming",
+                      style: getTextStyle(
+                        fontSize: 12.sp,
+                        color: AppColors.textSecondary,
+                        lineHeight: 15.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
 
-                  Divider(
-                    height: 32.h,
-                    color: AppColors.textSecondary.withValues(alpha: 0.3),
-                  ),
+                    Divider(
+                      height: 32.h,
+                      color: AppColors.textSecondary.withValues(alpha: 0.3),
+                    ),
 
-                  // Service Preview
-                  _buildServiceSmallCard(),
-                  SizedBox(height: 20.h),
+                    // Service Preview
+                    _buildServiceSmallCard(),
+                    SizedBox(height: 20.h),
 
-                  // Detail Rows
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _buildDetailItem("Service Name", "Carpentry & Woodwork"),
-                    ],
-                  ),
-                  _buildDetailItem(
-                    "Date & Time",
-                    "Wednesday, September 3, 2025 at 9:00 AM",
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _buildDetailItem("Location", "123 Main Street, Ontario"),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [_buildDetailItem("Phone", "+12505550199")],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [_buildDetailItem("Service At", "My Location")],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _buildDetailItem("Payment method", "Mastercard"),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _buildDetailItem("Total", "450.0\$", isBold: true),
-                    ],
-                  ),
-                ],
+                    // Detail Rows
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildDetailItem(
+                          "Service Name",
+                          "Carpentry & Woodwork",
+                        ),
+                      ],
+                    ),
+                    _buildDetailItem(
+                      "Date & Time",
+                      "Wednesday, September 3, 2025 at 9:00 AM",
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildDetailItem(
+                          "Location",
+                          "123 Main Street, Ontario",
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [_buildDetailItem("Phone", "+12505550199")],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [_buildDetailItem("Service At", "My Location")],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildDetailItem("Payment method", "Mastercard"),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildDetailItem("Total", "450.0 ৳", isBold: true),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            SizedBox(height: 30.h),
+              SizedBox(height: 30.h),
 
-            CustomButton(
-              text: 'Confirm Your Booking',
-              onPressed: controller.confirmBooking,
-              textColor: Colors.white,
-              backgroundColor: AppColors.textPurple,
-            ),
-            100.h.verticalSpace,
-          ],
+              CustomButton(
+                text: 'Confirm Your Booking',
+                onPressed: controller.confirmBooking,
+                textColor: Colors.white,
+                backgroundColor: AppColors.textPurple,
+              ),
+              100.h.verticalSpace,
+            ],
+          ),
         ),
       ),
     );
@@ -223,7 +233,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "450.0\$",
+                    "450.0 ৳",
                     style: getTextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w700,

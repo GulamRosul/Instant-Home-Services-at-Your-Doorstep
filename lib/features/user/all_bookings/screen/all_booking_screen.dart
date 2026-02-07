@@ -7,6 +7,9 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/all_bookings/controller/all_booking_controller.dart';
 import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart';
+import 'package:protiva502/features/user/track_provider/screen/track_provider_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
+import 'package:protiva502/routes/app_routes.dart';
 
 class AllBookingScreen extends StatelessWidget {
   const AllBookingScreen({super.key});
@@ -17,12 +20,13 @@ class AllBookingScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: const CustomAppBar(title: 'Bookings'),
+      appBar: const CustomAppBar(title: '  Bookings'),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(10.r),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 10.h),
             Text(
               "Booking service",
               style: getTextStyle(
@@ -95,6 +99,7 @@ class AllBookingScreen extends StatelessWidget {
                 },
               ),
             ),
+            SizedBox(height: 20.h),
           ],
         ),
       ),
@@ -136,7 +141,7 @@ class AllBookingScreen extends StatelessWidget {
                 Text(
                   count,
                   style: getTextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
                   ),
@@ -147,7 +152,7 @@ class AllBookingScreen extends StatelessWidget {
                     fontSize: 11.sp,
                     color: AppColors.textSecondary,
                     fontWeight: FontWeight.w400,
-                    lineHeight: 15.sp,
+                    lineHeight: 11.sp,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -299,7 +304,9 @@ class AllBookingScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildActionText("View Details", () {}),
-                _buildActionText("Book Again", () {}),
+                _buildActionText("Book Again", () {
+                  Get.to(() => BookingDetailsScreen());
+                }),
                 _buildActionText("Write Review", () {
                   showDialog(
                     context: context,
@@ -312,13 +319,19 @@ class AllBookingScreen extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (booking['status'] == 'Accepted') {
+                    // Get.toNamed(AppRoute.getTrackProviderScreen());
+                    Get.to(() => const TrackProviderScreen());
+                  }
+                },
                 child: Text(
                   "View Details",
                   style: getTextStyle(
                     fontSize: 12.sp,
                     color: AppColors.textPurple,
                     decoration: TextDecoration.underline,
+                    decorationColor: AppColors.textPurple,
                   ),
                 ),
               ),

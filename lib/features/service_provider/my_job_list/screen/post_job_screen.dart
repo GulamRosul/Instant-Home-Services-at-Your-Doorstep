@@ -114,13 +114,17 @@ class PostJobScreen extends StatelessWidget {
         ),
         child: ElevatedButton(
           onPressed: isPreview ? controller.publishJob : controller.nextStep,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-          ),
+          style:
+              ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+              ).copyWith(
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
+                side: WidgetStateProperty.all(BorderSide.none),
+              ),
           child: Text(
             isPreview ? 'Post Job' : 'Next Step',
             style: getTextStyle(

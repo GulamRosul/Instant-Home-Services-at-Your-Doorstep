@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 
 class BookingController extends GetxController {
   // Active Tab Index
@@ -153,10 +154,11 @@ class BookingController extends GetxController {
   }
 
   void handleMessage(int index) {
-    Get.snackbar(
-      "Message",
-      "Navigating to chat with ${filteredBookings[index]['clientName']}",
-    );
+    // Get.snackbar(
+    //   "Message",
+    //   "Navigating to chat with ${filteredBookings[index]['clientName']}",
+    // );
+    Get.to(() => SingleChatScreen());
   }
 
   void handleViewDetails(int index) {

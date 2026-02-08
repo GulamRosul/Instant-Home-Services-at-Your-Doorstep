@@ -106,7 +106,7 @@ class SettingsScreen extends StatelessWidget {
                                 value: controller.notificationsEnabled.value,
                                 onChanged:
                                     controller.toggleNotificationsEnabled,
-                                activeColor: Colors.white,
+                                activeThumbColor: Colors.white,
                                 activeTrackColor: Colors.black,
                                 inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: Colors.grey.shade300,
@@ -218,7 +218,7 @@ class SettingsScreen extends StatelessWidget {
         Switch(
           value: value,
           onChanged: onChanged,
-          activeColor: Colors.white,
+          activeThumbColor: Colors.white,
           activeTrackColor: Colors.black,
           inactiveThumbColor: Colors.white,
           inactiveTrackColor: Colors.grey.shade300,

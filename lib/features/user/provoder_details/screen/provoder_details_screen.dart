@@ -139,6 +139,7 @@ class ProviderDetailsScreen extends StatelessWidget {
             onPressed: controller.sendMessage,
             backgroundColor: AppColors.textPurple,
             textColor: Colors.white,
+            
           ),
         ],
       ),

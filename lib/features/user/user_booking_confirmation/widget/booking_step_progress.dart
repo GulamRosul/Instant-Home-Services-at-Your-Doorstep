@@ -19,7 +19,7 @@ class BookingStepProgress extends StatelessWidget {
               _buildCurveDivider(),
               _buildStepIcon("02", const Color(0xFFF97316), currentStep >= 2),
               _buildCurveDivider(
-                isUpward: false,
+                // isUpward: false,
               ), // Alternating curve direction
               _buildStepIcon("03", const Color(0xFF14B8A6), currentStep >= 3),
             ],

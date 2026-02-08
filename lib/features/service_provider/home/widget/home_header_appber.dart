@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
+import 'package:protiva502/features/notification/screen/notification_screen.dart';
 
 class HomeHeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeHeaderAppBar({super.key});
@@ -75,10 +77,16 @@ class HomeHeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
             const Spacer(),
             Stack(
               children: [
-                SvgPicture.asset(
-                  IconPath.notification,
-                  height: 28.sp,
-                  width: 28.sp,
+                GestureDetector(
+                  onTap: () {
+                    // Handle notification tap
+                    Get.to(() => NotificationScreen());
+                  },
+                  child: SvgPicture.asset(
+                    IconPath.notification,
+                    height: 28.sp,
+                    width: 28.sp,
+                  ),
                 ),
                 Positioned(
                   right: 4,

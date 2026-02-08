@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
 class ProviderDetailsController extends GetxController {
   // Stats
@@ -19,10 +21,12 @@ class ProviderDetailsController extends GetxController {
 
   void sendMessage() {
     // Logic to open chat with Mike Handyman
-    debugPrint("Navigating to chat...");
+    // debugPrint("Navigating to chat...");
+    Get.to(() => SingleChatScreen());
   }
 
   void bookSpecificService(String serviceName) {
-    debugPrint("Booking: $serviceName");
+    // debugPrint("Booking: $serviceName");
+    Get.to(() => BookingDetailsScreen());
   }
 }

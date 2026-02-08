@@ -29,7 +29,7 @@ class PostJobScreen extends StatelessWidget {
           onPressed: () => controller.previousStep(),
         ),
         title: Text(
-          'job Post',
+          'Job Post',
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,

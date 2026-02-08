@@ -12,7 +12,8 @@ class SplashController extends GetxController {
 
   void startTimer() {
     Timer(const Duration(seconds: 3), () {
-      Get.offNamed(AppRoute.onboardingScreen);
+      // Get.offNamed(AppRoute.onboardingScreen);
+      Get.offNamed(AppRoute.secondOnboardingScreen);
     });
   }
 }

@@ -16,7 +16,7 @@ class TrackProviderScreen extends StatelessWidget {
     final controller = Get.put(TrackProviderController());
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Track Provider'),
+      appBar: const CustomAppBar(title: 'Track'),
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -54,7 +54,7 @@ class UserLoginScreen extends StatelessWidget {
             SizedBox(height: 32.h),
 
             // Email Field
-            _buildLabel("Email"),
+            _buildLabel("Email or Phone Number"),
             CustomTextField(
               controller: controller.emailController,
               hintText: 'sarah@example.com',

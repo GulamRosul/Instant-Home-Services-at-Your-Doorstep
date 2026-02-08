@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
+import 'package:protiva502/features/user/track_provider/screen/track_provider_screen.dart';
 
 class BookingCard extends StatelessWidget {
   final BookingController controller;
@@ -19,7 +21,7 @@ class BookingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final cardContent = Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -203,6 +205,17 @@ class BookingCard extends StatelessWidget {
         ],
       ),
     );
+
+    // Wrap with GestureDetector if status is "Accepted"
+    if (booking['status'] == 'Accepted') {
+      return GestureDetector(
+        // onTap: () => controller.handleViewDetails(index),
+        onTap: () => Get.to(() => TrackProviderScreen()),
+        child: cardContent,
+      );
+    }
+
+    return cardContent;
   }
 
   Widget _buildInfoRow(IconData? icon, String text) {

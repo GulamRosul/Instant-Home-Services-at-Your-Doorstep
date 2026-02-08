@@ -41,7 +41,8 @@ class ProviderLogoBioController extends GetxController {
   }
 
   void handleNext() {
-    Get.to(() => const ProviderNavbarScreen());
+    // Get.to(() => const ProviderNavbarScreen());
+    Get.offAll(() => const ProviderNavbarScreen());
   }
 
   @override

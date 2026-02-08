@@ -21,7 +21,10 @@ class TrackProviderScreen extends StatelessWidget {
         child: Column(
           children: [
             // 1. Map View
-            _buildMapView(controller),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+              child: _buildMapView(controller),
+            ),
 
             // 2. Estimated Arrival Card
             Padding(
@@ -42,7 +45,10 @@ class TrackProviderScreen extends StatelessWidget {
     return Container(
       height: 400.h,
       width: double.infinity,
-      color: Colors.grey.shade200, // Placeholder background
+      color: AppColors.textSecondary.withValues(
+        alpha: 0.2,
+      ), // Placeholder background
+      // borderRadius: BorderRadius.circular(16.r),
       child: Image.asset(
         ImagePath.mapview,
         fit: BoxFit.cover,

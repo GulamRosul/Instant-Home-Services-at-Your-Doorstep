@@ -6,10 +6,13 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration_screen_01.dart';
+import 'package:protiva502/features/onboarding/controller/language_controller.dart';
 import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
 
 class SecondOnboardingScreen extends StatelessWidget {
-  const SecondOnboardingScreen({super.key});
+  SecondOnboardingScreen({super.key});
+
+  final langController = Get.put(LanguageController());
 
   @override
   Widget build(BuildContext context) {
@@ -63,48 +66,96 @@ class SecondOnboardingScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
+                GestureDetector(
+                  onTap: () => langController.toggleLanguage(),
                   child: Padding(
                     padding: EdgeInsets.only(right: 20.w),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 6.h,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.textSecondary.withValues(alpha: 0.5),
+                    child: Obx(
+                      () => Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 6.h,
                         ),
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.language,
-                            size: 16.sp,
-                            color: AppColors.textSecondary,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: AppColors.textPurple.withValues(alpha: 0.5),
                           ),
-                          SizedBox(width: 4.w),
-                          Text(
-                            'EN',
-                            style: getTextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.textSecondary,
+                          borderRadius: BorderRadius.circular(8.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
                             ),
-                          ),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 16.sp,
-                            color: AppColors.textSecondary,
-                          ),
-                        ],
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.language,
+                              size: 16.sp,
+                              color: AppColors.textPurple,
+                            ),
+                            SizedBox(width: 4.w),
+                            Text(
+                              // Using the getter from the controller for cleaner code
+                              langController.currentLanguageLabel,
+                              style: getTextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPurple,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
+                // Align(
+                //   alignment: Alignment.centerRight,
+                //   child: Padding(
+                //     padding: EdgeInsets.only(right: 20.w),
+                //     child: Container(
+                //       padding: EdgeInsets.symmetric(
+                //         horizontal: 12.w,
+                //         vertical: 6.h,
+                //       ),
+                //       decoration: BoxDecoration(
+                //         border: Border.all(
+                //           color: AppColors.textSecondary.withValues(alpha: 0.5),
+                //         ),
+                //         borderRadius: BorderRadius.circular(8.r),
+                //       ),
+                //       child: Row(
+                //         mainAxisSize: MainAxisSize.min,
+                //         children: [
+                //           Icon(
+                //             Icons.language,
+                //             size: 16.sp,
+                //             color: AppColors.textSecondary,
+                //           ),
+                //           SizedBox(width: 4.w),
+                //           Text(
+                //             'EN',
+                //             style: getTextStyle(
+                //               fontSize: 12.sp,
+                //               fontWeight: FontWeight.w500,
+                //               color: AppColors.textSecondary,
+                //             ),
+                //           ),
+                //           Icon(
+                //             Icons.keyboard_arrow_down,
+                //             size: 16.sp,
+                //             color: AppColors.textSecondary,
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
             SizedBox(height: 10.h),

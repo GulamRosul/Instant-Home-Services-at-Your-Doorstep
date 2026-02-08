@@ -63,10 +63,13 @@ class CreateJobController extends GetxController {
   }
 
   void nextStep() {
-    if (validateStep()) {
-      if (currentStep.value < 2) {
-        currentStep.value++;
-      }
+    // if (validateStep()) {
+    //   if (currentStep.value < 2) {
+    //     currentStep.value++;
+    //   }
+    // }
+    if (currentStep.value < 2) {
+      currentStep.value++;
     }
   }
 

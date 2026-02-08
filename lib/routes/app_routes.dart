@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 import 'package:protiva502/features/notification/screen/notification_screen.dart';
+import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
 import 'package:protiva502/features/privacy_policy/screen/privacy_policy_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_logo_bio_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration_screen_01.dart';
@@ -46,6 +47,7 @@ class AppRoute {
   static String notificationScreen = "/notificationScreen";
   static String singleChatScreen = "/singleChatScreen";
   static String privacyPolicyScreen = "/privacyPolicyScreen";
+  static String secondOnboardingScreen = "/secondOnboardingScreen";
 
   // User sections
   static String onboardingScreen = "/onboardingScreen";
@@ -90,6 +92,7 @@ class AppRoute {
   static String getNotificationScreen() => notificationScreen;
   static String getSingleChatScreen() => singleChatScreen;
   static String getPrivacyPolicyScreen() => privacyPolicyScreen;
+  static String getSecondOnboardingScreen() => secondOnboardingScreen;
 
   // User Sections
   static String getOnboardingScreen() => onboardingScreen;
@@ -166,14 +169,20 @@ class AppRoute {
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 800),
     ),
-
-    // User Sections
     GetPage(
-      name: onboardingScreen,
-      page: () => const OnboardingPageView(),
+      name: secondOnboardingScreen,
+      page: () => SecondOnboardingScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 800),
     ),
+
+    // User Sections
+    // GetPage(
+    //   name: onboardingScreen,
+    //   page: () => const OnboardingPageView(),
+    //   transition: Transition.fadeIn,
+    //   transitionDuration: const Duration(milliseconds: 800),
+    // ),
     GetPage(
       name: userLoginScreen,
       page: () => const UserLoginScreen(),

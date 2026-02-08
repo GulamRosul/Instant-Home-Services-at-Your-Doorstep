@@ -25,34 +25,34 @@ class JobDetailsStep extends StatelessWidget {
           hintText: 'e.g. Kitchen cabinet installation',
         ),
         SizedBox(height: 20.h),
-        _buildLabel('Category', isRequired: true),
-        SizedBox(height: 8.h),
-        Obx(
-          () => CustomPopupMenu(
-            value: controller.selectedCategory.value.isEmpty
-                ? 'Select Category'
-                : controller.selectedCategory.value,
-            items: controller.categories,
-            onSelected: (value) {
-              controller.selectedCategory.value = value;
-            },
-          ),
-        ),
-        SizedBox(height: 20.h),
-        _buildLabel('Specific Service', isRequired: true),
-        SizedBox(height: 8.h),
-        Obx(
-          () => CustomPopupMenu(
-            value: controller.selectedSpecificService.value.isEmpty
-                ? 'Select'
-                : controller.selectedSpecificService.value,
-            items: controller.specificServices,
-            onSelected: (value) {
-              controller.selectedSpecificService.value = value;
-            },
-          ),
-        ),
-        SizedBox(height: 20.h),
+        // _buildLabel('Category', isRequired: true),
+        // SizedBox(height: 8.h),
+        // Obx(
+        //   () => CustomPopupMenu(
+        //     value: controller.selectedCategory.value.isEmpty
+        //         ? 'Select Category'
+        //         : controller.selectedCategory.value,
+        //     items: controller.categories,
+        //     onSelected: (value) {
+        //       controller.selectedCategory.value = value;
+        //     },
+        //   ),
+        // ),
+        // SizedBox(height: 20.h),
+        // _buildLabel('Specific Service', isRequired: true),
+        // SizedBox(height: 8.h),
+        // Obx(
+        //   () => CustomPopupMenu(
+        //     value: controller.selectedSpecificService.value.isEmpty
+        //         ? 'Select'
+        //         : controller.selectedSpecificService.value,
+        //     items: controller.specificServices,
+        //     onSelected: (value) {
+        //       controller.selectedSpecificService.value = value;
+        //     },
+        //   ),
+        // ),
+        // SizedBox(height: 20.h),
         _buildLabel('Job Description', isRequired: true),
         SizedBox(height: 8.h),
         CustomTextField(

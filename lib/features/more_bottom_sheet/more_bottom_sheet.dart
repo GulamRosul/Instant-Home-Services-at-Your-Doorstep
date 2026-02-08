@@ -100,6 +100,7 @@ class MoreBottomSheet extends StatelessWidget {
                       onTap: () {
                         Get.back();
                         // Navigate to privacy policy
+                        Get.toNamed(AppRoute.getPrivacyPolicyScreen());
                       },
                     ),
                     SizedBox(width: 20.w),

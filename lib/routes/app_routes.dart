@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 import 'package:protiva502/features/notification/screen/notification_screen.dart';
+import 'package:protiva502/features/privacy_policy/screen/privacy_policy_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_logo_bio_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration_screen_01.dart';
 import 'package:protiva502/features/service_provider/payment_system/screen/provider_pricing_screen.dart';
@@ -44,6 +45,7 @@ class AppRoute {
   static String mainNavigationScreen = "/mainNavigationScreen";
   static String notificationScreen = "/notificationScreen";
   static String singleChatScreen = "/singleChatScreen";
+  static String privacyPolicyScreen = "/privacyPolicyScreen";
 
   // User sections
   static String onboardingScreen = "/onboardingScreen";
@@ -87,6 +89,7 @@ class AppRoute {
   static String getMainNavigationScreen() => mainNavigationScreen;
   static String getNotificationScreen() => notificationScreen;
   static String getSingleChatScreen() => singleChatScreen;
+  static String getPrivacyPolicyScreen() => privacyPolicyScreen;
 
   // User Sections
   static String getOnboardingScreen() => onboardingScreen;
@@ -154,6 +157,12 @@ class AppRoute {
     GetPage(
       name: singleChatScreen,
       page: () => const SingleChatScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 800),
+    ),
+    GetPage(
+      name: privacyPolicyScreen,
+      page: () => const PrivacyPolicyScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 800),
     ),

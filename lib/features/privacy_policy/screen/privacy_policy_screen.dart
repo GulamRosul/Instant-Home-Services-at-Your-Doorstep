@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart'; // Adjust path
 import 'package:protiva502/core/common/widgets/custom_appbar.dart'; // Adjust path
-import 'package:protiva502/core/utils/constants/colors.dart'; // Adjust path
+// Adjust path
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});

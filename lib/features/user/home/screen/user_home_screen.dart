@@ -39,56 +39,54 @@ class UserHomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 8.h),
-                _buildSearchBar(),
-                SizedBox(height: 20.h),
-                _buildPromoBanner(controller),
-                SizedBox(height: 24.h),
-                _buildSectionHeader(
-                  "All Categories",
-                  onSeeAllTap: () {
-                    Get.to(() => const AvailableCategoryScreen());
-                  },
-                ),
-                SizedBox(height: 16.h),
-                _buildCategoryGrid(controller),
-                SizedBox(height: 24.h),
-                _buildSectionHeader(
-                  "Popular Services",
-                  onSeeAllTap: () {
-                    Get.to(() => const AvailableCategoryScreen());
-                  },
-                ),
-                SizedBox(height: 16.h),
-                _buildServiceHorizontalList(),
-                SizedBox(height: 24.h),
-                _buildSectionHeader(
-                  "Recommended Expert For You",
-                  onSeeAllTap: () {
-                    Get.to(() => const AvailableCategoryScreen());
-                  },
-                ),
-                SizedBox(height: 16.h),
-                _buildExpertCard(),
-                SizedBox(height: 24.h),
-                _buildSectionHeader(
-                  "All Services",
-                  onSeeAllTap: () {
-                    Get.to(() => const AvailableCategoryScreen());
-                  },
-                ),
-                _buildServiceGrid(), // From the bottom split screenshot
-                SizedBox(height: 100.h), // Space for floating nav bar
-              ],
-            ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 8.h),
+              _buildSearchBar(),
+              SizedBox(height: 20.h),
+              _buildPromoBanner(controller),
+              SizedBox(height: 24.h),
+              _buildSectionHeader(
+                "All Categories",
+                onSeeAllTap: () {
+                  Get.to(() => const AvailableCategoryScreen());
+                },
+              ),
+              // SizedBox(height: 16.h),
+              _buildCategoryGrid(controller),
+              SizedBox(height: 24.h),
+              _buildSectionHeader(
+                "Popular Services",
+                onSeeAllTap: () {
+                  Get.to(() => const AvailableCategoryScreen());
+                },
+              ),
+              SizedBox(height: 16.h),
+              _buildServiceHorizontalList(),
+              SizedBox(height: 24.h),
+              _buildSectionHeader(
+                "Recommended Expert For You",
+                onSeeAllTap: () {
+                  Get.to(() => const AvailableCategoryScreen());
+                },
+              ),
+              SizedBox(height: 16.h),
+              _buildExpertCard(),
+              SizedBox(height: 24.h),
+              _buildSectionHeader(
+                "All Services",
+                onSeeAllTap: () {
+                  Get.to(() => const AvailableCategoryScreen());
+                },
+              ),
+              _buildServiceGrid(), // From the bottom split screenshot
+              SizedBox(height: 100.h), // Space for floating nav bar
+            ],
           ),
         ),
       ),
@@ -150,7 +148,7 @@ class UserHomeScreen extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: 140.h, // Set a fixed height for the carousel
+          height: 120.h, // Set a fixed height for the carousel
           child: PageView.builder(
             controller: controller.bannerController,
             onPageChanged: (index) =>
@@ -271,12 +269,13 @@ class UserHomeScreen extends StatelessWidget {
 
   Widget _buildCategoryGrid(UserHomeController controller) {
     return GridView.builder(
+      padding: EdgeInsets.zero,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: controller.categories.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
-        mainAxisSpacing: 10.h,
+        mainAxisSpacing: 5.h,
         crossAxisSpacing: 6.w,
         childAspectRatio: 0.8,
       ),

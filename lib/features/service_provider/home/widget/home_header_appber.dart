@@ -41,25 +41,25 @@ class HomeHeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
                         color: Color(0xFF3F3F3F),
                       ),
                     ),
-                    SizedBox(width: 8.w),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 2.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      child: Text(
-                        'Get Verified',
-                        style: getTextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
+                    // SizedBox(width: 8.w),
+                    // Container(
+                    //   padding: EdgeInsets.symmetric(
+                    //     horizontal: 10.w,
+                    //     vertical: 2.h,
+                    //   ),
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.black,
+                    //     borderRadius: BorderRadius.circular(10.r),
+                    //   ),
+                    //   child: Text(
+                    //     'Get Verified',
+                    //     style: getTextStyle(
+                    //       fontSize: 12.sp,
+                    //       color: Colors.white,
+                    //       fontWeight: FontWeight.w400,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
                 Text(

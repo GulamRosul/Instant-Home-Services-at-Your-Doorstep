@@ -237,39 +237,39 @@ class SecondOnboardingScreen extends StatelessWidget {
             // SizedBox(height: 5.h),
 
             // Already have an account
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Already have an account? ',
-                  style: getTextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    lineHeight: 15.sp,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Navigate to sign in
-                  },
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: Text(
-                    'Sign In',
-                    style: getTextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      lineHeight: 15.sp,
-                      color: AppColors.textPurple,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text(
+            //       'Already have an account? ',
+            //       style: getTextStyle(
+            //         fontSize: 14.sp,
+            //         fontWeight: FontWeight.w600,
+            //         lineHeight: 15.sp,
+            //         color: AppColors.textSecondary,
+            //       ),
+            //     ),
+            //     TextButton(
+            //       onPressed: () {
+            //         // Navigate to sign in
+            //       },
+            //       style: TextButton.styleFrom(
+            //         padding: EdgeInsets.zero,
+            //         minimumSize: Size.zero,
+            //         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            //       ),
+            //       child: Text(
+            //         'Sign In',
+            //         style: getTextStyle(
+            //           fontSize: 14.sp,
+            //           fontWeight: FontWeight.w600,
+            //           lineHeight: 15.sp,
+            //           color: AppColors.textPurple,
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             SizedBox(height: 40.h),
           ],
         ),

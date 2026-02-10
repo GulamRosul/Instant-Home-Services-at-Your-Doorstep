@@ -20,18 +20,14 @@ class MainNavigationScreen extends StatelessWidget {
 
     // Define the pages corresponding to your tabs
     final List<Widget> pages = [
-      const Center(child: UserHomeScreen()), // Replace with actual HomePage()
-      const Center(
-        child: AllBookingScreen(),
-      ), // Replace with actual BookingPage()
-      const Center(
-        child: NotificationScreen(),
-      ), // Replace with actual NotificationPage()
-      const Center(child: Text("More Page")), // Replace with actual MorePage()
+      const Center(child: UserHomeScreen()),
+      const Center(child: AllBookingScreen()),
+      const Center(child: NotificationScreen()),
+      const Center(child: Text("More Page")),
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      // backgroundColor: const Color(0xFFF8F9FA),
       // Use Obx to update the body automatically when a tab is clicked
       body: Obx(
         () => IndexedStack(
@@ -39,10 +35,8 @@ class MainNavigationScreen extends StatelessWidget {
           children: pages,
         ),
       ),
-      // Your custom floating nav bar
-      bottomNavigationBar: const BottomNavBar(),
-      extendBody:
-          true, // This allows the body to flow behind the floating nav bar
+      bottomNavigationBar: BottomNavBar(),
+      extendBody: true,
     );
   }
 }

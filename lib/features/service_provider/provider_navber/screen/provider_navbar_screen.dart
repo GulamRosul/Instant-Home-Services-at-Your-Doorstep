@@ -45,7 +45,7 @@ class ProviderBottomNavBar extends StatelessWidget {
 
     return Container(
       height: 60.h,
-      margin: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 20.h),
+      margin: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 35.h),
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       decoration: BoxDecoration(
         color: Colors.white,

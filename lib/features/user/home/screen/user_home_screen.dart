@@ -20,6 +20,7 @@ class UserHomeScreen extends StatelessWidget {
     final controller = Get.put(UserHomeController());
 
     return Scaffold(
+      extendBody: true,
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.h),

@@ -161,7 +161,7 @@ class UserOtpScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 30.h),
+            SizedBox(height: 60.h),
           ],
         ),
       ),

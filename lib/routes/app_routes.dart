@@ -17,7 +17,6 @@ import 'package:protiva502/features/service_provider/my_job_list/screen/my_job_l
 import 'package:protiva502/features/service_provider/my_job_list/screen/post_job_screen.dart';
 import 'package:protiva502/features/service_provider/booking/screen/booking_screen.dart';
 import 'package:protiva502/features/splash_screen/controller/splash_controller.dart';
-import 'package:protiva502/features/onboarding/screen/onboarding_page_view.dart';
 import 'package:protiva502/features/splash_screen/screen/splash_screen.dart';
 import 'package:protiva502/features/user/all_bookings/screen/all_booking_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';

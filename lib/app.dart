@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:protiva502/core/utils/theme/app_system_theme.dart';
 import 'package:protiva502/routes/app_routes.dart';
 import 'core/bindings/controller_binder.dart';
 import 'core/utils/theme/theme.dart';
@@ -24,7 +25,17 @@ class Protiva502 extends StatelessWidget {
           themeMode: ThemeMode.light,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          builder: EasyLoading.init(),
+          // builder: EasyLoading.init(),
+          builder: (context, child) {
+            final overlayStyle = Theme.of(
+              context,
+            ).extension<AppSystemTheme>()!.systemOverlayStyle;
+
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: overlayStyle,
+              child: child!,
+            );
+          },
         );
       },
     );

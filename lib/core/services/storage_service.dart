@@ -1,41 +1,157 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
-  // Constants for preference keys
-  static const String _tokenKey = 'token';
-  static const String _idKey = 'userId';
+  StorageService._();
 
-  // Singleton instance for SharedPreferences
+  static bool? isLoggedIn;
   static SharedPreferences? _preferences;
 
-  // Initialize SharedPreferences (call this during app startup)
+  static const String _isLoggedInKey = 'isLoggedIn';
+  static const String _tokenKey = 'token';
+  static const String _refreshTokenKey = 'refreshToken';
+  static const String _userIdKey = 'userId';
+  static const String _usernameKey = 'username';
+  static const String _firstNameKey = 'firstName';
+  static const String _lastNameKey = 'lastName';
+  static const String _emailKey = 'email';
+  static const String _phoneNumberKey = 'phoneNumber';
+  static const String _roleKey = 'role';
+  static const String _passwordKey = 'password';
+  static const String _provider = 'provider';
+
   static Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();
+    await checkLoggedIn();
   }
 
-  // Check if a token exists in local storage
-  static bool hasToken() {
-    final token = _preferences?.getString(_tokenKey);
-    return token != null;
+  static Future<void> checkLoggedIn() async {
+    isLoggedIn = _preferences?.getBool(_isLoggedInKey) ?? false;
   }
 
-  // Save the token and user ID to local storage
-  static Future<void> saveToken(String token, String id) async {
+  static Future<void> makeLoggedIn() async {
+    await _preferences?.setBool(_isLoggedInKey, true);
+    isLoggedIn = true;
+  }
+
+  static Future<void> makeLoggedOut() async {
+    await _preferences?.setBool(_isLoggedInKey, false);
+    isLoggedIn = false;
+  }
+
+  static Future<void> saveToken(String token) async {
     await _preferences?.setString(_tokenKey, token);
-    await _preferences?.setString(_idKey, id);
   }
 
-  // Remove the token and user ID from local storage (for logout)
-  static Future<void> logoutUser() async {
+  static String? getToken() {
+    return _preferences?.getString(_tokenKey);
+  }
+
+  static Future<void> saveRefreshToken(String refreshToken) async {
+    await _preferences?.setString(_refreshTokenKey, refreshToken);
+  }
+
+  static String? getRefreshToken() {
+    return _preferences?.getString(_refreshTokenKey);
+  }
+
+  static Future<void> saveUserId(String userId) async {
+    await _preferences?.setString(_userIdKey, userId);
+  }
+
+  static String? getUserId() {
+    return _preferences?.getString(_userIdKey);
+  }
+
+  static Future<void> saveUsername(String? username) async {
+    if (username != null) {
+      await _preferences?.setString(_usernameKey, username);
+    }
+  }
+
+  static String? getUsername() {
+    return _preferences?.getString(_usernameKey);
+  }
+
+  static Future<void> saveUserRole(String? role) async {
+    if (role != null) {
+      await _preferences?.setString(_roleKey, role);
+    }
+  }
+
+  static String? getUserRole() {
+    return _preferences?.getString(_roleKey);
+  }
+
+  static Future<void> saveFirstName(String? firstName) async {
+    if (firstName != null) {
+      await _preferences?.setString(_firstNameKey, firstName);
+    }
+  }
+
+  static String? getFirstName() {
+    return _preferences?.getString(_firstNameKey);
+  }
+
+  static Future<void> saveLastName(String? lastName) async {
+    if (lastName != null) {
+      await _preferences?.setString(_lastNameKey, lastName);
+    }
+  }
+
+  static String? getLastName() {
+    return _preferences?.getString(_lastNameKey);
+  }
+
+  static Future<void> saveEmail(String? email) async {
+    if (email != null) {
+      await _preferences?.setString(_emailKey, email);
+    }
+  }
+
+  static String? getEmail() {
+    return _preferences?.getString(_emailKey);
+  }
+
+  static Future<void> savePhoneNumber(String? phoneNumber) async {
+    if (phoneNumber != null) {
+      await _preferences?.setString(_phoneNumberKey, phoneNumber);
+    }
+  }
+
+  static String? getPhoneNumber() {
+    return _preferences?.getString(_phoneNumberKey);
+  }
+
+  static Future<void> savePassword(String? password) async {
+    if (password != null) {
+      await _preferences?.setString(_passwordKey, password);
+    }
+  }
+
+  static String? getPassword() {
+    return _preferences?.getString(_passwordKey);
+  }
+
+  static Future<void> saveProvider(String provider) async {
+    await _preferences?.setString(_provider, provider);
+  }
+
+  static String? getProvider() {
+    return _preferences?.getString(_provider);
+  }
+
+  static Future<void> clearAllUserData() async {
+    await _preferences?.remove(_firstNameKey);
+    await _preferences?.remove(_lastNameKey);
+    await _preferences?.remove(_emailKey);
+    await _preferences?.remove(_phoneNumberKey);
+    await _preferences?.remove(_roleKey);
     await _preferences?.remove(_tokenKey);
-    await _preferences?.remove(_idKey);
-    // Navigate to the login screen
-    // Get.offAllNamed('/login');
+    await _preferences?.remove(_refreshTokenKey);
+    await _preferences?.remove(_userIdKey);
+    await _preferences?.remove(_usernameKey);
+    await _preferences?.remove(_passwordKey);
+    await _preferences?.remove(_provider);
+    await makeLoggedOut();
   }
-
-  // Getter for user ID
-  static String? get userId => _preferences?.getString(_idKey);
-
-  // Getter for token
-  static String? get token => _preferences?.getString(_tokenKey);
 }

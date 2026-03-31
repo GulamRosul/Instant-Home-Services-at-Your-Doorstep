@@ -23,12 +23,12 @@ class UserProfilePicController extends GetxController {
     }
   }
 
-  void handleNext() {
+  void handleNext({String? registeredEmail}) {
     // // Logic for next step
     // debugPrint("Bio: ${bioController.text}");
     // debugPrint("Image Path: ${selectedImage.value?.path}");
     // Get.toNamed(AppRoute.getUserOtpScreen());
-    Get.to(() => UserOtpScreen());
+    Get.to(() => UserOtpScreen(email: registeredEmail));
   }
 
   @override

@@ -7,7 +7,9 @@ import 'package:protiva502/core/common/widgets/custom_appbar.dart'; // Using you
 import 'package:protiva502/features/user/authentication/controller/user_otp_controller.dart';
 
 class UserOtpScreen extends StatelessWidget {
-  const UserOtpScreen({super.key});
+  const UserOtpScreen({super.key, this.email});
+
+  final String? email;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,7 @@ class UserOtpScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Enter the 6-digit that we have sent via the email to cheers@design.com',
+              'Enter the 6-digit code that we have sent to ${email ?? 'cheers@design.com'}',
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,

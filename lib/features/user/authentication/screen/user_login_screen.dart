@@ -54,7 +54,7 @@ class UserLoginScreen extends StatelessWidget {
             SizedBox(height: 32.h),
 
             // Email Field
-            _buildLabel("Email or Phone Number"),
+            _buildLabel("Email"),
             CustomTextField(
               controller: controller.emailController,
               hintText: 'sarah@example.com',
@@ -84,13 +84,17 @@ class UserLoginScreen extends StatelessWidget {
             SizedBox(height: 48.h),
 
             // Sign In Button
-            CustomButton(
-              text: 'Sign In',
-              onPressed: controller.handleSignIn,
-              backgroundColor: const Color(
-                0xFF7079F0,
-              ), // Matching purple from screenshot
-              textColor: Colors.white,
+            Obx(
+              () => CustomButton(
+                text: controller.isLoading.value ? 'Signing In...' : 'Sign In',
+                onPressed: controller.isLoading.value
+                    ? null
+                    : controller.handleSignIn,
+                backgroundColor: controller.isLoading.value
+                    ? const Color(0xFF7079F0).withValues(alpha: 0.7)
+                    : const Color(0xFF7079F0),
+                textColor: Colors.white,
+              ),
             ),
 
             SizedBox(height: 24.h),

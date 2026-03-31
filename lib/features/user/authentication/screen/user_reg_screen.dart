@@ -122,11 +122,17 @@ class UserRegScreen extends StatelessWidget {
             ),
 
             SizedBox(height: 30.h),
-            CustomButton(
-              text: 'Next',
-              onPressed: controller.handleRegistration,
-              backgroundColor: AppColors.primary, // Dark Slate color from image
-              textColor: Colors.white,
+            Obx(
+              () => CustomButton(
+                text: controller.isLoading.value ? 'Registering...' : 'Next',
+                onPressed: controller.isLoading.value
+                    ? null
+                    : controller.handleRegistration,
+                backgroundColor: controller.isLoading.value
+                    ? AppColors.primary.withValues(alpha: 0.7)
+                    : AppColors.primary,
+                textColor: Colors.white,
+              ),
             ),
 
             SizedBox(height: 20.h),

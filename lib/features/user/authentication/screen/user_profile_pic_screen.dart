@@ -8,7 +8,9 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/user/authentication/controller/user_profile_pic_controller.dart';
 
 class UserProfilePicScreen extends StatelessWidget {
-  const UserProfilePicScreen({super.key});
+  const UserProfilePicScreen({super.key, this.registeredEmail});
+
+  final String? registeredEmail;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,8 @@ class UserProfilePicScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         actions: [
           TextButton(
-            onPressed: () => controller.handleNext(),
+            onPressed: () =>
+                controller.handleNext(registeredEmail: registeredEmail),
             child: Text(
               'Skip',
               style: getTextStyle(
@@ -123,7 +126,8 @@ class UserProfilePicScreen extends StatelessWidget {
 
             CustomButton(
               text: 'Next',
-              onPressed: () => controller.handleNext(),
+              onPressed: () =>
+                  controller.handleNext(registeredEmail: registeredEmail),
               backgroundColor: AppColors.textPurple, // Match dark button color
               textColor: Colors.white,
             ),

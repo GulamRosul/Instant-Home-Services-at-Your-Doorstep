@@ -8,7 +8,6 @@ import 'package:protiva502/core/common/widgets/custom_popupmenu_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
-import 'package:protiva502/features/service_provider/auhecntication/screen/provider_login_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_reg_controller.dart';
 import 'package:protiva502/features/service_provider/auhecntication/widget/build_field_label.dart';
 
@@ -115,12 +114,18 @@ class ProviderRegistration extends StatelessWidget {
             SizedBox(height: 24.h),
 
             // Next button
-            CustomButton(
-              borderRadius: 6.r,
-              text: 'Next',
-              onPressed: controller.handleNext2,
-              backgroundColor: AppColors.primary,
-              textColor: Colors.white,
+            Obx(
+              () => CustomButton(
+                borderRadius: 6.r,
+                text: controller.isRegistering.value
+                    ? 'Registering...'
+                    : 'Next',
+                onPressed: controller.isRegistering.value
+                    ? null
+                    : controller.handleNext2,
+                backgroundColor: AppColors.primary,
+                textColor: Colors.white,
+              ),
             ),
             SizedBox(height: 12.h),
 
@@ -137,7 +142,7 @@ class ProviderRegistration extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Get.off(() => const ProviderLoginScreen()),
+                  onTap: controller.goToLogin,
                   child: Text(
                     'Sign In',
                     style: getTextStyle(

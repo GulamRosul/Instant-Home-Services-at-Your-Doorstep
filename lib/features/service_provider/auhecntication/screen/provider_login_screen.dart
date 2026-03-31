@@ -84,13 +84,19 @@ class ProviderLoginScreen extends StatelessWidget {
             SizedBox(height: 48.h),
 
             // Sign In Button
-            CustomButton(
-              text: 'Sign In',
-              onPressed: controller.handleSignIn,
-              backgroundColor: const Color(
-                0xFF7079F0,
-              ), // Matching purple from screenshot
-              textColor: Colors.white,
+            Obx(
+              () => CustomButton(
+                text: controller.isSigningIn.value
+                    ? 'Signing In...'
+                    : 'Sign In',
+                onPressed: controller.isSigningIn.value
+                    ? null
+                    : controller.handleSignIn,
+                backgroundColor: const Color(
+                  0xFF7079F0,
+                ), // Matching purple from screenshot
+                textColor: Colors.white,
+              ),
             ),
 
             SizedBox(height: 24.h),

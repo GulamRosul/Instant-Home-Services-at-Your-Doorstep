@@ -9,6 +9,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_reg_controller.dart';
+import 'package:protiva502/features/service_provider/auhecntication/screen/provider_login_screen.dart';
 
 class ProviderRegistrationScreen01 extends StatelessWidget {
   const ProviderRegistrationScreen01({super.key});
@@ -174,7 +175,7 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          // Navigate to login
+                          Get.off(() => const ProviderLoginScreen());
                         },
                     ),
                   ],

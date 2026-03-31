@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:protiva502/app.dart';
+import 'package:protiva502/core/services/storage_service.dart';
 
 // void main() {
 //   WidgetsFlutterBinding.ensureInitialized();
@@ -27,22 +28,23 @@ import 'package:protiva502/app.dart';
 //   runApp(const Protiva502());
 // }
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await StorageService.init();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       // A very light grey/off-white background
-      systemNavigationBarColor: Color(0xFFF8FAFC), 
+      systemNavigationBarColor: Color(0xFFF8FAFC),
       systemNavigationBarDividerColor: Colors.transparent,
-      
-      // Use dark icons (black). 
+
+      // Use dark icons (black).
       // Against the F8FAFC background, they appear greyish.
       systemNavigationBarIconBrightness: Brightness.dark,
-      
+
       // MUST be false to avoid the system's "protection" (black bar)
-      systemNavigationBarContrastEnforced: false, 
-      
+      systemNavigationBarContrastEnforced: false,
+
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ),

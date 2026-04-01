@@ -65,7 +65,31 @@ class StorageService {
   static String? getUserId() => _prefs?.getString(_userIdKey);
   static String? getUsername() => _prefs?.getString(_usernameKey);
   static String? getEmail() => _prefs?.getString(_emailKey);
+  static String? getFirstName() => _prefs?.getString(_firstNameKey);
+  static String? getLastName() => _prefs?.getString(_lastNameKey);
   static String? getAvatar() => _prefs?.getString(_avatarKey);
+
+  static String getDisplayName() {
+    final firstName = getFirstName()?.trim() ?? '';
+    final lastName = getLastName()?.trim() ?? '';
+    final fullName = '$firstName $lastName'.trim();
+
+    if (fullName.isNotEmpty) {
+      return fullName;
+    }
+
+    final username = getUsername()?.trim();
+    if (username != null && username.isNotEmpty) {
+      return username;
+    }
+
+    final email = getEmail()?.trim();
+    if (email != null && email.isNotEmpty) {
+      return email;
+    }
+
+    return 'Guest User';
+  }
 
   /// 🔹 Clear (Simple)
   static Future<void> clearAll() async {

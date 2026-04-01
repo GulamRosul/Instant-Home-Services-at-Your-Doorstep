@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
@@ -94,6 +95,8 @@ class UserHomeScreen extends StatelessWidget {
   }
 
   Widget _buildHeader() {
+    final displayName = StorageService.getDisplayName();
+
     return Row(
       children: [
         CircleAvatar(
@@ -114,7 +117,7 @@ class UserHomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 4.h),
             Text(
-              'Charlotte Davis',
+              displayName,
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,

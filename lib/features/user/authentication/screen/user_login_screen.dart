@@ -108,7 +108,7 @@ class UserLoginScreen extends StatelessWidget {
                   style: getTextStyle(fontSize: 14.sp, color: Colors.black),
                 ),
                 GestureDetector(
-                  onTap: controller.navigateToSignUp,
+                  onTap: () => Get.toNamed('/register'),
                   child: Text(
                     'Sign Up',
                     style: getTextStyle(

@@ -6,9 +6,11 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/services/storage_service.dart';
+import 'package:protiva502/core/utils/device/device_utility.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
+import 'package:protiva502/features/user/home/model/user_banner_model.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
@@ -148,79 +150,38 @@ class UserHomeScreen extends StatelessWidget {
   }
 
   Widget _buildPromoBanner(UserHomeController controller) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 120.h, // Set a fixed height for the carousel
-          child: PageView.builder(
-            controller: controller.bannerController,
-            onPageChanged: (index) =>
-                controller.currentBannerIndex.value = index,
-            itemCount: 3, // Number of banners
-            itemBuilder: (context, index) {
-              return Container(
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(
-                  horizontal: 2.w,
-                ), // Optional: spacing between cards
-                padding: EdgeInsets.all(20.r),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0085B1),
-                  borderRadius: BorderRadius.circular(16.r),
-                  // image: const DecorationImage(
-                  //   image: AssetImage(
-                  //     'assets/images/banner_bg.png',
-                  //   ), // If you have a bg pattern
-                  //   fit: BoxFit.cover,
-                  // ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Best Handyman\nService",
-                            style: getTextStyle(
-                              color: Colors.white,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
-                              lineHeight: 22.sp,
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          Text(
-                            "Trusted & Professional provider",
-                            style: getTextStyle(
-                              color: Colors.white,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Banner Image
-                    // Image.asset(
-                    //   'assets/images/worker_banner.png', // Replace with actual worker image
-                    //   height: 100.h,
-                    // ),
-                    Icon(Icons.handyman, size: 60.sp, color: Colors.white24),
-                  ],
-                ),
-              );
-            },
+    return Obx(() {
+      if (controller.isBannerLoading.value) {
+        return _buildBannerPlaceholder(message: 'Loading banners...');
+      }
+
+      if (controller.banners.isEmpty) {
+        return _buildBannerPlaceholder(
+          message: controller.bannerErrorMessage.value.isEmpty
+              ? 'No banners available right now'
+              : controller.bannerErrorMessage.value,
+        );
+      }
+
+      return Column(
+        children: [
+          SizedBox(
+            height: 120.h,
+            child: PageView.builder(
+              controller: controller.bannerController,
+              onPageChanged: controller.updateBannerIndex,
+              itemCount: controller.banners.length,
+              itemBuilder: (context, index) {
+                final banner = controller.banners[index];
+                return _buildBannerCard(banner);
+              },
+            ),
           ),
-        ),
-        SizedBox(height: 12.h),
-        // Dots Indicator
-        Obx(
-          () => Row(
+          SizedBox(height: 12.h),
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
-              3,
+              controller.banners.length,
               (index) => AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 margin: EdgeInsets.symmetric(horizontal: 2.w),
@@ -237,8 +198,117 @@ class UserHomeScreen extends StatelessWidget {
               ),
             ),
           ),
+        ],
+      );
+    });
+  }
+
+  Widget _buildBannerCard(UserBannerModel banner) {
+    final title = banner.title.trim();
+    final description = banner.description.trim();
+    final imageUrl = banner.image.trim();
+    final link = banner.link.trim();
+
+    return GestureDetector(
+      onTap: link.isNotEmpty ? () => AppDeviceUtility.launchUrl(link) : null,
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(horizontal: 2.w),
+        padding: EdgeInsets.all(16.r),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0085B1),
+          borderRadius: BorderRadius.circular(16.r),
         ),
-      ],
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title.isNotEmpty ? title : 'Best Handyman Service',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: getTextStyle(
+                      color: Colors.white,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                      lineHeight: 22.sp,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    description.isNotEmpty
+                        ? description
+                        : 'Trusted & Professional provider',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: getTextStyle(
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 12.w),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(14.r),
+              child: imageUrl.isNotEmpty
+                  ? Image.network(
+                      imageUrl,
+                      width: 88.w,
+                      height: 88.h,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => _buildBannerImageFallback(),
+                    )
+                  : _buildBannerImageFallback(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBannerPlaceholder({required String message}) {
+    return Container(
+      height: 120.h,
+      width: double.infinity,
+      padding: EdgeInsets.all(16.r),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0085B1),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              message,
+              style: getTextStyle(
+                color: Colors.white,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          _buildBannerImageFallback(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBannerImageFallback() {
+    return Container(
+      width: 88.w,
+      height: 88.h,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(14.r),
+      ),
+      child: Icon(Icons.handyman, size: 42.sp, color: Colors.white70),
     );
   }
 
@@ -328,7 +398,10 @@ class UserHomeScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+          ),
         ],
       ),
       child: Column(

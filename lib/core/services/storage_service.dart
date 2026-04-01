@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:protiva502/core/services/secure_storage_service.dart';
 
 class StorageService {
   StorageService._();
@@ -68,6 +69,11 @@ class StorageService {
   static String? getFirstName() => _prefs?.getString(_firstNameKey);
   static String? getLastName() => _prefs?.getString(_lastNameKey);
   static String? getAvatar() => _prefs?.getString(_avatarKey);
+  static String? getRole() => _prefs?.getString(_roleKey);
+
+  static bool hasActiveSession() {
+    return isLoggedIn;
+  }
 
   static String getDisplayName() {
     final firstName = getFirstName()?.trim() ?? '';
@@ -94,6 +100,7 @@ class StorageService {
   /// 🔹 Clear (Simple)
   static Future<void> clearAll() async {
     await _prefs?.clear();
+    await SecureStorageService.clearAll();
     isLoggedIn = false;
   }
 }

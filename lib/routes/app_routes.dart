@@ -144,9 +144,6 @@ class AppRoute {
     GetPage(
       name: mainNavigationScreen,
       page: () => const MainNavigationScreen(),
-      binding: BindingsBuilder(() {
-        Get.put(SplashController());
-      }),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

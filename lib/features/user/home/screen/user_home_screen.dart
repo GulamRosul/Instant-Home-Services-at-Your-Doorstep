@@ -10,6 +10,7 @@ import 'package:protiva502/core/utils/device/device_utility.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
+import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/home/model/user_banner_model.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
@@ -70,7 +71,16 @@ class UserHomeScreen extends StatelessWidget {
                 },
               ),
               SizedBox(height: 16.h),
-              _buildServiceHorizontalList(),
+              Obx(
+                () => _buildSectionBody(
+                  isLoading: controller.isServicesLoading.value,
+                  errorMessage: controller.servicesErrorMessage.value,
+                  isEmpty: controller.popularServices.isEmpty,
+                  child: _buildServiceHorizontalList(
+                    controller.popularServices,
+                  ),
+                ),
+              ),
               SizedBox(height: 24.h),
               _buildSectionHeader(
                 "Recommended Expert For You",
@@ -87,7 +97,14 @@ class UserHomeScreen extends StatelessWidget {
                   Get.to(() => const AvailableCategoryScreen());
                 },
               ),
-              _buildServiceGrid(), // From the bottom split screenshot
+              Obx(
+                () => _buildSectionBody(
+                  isLoading: controller.isServicesLoading.value,
+                  errorMessage: controller.servicesErrorMessage.value,
+                  isEmpty: controller.allServices.isEmpty,
+                  child: _buildServiceGrid(controller.allServices),
+                ),
+              ),
               SizedBox(height: 100.h), // Space for floating nav bar
             ],
           ),
@@ -390,7 +407,46 @@ class UserHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceCard() {
+  Widget _buildSectionBody({
+    required bool isLoading,
+    required String errorMessage,
+    required bool isEmpty,
+    required Widget child,
+  }) {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (errorMessage.isNotEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        child: Text(
+          errorMessage,
+          style: getTextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
+        ),
+      );
+    }
+
+    if (isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        child: Center(
+          child: Text(
+            'No services found',
+            textAlign: TextAlign.center,
+            style: getTextStyle(
+              fontSize: 12.sp,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return child;
+  }
+
+  Widget _buildServiceCard(HomeJobModel service) {
     return Container(
       width: 160.w,
       margin: EdgeInsets.only(right: 16.w),
@@ -409,12 +465,25 @@ class UserHomeScreen extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-            child: Image.asset(
-              ImagePath.servicecard,
-              height: 100.h,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+            child: service.thumbnail.isNotEmpty
+                ? Image.network(
+                    service.thumbnail,
+                    height: 100.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Image.asset(
+                      ImagePath.servicecard,
+                      height: 100.h,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Image.asset(
+                    ImagePath.servicecard,
+                    height: 100.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
           ),
           Padding(
             padding: EdgeInsets.all(8.r),
@@ -423,7 +492,7 @@ class UserHomeScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Carpentry & Woodwork",
+                  service.title,
                   style: getTextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
@@ -438,7 +507,9 @@ class UserHomeScreen extends StatelessWidget {
                     Get.to(() => ProviderDetailsScreen());
                   },
                   child: Text(
-                    "Mike Handyman service",
+                    service.description.isNotEmpty
+                        ? service.description
+                        : 'Service details',
                     style: getTextStyle(
                       fontSize: 10.sp,
                       color: AppColors.textBlue,
@@ -456,7 +527,7 @@ class UserHomeScreen extends StatelessWidget {
                   children: [
                     Icon(Icons.location_on, size: 10.sp, color: Colors.blue),
                     Text(
-                      " Dhaka, Bangladesh",
+                      " Remote Service",
                       style: getTextStyle(
                         fontSize: 10.sp,
                         color: AppColors.textSecondary,
@@ -471,12 +542,17 @@ class UserHomeScreen extends StatelessWidget {
                   children: [
                     ...List.generate(
                       5,
-                      (i) =>
-                          Icon(Icons.star, color: Colors.orange, size: 10.sp),
+                      (i) => Icon(
+                        i < service.averageRating.round()
+                            ? Icons.star
+                            : Icons.star_border,
+                        color: Colors.orange,
+                        size: 10.sp,
+                      ),
                     ),
                     Flexible(
                       child: Text(
-                        " 4.8 (170 Reviews)",
+                        " ${service.averageRating.toStringAsFixed(1)} (${service.totalBookings} Bookings)",
                         style: getTextStyle(
                           fontSize: 9.sp,
                           color: AppColors.textSecondary,
@@ -489,7 +565,7 @@ class UserHomeScreen extends StatelessWidget {
                 ),
                 // SizedBox(height: 4.h),
                 Text(
-                  "Start From 450.0 ৳",
+                  "Start From ${service.basePrice.toStringAsFixed(0)} ৳",
                   style: getTextStyle(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
@@ -507,7 +583,7 @@ class UserHomeScreen extends StatelessWidget {
                   backgroundColor: AppColors.textPurple,
                   borderRadius: 6.r,
                   onPressed: () {
-                    Get.to(() => BookingDetailsScreen());
+                    Get.to(() => BookingDetailsScreen(service: service));
                   },
                   textColor: Colors.white,
                 ),
@@ -519,13 +595,13 @@ class UserHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceHorizontalList() {
+  Widget _buildServiceHorizontalList(List<HomeJobModel> services) {
     return SizedBox(
       height: 260.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 3,
-        itemBuilder: (context, index) => _buildServiceCard(),
+        itemCount: services.length,
+        itemBuilder: (context, index) => _buildServiceCard(services[index]),
       ),
     );
   }
@@ -597,19 +673,19 @@ class UserHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceGrid() {
+  Widget _buildServiceGrid(List<HomeJobModel> services) {
     return GridView.builder(
       shrinkWrap: true,
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: 4,
+      itemCount: services.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisSpacing: 10.h,
         crossAxisSpacing: 0.w,
         mainAxisExtent: 260.h,
       ),
-      itemBuilder: (context, index) => _buildServiceCard(),
+      itemBuilder: (context, index) => _buildServiceCard(services[index]),
     );
   }
 }

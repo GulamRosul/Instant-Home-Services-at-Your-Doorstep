@@ -7,11 +7,14 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/booking_details_controller.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/booking_step_progress.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
-  const BookingDetailsScreen({super.key});
+  const BookingDetailsScreen({super.key, this.service});
+
+  final HomeJobModel? service;
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +55,12 @@ class BookingDetailsScreen extends StatelessWidget {
               const BookingStepProgress(currentStep: 1), // Step 1 Active
               SizedBox(height: 24.h),
 
-              _buildServiceBriefCard(),
+              _buildServiceBriefCard(service),
               SizedBox(height: 24.h),
 
               _buildLabel("Service name"),
               CustomTextField(
-                hintText: "Carpentry & Woodwork",
+                hintText: service?.title ?? "Selected Service",
                 readOnly: true,
                 backgroundColor: Colors.white,
                 // textStyle: getTextStyle(fontSize: 14.sp, color: Colors.black),
@@ -222,7 +225,7 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceBriefCard() {
+  Widget _buildServiceBriefCard(HomeJobModel? service) {
     return Container(
       padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
@@ -234,12 +237,25 @@ class BookingDetailsScreen extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8.r),
-            child: Image.asset(
-              ImagePath.homeServ,
-              width: 70.w,
-              height: 60.h,
-              fit: BoxFit.cover,
-            ),
+            child: service != null && service.thumbnail.isNotEmpty
+                ? Image.network(
+                    service.thumbnail,
+                    width: 70.w,
+                    height: 60.h,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Image.asset(
+                      ImagePath.homeServ,
+                      width: 70.w,
+                      height: 60.h,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Image.asset(
+                    ImagePath.homeServ,
+                    width: 70.w,
+                    height: 60.h,
+                    fit: BoxFit.cover,
+                  ),
           ),
           SizedBox(width: 12.w),
           Expanded(
@@ -247,17 +263,21 @@ class BookingDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Home Renovation",
-                      style: getTextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
+                    Expanded(
+                      child: Text(
+                        service?.title ?? "Selected Service",
+                        style: getTextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    SizedBox(width: 8.w),
                     Text(
-                      "450.0 ৳",
+                      "${service?.basePrice.toStringAsFixed(0) ?? '0'} ৳",
                       style: getTextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
@@ -266,14 +286,18 @@ class BookingDetailsScreen extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  "Mike Handyman service",
+                  service?.description.isNotEmpty == true
+                      ? service!.description
+                      : "Service details",
                   style: getTextStyle(fontSize: 12.sp, color: Colors.blueGrey),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Row(
                   children: [
                     Icon(Icons.location_on, size: 12.sp, color: Colors.blue),
                     Text(
-                      " Toronto, Canada",
+                      " Remote Service",
                       style: getTextStyle(
                         fontSize: 11.sp,
                         color: AppColors.textSecondary,

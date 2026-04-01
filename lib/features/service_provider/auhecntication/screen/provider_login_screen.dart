@@ -6,7 +6,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart'; // Ensure illustration path is here
-import 'package:protiva502/features/service_provider/auhecntication/controller/providerLoginController.dart';
+import 'package:protiva502/features/service_provider/auhecntication/controller/provider_login_controller.dart';
 
 class ProviderLoginScreen extends StatelessWidget {
   const ProviderLoginScreen({super.key});

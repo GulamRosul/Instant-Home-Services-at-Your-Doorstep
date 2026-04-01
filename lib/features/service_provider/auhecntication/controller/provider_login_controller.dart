@@ -4,9 +4,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
-import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
+import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 
 class ProviderLoginController extends GetxController {
   static const String _baseUrl = 'https://protiva-backend.onrender.com/api/v1';
@@ -70,21 +71,27 @@ class ProviderLoginController extends GetxController {
           final user = data?['user'] as Map<String, dynamic>?;
 
           await StorageService.makeLoggedIn();
-          await StorageService.saveToken(
+          await SecureStorageService.saveToken(
             data?['accessToken']?.toString() ?? '',
           );
-          await StorageService.saveRefreshToken(
+          await SecureStorageService.saveRefreshToken(
             data?['refreshToken']?.toString() ?? '',
           );
-          await StorageService.saveUserId(user?['id']?.toString() ?? '');
-          await StorageService.saveEmail(user?['email']?.toString());
-          await StorageService.saveFirstName(user?['firstName']?.toString());
-          await StorageService.saveLastName(user?['lastName']?.toString());
-          await StorageService.saveUserRole(user?['role']?.toString());
-          await StorageService.savePassword(password);
-          await StorageService.saveProvider('service_provider');
+          await StorageService.saveUser(
+            userId: user?['id']?.toString(),
+            email: user?['email']?.toString(),
+            firstName: user?['firstName']?.toString(),
+            lastName: user?['lastName']?.toString(),
+            role: user?['role']?.toString(),
+            username:
+                user?['username']?.toString() ?? user?['email']?.toString(),
+            avatar: user?['avatar']?.toString(),
+          );
 
-          final message = data?['message']?.toString() ?? 'Login successful';
+          final message =
+              responseData?['message']?.toString() ??
+              data?['message']?.toString() ??
+              'Login successful';
           Get.snackbar('Success', message);
           Get.offAll(() => const ProviderNavbarScreen());
         } else {

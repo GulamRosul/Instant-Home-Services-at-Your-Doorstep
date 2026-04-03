@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -21,6 +23,7 @@ class UserHomeController extends GetxController {
   final servicesErrorMessage = ''.obs;
   final popularServices = <HomeJobModel>[].obs;
   final allServices = <HomeJobModel>[].obs;
+  Timer? _bannerAutoScrollTimer;
 
   // Mock data for categories
   final List<Map<String, String>> categories = [
@@ -36,6 +39,34 @@ class UserHomeController extends GetxController {
 
   void updateBannerIndex(int index) {
     currentBannerIndex.value = index;
+  }
+
+  void _startBannerAutoScroll() {
+    _bannerAutoScrollTimer?.cancel();
+
+    if (banners.length <= 1) {
+      return;
+    }
+
+    _bannerAutoScrollTimer = Timer.periodic(const Duration(seconds: 4), (
+      timer,
+    ) {
+      if (!bannerController.hasClients || banners.isEmpty) {
+        return;
+      }
+
+      final nextIndex = (currentBannerIndex.value + 1) % banners.length;
+      bannerController.animateToPage(
+        nextIndex,
+        duration: const Duration(milliseconds: 450),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  void _stopBannerAutoScroll() {
+    _bannerAutoScrollTimer?.cancel();
+    _bannerAutoScrollTimer = null;
   }
 
   @override
@@ -141,6 +172,7 @@ class UserHomeController extends GetxController {
 
       banners.assignAll(fetchedBanners);
       currentBannerIndex.value = 0;
+      _startBannerAutoScroll();
       AppLoggerHelper.info('Fetched ${fetchedBanners.length} user banners');
     } on DioException catch (error) {
       banners.clear();
@@ -208,6 +240,7 @@ class UserHomeController extends GetxController {
 
   @override
   void onClose() {
+    _stopBannerAutoScroll();
     bannerController.dispose();
     super.onClose();
   }

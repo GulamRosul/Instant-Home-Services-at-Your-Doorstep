@@ -100,7 +100,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                 Text(
                   "Carpentry & Woodwork",
                   style: getTextStyle(
-                    fontSize: 12.sp,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                     lineHeight: 15.sp,

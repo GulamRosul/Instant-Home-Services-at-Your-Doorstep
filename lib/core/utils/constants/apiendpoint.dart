@@ -6,8 +6,9 @@ class ApiEndpoints {
   static const String login = '/auth/login';
   static const String userBanners = '/marketing/user/banners';
   static const String homeJobs = '/job/home-jobs';
-
+  static const String myAllBookings = '/bookings/my-all-booking';
 
   static const String categories = '/category/all-categoris-for-user';
-  static String subCategories(String categoryId) => '/category/sub-categories/$categoryId';
+  static String subCategories(String categoryId) =>
+      '/category/sub-categories/$categoryId';
 }

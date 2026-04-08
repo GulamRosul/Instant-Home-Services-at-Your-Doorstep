@@ -92,11 +92,12 @@ class SubcategoryServiceListScreen extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(8.r),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          Flexible(
+            child: Padding(
+              padding: EdgeInsets.all(8.r),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 Text(
                   "Carpentry & Woodwork",
                   style: getTextStyle(
@@ -105,6 +106,8 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                     color: Colors.black,
                     lineHeight: 15.sp,
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -120,19 +123,24 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       lineHeight: 15.sp,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
                 // SizedBox(height: 4.h),
                 Row(
                   children: [
                     Icon(Icons.location_on, size: 10.sp, color: Colors.blue),
-                    Text(
-                      " Dhaka, Bangladesh",
-                      style: getTextStyle(
-                        fontSize: 10.sp,
-                        color: AppColors.textSecondary,
-                        lineHeight: 18.sp,
-                        fontWeight: FontWeight.w500,
+                    Flexible(
+                      child: Text(
+                        " Dhaka, Bangladesh",
+                        style: getTextStyle(
+                          fontSize: 10.sp,
+                          color: AppColors.textSecondary,
+                          lineHeight: 18.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -145,12 +153,15 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                       (i) =>
                           Icon(Icons.star, color: Colors.orange, size: 10.sp),
                     ),
-                    Text(
-                      " 4.8 (170 Reviews)",
-                      style: getTextStyle(
-                        fontSize: 9.sp,
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
+                    Flexible(
+                      child: Text(
+                        " 4.8 (170 Reviews)",
+                        style: getTextStyle(
+                          fontSize: 9.sp,
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -179,7 +190,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          ),),
         ],
       ),
     );

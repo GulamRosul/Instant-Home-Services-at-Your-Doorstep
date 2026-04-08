@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
+import 'package:protiva502/features/service_provider/home/model/active_job_model.dart';
 
 class ActiveJobCard extends StatelessWidget {
-  const ActiveJobCard({super.key});
+  const ActiveJobCard({super.key, required this.job});
+
+  final ActiveJobModel job;
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +31,32 @@ class ActiveJobCard extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(3.r),
-                    child: Image.asset(
-                      ImagePath.servicecard,
-                      width: 60.w,
-                      height: 40.w,
-                      fit: BoxFit.cover,
-                    ),
+                    child: job.thumbnail.isNotEmpty
+                        ? Image.network(
+                            job.thumbnail,
+                            width: 60.w,
+                            height: 40.w,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Image.asset(
+                              ImagePath.servicecard,
+                              width: 60.w,
+                              height: 40.w,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Image.asset(
+                            ImagePath.servicecard,
+                            width: 60.w,
+                            height: 40.w,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   SizedBox(height: 6.h),
                   Row(
                     children: [
                       SvgPicture.asset(IconPath.star, height: 15),
                       Text(
-                        ' 4.8 ',
+                        ' ${job.averageRating.toStringAsFixed(1)} ',
                         style: getTextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
@@ -58,7 +76,7 @@ class ActiveJobCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            'Carpentry & Woodwork',
+                            job.title,
                             style: getTextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
@@ -82,7 +100,9 @@ class ActiveJobCard extends StatelessWidget {
                         SizedBox(width: 4.w),
                         Expanded(
                           child: Text(
-                            'Toronto, Canada',
+                            job.description.isNotEmpty
+                                ? job.description
+                                : 'Remote Service',
                             style: getTextStyle(
                               fontSize: 11.sp,
                               color: Color(0xFF475569),
@@ -105,7 +125,7 @@ class ActiveJobCard extends StatelessWidget {
                           ),
                           children: [
                             TextSpan(
-                              text: '450.0 ৳',
+                              text: '${job.basePrice.toStringAsFixed(0)} ৳',
                               style: getTextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
@@ -127,18 +147,21 @@ class ActiveJobCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
-                child: _buildJobStat(Icons.visibility_outlined, "89 views"),
+                child: _buildJobStat(
+                  Icons.visibility_outlined,
+                  "${job.views} views",
+                ),
               ),
               Flexible(
                 child: _buildJobStat(
                   Icons.description_outlined,
-                  "12 applications",
+                  "${job.clicks} clicks",
                 ),
               ),
               Flexible(
                 child: _buildJobStat(
                   Icons.calendar_month_outlined,
-                  "8 bookings",
+                  "${job.totalBookings} bookings",
                 ),
               ),
             ],
@@ -164,5 +187,39 @@ class ActiveJobCard extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class ActiveJobsSection extends StatelessWidget {
+  const ActiveJobsSection({super.key, required this.controller});
+
+  final ProviderHomeController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.isActiveJobsLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (controller.activeJobsErrorMessage.value.isNotEmpty) {
+        return Text(
+          controller.activeJobsErrorMessage.value,
+          style: getTextStyle(fontSize: 12.sp, color: Colors.black54),
+        );
+      }
+
+      if (controller.activeJobs.isEmpty) {
+        return Center(
+          child: Text(
+            'No active jobs found',
+            textAlign: TextAlign.center,
+            style: getTextStyle(fontSize: 12.sp, color: Colors.black54),
+          ),
+        );
+      }
+
+      return ActiveJobCard(job: controller.activeJobs.first);
+    });
   }
 }

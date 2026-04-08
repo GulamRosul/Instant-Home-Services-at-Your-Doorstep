@@ -279,7 +279,13 @@ class WithdrawFundsScreen extends StatelessWidget {
             SizedBox(height: 8.h),
             _buildInfoRow('Processing time', '1-3 business days'),
             SizedBox(height: 8.h),
-            _buildInfoRow('Transaction fee', 'Free', isGreen: true),
+            Obx(
+              () => _buildInfoRow(
+                'Transaction fee',
+                '৳ ${controller.feeAmount.toStringAsFixed(2)}',
+                isGreen: true,
+              ),
+            ),
 
             SizedBox(height: 40.h),
 
@@ -303,7 +309,7 @@ class WithdrawFundsScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 30.h),
+            SizedBox(height: 120.h),
           ],
         ),
       ),
@@ -413,7 +419,7 @@ class WithdrawFundsScreen extends StatelessWidget {
         ),
         SizedBox(height: 24.h),
         Text(
-          'Pin Number',
+          'Payment Take Number',
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
@@ -423,8 +429,7 @@ class WithdrawFundsScreen extends StatelessWidget {
         SizedBox(height: 12.h),
         CustomTextField(
           controller: controller.pinController,
-          hintText: 'Enter your pin',
-          isPasswordField: true,
+          hintText: 'Enter payment take number',
           backgroundColor: Colors.white,
           borderColor: const Color(0xFFE2E8F0),
         ),
@@ -500,6 +505,33 @@ class WithdrawFundsScreen extends StatelessWidget {
           hintText: 'Enter your account holder name',
           backgroundColor: Colors.white,
           borderColor: const Color(0xFFE2E8F0),
+        ),
+        SizedBox(height: 12.h),
+        Text(
+          'Phone Number',
+          style: getTextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF0F172A),
+          ),
+        ),
+        SizedBox(height: 12.h),
+        CustomTextField(
+          controller: controller.phoneNumberController,
+          hintText: '1XXXXXXXXXX',
+          keyboardType: TextInputType.phone,
+          backgroundColor: Colors.white,
+          borderColor: const Color(0xFFE2E8F0),
+          prefixIcon: Padding(
+            padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 12.w),
+            child: Text(
+              '+880',
+              style: getTextStyle(
+                fontSize: 14.sp,
+                color: const Color(0xFF64748B),
+              ),
+            ),
+          ),
         ),
       ],
     );

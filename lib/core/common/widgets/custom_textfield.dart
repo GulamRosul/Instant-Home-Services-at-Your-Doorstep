@@ -42,6 +42,7 @@ class CustomTextField extends StatefulWidget {
   final EdgeInsetsGeometry? contentPadding;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
+  final VoidCallback? onTap;
   final bool enabled;
   final Widget? suffixIcon;
   final Color? hintTextColor;
@@ -76,6 +77,7 @@ class CustomTextField extends StatefulWidget {
     this.contentPadding,
     this.onChanged,
     this.onSubmitted,
+    this.onTap,
     this.enabled = true,
     this.suffixIcon,
     this.prefixIcon,
@@ -139,6 +141,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       enabled: widget.enabled,
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
+      onTap: widget.onTap,
       maxLines: widget.maxLines,
       minLines: widget.minLines,
       maxLength: widget.maxLength,

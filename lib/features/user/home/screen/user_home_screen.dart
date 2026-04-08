@@ -371,36 +371,43 @@ class UserHomeScreen extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         final category = controller.categories[index];
-        return Container(
-          padding: EdgeInsets.all(5.r),
-          decoration: BoxDecoration(
-            color: const Color(0xFFEFF6FF),
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                category['icon']!,
-                width: 24.w,
-                height: 24.h,
-                // colorFilter: ColorFilter.mode(
-                //   Colors.blue.shade700,
-                //   BlendMode.srcIn,
-                // ),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                category['name']!,
-                textAlign: TextAlign.center,
-                style: getTextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
+        return GestureDetector(
+          onTap: () {
+            Get.to(
+              () => AvailableCategoryScreen(initialCategoryIndex: index),
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.all(5.r),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFF6FF),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  category['icon']!,
+                  width: 24.w,
+                  height: 24.h,
+                  // colorFilter: ColorFilter.mode(
+                  //   Colors.blue.shade700,
+                  //   BlendMode.srcIn,
+                  // ),
                 ),
-              ),
-            ],
+                SizedBox(height: 8.h),
+                Text(
+                  category['name']!,
+                  textAlign: TextAlign.center,
+                  style: getTextStyle(
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

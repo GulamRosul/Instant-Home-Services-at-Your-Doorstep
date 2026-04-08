@@ -9,11 +9,21 @@ import 'package:protiva502/features/user/home/controller/available_category_cont
 import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
 
 class AvailableCategoryScreen extends StatelessWidget {
-  const AvailableCategoryScreen({super.key});
+  final int? initialCategoryIndex;
+
+  const AvailableCategoryScreen({
+    super.key,
+    this.initialCategoryIndex,
+  });
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AvailableCategoryController());
+
+    // Set initial category if provided
+    if (initialCategoryIndex != null) {
+      controller.selectCategory(initialCategoryIndex!);
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),

@@ -6,7 +6,6 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/features/service_provider/wallet/controller/wallet_controller.dart';
 import 'package:protiva502/features/service_provider/provider_navber/controller/provider_navbar_controller.dart';
 import 'package:protiva502/features/service_provider/wallet/screen/withdraw_funds_screen.dart';
-import 'package:protiva502/features/service_provider/wallet/screen/pending_approval_screen.dart';
 
 class ConfirmWithdrawalScreen extends StatelessWidget {
   const ConfirmWithdrawalScreen({super.key});
@@ -118,7 +117,7 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                         ),
                         _buildDetailRow(
                           'Transaction Fee',
-                          'Free',
+                          '৳ ${controller.feeAmount.toStringAsFixed(2)}',
                           isGreen: true,
                         ),
                         Padding(
@@ -127,7 +126,7 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                         ),
                         _buildDetailRow(
                           'You\'ll Receive',
-                          '৳ ${controller.withdrawalAmount.value}',
+                          '৳ ${controller.netAmount.toStringAsFixed(2)}',
                           isBold: true,
                         ),
                         SizedBox(height: 10.h),
@@ -135,6 +134,30 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 24.h),
+                  Obx(() {
+                    if (controller.submitErrorMessage.value.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(bottom: 16.h),
+                      padding: EdgeInsets.all(14.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFEF2F2),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: const Color(0xFFFECACA)),
+                      ),
+                      child: Text(
+                        controller.submitErrorMessage.value,
+                        style: getTextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFFB91C1C),
+                        ),
+                      ),
+                    );
+                  }),
 
                   // Admin Note Card
                   Container(
@@ -180,16 +203,18 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 24.h),
-                  CustomButton(
-                    onPressed: () {
-                      navIndexController.showHomeSubPage(
-                        const PendingApprovalScreen(),
-                      );
-                    },
-                    textColor: Colors.white,
-                    text: 'Submit Request',
-                    backgroundColor: Color(0xFF787BEB),
-                    height: 50.h,
+                  Obx(
+                    () => CustomButton(
+                      onPressed: controller.isSubmittingWithdrawal.value
+                          ? null
+                          : controller.submitWithdrawalRequest,
+                      textColor: Colors.white,
+                      text: controller.isSubmittingWithdrawal.value
+                          ? 'Submitting...'
+                          : 'Submit Request',
+                      backgroundColor: Color(0xFF787BEB),
+                      height: 50.h,
+                    ),
                   ),
                   SizedBox(height: 12.h),
                   CustomButton(
@@ -266,12 +291,17 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                 label,
                 style: getTextStyle(fontSize: 14.sp, color: Color(0xFF64748B)),
               ),
-              Text(
-                value,
-                style: getTextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: isBold ? FontWeight.w600 : FontWeight.w600,
-                  color: isGreen ? Color(0xFF16A34A) : Color(0xFF0F172A),
+              Expanded(
+                child: Text(
+                  value,
+                  textAlign: TextAlign.end,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: getTextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: isBold ? FontWeight.w600 : FontWeight.w600,
+                    color: isGreen ? Color(0xFF16A34A) : Color(0xFF0F172A),
+                  ),
                 ),
               ),
             ],

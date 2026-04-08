@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
-import 'package:protiva502/features/service_provider/home/widget/activeJob.dart';
+import 'package:protiva502/features/service_provider/home/widget/active_job.dart';
 import 'package:protiva502/features/service_provider/home/widget/home_header_appber.dart';
-import 'package:protiva502/features/service_provider/home/widget/recentBookingCard.dart';
+import 'package:protiva502/features/service_provider/home/widget/recent_booking_card.dart';
 import 'package:protiva502/features/service_provider/home/widget/search_ber_widget.dart';
 import 'package:protiva502/features/service_provider/home/widget/statesGride.dart';
 import 'package:protiva502/features/service_provider/home/widget/wallet_card.dart';
@@ -49,7 +49,7 @@ class ProviderHomeScreen extends StatelessWidget {
               controller.handleViewAllActiveJobs,
             ),
             SizedBox(height: 12.h),
-            ActiveJobCard(),
+            ActiveJobsSection(controller: controller),
             SizedBox(height: 24.h),
 
             // Recent Bookings Section
@@ -58,7 +58,7 @@ class ProviderHomeScreen extends StatelessWidget {
               controller.handleViewAllRecentBookings,
             ),
             SizedBox(height: 12.h),
-            RecentBookingCard(),
+            RecentBookingsSection(controller: controller),
             SizedBox(height: 80.h),
           ],
         ),

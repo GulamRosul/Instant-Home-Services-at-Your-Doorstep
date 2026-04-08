@@ -3,10 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
+import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 
 class RecentBookingCard extends StatelessWidget {
-  const RecentBookingCard({super.key});
+  const RecentBookingCard({super.key, required this.booking});
+
+  final RecentBookingModel booking;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +50,7 @@ class RecentBookingCard extends StatelessWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              'Handyman service',
+                              booking.serviceName,
                               style: getTextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,
@@ -66,7 +70,7 @@ class RecentBookingCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Pending',
+                      booking.status,
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: Color(0xFFFFC100),
@@ -78,17 +82,19 @@ class RecentBookingCard extends StatelessWidget {
 
                 /// Location
                 Text(
-                  '— Toronto, Canada',
+                  '— ${booking.locationDetails}',
                   style: getTextStyle(
                     fontSize: 12.sp,
                     color: Color(0xFF1E293B),
                     fontWeight: FontWeight.w400,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
 
                 /// Price + View Details
                 Text(
-                  'Starting : ৳ 20.00',
+                  'Starting : ৳ ${booking.serviceAmount.toStringAsFixed(0)}',
                   style: getTextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
@@ -110,7 +116,9 @@ class RecentBookingCard extends StatelessWidget {
                     SizedBox(width: 4.w),
                     Expanded(
                       child: Text(
-                        '4.8 ( 170 Reviews)',
+                        booking.preferredTime.isNotEmpty
+                            ? booking.preferredTime
+                            : 'Preferred schedule',
                         style: getTextStyle(
                           fontSize: 10.sp,
                           color: Color(0xFF475569),
@@ -143,5 +151,39 @@ class RecentBookingCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class RecentBookingsSection extends StatelessWidget {
+  const RecentBookingsSection({super.key, required this.controller});
+
+  final ProviderHomeController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.isRecentBookingsLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (controller.recentBookingsErrorMessage.value.isNotEmpty) {
+        return Text(
+          controller.recentBookingsErrorMessage.value,
+          style: getTextStyle(fontSize: 12.sp, color: Colors.black54),
+        );
+      }
+
+      if (controller.recentBookings.isEmpty) {
+        return Center(
+          child: Text(
+            'No recent bookings found',
+            textAlign: TextAlign.center,
+            style: getTextStyle(fontSize: 12.sp, color: Colors.black54),
+          ),
+        );
+      }
+
+      return RecentBookingCard(booking: controller.recentBookings.first);
+    });
   }
 }

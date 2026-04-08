@@ -108,8 +108,17 @@ class PendingApprovalScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    _buildDetailRow('Status', 'Pending', isStatus: true),
-                    _buildDetailRow('Request Date', 'Jan 19, 2026'),
+                    _buildDetailRow(
+                      'Status',
+                      controller.requestStatus.value,
+                      isStatus: true,
+                    ),
+                    _buildDetailRow(
+                      'Request Date',
+                      controller.requestDateLabel.value.isEmpty
+                          ? 'Today'
+                          : controller.requestDateLabel.value,
+                    ),
                     _buildDetailRow('Expected Review', '1-3 business days'),
                     SizedBox(height: 10.h),
                   ],

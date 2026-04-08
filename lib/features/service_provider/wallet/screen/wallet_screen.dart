@@ -93,13 +93,34 @@ class WalletScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 16.h),
-                      Obx(
-                        () => Column(
+                      Obx(() {
+                        if (controller.isWalletLoading.value) {
+                          return const SizedBox.shrink();
+                        }
+
+                        if (controller.withdrawalHistory.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'No withdrawal history found',
+                              textAlign: TextAlign.center,
+                              style: getTextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          );
+                        }
+
+                        return Column(
                           children: controller.withdrawalHistory.map((item) {
-                            return _buildHistoryItem(item);
+                            return _buildHistoryItem(
+                              item.amount,
+                              item.dateLabel,
+                              item.status,
+                            );
                           }).toList(),
-                        ),
-                      ),
+                        );
+                      }),
                       SizedBox(height: 90.h),
                     ],
                   ),
@@ -146,65 +167,78 @@ class WalletScreen extends StatelessWidget {
   }
 
   Widget _buildWalletInfoCard(WalletController controller) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(24.w),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(
-          alpha: 0.2,
-        ), // Glassy effect on purple BG
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Total Earnings',
-            style: getTextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            '৳ ${controller.totalEarnings.value}',
-            style: getTextStyle(
-              fontSize: 36.sp,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            'From completed services',
-            style: getTextStyle(
-              fontSize: 10.sp,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 15.h),
-          Divider(color: Colors.white.withValues(alpha: 0.2)),
-          SizedBox(height: 15.h),
-          Text(
-            'Pending Amount',
-            style: getTextStyle(
-              fontSize: 10.sp,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
-            ),
-          ),
-          Text(
-            '৳ ${controller.pendingAmount.value}',
-            style: getTextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-        ],
+    return Obx(
+      () => Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(24.w),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+        ),
+        child: controller.isWalletLoading.value
+            ? const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              )
+            : controller.walletErrorMessage.value.isNotEmpty
+            ? Text(
+                controller.walletErrorMessage.value,
+                style: getTextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                ),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Withdrawable Amount',
+                    style: getTextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    '৳ ${controller.totalEarnings.value}',
+                    style: getTextStyle(
+                      fontSize: 36.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'Bookings served ${controller.bookingsServed.value}',
+                    style: getTextStyle(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  Divider(color: Colors.white.withValues(alpha: 0.2)),
+                  SizedBox(height: 15.h),
+                  Text(
+                    'Pending Amount',
+                    style: getTextStyle(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    '৳ ${controller.pendingAmount.value}',
+                    style: getTextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -246,7 +280,7 @@ class WalletScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHistoryItem(Map<String, String> item) {
+  Widget _buildHistoryItem(String amount, String dateLabel, String status) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(16.w),
@@ -264,7 +298,7 @@ class WalletScreen extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '৳ ${item['amount']}',
+                    '৳ $amount',
                     style: getTextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
@@ -277,7 +311,7 @@ class WalletScreen extends StatelessWidget {
               ),
               SizedBox(height: 4.h),
               Text(
-                item['date']!,
+                dateLabel,
                 style: getTextStyle(
                   fontSize: 12.sp,
                   color: Color(0xFF64748B),
@@ -293,7 +327,7 @@ class WalletScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(20.r),
             ),
             child: Text(
-              item['status']!,
+              status,
               style: getTextStyle(
                 fontSize: 12.sp,
                 color: Color(0xFF16A34A),

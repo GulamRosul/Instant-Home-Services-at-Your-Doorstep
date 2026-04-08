@@ -81,15 +81,19 @@ class BookingDetailsScreen extends StatelessWidget {
               SizedBox(height: 16.h),
               _buildLabel("Preferable Date & Time"),
               CustomTextField(
-                hintText: "09 Dec 2022 || 10.00 Am",
-                suffixIcon: Icon(
-                  Icons.access_time,
-                  size: 20.sp,
-                  color: Colors.blueGrey,
+                controller: controller.preferredDateTimeController,
+                hintText: "Select date & time",
+                readOnly: true,
+                onTap: () => controller.pickPreferredDateTime(context),
+                suffixIcon: IconButton(
+                  onPressed: () => controller.pickPreferredDateTime(context),
+                  icon: Icon(
+                    Icons.access_time,
+                    size: 20.sp,
+                    color: Colors.blueGrey,
+                  ),
                 ),
-                // readOnly: true,
                 backgroundColor: Colors.white,
-                // hintTextColor: Colors.black,
               ),
 
               SizedBox(height: 16.h),

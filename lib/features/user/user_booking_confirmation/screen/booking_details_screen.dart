@@ -7,6 +7,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/google_map/screen/map_screen.dart';
 import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/booking_details_controller.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/booking_step_progress.dart';
@@ -15,6 +16,16 @@ class BookingDetailsScreen extends StatelessWidget {
   const BookingDetailsScreen({super.key, this.service});
 
   final HomeJobModel? service;
+
+  Future<void> _openMapPicker(BookingDetailsController controller) async {
+    final selectedLocation = await Get.to<String>(
+      () => MapScreen(isPickerMode: true),
+    );
+
+    if (selectedLocation != null && selectedLocation.trim().isNotEmpty) {
+      controller.locationController.text = selectedLocation;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,10 +117,14 @@ class BookingDetailsScreen extends StatelessWidget {
               _buildLabel("Location details"),
               CustomTextField(
                 controller: controller.locationController,
-                suffixIcon: Icon(
-                  Icons.edit_note,
-                  size: 24.sp,
-                  color: Colors.black87,
+                readOnly: true,
+                suffixIcon: IconButton(
+                  onPressed: () => _openMapPicker(controller),
+                  icon: Icon(
+                    Icons.edit_note,
+                    size: 24.sp,
+                    color: Colors.black87,
+                  ),
                 ),
                 backgroundColor: Colors.white,
                 // prefixIcon: Icon(Icons.location_on_outlined, color: Colors.blue, size: 20.sp),

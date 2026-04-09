@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
-import 'package:protiva502/features/service_provider/booking/widget/bookingCard.dart';
-import 'package:protiva502/features/service_provider/booking/widget/statsGrid.dart';
+import 'package:protiva502/features/service_provider/booking/widget/booking_card.dart';
+import 'package:protiva502/features/service_provider/booking/widget/stats_grid.dart';
 
 class BookingScreen extends StatelessWidget {
   const BookingScreen({super.key});
@@ -63,8 +63,50 @@ class BookingScreen extends StatelessWidget {
               SizedBox(height: 20.h),
               _buildTabs(controller),
               SizedBox(height: 20.h),
-              Obx(
-                () => ListView.separated(
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (controller.errorMessage.value.isNotEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          controller.errorMessage.value,
+                          textAlign: TextAlign.center,
+                          style: getTextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF334155),
+                          ),
+                        ),
+                        SizedBox(height: 12.h),
+                        ElevatedButton(
+                          onPressed: controller.fetchBookings,
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                if (controller.filteredBookings.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No bookings found',
+                      textAlign: TextAlign.center,
+                      style: getTextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF334155),
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: controller.filteredBookings.length,
@@ -77,8 +119,8 @@ class BookingScreen extends StatelessWidget {
                       index: index,
                     );
                   },
-                ),
-              ),
+                );
+              }),
               SizedBox(height: 40.h),
             ],
           ),

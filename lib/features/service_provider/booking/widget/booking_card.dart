@@ -5,11 +5,12 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
+import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
 import 'package:protiva502/features/user/track_provider/screen/track_provider_screen.dart';
 
 class BookingCard extends StatelessWidget {
   final BookingController controller;
-  final Map<String, dynamic> booking;
+  final RecentBookingModel booking;
   final int index;
 
   const BookingCard({
@@ -21,17 +22,18 @@ class BookingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final status = controller.statusLabelOf(booking);
+
     final cardContent = Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Color(0xFFCBD5E1)),
+        border: Border.all(color: const Color(0xFFCBD5E1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -46,26 +48,21 @@ class BookingCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(
-                    booking['status'],
-                  ).withValues(alpha: 0.1),
+                  color: _getStatusColor(status).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4.r),
                 ),
                 child: Text(
-                  booking['status'],
+                  status,
                   style: getTextStyle(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w600,
-                    color: _getStatusColor(booking['status']),
+                    color: _getStatusColor(status),
                   ),
                 ),
               ),
             ],
           ),
-
           SizedBox(height: 16.h),
-
-          /// Job Info
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -84,26 +81,30 @@ class BookingCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      booking['title']!,
+                      booking.serviceName,
                       style: getTextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF0F172A),
+                        color: const Color(0xFF0F172A),
                       ),
                     ),
                     SizedBox(height: 4.h),
                     Row(
                       children: [
-                        Text(
-                          'Job Post:${booking['postDate']} ',
-                          style: getTextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
+                        Expanded(
+                          child: Text(
+                            'Booking Date: ${_formatDate(booking.createdAt)}',
+                            style: getTextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        SizedBox(width: 8.w),
                         Text(
-                          'Budget :${booking['budget']}',
+                          'Budget: ${booking.serviceAmount.toStringAsFixed(0)} ৳',
                           style: getTextStyle(
                             fontSize: 12.sp,
                             color: Colors.black,
@@ -113,7 +114,7 @@ class BookingCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      'Booking id:${booking['bookingId']}',
+                      'Booking id: ${booking.id}',
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: Colors.black,
@@ -125,21 +126,26 @@ class BookingCard extends StatelessWidget {
               ),
             ],
           ),
-
           SizedBox(height: 16.h),
           const Divider(color: Color(0xFFDBDBDB)),
           SizedBox(height: 12.h),
-
-          /// Details
-          _buildInfoRow(null, 'Client: ${booking['clientName']}'),
-          _buildInfoRow(null, 'Payment: ${booking['paymentMethod']}'),
-          _buildInfoRow(Icons.calendar_month_outlined, booking['date']!),
-          _buildInfoRow(Icons.access_time, booking['time']!),
-          _buildInfoRow(Icons.location_on_outlined, booking['location']!),
-
+          _buildInfoRow(null, 'Client: ${booking.contactPhone}'),
+          _buildInfoRow(
+            null,
+            'Payment: ${controller.paymentMethodLabelOf(booking)}',
+          ),
+          _buildInfoRow(
+            Icons.calendar_month_outlined,
+            _formatDate(booking.preferredDate),
+          ),
+          _buildInfoRow(Icons.access_time, booking.preferredTime),
+          _buildInfoRow(
+            Icons.location_on_outlined,
+            booking.locationDetails.isEmpty
+                ? 'No location details'
+                : booking.locationDetails,
+          ),
           SizedBox(height: 16.h),
-
-          /// Actions
           Row(
             children: [
               GestureDetector(
@@ -148,7 +154,7 @@ class BookingCard extends StatelessWidget {
                   'Massage',
                   style: getTextStyle(
                     fontSize: 14.sp,
-                    color: Color(0xFF0F172A),
+                    color: const Color(0xFF0F172A),
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -160,16 +166,14 @@ class BookingCard extends StatelessWidget {
                   'View Details',
                   style: getTextStyle(
                     fontSize: 14.sp,
-                    color: Color(0xFF0F172A),
+                    color: const Color(0xFF0F172A),
                     decoration: TextDecoration.underline,
                   ),
                 ),
               ),
             ],
           ),
-
-          /// Pending Buttons
-          if (booking['status'] == 'Pending') ...[
+          if (status == 'Pending') ...[
             SizedBox(height: 20.h),
             Row(
               children: [
@@ -186,7 +190,6 @@ class BookingCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 12.w),
-
                 Expanded(
                   child: SizedBox(
                     height: 44.h,
@@ -206,10 +209,8 @@ class BookingCard extends StatelessWidget {
       ),
     );
 
-    // Wrap with GestureDetector if status is "Accepted"
-    if (booking['status'] == 'Accepted') {
+    if (status == 'Accepted') {
       return GestureDetector(
-        // onTap: () => controller.handleViewDetails(index),
         onTap: () => Get.to(() => TrackProviderScreen()),
         child: cardContent,
       );
@@ -227,12 +228,14 @@ class BookingCard extends StatelessWidget {
             Icon(icon, size: 16.sp, color: Colors.black),
             SizedBox(width: 8.w),
           ],
-          Text(
-            text,
-            style: getTextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
+          Expanded(
+            child: Text(
+              text,
+              style: getTextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+              ),
             ),
           ),
         ],
@@ -253,5 +256,13 @@ class BookingCard extends StatelessWidget {
       default:
         return Colors.grey;
     }
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) {
+      return 'N/A';
+    }
+
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

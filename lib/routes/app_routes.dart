@@ -37,6 +37,7 @@ import 'package:protiva502/features/service_provider/settings/screen/settings_sc
 import 'package:protiva502/features/service_provider/wallet/screen/wallet_screen.dart';
 import 'package:protiva502/features/service_provider/profile/screen/profile_screen.dart';
 import 'package:protiva502/features/service_provider/booking/screen/provider_booking_details_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/model/booking_confirmation_data.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/confirm_booking_screen.dart';
 import 'package:protiva502/features/service_provider/social_media/screen/social_media_screen.dart';
 
@@ -247,7 +248,15 @@ class AppRoute {
     ),
     GetPage(
       name: confirmBookingScreen(),
-      page: () => ConfirmBookingScreen(),
+      page: () {
+        final bookingData = Get.arguments;
+
+        if (bookingData is BookingConfirmationData) {
+          return ConfirmBookingScreen(bookingData: bookingData);
+        }
+
+        return const BookingDetailsScreen();
+      },
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

@@ -7,6 +7,7 @@ class ApiEndpoints {
   static const String userBanners = '/marketing/user/banners';
   static const String homeJobs = '/job/home-jobs';
   static const String myAllBookings = '/bookings/my-all-booking';
+  static const String makeBooking = '/bookings/make-booking';
   static const String myActiveJob = '/job/my-active-job';
   static const String providerWallet = '/withdraw/provider-wallet';
   static const String recentBookings = '/bookings/recent-bookings';

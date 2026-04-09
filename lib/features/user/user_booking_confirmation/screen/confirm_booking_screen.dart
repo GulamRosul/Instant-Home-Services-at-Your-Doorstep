@@ -2,22 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
-import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/confirm_booking_controller.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/model/booking_confirmation_data.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/booking_step_progress.dart';
 
 class ConfirmBookingScreen extends StatelessWidget {
-  const ConfirmBookingScreen({super.key});
+  const ConfirmBookingScreen({super.key, required this.bookingData});
+
+  final BookingConfirmationData bookingData;
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ConfirmBookingController());
+    final service = bookingData.service;
+    final formattedDateTime = DateFormat(
+      'EEEE, MMMM d, y \'at\' h:mm a',
+    ).format(bookingData.preferredDateTime);
+    final totalPrice = '${service?.basePrice.toStringAsFixed(1) ?? '0.0'} ৳';
+    final message = bookingData.message.isEmpty
+        ? 'No additional message'
+        : bookingData.message;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
@@ -65,7 +76,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16.r),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -105,7 +116,12 @@ class ConfirmBookingScreen extends StatelessWidget {
                     ),
 
                     // Service Preview
-                    _buildServiceSmallCard(),
+                    _buildServiceSmallCard(
+                      title: service?.title ?? 'Selected Service',
+                      price: totalPrice,
+                      thumbnail: service?.thumbnail ?? '',
+                      subtitle: service?.description ?? '',
+                    ),
                     SizedBox(height: 20.h),
 
                     // Detail Rows
@@ -114,41 +130,43 @@ class ConfirmBookingScreen extends StatelessWidget {
                       children: [
                         _buildDetailItem(
                           "Service Name",
-                          "Carpentry & Woodwork",
+                          service?.title ?? 'Selected Service',
                         ),
                       ],
                     ),
-                    _buildDetailItem(
-                      "Date & Time",
-                      "Wednesday, September 3, 2025 at 9:00 AM",
-                    ),
+                    _buildDetailItem("Date & Time", formattedDateTime),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         _buildDetailItem(
                           "Location",
-                          "123 Main Street, Ontario",
+                          bookingData.locationDetails,
                         ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: [_buildDetailItem("Phone", "+12505550199")],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [_buildDetailItem("Service At", "My Location")],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildDetailItem("Payment method", "Mastercard"),
+                        _buildDetailItem("Phone", bookingData.phoneNumber),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildDetailItem("Total", "450.0 ৳", isBold: true),
+                        _buildDetailItem(
+                          "Service At",
+                          bookingData.locationType,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [_buildDetailItem("Message", message)],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildDetailItem("Total", totalPrice, isBold: true),
                       ],
                     ),
                   ],
@@ -157,11 +175,19 @@ class ConfirmBookingScreen extends StatelessWidget {
 
               SizedBox(height: 30.h),
 
-              CustomButton(
-                text: 'Confirm Your Booking',
-                onPressed: controller.confirmBooking,
-                textColor: Colors.white,
-                backgroundColor: AppColors.textPurple,
+              Obx(
+                () => CustomButton(
+                  text: controller.isSubmitting.value
+                      ? 'Confirming...'
+                      : 'Confirm Your Booking',
+                  onPressed: controller.isSubmitting.value
+                      ? null
+                      : () => controller.confirmBooking(bookingData),
+                  textColor: Colors.white,
+                  backgroundColor: controller.isSubmitting.value
+                      ? AppColors.textPurple.withValues(alpha: 0.7)
+                      : AppColors.textPurple,
+                ),
               ),
               100.h.verticalSpace,
             ],
@@ -202,17 +228,35 @@ class ConfirmBookingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceSmallCard() {
+  Widget _buildServiceSmallCard({
+    required String title,
+    required String price,
+    required String thumbnail,
+    required String subtitle,
+  }) {
     return Row(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(8.r),
-          child: Image.asset(
-            ImagePath.servicecard,
-            width: 60.w,
-            height: 60.h,
-            fit: BoxFit.cover,
-          ),
+          child: thumbnail.isNotEmpty
+              ? Image.network(
+                  thumbnail,
+                  width: 60.w,
+                  height: 60.h,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Image.asset(
+                    ImagePath.servicecard,
+                    width: 60.w,
+                    height: 60.h,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : Image.asset(
+                  ImagePath.servicecard,
+                  width: 60.w,
+                  height: 60.h,
+                  fit: BoxFit.cover,
+                ),
         ),
         SizedBox(width: 12.w),
         Expanded(
@@ -223,7 +267,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Home Renovation",
+                    title,
                     style: getTextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w700,
@@ -232,7 +276,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "450.0 ৳",
+                    price,
                     style: getTextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w700,
@@ -242,41 +286,30 @@ class ConfirmBookingScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => ProviderDetailsScreen());
-                    },
-                    child: Text(
-                      "Mike Handyman service",
-                      style: getTextStyle(
-                        fontSize: 11.sp,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        lineHeight: 15.sp,
-                        decoration: TextDecoration.underline,
-                        decorationColor: Colors.black,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 4.w),
-                  Icon(
-                    Icons.check_circle,
-                    size: 12.sp,
-                    color: const Color.fromARGB(255, 237, 154, 66),
-                  ),
-                ],
+              SizedBox(height: 4.h),
+              Text(
+                subtitle.isEmpty
+                    ? 'Service details will be confirmed next.'
+                    : subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: getTextStyle(
+                  fontSize: 11.sp,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  lineHeight: 15.sp,
+                ),
               ),
+              SizedBox(height: 6.h),
               Row(
                 children: [
                   Icon(
-                    Icons.location_on,
+                    Icons.calendar_today_outlined,
                     size: 10.sp,
                     color: AppColors.textBlue,
                   ),
                   Text(
-                    " Toronto, Canada",
+                    " Ready for confirmation",
                     style: getTextStyle(
                       fontSize: 10.sp,
                       color: AppColors.textSecondary,

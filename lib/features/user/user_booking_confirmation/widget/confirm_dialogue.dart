@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
-import 'package:protiva502/core/common/widgets/custom_button.dart';
-import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
-import 'package:protiva502/features/user/user_booking_confirmation/controller/confirm_booking_controller.dart';
 
 class BookingSuccessDialog extends StatelessWidget {
-  const BookingSuccessDialog({super.key});
+  const BookingSuccessDialog({super.key, required this.message});
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ConfirmBookingController());
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
       elevation: 0,
@@ -62,7 +58,7 @@ class BookingSuccessDialog extends StatelessWidget {
 
             // Success Message
             Text(
-              "Your booking has been successfully placed. You can check your booking status in the bookings section.",
+              message,
               textAlign: TextAlign.center,
               style: getTextStyle(
                 fontSize: 14.sp,
@@ -72,50 +68,13 @@ class BookingSuccessDialog extends StatelessWidget {
               ),
             ),
             SizedBox(height: 32.h),
-
-            // Back to Home Button
-            // SizedBox(
-            //   width: double.infinity,
-            //   height: 50.h,
-            //   child: ElevatedButton(
-            //     onPressed: controller.goToHome,
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: AppColors.textPurple,
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(10.r),
-            //       ),
-            //       elevation: 0,
-            //     ),
-            //     child: Text(
-            //       "Back to Home",
-            //       style: getTextStyle(
-            //         color: Colors.white,
-            //         fontSize: 16.sp,
-            //         fontWeight: FontWeight.w600,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            CustomButton(
-              text: 'Back to Home',
-              onPressed: controller.goToHome,
-              textColor: Colors.white,
-              backgroundColor: AppColors.textPurple,
-            ),
-
-            // Optional: Secondary link to View Bookings
-            SizedBox(height: 16.h),
-            GestureDetector(
-              onTap: controller.viewBookings,
-              child: Text(
-                "View My Bookings",
-                style: getTextStyle(
-                  fontSize: 14.sp,
-                  color: AppColors.textPurple,
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.underline,
-                  decorationColor: AppColors.textPurple,
-                ),
+            Text(
+              "Redirecting to payment in 3 seconds...",
+              textAlign: TextAlign.center,
+              style: getTextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.black54,
               ),
             ),
           ],

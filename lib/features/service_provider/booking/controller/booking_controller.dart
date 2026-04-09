@@ -1,17 +1,38 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/core/services/api_client.dart';
+import 'package:protiva502/core/services/secure_storage_service.dart';
+import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
+import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
 
 class BookingController extends GetxController {
-  // Active Tab Index
-  var selectedTabIndex = 0.obs;
+  final ApiClient _apiClient = ApiClient();
 
-  // Tabs labels with dynamic counts
+  final selectedTabIndex = 0.obs;
+  final isLoading = false.obs;
+  final errorMessage = ''.obs;
+  final bookings = <RecentBookingModel>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchBookings();
+  }
+
   List<String> get dynamicTabs {
-    int pendingCount = bookings.where((b) => b['status'] == 'Pending').length;
-    int acceptedCount = bookings.where((b) => b['status'] == 'Accepted').length;
-    int rejectedCount = bookings.where((b) => b['status'] == 'Rejected').length;
-    int inProgressCount = bookings
-        .where((b) => b['status'] == 'In-Progress')
+    final pendingCount = bookings
+        .where((b) => statusLabelOf(b) == 'Pending')
+        .length;
+    final acceptedCount = bookings
+        .where((b) => statusLabelOf(b) == 'Accepted')
+        .length;
+    final rejectedCount = bookings
+        .where((b) => statusLabelOf(b) == 'Rejected')
+        .length;
+    final inProgressCount = bookings
+        .where((b) => statusLabelOf(b) == 'In-Progress')
         .length;
 
     return [
@@ -22,8 +43,7 @@ class BookingController extends GetxController {
     ];
   }
 
-  // Filtered bookings based on selected tab
-  List<Map<String, dynamic>> get filteredBookings {
+  List<RecentBookingModel> get filteredBookings {
     String status = '';
     switch (selectedTabIndex.value) {
       case 0:
@@ -39,22 +59,27 @@ class BookingController extends GetxController {
         status = 'In-Progress';
         break;
     }
-    return bookings.where((b) => b['status'] == status).toList();
+
+    return bookings.where((b) => statusLabelOf(b) == status).toList();
   }
 
-  // Dynamic stats
   List<Map<String, String>> get dynamicStats {
-    int pendingCount = bookings.where((b) => b['status'] == 'Pending').length;
-    int acceptedCount = bookings.where((b) => b['status'] == 'Accepted').length;
-    int inProgressCount = bookings
-        .where((b) => b['status'] == 'In-Progress')
+    final pendingCount = bookings
+        .where((b) => statusLabelOf(b) == 'Pending')
         .length;
-    double totalRevenue = bookings
-        .where((b) => b['status'] == 'Accepted' || b['status'] == 'In-Progress')
-        .fold(
-          0.0,
-          (sum, b) => sum + (double.tryParse(b['budget'].toString()) ?? 0.0),
-        );
+    final acceptedCount = bookings
+        .where((b) => statusLabelOf(b) == 'Accepted')
+        .length;
+    final inProgressCount = bookings
+        .where((b) => statusLabelOf(b) == 'In-Progress')
+        .length;
+    final totalRevenue = bookings
+        .where(
+          (b) =>
+              statusLabelOf(b) == 'Accepted' ||
+              statusLabelOf(b) == 'In-Progress',
+        )
+        .fold<double>(0.0, (sum, b) => sum + b.serviceAmount);
 
     return [
       {
@@ -73,91 +98,156 @@ class BookingController extends GetxController {
         'icon': 'star',
       },
       {
-        'value': '${totalRevenue.toStringAsFixed(2)} \$',
+        'value': '${totalRevenue.toStringAsFixed(2)} ৳',
         'label': 'Total Revenue',
         'icon': 'revenue',
       },
     ];
   }
 
-  // Mock Bookings
-  var bookings = <Map<String, dynamic>>[
-    {
-      'title': 'Carpentry & Woodwork',
-      'date': 'Tuesday, January 30, 2024',
-      'postDate': '20-10-2025',
-      'budget': '350',
-      'bookingId': '0185692',
-      'clientName': 'Sarah Smith',
-      'paymentMethod': 'card',
-      'time': '10:00 AM - 1:00 PM',
-      'location': 'Downtown Toronto, ON',
-      'status': 'Pending',
-    },
-    {
-      'title': 'Carpentry & Woodwork',
-      'date': 'Tuesday, January 30, 2024',
-      'postDate': '20-10-2025',
-      'budget': '450',
-      'bookingId': '0185693',
-      'clientName': 'John Doe',
-      'paymentMethod': 'card',
-      'time': '10:00 AM - 1:00 PM',
-      'location': 'Downtown Toronto, ON',
-      'status': 'Accepted',
-    },
-    {
-      'title': 'Electrical Repair',
-      'date': 'Wednesday, Jan 31, 2024',
-      'postDate': '21-10-2025',
-      'budget': '200',
-      'bookingId': '0185694',
-      'clientName': 'Mike Ross',
-      'paymentMethod': 'cash',
-      'time': '2:00 PM - 4:00 PM',
-      'location': 'Uptown Toronto, ON',
-      'status': 'Rejected',
-    },
-  ].obs;
+  Future<void> fetchBookings() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final token = await SecureStorageService.getToken();
+      if (token == null || token.isEmpty) {
+        errorMessage.value = 'Provider token not found';
+        return;
+      }
+
+      final response = await _apiClient.get<dynamic>(
+        ApiEndpoints.recentBookings,
+        queryParameters: {'page': 1, 'limit': 10},
+        options: Options(
+          headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      debugPrint(
+        'Provider booking request => ${ApiEndpoints.baseUrl}${ApiEndpoints.recentBookings}?page=1&limit=10',
+      );
+      debugPrint('Provider booking status => ${response.statusCode}');
+      debugPrint('Provider booking response => ${response.data}');
+
+      if (response.statusCode != 200) {
+        errorMessage.value = 'Failed to load bookings';
+        bookings.clear();
+        return;
+      }
+
+      final responseMap = _asMap(response.data) ?? <String, dynamic>{};
+      final data = _asMap(responseMap['data']) ?? <String, dynamic>{};
+      final items = data['data'];
+
+      if (items is! List) {
+        bookings.clear();
+        return;
+      }
+
+      bookings.assignAll(
+        items.whereType<Map>().map(
+          (item) => RecentBookingModel.fromJson(
+            item.map((key, value) => MapEntry(key.toString(), value)),
+          ),
+        ),
+      );
+
+      debugPrint('Provider booking length => ${bookings.length}');
+    } on DioException catch (_) {
+      errorMessage.value = 'Failed to load bookings';
+      bookings.clear();
+    } catch (_) {
+      errorMessage.value = 'Failed to load bookings';
+      bookings.clear();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Map<String, dynamic>? _asMap(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return value;
+    }
+
+    if (value is Map) {
+      return value.map((key, item) => MapEntry(key.toString(), item));
+    }
+
+    return null;
+  }
+
+  String statusLabelOf(RecentBookingModel booking) {
+    switch (booking.status.toUpperCase()) {
+      case 'PENDING':
+        return 'Pending';
+      case 'ACCEPTED':
+        return 'Accepted';
+      case 'REJECTED':
+        return 'Rejected';
+      case 'IN_PROGRESS':
+      case 'IN-PROGRESS':
+        return 'In-Progress';
+      default:
+        return booking.status.isEmpty ? 'Pending' : booking.status;
+    }
+  }
+
+  String paymentMethodLabelOf(RecentBookingModel booking) {
+    if (booking.paymentMethod.isEmpty) {
+      return 'N/A';
+    }
+
+    final normalized = booking.paymentMethod.replaceAll('_', ' ').toLowerCase();
+    return normalized
+        .split(' ')
+        .map((part) {
+          if (part.isEmpty) {
+            return part;
+          }
+          return '${part[0].toUpperCase()}${part.substring(1)}';
+        })
+        .join(' ');
+  }
 
   void changeTab(int index) {
     selectedTabIndex.value = index;
   }
 
   void handleAccept(int index) {
-    // Find the original index in 'bookings' list
-    String targetId = filteredBookings[index]['bookingId'];
-    int originalIndex = bookings.indexWhere((b) => b['bookingId'] == targetId);
+    final booking = filteredBookings[index];
+    final originalIndex = bookings.indexWhere((b) => b.id == booking.id);
 
     if (originalIndex != -1) {
-      bookings[originalIndex]['status'] = 'Accepted';
+      bookings[originalIndex] = bookings[originalIndex].copyWith(
+        status: 'ACCEPTED',
+      );
       bookings.refresh();
       Get.snackbar(
-        "Accepted",
-        "Booking from ${bookings[originalIndex]['clientName']} has been accepted.",
+        'Accepted',
+        'Booking for ${bookings[originalIndex].serviceName} has been accepted.',
       );
     }
   }
 
   void handleReject(int index) {
-    String targetId = filteredBookings[index]['bookingId'];
-    int originalIndex = bookings.indexWhere((b) => b['bookingId'] == targetId);
+    final booking = filteredBookings[index];
+    final originalIndex = bookings.indexWhere((b) => b.id == booking.id);
 
     if (originalIndex != -1) {
-      bookings[originalIndex]['status'] = 'Rejected';
+      bookings[originalIndex] = bookings[originalIndex].copyWith(
+        status: 'REJECTED',
+      );
       bookings.refresh();
       Get.snackbar(
-        "Rejected",
-        "Booking from ${bookings[originalIndex]['clientName']} has been rejected.",
+        'Rejected',
+        'Booking for ${bookings[originalIndex].serviceName} has been rejected.',
       );
     }
   }
 
   void handleMessage(int index) {
-    // Get.snackbar(
-    //   "Message",
-    //   "Navigating to chat with ${filteredBookings[index]['clientName']}",
-    // );
     Get.to(() => SingleChatScreen());
   }
 

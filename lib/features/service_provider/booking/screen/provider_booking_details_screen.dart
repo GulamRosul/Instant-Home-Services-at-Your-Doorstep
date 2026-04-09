@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
-import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
-
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
+import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
 
 class ProviderBookingDetailsScreen extends StatelessWidget {
   const ProviderBookingDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> booking = Get.arguments;
+    final RecentBookingModel booking = Get.arguments as RecentBookingModel;
     final controller = Get.find<BookingController>();
-    final String status = booking['status'] ?? 'Pending';
+    final status = controller.statusLabelOf(booking);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -39,31 +39,34 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Booking Details',
-                      style: getTextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Booking Details',
+                        style: getTextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Booking # ${booking['bookingId']}',
-                      style: getTextStyle(
-                        fontSize: 12.sp,
-                        color: Color(0xFF334155),
-                        fontWeight: FontWeight.w500,
+                      Text(
+                        'Booking # ${booking.id}',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: getTextStyle(
+                          fontSize: 12.sp,
+                          color: const Color(0xFF334155),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                SizedBox(width: 12.w),
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 12.w,
@@ -95,57 +98,51 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Color(0xFFCBD5E1)),
+                border: Border.all(color: const Color(0xFFCBD5E1)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildInfoBlock(
-                            'Payment Method',
-                            'Amount : ${booking['budget']}\$',
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: _buildInfoBlock(
-                              'Schedule Date :',
-                              booking['date'],
-                            ),
-                          ),
-                        ],
+                      Expanded(
+                        child: _buildInfoBlock(
+                          'Payment Method',
+                          'Amount : ${booking.serviceAmount.toStringAsFixed(0)} ৳',
+                        ),
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            'Pay Via : ',
-                            style: getTextStyle(
-                              color: Color(0xFF18181A),
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            'Card',
-                            style: getTextStyle(
-                              color: Color(0xFF18181A),
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: _buildInfoBlock(
+                          'Schedule Date :',
+                          _formatDate(booking.preferredDate),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Pay Via : ',
+                        style: getTextStyle(
+                          color: const Color(0xFF18181A),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Text(
+                        controller.paymentMethodLabelOf(booking),
+                        style: getTextStyle(
+                          color: const Color(0xFF18181A),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [_buildInfoBlock('Booking Summary', '')],
-                  ),
+                  _buildInfoBlock('Booking Summary', ''),
                   SizedBox(height: 20.h),
                   _buildServiceTable(booking),
                   SizedBox(height: 20.h),
@@ -153,10 +150,13 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                   SizedBox(height: 12.h),
                   _buildSubtotalRow(
                     'Service amount (Vat Excluded)',
-                    '315.00 ৳',
+                    '${booking.serviceAmount.toStringAsFixed(2)} ৳',
                   ),
                   SizedBox(height: 24.h),
-                  _buildTotalRow('Grand Total', '482.50 ৳'),
+                  _buildTotalRow(
+                    'Grand Total',
+                    '${booking.serviceAmount.toStringAsFixed(2)} ৳',
+                  ),
                 ],
               ),
             ),
@@ -167,7 +167,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: const Color(0xFFF0F4F8),
                 borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Color(0xFFCBD5E1)),
+                border: Border.all(color: const Color(0xFFCBD5E1)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,7 +178,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                       style: getTextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF18181A),
+                        color: const Color(0xFF18181A),
                       ),
                     ),
                   ),
@@ -194,7 +194,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                       'You need to go to the Customer Location to provide the service',
                       style: getTextStyle(
                         fontSize: 12.sp,
-                        color: Color(0xFF18181A),
+                        color: const Color(0xFF18181A),
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -204,13 +204,15 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                     'Service Location:',
                     style: getTextStyle(
                       fontSize: 14.sp,
-                      color: Color(0xFF18181A),
+                      color: const Color(0xFF18181A),
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    booking['location'],
+                    booking.locationDetails.isEmpty
+                        ? 'No location details'
+                        : booking.locationDetails,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
@@ -220,8 +222,40 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(height: 20.h),
+            if (booking.message.isNotEmpty)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: const Color(0xFFCBD5E1)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Customer Message',
+                      style: getTextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      booking.message,
+                      style: getTextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF334155),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             SizedBox(height: 30.h),
-
             if (status == 'Pending')
               Row(
                 children: [
@@ -230,7 +264,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                       text: 'Accept',
                       onPressed: () {
                         final index = controller.bookings.indexWhere(
-                          (b) => b['bookingId'] == booking['bookingId'],
+                          (b) => b.id == booking.id,
                         );
                         if (index != -1) {
                           controller.handleAccept(index);
@@ -249,7 +283,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                       text: 'Reject',
                       onPressed: () {
                         final index = controller.bookings.indexWhere(
-                          (b) => b['bookingId'] == booking['bookingId'],
+                          (b) => b.id == booking.id,
                         );
                         if (index != -1) {
                           controller.handleReject(index);
@@ -280,21 +314,19 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            color: Color(0xFF18181A),
+            color: const Color(0xFF18181A),
           ),
         ),
         if (value.isNotEmpty) SizedBox(height: 6.h),
         if (value.isNotEmpty)
-          SizedBox(
-            width: 130.w,
-            child: Text(
-              value,
-              style: getTextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.black,
-              ),
-              overflow: TextOverflow.ellipsis,
+          Text(
+            value,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: getTextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.black,
             ),
           ),
         if (value.isNotEmpty) SizedBox(height: 6.h),
@@ -302,7 +334,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceTable(Map<String, dynamic> booking) {
+  Widget _buildServiceTable(RecentBookingModel booking) {
     return Column(
       children: [
         Container(
@@ -316,9 +348,9 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Expanded(child: _buildTableHeader('Service')),
-              SizedBox(width: 110.w, child: _buildTableHeader('Amount')),
-              SizedBox(width: 40.w, child: _buildTableHeader('Total')),
+              Expanded(flex: 5, child: _buildTableHeader('Service')),
+              Expanded(flex: 3, child: _buildTableHeader('Amount')),
+              Expanded(flex: 2, child: _buildTableHeader('Total')),
             ],
           ),
         ),
@@ -327,22 +359,30 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
+                flex: 5,
                 child: Text(
-                  booking['title'],
+                  booking.serviceName,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: getTextStyle(fontSize: 12.sp, color: Colors.black87),
                 ),
               ),
-              SizedBox(
-                width: 90.w,
+              Expanded(
+                flex: 3,
                 child: Text(
-                  '৳ 350.00',
+                  '৳ ${booking.serviceAmount.toStringAsFixed(2)}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: getTextStyle(fontSize: 12.sp, color: Colors.black87),
                 ),
               ),
-              SizedBox(
-                width: 55.w,
+              Expanded(
+                flex: 2,
                 child: Text(
-                  '৳ 315.00',
+                  '৳ ${booking.serviceAmount.toStringAsFixed(2)}',
+                  textAlign: TextAlign.end,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: getTextStyle(fontSize: 12.sp, color: Colors.black87),
                 ),
               ),
@@ -358,28 +398,32 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
       text,
       style: getTextStyle(
         fontSize: 12.sp,
-        fontWeight: FontWeight.w500,
-        color: Colors.grey.shade600,
+        fontWeight: FontWeight.w600,
+        color: const Color(0xFF334155),
       ),
     );
   }
 
   Widget _buildSubtotalRow(String label, String value) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: getTextStyle(
-            fontSize: 13.sp,
-            color: Color(0xFF18181A),
-            fontWeight: FontWeight.w500,
+        Expanded(
+          child: Text(
+            label,
+            style: getTextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF334155),
+            ),
           ),
         ),
+        SizedBox(width: 12.w),
         Text(
           value,
+          textAlign: TextAlign.end,
           style: getTextStyle(
-            fontSize: 14.sp,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w500,
             color: Colors.black,
           ),
@@ -390,22 +434,26 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
 
   Widget _buildTotalRow(String label, String value) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: getTextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF18181A),
+        Expanded(
+          child: Text(
+            label,
+            style: getTextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
           ),
         ),
+        SizedBox(width: 12.w),
         Text(
           value,
+          textAlign: TextAlign.end,
           style: getTextStyle(
             fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF18181A),
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
           ),
         ),
       ],
@@ -415,7 +463,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'Pending':
-        return const Color(0xFFCA8A04);
+        return const Color(0xFFEAB308);
       case 'Accepted':
         return const Color(0xFF22C55E);
       case 'Rejected':
@@ -425,5 +473,13 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
       default:
         return Colors.grey;
     }
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) {
+      return 'N/A';
+    }
+
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

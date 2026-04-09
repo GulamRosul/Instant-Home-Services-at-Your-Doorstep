@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/service_provider/home/model/active_job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/my_job_list_controller.dart';
 
 class MyJobListScreen extends StatelessWidget {
@@ -98,16 +99,75 @@ class MyJobListScreen extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
             Expanded(
-              child: Obx(
-                () => ListView.separated(
-                  itemCount: controller.listings.length,
-                  separatorBuilder: (context, index) => SizedBox(height: 16.h),
-                  itemBuilder: (context, index) {
-                    final item = controller.listings[index];
-                    return _buildJobCard(context, controller, item, index);
-                  },
-                ),
-              ),
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (controller.errorMessage.value.isNotEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          controller.errorMessage.value,
+                          textAlign: TextAlign.center,
+                          style: getTextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF334155),
+                          ),
+                        ),
+                        SizedBox(height: 12.h),
+                        ElevatedButton(
+                          onPressed: controller.fetchMyActiveJobs,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF787BEB),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                          ),
+                          child: Text(
+                            'Retry',
+                            style: getTextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                if (controller.listings.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No jobs found',
+                      textAlign: TextAlign.center,
+                      style: getTextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF334155),
+                      ),
+                    ),
+                  );
+                }
+
+                return RefreshIndicator(
+                  onRefresh: controller.fetchMyActiveJobs,
+                  child: ListView.separated(
+                    itemCount: controller.listings.length,
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: 16.h),
+                    itemBuilder: (context, index) {
+                      final item = controller.listings[index];
+                      return _buildJobCard(context, controller, item, index);
+                    },
+                  ),
+                );
+              }),
             ),
           ],
         ),
@@ -118,7 +178,7 @@ class MyJobListScreen extends StatelessWidget {
   Widget _buildJobCard(
     BuildContext context,
     MyJobListController controller,
-    Map<String, String> item,
+    ActiveJobModel item,
     int index,
   ) {
     return Container(
@@ -150,7 +210,7 @@ class MyJobListScreen extends StatelessWidget {
                     children: [
                       SvgPicture.asset(IconPath.star, height: 14.h),
                       Text(
-                        ' ${item['rating']} ',
+                        ' ${item.averageRating.toStringAsFixed(1)} ',
                         style: getTextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
@@ -170,7 +230,7 @@ class MyJobListScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            item['title']!,
+                            item.title,
                             style: getTextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w500,
@@ -237,7 +297,9 @@ class MyJobListScreen extends StatelessWidget {
                         SizedBox(width: 4.w),
                         Expanded(
                           child: Text(
-                            item['location']!,
+                            item.description.isEmpty
+                                ? 'No description available'
+                                : item.description,
                             style: getTextStyle(
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w500,
@@ -259,7 +321,7 @@ class MyJobListScreen extends StatelessWidget {
                         ),
                         children: [
                           TextSpan(
-                            text: item['price'],
+                            text: '${item.basePrice.toStringAsFixed(0)} ৳',
                             style: getTextStyle(
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w600,
@@ -281,19 +343,19 @@ class MyJobListScreen extends StatelessWidget {
               Flexible(
                 child: _buildJobStat(
                   Icons.visibility_outlined,
-                  "${item['views']} views",
+                  "${item.views} views",
                 ),
               ),
               Flexible(
                 child: _buildJobStat(
                   Icons.description_outlined,
-                  "${item['applications']} applications",
+                  "${item.clicks} clicks",
                 ),
               ),
               Flexible(
                 child: _buildJobStat(
                   Icons.calendar_month_outlined,
-                  "${item['bookings']} bookings",
+                  "${item.totalBookings} bookings",
                 ),
               ),
             ],
@@ -313,7 +375,7 @@ class MyJobListScreen extends StatelessWidget {
           child: Text(
             text,
             style: getTextStyle(
-              fontSize: 12.sp,
+              fontSize: 11.sp,
               color: Colors.black,
               fontWeight: FontWeight.w400,
             ),

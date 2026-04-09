@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:protiva502/features/google_map/controller/map_controller.dart';
+import 'package:protiva502/features/google_map/model/picked_location_data.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key, this.isPickerMode = false});
@@ -53,7 +54,7 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    Get.back<String>(result: controller.selectedLocationLabel);
+    Get.back<PickedLocationData>(result: _buildPickedLocationData());
   }
 
   Future<void> _handleMapTap(LatLng position) async {
@@ -63,7 +64,7 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    Get.back<String>(result: controller.selectedLocationLabel);
+    Get.back<PickedLocationData>(result: _buildPickedLocationData());
   }
 
   Future<void> _handleCurrentLocationTap() async {
@@ -79,7 +80,18 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    Get.back<String>(result: controller.selectedLocationLabel);
+    Get.back<PickedLocationData>(result: _buildPickedLocationData());
+  }
+
+  PickedLocationData _buildPickedLocationData() {
+    final selectedPosition =
+        controller.destinationLatLng.value ?? controller.currentLatLng.value;
+
+    return PickedLocationData(
+      address: controller.selectedLocationLabel,
+      latitude: selectedPosition.latitude,
+      longitude: selectedPosition.longitude,
+    );
   }
 
   @override

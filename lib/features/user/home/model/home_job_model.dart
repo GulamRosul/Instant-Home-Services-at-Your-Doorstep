@@ -1,6 +1,7 @@
 class HomeJobModel {
   const HomeJobModel({
     required this.id,
+    required this.userId,
     required this.title,
     required this.description,
     required this.basePrice,
@@ -11,6 +12,7 @@ class HomeJobModel {
   });
 
   final String id;
+  final String userId;
   final String title;
   final String description;
   final double basePrice;
@@ -22,6 +24,7 @@ class HomeJobModel {
   factory HomeJobModel.fromJson(Map<String, dynamic> json) {
     return HomeJobModel(
       id: json['id']?.toString() ?? '',
+      userId: json['userId']?.toString() ?? '',
       title: json['title']?.toString() ?? 'Untitled Service',
       description: json['description']?.toString() ?? '',
       basePrice: double.tryParse(json['basePrice']?.toString() ?? '') ?? 0,

@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/google_map/model/picked_location_data.dart';
 import 'package:protiva502/features/google_map/screen/map_screen.dart';
 import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/booking_details_controller.dart';
@@ -18,12 +20,17 @@ class BookingDetailsScreen extends StatelessWidget {
   final HomeJobModel? service;
 
   Future<void> _openMapPicker(BookingDetailsController controller) async {
-    final selectedLocation = await Get.to<String>(
+    final selectedLocation = await Get.to<PickedLocationData>(
       () => MapScreen(isPickerMode: true),
     );
 
-    if (selectedLocation != null && selectedLocation.trim().isNotEmpty) {
-      controller.locationController.text = selectedLocation;
+    if (selectedLocation != null &&
+        selectedLocation.address.trim().isNotEmpty) {
+      controller.updateSelectedLocation(
+        address: selectedLocation.address,
+        latitude: selectedLocation.latitude,
+        longitude: selectedLocation.longitude,
+      );
     }
   }
 
@@ -100,9 +107,25 @@ class BookingDetailsScreen extends StatelessWidget {
               _buildLabel("Phone"),
               CustomTextField(
                 controller: controller.phoneController,
+                hintText: "2505550199",
                 keyboardType: TextInputType.phone,
                 backgroundColor: Colors.white,
-                // hintTextColor: Colors.black,
+                prefixIcon: CountryCodePicker(
+                  onChanged: (country) => controller.updateCountryCode(
+                    country.dialCode ?? controller.selectedCountryCode.value,
+                  ),
+                  initialSelection: controller.selectedCountryCode.value,
+                  favorite: const ["+1", "US", "+880", "BD"],
+                  showCountryOnly: false,
+                  showOnlyCountryWhenClosed: false,
+                  alignLeft: false,
+                  padding: EdgeInsets.zero,
+                  textStyle: getTextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
+                ),
               ),
 
               SizedBox(height: 16.h),
@@ -183,7 +206,7 @@ class BookingDetailsScreen extends StatelessWidget {
               SizedBox(height: 24.h),
               CustomButton(
                 text: 'Next',
-                onPressed: controller.goToNextStep,
+                onPressed: () => controller.goToNextStep(service),
                 textColor: Colors.white,
               ),
               100.h.verticalSpace,

@@ -1,16 +1,143 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:protiva502/core/services/api_client.dart';
+import 'package:protiva502/core/services/secure_storage_service.dart';
+import 'package:protiva502/core/utils/constants/apiendpoint.dart';
+import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/bottom_nav/controller/bottom_nav_controller.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/model/booking_confirmation_data.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/widget/confirm_dialogue.dart';
 
 class ConfirmBookingController extends GetxController {
-  // You can pass the booking data from the previous screen via Get.arguments
-  final bookingData = Get.arguments;
+  ConfirmBookingController({ApiClient? apiClient})
+    : _apiClient = apiClient ?? ApiClient();
 
-  void confirmBooking() {
-    // Navigate to payment screen
-    Get.to(() => const PaymentScreen());
+  final ApiClient _apiClient;
+  final isSubmitting = false.obs;
+
+  Future<void> confirmBooking(BookingConfirmationData bookingData) async {
+    if (isSubmitting.value) {
+      return;
+    }
+
+    final service = bookingData.service;
+    if (service == null) {
+      Get.snackbar(
+        'Booking Failed',
+        'Service information is missing. Please start again.',
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(12),
+      );
+      return;
+    }
+
+    if (service.userId.trim().isEmpty || service.id.trim().isEmpty) {
+      Get.snackbar(
+        'Booking Failed',
+        'Provider or job information is missing for this service.',
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(12),
+      );
+      return;
+    }
+
+    final token = await SecureStorageService.getToken();
+    if (token == null || token.trim().isEmpty) {
+      Get.snackbar(
+        'Login Required',
+        'Please sign in again to confirm your booking.',
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(12),
+      );
+      return;
+    }
+
+    final payload = {
+      'providerId': service.userId,
+      'jobId': service.id,
+      'serviceName': service.title,
+      'preferredDate': bookingData.preferredDateTime.toUtc().toIso8601String(),
+      'preferredTime': DateFormat('h a').format(bookingData.preferredDateTime),
+      'serviceLocation': _mapServiceLocation(bookingData.locationType),
+      'locationLatitude': bookingData.locationLatitude,
+      'locationLongitude': bookingData.locationLongitude,
+      'locationDetails': bookingData.locationDetails,
+      'contactPhone': bookingData.phoneNumber,
+      'serviceAmount': service.basePrice,
+      'message': bookingData.message,
+    };
+
+    try {
+      isSubmitting.value = true;
+      AppLoggerHelper.info('Make booking request payload: $payload');
+
+      final response = await _apiClient.post<dynamic>(
+        ApiEndpoints.makeBooking,
+        data: payload,
+        options: Options(
+          headers: {'Authorization': 'Bearer $token', 'accept': '*/*'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      AppLoggerHelper.info(
+        'Make booking response => ${response.statusCode} ${response.data}',
+      );
+
+      final message = _extractMessage(response.data);
+      final isSuccess = _extractSuccess(response.data);
+
+      if ((response.statusCode == 200 || response.statusCode == 201) &&
+          isSuccess) {
+        Get.dialog(
+          BookingSuccessDialog(
+            message:
+                message ??
+                'Thank You! We’ve sent your booking details to Provider',
+          ),
+          barrierDismissible: false,
+        );
+        await Future<void>.delayed(const Duration(seconds: 3));
+        if (Get.isDialogOpen ?? false) {
+          Get.back();
+        }
+        Get.to(() => const PaymentScreen());
+        return;
+      }
+
+      Get.snackbar(
+        'Booking Failed',
+        message ?? 'Unable to confirm your booking right now.',
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(12),
+      );
+    } on DioException catch (error) {
+      final message =
+          _extractMessage(error.response?.data) ??
+          error.message ??
+          'Unable to confirm your booking right now.';
+      AppLoggerHelper.error('Make booking request failed', error);
+      Get.snackbar(
+        'Booking Failed',
+        message,
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(12),
+      );
+    } catch (error) {
+      AppLoggerHelper.error('Unexpected make booking error', error);
+      Get.snackbar(
+        'Booking Failed',
+        'Something went wrong while confirming your booking.',
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(12),
+      );
+    } finally {
+      isSubmitting.value = false;
+    }
   }
 
   void goToHome() {
@@ -30,5 +157,41 @@ class ConfirmBookingController extends GetxController {
       final navController = Get.find<BottomNavController>();
       navController.changeTab(1);
     });
+  }
+
+  String _mapServiceLocation(String locationType) {
+    return locationType == 'Provider Location'
+        ? 'PROVIDER_LOCATION'
+        : 'CUSTOMER_LOCATION';
+  }
+
+  bool _extractSuccess(dynamic responseData) {
+    final responseMap = _asMap(responseData);
+    final data = _asMap(responseMap?['data']);
+    return data?['success'] == true;
+  }
+
+  String? _extractMessage(dynamic responseData) {
+    final responseMap = _asMap(responseData);
+    final data = _asMap(responseMap?['data']);
+    final message = data?['message'] ?? responseMap?['message'];
+
+    if (message is String && message.trim().isNotEmpty) {
+      return message.trim();
+    }
+
+    return null;
+  }
+
+  Map<String, dynamic>? _asMap(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return value;
+    }
+
+    if (value is Map) {
+      return value.map((key, item) => MapEntry(key.toString(), item));
+    }
+
+    return null;
   }
 }

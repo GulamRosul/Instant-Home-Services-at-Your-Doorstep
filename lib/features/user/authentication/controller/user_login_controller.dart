@@ -124,7 +124,7 @@ class UserLoginController extends GetxController {
       debugPrint('❌ [LOGIN] Exception caught: $e');
       debugPrint('❌ [LOGIN] Stack trace: $stackTrace');
       AppLoggerHelper.error('Login failed with error: $e');
-      Get.snackbar("Error", "Login failed: ${e.toString()}");
+      Get.snackbar("Error", "Login failed");
     } finally {
       isLoading.value = false;
       debugPrint('🏁 [LOGIN] Login process completed');

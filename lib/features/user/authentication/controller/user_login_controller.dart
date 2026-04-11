@@ -26,60 +26,108 @@ class UserLoginController extends GetxController {
     final email = emailController.text.trim();
     final password = passwordController.text;
 
+    debugPrint('🔐 [LOGIN] Email: $email');
+    debugPrint('🔐 [LOGIN] Password length: ${password.length}');
+
     if (email.isEmpty || !GetUtils.isEmail(email)) {
       Get.snackbar("Error", "Enter valid email");
+      debugPrint('❌ [LOGIN] Invalid email format');
       return;
     }
 
     if (password.isEmpty) {
       Get.snackbar("Error", "Enter password");
+      debugPrint('❌ [LOGIN] Empty password');
       return;
     }
 
     try {
       isLoading.value = true;
+      debugPrint('🔄 [LOGIN] Sending login request...');
 
       final response = await _apiClient.post(
         ApiEndpoints.login,
         data: {"email": email, "password": password},
       );
 
+      debugPrint('📡 [LOGIN] Response status code: ${response.statusCode}');
+      debugPrint('📡 [LOGIN] Full response data: ${response.data}');
+      debugPrint('📡 [LOGIN] Response headers: ${response.headers}');
+
       if (response.statusCode != 200) {
+        debugPrint('❌ [LOGIN] Server error: ${response.statusCode}');
         Get.snackbar("Error", "Server error: ${response.statusCode}");
         return;
       }
 
       final data = response.data["data"];
+      debugPrint('📦 [LOGIN] Extracted data: $data');
+
       final token = data?["accessToken"];
+      debugPrint('🔑 [LOGIN] Access token exists: ${token != null}');
+      debugPrint('🔑 [LOGIN] Token length: ${token?.length ?? 0}');
 
       if (token == null || token.isEmpty) {
+        debugPrint('❌ [LOGIN] Invalid or empty token in response');
         Get.snackbar("Error", "Invalid login response");
         return;
       }
 
       AppLoggerHelper.info('Login success response: ${response.data}');
+      debugPrint('✅ [LOGIN] Token validated successfully');
+
+      final userId = data?["user"]?["id"]?.toString();
+      final userEmail = data?["user"]?["email"]?.toString() ?? email;
+      final firstName = data?["user"]?["firstName"]?.toString();
+      final lastName = data?["user"]?["lastName"]?.toString();
+      final username = data?["user"]?["username"]?.toString() ?? email;
+      final role = data?["user"]?["role"]?.toString() ?? 'user';
+      final avatar = data?["user"]?["avatar"]?.toString();
+
+      debugPrint('👤 [LOGIN] User ID: $userId');
+      debugPrint('👤 [LOGIN] User Email: $userEmail');
+      debugPrint('👤 [LOGIN] User Name: $firstName $lastName');
+      debugPrint('👤 [LOGIN] Username: $username');
+      debugPrint('👤 [LOGIN] Role: $role');
+      debugPrint('👤 [LOGIN] Avatar: $avatar');
 
       await StorageService.makeLoggedIn();
+      debugPrint('💾 [LOGIN] Marked as logged in');
+
       await StorageService.saveUser(
-        userId: data?["user"]?["id"]?.toString(),
-        email: data?["user"]?["email"]?.toString() ?? email,
-        firstName: data?["user"]?["firstName"]?.toString(),
-        lastName: data?["user"]?["lastName"]?.toString(),
-        username: data?["user"]?["username"]?.toString() ?? email,
-        role: data?["user"]?["role"]?.toString() ?? 'user',
-        avatar: data?["user"]?["avatar"]?.toString(),
+        userId: userId,
+        email: userEmail,
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
+        role: role,
+        avatar: avatar,
       );
+      debugPrint('💾 [LOGIN] User data saved');
+
       await SecureStorageService.saveToken(token);
+      debugPrint('🔐 [LOGIN] Access token saved');
+
       final refreshToken = data?["refreshToken"]?.toString();
+      debugPrint('🔄 [LOGIN] Refresh token exists: ${refreshToken != null}');
+
       if (refreshToken != null && refreshToken.isNotEmpty) {
         await SecureStorageService.saveRefreshToken(refreshToken);
+        debugPrint('🔐 [LOGIN] Refresh token saved');
       }
 
+      debugPrint(
+        '✅ [LOGIN] All data saved successfully, navigating to home...',
+      );
       Get.offAll(() => const MainNavigationScreen());
-    } catch (e) {
-      Get.snackbar("Error", "Login failed");
+    } catch (e, stackTrace) {
+      debugPrint('❌ [LOGIN] Exception caught: $e');
+      debugPrint('❌ [LOGIN] Stack trace: $stackTrace');
+      AppLoggerHelper.error('Login failed with error: $e');
+      Get.snackbar("Error", "Login failed: ${e.toString()}");
     } finally {
       isLoading.value = false;
+      debugPrint('🏁 [LOGIN] Login process completed');
     }
   }
 

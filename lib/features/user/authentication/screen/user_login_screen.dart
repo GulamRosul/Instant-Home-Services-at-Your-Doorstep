@@ -108,7 +108,7 @@ class UserLoginScreen extends StatelessWidget {
                   style: getTextStyle(fontSize: 14.sp, color: Colors.black),
                 ),
                 GestureDetector(
-                  onTap: () => Get.toNamed('/register'),
+                  onTap: () => Get.toNamed('/userRegScreen'),
                   child: Text(
                     'Sign Up',
                     style: getTextStyle(

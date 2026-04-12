@@ -66,182 +66,234 @@ class ProfileScreen extends StatelessWidget {
     required BuildContext context,
     required String label,
     required String currentValue,
-    required ValueChanged<String> onSave,
+    required Future<bool> Function(String value) onSave,
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
   }) {
     final textController = TextEditingController(text: currentValue);
+    var isSaving = false;
 
     showDialog(
       context: context,
       barrierColor: const Color(0xFF0F172A).withValues(alpha: 0.45),
-      builder: (dialogContext) => Dialog(
-        insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
-        backgroundColor: Colors.transparent,
-        child: Container(
-          padding: EdgeInsets.all(24.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24.r),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF0F172A).withValues(alpha: 0.14),
-                blurRadius: 32,
-                offset: const Offset(0, 20),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 52.w,
-                height: 52.w,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setState) => Dialog(
+          insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+          backgroundColor: Colors.transparent,
+          child: AnimatedPadding(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOut,
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(dialogContext).viewInsets.bottom,
+            ),
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.all(24.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF1E293B), Color(0xFF475569)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Icon(
-                  Icons.edit_outlined,
                   color: Colors.white,
-                  size: 24.sp,
-                ),
-              ),
-              SizedBox(height: 18.h),
-              Text(
-                'Edit $label',
-                style: getTextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF0F172A),
-                ),
-              ),
-              SizedBox(height: 6.h),
-              Text(
-                'Update your $label details below and save when you are ready.',
-                style: getTextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color(0xFF64748B),
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.badge_outlined,
-                      size: 18.sp,
-                      color: const Color(0xFF475569),
+                  borderRadius: BorderRadius.circular(24.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF0F172A).withValues(alpha: 0.14),
+                      blurRadius: 32,
+                      offset: const Offset(0, 20),
                     ),
-                    SizedBox(width: 8.w),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 52.w,
+                      height: 52.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.r),
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF1E293B), Color(0xFF475569)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.edit_outlined,
+                        color: Colors.white,
+                        size: 24.sp,
+                      ),
+                    ),
+                    SizedBox(height: 18.h),
                     Text(
-                      label,
+                      'Edit $label',
+                      style: getTextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF0F172A),
+                      ),
+                    ),
+                    SizedBox(height: 6.h),
+                    Text(
+                      'Update your $label details below and save when you are ready.',
                       style: getTextStyle(
                         fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF334155),
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF64748B),
                       ),
+                    ),
+                    SizedBox(height: 20.h),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 10.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.badge_outlined,
+                            size: 18.sp,
+                            color: const Color(0xFF475569),
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            label,
+                            style: getTextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF334155),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 14.h),
+                    CustomTextField(
+                      controller: textController,
+                      hintText: 'Enter $label',
+                      keyboardType: keyboardType,
+                      maxLines: maxLines,
+                      minLines: maxLines > 1 ? maxLines : null,
+                      backgroundColor: const Color(0xFFF8FAFC),
+                      borderColor: const Color(0xFFCBD5E1),
+                      borderRadius: 16.r,
+                      autofocus: true,
+                      enabled: !isSaving,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: maxLines > 1 ? 16.h : 14.h,
+                      ),
+                    ),
+                    SizedBox(height: 22.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: isSaving
+                                ? null
+                                : () => Navigator.of(dialogContext).pop(),
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: Size.fromHeight(48.h),
+                              side: const BorderSide(color: Color(0xFFCBD5E1)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14.r),
+                              ),
+                            ),
+                            child: Text(
+                              'Cancel',
+                              style: getTextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF475569),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: isSaving
+                                ? null
+                                : () async {
+                                    final updatedValue =
+                                        textController.text.trim();
+                                    if (updatedValue.isEmpty) {
+                                      Get.snackbar(
+                                        'Required field',
+                                        '$label cannot be empty.',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                        backgroundColor: const Color(0xFF0F172A),
+                                        colorText: Colors.white,
+                                        margin: EdgeInsets.all(16.w),
+                                      );
+                                      return;
+                                    }
+
+                                    if (updatedValue == currentValue.trim()) {
+                                      Navigator.of(dialogContext).pop();
+                                      return;
+                                    }
+
+                                    setState(() => isSaving = true);
+                                    final didSave = await onSave(updatedValue);
+
+                                    if (!dialogContext.mounted) {
+                                      return;
+                                    }
+
+                                    if (didSave) {
+                                      Navigator.of(dialogContext).pop();
+                                      return;
+                                    }
+
+                                    setState(() => isSaving = false);
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              minimumSize: Size.fromHeight(48.h),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14.r),
+                              ),
+                            ),
+                            child: isSaving
+                                ? SizedBox(
+                                    width: 20.w,
+                                    height: 20.w,
+                                    child: const CircularProgressIndicator(
+                                      strokeWidth: 2.2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    'Save Changes',
+                                    style: getTextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 14.h),
-              CustomTextField(
-                controller: textController,
-                hintText: 'Enter $label',
-                keyboardType: keyboardType,
-                maxLines: maxLines,
-                minLines: maxLines > 1 ? maxLines : null,
-                backgroundColor: const Color(0xFFF8FAFC),
-                borderColor: const Color(0xFFCBD5E1),
-                borderRadius: 16.r,
-                autofocus: true,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: maxLines > 1 ? 16.h : 14.h,
-                ),
-              ),
-              SizedBox(height: 22.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.of(dialogContext).pop(),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: Size.fromHeight(48.h),
-                        side: const BorderSide(color: Color(0xFFCBD5E1)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.r),
-                        ),
-                      ),
-                      child: Text(
-                        'Cancel',
-                        style: getTextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF475569),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final updatedValue = textController.text.trim();
-                        if (updatedValue.isEmpty) {
-                          Get.snackbar(
-                            'Required field',
-                            '$label cannot be empty.',
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: const Color(0xFF0F172A),
-                            colorText: Colors.white,
-                            margin: EdgeInsets.all(16.w),
-                          );
-                          return;
-                        }
-
-                        onSave(updatedValue);
-                        Navigator.of(dialogContext).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        minimumSize: Size.fromHeight(48.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.r),
-                        ),
-                      ),
-                      child: Text(
-                        'Save Changes',
-                        style: getTextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
         ),
       ),
-    );
+    ).then((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        textController.dispose();
+      });
+    });
   }
 
   @override
@@ -398,13 +450,19 @@ class ProfileScreen extends StatelessWidget {
                       context: context,
                       label: 'Name',
                       value: controller.name.value,
-                      onSave: controller.updateName,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'name',
+                        value: value,
+                      ),
                     ),
                     _buildInfoItem(
                       context: context,
                       label: 'Email',
                       value: controller.email.value,
-                      onSave: controller.updateEmail,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'email',
+                        value: value,
+                      ),
                       keyboardType: TextInputType.emailAddress,
                       isEditable: false,
                     ),
@@ -412,20 +470,29 @@ class ProfileScreen extends StatelessWidget {
                       context: context,
                       label: 'Phone',
                       value: controller.phone.value,
-                      onSave: controller.updatePhone,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'phone',
+                        value: value,
+                      ),
                       keyboardType: TextInputType.phone,
                     ),
                     _buildInfoItem(
                       context: context,
                       label: 'Profession',
                       value: controller.profession.value,
-                      onSave: controller.updateProfession,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'profession',
+                        value: value,
+                      ),
                     ),
                     _buildInfoItem(
                       context: context,
                       label: 'Bio',
                       value: controller.bio.value,
-                      onSave: controller.updateBio,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'bio',
+                        value: value,
+                      ),
                       maxLines: 3,
                       isLast: true,
                     ),
@@ -445,26 +512,38 @@ class ProfileScreen extends StatelessWidget {
                       context: context,
                       label: 'Street Address',
                       value: controller.streetAddress.value,
-                      onSave: controller.updateStreet,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'streetAddress',
+                        value: value,
+                      ),
                       maxLines: 2,
                     ),
                     _buildInfoItem(
                       context: context,
                       label: 'City',
                       value: controller.city.value,
-                      onSave: controller.updateCity,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'city',
+                        value: value,
+                      ),
                     ),
                     _buildInfoItem(
                       context: context,
                       label: 'State',
                       value: controller.state.value,
-                      onSave: controller.updateState,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'state',
+                        value: value,
+                      ),
                     ),
                     _buildInfoItem(
                       context: context,
                       label: 'Zip Code',
                       value: controller.zipCode.value,
-                      onSave: controller.updateZip,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'zipCode',
+                        value: value,
+                      ),
                       keyboardType: TextInputType.number,
                       isLast: true,
                     ),
@@ -493,7 +572,7 @@ class ProfileScreen extends StatelessWidget {
     required BuildContext context,
     required String label,
     required String value,
-    required ValueChanged<String> onSave,
+    required Future<bool> Function(String value) onSave,
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
     bool isEditable = true,

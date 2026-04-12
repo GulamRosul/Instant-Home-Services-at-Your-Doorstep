@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
+import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 
@@ -25,10 +27,13 @@ class ProfileController extends GetxController {
   var zipCode = ''.obs;
 
   final isLoading = false.obs;
+  final isUpdatingProfile = false.obs;
   final errorMessage = ''.obs;
   final hasLoadedProfile = false.obs;
 
   final ImagePicker _picker = ImagePicker();
+  String _firstName = '';
+  String _lastName = '';
 
   @override
   void onInit() {
@@ -64,11 +69,9 @@ class ProfileController extends GetxController {
       );
 
       final responseMap = _asMap(response.data) ?? <String, dynamic>{};
-      final data = _asMap(responseMap['data']);
-      final nestedData = _asMap(data?['data']);
-      final rest = _asMap(nestedData?['rest']);
+      final profileData = _extractProfileData(responseMap);
 
-      if (response.statusCode != 200 || rest == null) {
+      if (response.statusCode != 200 || profileData == null) {
         if (!isRefresh) {
           _clearProfile();
         }
@@ -81,20 +84,7 @@ class ProfileController extends GetxController {
         return;
       }
 
-      name.value = _buildFullName(rest['firstName'], rest['lastName']);
-      email.value = _asString(rest['email']);
-      phone.value = _asString(rest['phone']);
-      profession.value = _asString(rest['profession']);
-      bio.value = _asString(rest['bio']);
-      streetAddress.value = _asString(rest['streetAddress']);
-      city.value = _asString(rest['city']);
-      state.value = _asString(rest['state']);
-      zipCode.value = _asString(rest['zipCode']);
-
-      final avatarUrl = _asString(rest['avatar']);
-      imagePath.value = avatarUrl;
-
-      hasLoadedProfile.value = true;
+      await _applyProfileData(profileData);
       AppLoggerHelper.info('Fetched profile for ${email.value}');
     } on DioException catch (error) {
       if (!isRefresh) {
@@ -118,6 +108,70 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<bool> updateProfileField({
+    required String fieldName,
+    required String value,
+  }) async {
+    final normalizedField = fieldName.trim();
+    final normalizedValue = value.trim();
+
+    if (normalizedField.isEmpty || normalizedValue.isEmpty) {
+      return false;
+    }
+
+    if (isUpdatingProfile.value) {
+      return false;
+    }
+
+    try {
+      isUpdatingProfile.value = true;
+      errorMessage.value = '';
+
+      final token = await SecureStorageService.getToken();
+
+      if (token == null || token.trim().isEmpty) {
+        final message = 'Please sign in to update your profile.';
+        errorMessage.value = message;
+        _showErrorSnackbar(message);
+        return false;
+      }
+
+      final didUpdate = normalizedField == 'name'
+          ? await _updateName(token: token, value: normalizedValue)
+          : await _patchProfileField(
+              token: token,
+              fieldName: normalizedField,
+              value: normalizedValue,
+            );
+
+      if (!didUpdate) {
+        return false;
+      }
+
+      _showSuccessSnackbar(
+        '${_fieldLabel(normalizedField)} updated successfully.',
+      );
+      return true;
+    } on DioException catch (error) {
+      final message =
+          _extractMessage(error.response?.data) ??
+          error.message ??
+          'Failed to update profile.';
+      errorMessage.value = message;
+      AppLoggerHelper.error('Profile update failed', error);
+      _showErrorSnackbar(message);
+      return false;
+    } catch (error) {
+      const message = 'Failed to update profile.';
+      errorMessage.value = message;
+      AppLoggerHelper.error('Unexpected profile update error', error);
+      _showErrorSnackbar(message);
+      return false;
+    } finally {
+      isUpdatingProfile.value = false;
+    }
+  }
+
   Future<void> pickImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
@@ -125,18 +179,9 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Methods to update (placeholders)
-  void updateName(String val) => name.value = val;
-  void updateEmail(String val) => email.value = val;
-  void updatePhone(String val) => phone.value = val;
-  void updateProfession(String val) => profession.value = val;
-  void updateBio(String val) => bio.value = val;
-  void updateStreet(String val) => streetAddress.value = val;
-  void updateCity(String val) => city.value = val;
-  void updateState(String val) => state.value = val;
-  void updateZip(String val) => zipCode.value = val;
-
   void _clearProfile() {
+    _firstName = '';
+    _lastName = '';
     name.value = '';
     email.value = '';
     phone.value = '';
@@ -148,6 +193,105 @@ class ProfileController extends GetxController {
     zipCode.value = '';
     imagePath.value = '';
     hasLoadedProfile.value = false;
+  }
+
+  Future<bool> _updateName({
+    required String token,
+    required String value,
+  }) async {
+    final nameParts = _splitName(value);
+
+    final didUpdateFirstName = await _patchProfileField(
+      token: token,
+      fieldName: 'firstName',
+      value: nameParts.$1,
+    );
+
+    if (!didUpdateFirstName) {
+      return false;
+    }
+
+    final shouldUpdateLastName = nameParts.$2 != _lastName;
+
+    if (!shouldUpdateLastName) {
+      return true;
+    }
+
+    return _patchProfileField(
+      token: token,
+      fieldName: 'lastName',
+      value: nameParts.$2,
+    );
+  }
+
+  Future<bool> _patchProfileField({
+    required String token,
+    required String fieldName,
+    required String value,
+  }) async {
+    final response = await _apiClient.patch<dynamic>(
+      ApiEndpoints.authProfile,
+      data: {'fildName': fieldName, 'value': value},
+      options: Options(
+        headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
+        validateStatus: (status) => status != null && status < 500,
+      ),
+    );
+
+    final profileData = _extractProfileData(response.data);
+
+    if (response.statusCode != 200 || profileData == null) {
+      final message = _extractMessage(response.data) ?? 'Failed to update profile.';
+      errorMessage.value = message;
+      AppLoggerHelper.warning(
+        'Profile update failed for $fieldName: ${response.statusCode} ${response.data}',
+      );
+      _showErrorSnackbar(message);
+      return false;
+    }
+
+    errorMessage.value = '';
+    await _applyProfileData(profileData);
+    AppLoggerHelper.info('Updated profile field $fieldName');
+    return true;
+  }
+
+  Future<void> _applyProfileData(Map<String, dynamic> profileData) async {
+    errorMessage.value = '';
+    _firstName = _asString(profileData['firstName']);
+    _lastName = _asString(profileData['lastName']);
+    name.value = _buildFullName(_firstName, _lastName);
+    email.value = _asString(profileData['email']);
+    phone.value = _asString(profileData['phone']);
+    profession.value = _asString(profileData['profession']);
+    bio.value = _asString(profileData['bio']);
+    streetAddress.value = _asString(profileData['streetAddress']);
+    city.value = _asString(profileData['city']);
+    state.value = _asString(profileData['state']);
+    zipCode.value = _asString(profileData['zipCode']);
+    imagePath.value = _asString(profileData['avatar']);
+    hasLoadedProfile.value = true;
+
+    await StorageService.ensureInitialized();
+    await StorageService.saveUser(
+      email: email.value,
+      firstName: _firstName,
+      lastName: _lastName,
+      avatar: imagePath.value,
+    );
+  }
+
+  Map<String, dynamic>? _extractProfileData(dynamic responseData) {
+    final responseMap = _asMap(responseData);
+    if (responseMap == null) {
+      return null;
+    }
+
+    final data = _asMap(responseMap['data']);
+    final nestedData = _asMap(data?['data']);
+    final rest = _asMap(nestedData?['rest']);
+
+    return rest ?? nestedData;
   }
 
   Map<String, dynamic>? _asMap(dynamic value) {
@@ -194,5 +338,73 @@ class ProfileController extends GetxController {
     final last = _asString(lastName);
     final fullName = [first, last].where((part) => part.isNotEmpty).join(' ');
     return fullName;
+  }
+
+  (String, String) _splitName(String fullName) {
+    final parts = fullName
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .toList();
+
+    if (parts.isEmpty) {
+      return ('', '');
+    }
+
+    if (parts.length == 1) {
+      return (parts.first, '');
+    }
+
+    return (parts.first, parts.sublist(1).join(' '));
+  }
+
+  String _fieldLabel(String fieldName) {
+    switch (fieldName) {
+      case 'name':
+        return 'Name';
+      case 'firstName':
+        return 'First name';
+      case 'lastName':
+        return 'Last name';
+      case 'streetAddress':
+        return 'Street address';
+      case 'zipCode':
+        return 'Zip code';
+      default:
+        if (fieldName.isEmpty) {
+          return 'Profile';
+        }
+
+        final words = fieldName.split(RegExp(r'(?=[A-Z])'));
+        return words
+            .where((word) => word.isNotEmpty)
+            .map(
+              (word) =>
+                  '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}',
+            )
+            .join(' ');
+    }
+  }
+
+  void _showSuccessSnackbar(String message) {
+    Get.snackbar(
+      'Profile updated',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: const Color(0xFF065F46),
+      colorText: Get.theme.colorScheme.onPrimary,
+      margin: const EdgeInsets.all(16),
+    );
+  }
+
+  void _showErrorSnackbar(String message) {
+    Get.snackbar(
+      'Update failed',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: const Color(0xFF7F1D1D),
+      colorText: Get.theme.colorScheme.onPrimary,
+      margin: const EdgeInsets.all(16),
+    );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
@@ -62,7 +61,9 @@ class UserHomeScreen extends StatelessWidget {
                 },
               ),
               // SizedBox(height: 16.h),
-              _buildCategoryGrid(controller),
+              Obx(
+                () => _buildCategoryGrid(controller),
+              ),
               SizedBox(height: 24.h),
               _buildSectionHeader(
                 "Popular Services",
@@ -284,9 +285,8 @@ class UserHomeScreen extends StatelessWidget {
                       width: bannerImageSize,
                       height: bannerImageSize,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _buildBannerImageFallback(
-                        size: bannerImageSize,
-                      ),
+                      errorBuilder: (_, __, ___) =>
+                          _buildBannerImageFallback(size: bannerImageSize),
                     )
                   : _buildBannerImageFallback(size: bannerImageSize),
             ),
@@ -382,9 +382,7 @@ class UserHomeScreen extends StatelessWidget {
         final category = controller.categories[index];
         return GestureDetector(
           onTap: () {
-            Get.to(
-              () => AvailableCategoryScreen(initialCategoryIndex: index),
-            );
+            Get.to(() => AvailableCategoryScreen(initialCategoryIndex: index));
           },
           child: Container(
             padding: EdgeInsets.all(5.r),
@@ -396,18 +394,29 @@ class UserHomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  category['icon']!,
-                  width: 24.w,
-                  height: 24.h,
-                  // colorFilter: ColorFilter.mode(
-                  //   Colors.blue.shade700,
-                  //   BlendMode.srcIn,
-                  // ),
-                ),
+                // Load category icon as network image since it's a URL from API
+                category.icon.isNotEmpty
+                    ? Image.network(
+                        category.icon,
+                        width: 24.w,
+                        height: 24.h,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.category,
+                            size: 24.sp,
+                            color: Colors.grey,
+                          );
+                        },
+                      )
+                    : Icon(
+                        Icons.category,
+                        size: 24.sp,
+                        color: Colors.grey,
+                      ),
                 SizedBox(height: 8.h),
                 Text(
-                  category['name']!,
+                  category.name,
                   textAlign: TextAlign.center,
                   style: getTextStyle(
                     fontSize: 10.sp,

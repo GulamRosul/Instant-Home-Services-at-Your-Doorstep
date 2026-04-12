@@ -2,10 +2,10 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SocialMediaController extends GetxController {
-  final String facebookUrl = "https://facebook.com/kaajbd";
+  final String facebookUrl = "http://www.facebook.com/kaajbd";
   final String twitterUrl = "https://twitter.com/kaajbd";
-  final String youtubeUrl = "https://youtube.com/kaajbd";
-  final String instagramUrl = "https://instagram.com/kaajbd";
+  final String youtubeUrl = "https://www.youtube.com/@kaajbdofficial";
+  final String instagramUrl = "http://www.instagram.com/kaajbdofficial";
 
   Future<void> launchSocialUrl(String url) async {
     final Uri uri = Uri.parse(url);

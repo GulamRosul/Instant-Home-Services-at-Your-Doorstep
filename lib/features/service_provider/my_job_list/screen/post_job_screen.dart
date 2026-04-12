@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/create_job_controller.dart';
-import 'package:protiva502/features/service_provider/my_job_list/screen/widgets/job_details_step.dart';
-import 'package:protiva502/features/service_provider/my_job_list/screen/widgets/service_details_step.dart';
-import 'package:protiva502/features/service_provider/my_job_list/screen/widgets/preview_step.dart';
-import 'package:protiva502/features/service_provider/my_job_list/screen/widgets/tabItem.dart';
+import 'package:protiva502/features/service_provider/my_job_list/widgets/job_details_step.dart';
+import 'package:protiva502/features/service_provider/my_job_list/widgets/service_details_step.dart';
+import 'package:protiva502/features/service_provider/my_job_list/widgets/preview_step.dart';
+import 'package:protiva502/features/service_provider/my_job_list/widgets/tabItem.dart';
 
 class PostJobScreen extends StatelessWidget {
   const PostJobScreen({super.key});

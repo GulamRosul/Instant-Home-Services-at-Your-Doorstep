@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/create_job_controller.dart';
 import 'package:protiva502/core/common/widgets/custom_dashed_border.dart';
@@ -19,6 +20,195 @@ class ServiceDetailsStep extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Category Section
+        Text(
+          'Category',
+          style: getTextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF2D2D2D),
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Obx(() {
+          if (controller.isCategoriesLoading.value) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(color: Color(0xFFCBD5E1)),
+              ),
+              child: const Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          if (controller.categoriesErrorMessage.value.isNotEmpty) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(color: Color(0xFFCBD5E1)),
+              ),
+              child: Text(
+                controller.categoriesErrorMessage.value,
+                style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+              ),
+            );
+          }
+
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.r),
+              border: Border.all(color: Color(0xFFCBD5E1)),
+            ),
+            child: DropdownButton<String>(
+              isExpanded: true,
+              underline: SizedBox(),
+              hint: Text(
+                'Select a category',
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              value: controller.selectedCategoryId.value.isEmpty
+                  ? null
+                  : controller.selectedCategoryId.value,
+              items: controller.categories.map((category) {
+                return DropdownMenuItem<String>(
+                  value: category.id,
+                  child: Text(
+                    category.name,
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  final selectedCat = controller.categories.firstWhere(
+                    (cat) => cat.id == newValue,
+                  );
+                  controller.selectCategory(newValue, selectedCat.name);
+                }
+              },
+            ),
+          );
+        }),
+        SizedBox(height: 24.h),
+
+        // Sub-Category Section
+        Text(
+          'Sub Category',
+          style: getTextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF2D2D2D),
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Obx(() {
+          if (controller.selectedCategoryId.value.isEmpty) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(color: Color(0xFFCBD5E1)),
+              ),
+              child: Text(
+                'Please select a category first',
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            );
+          }
+
+          if (controller.isSubCategoriesLoading.value) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(color: Color(0xFFCBD5E1)),
+              ),
+              child: const Center(child: CircularProgressIndicator(
+                color: AppColors.textPurple,
+                
+              )),
+            );
+          }
+
+          if (controller.subCategoriesErrorMessage.value.isNotEmpty) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(color: Color(0xFFCBD5E1)),
+              ),
+              child: Text(
+                controller.subCategoriesErrorMessage.value,
+                style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+              ),
+            );
+          }
+
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.r),
+              border: Border.all(color: Color(0xFFCBD5E1)),
+            ),
+            child: DropdownButton<String>(
+              isExpanded: true,
+              underline: SizedBox(),
+              hint: Text(
+                'Select a sub category',
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              value: controller.selectedSubCategoryId.value.isEmpty
+                  ? null
+                  : controller.selectedSubCategoryId.value,
+              items: controller.subCategories.map((subCategory) {
+                return DropdownMenuItem<String>(
+                  value: subCategory.id,
+                  child: Text(
+                    subCategory.name,
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  final selectedSubCat = controller.subCategories.firstWhere(
+                    (subCat) => subCat.id == newValue,
+                  );
+                  controller.selectSubCategory(newValue, selectedSubCat.name);
+                }
+              },
+            ),
+          );
+        }),
+        SizedBox(height: 24.h),
+        Divider(color: Color(0xFFCBD5E1)),
+        SizedBox(height: 24.h),
+
         Text(
           'What include in your service',
           style: getTextStyle(

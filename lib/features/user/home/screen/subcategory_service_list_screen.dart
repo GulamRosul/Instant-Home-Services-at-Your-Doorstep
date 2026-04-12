@@ -22,19 +22,52 @@ class SubcategoryServiceListScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: CustomAppBar(title: controller.subcategoryTitle.value),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        child: Obx(() {
+          if (controller.isLoading.value && controller.services.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (controller.errorMessage.value.isNotEmpty &&
+              controller.services.isEmpty) {
+            return Center(
+              child: Text(
+                controller.errorMessage.value,
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            );
+          }
+
+          if (controller.services.isEmpty) {
+            return Center(
+              child: Text(
+                'No services available',
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            );
+          }
+
+          return ListView(
+            controller: controller.scrollController,
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
             children: [
-              SizedBox(height: 8.h),
               _buildHeader(),
               SizedBox(height: 15.h),
-              _buildServiceGrid(controller), // From the bottom split screenshot
+              _buildServiceGrid(controller),
+              if (controller.isLoadingMore.value)
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.h),
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
               SizedBox(height: 100.h), // Space for floating nav bar
             ],
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
@@ -64,10 +97,14 @@ class SubcategoryServiceListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceCard() {
+  Widget _buildServiceCard(
+    SubcategoryServiceListController controller,
+    int index,
+  ) {
+    final service = controller.services[index];
+
     return Container(
-      width: 160.w,
-      margin: EdgeInsets.only(right: 16.w),
+      margin: EdgeInsets.all(5.w),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
@@ -80,16 +117,31 @@ class SubcategoryServiceListScreen extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              Get.to(() => CategoryServiceDetailsScreen());
+              Get.to(() => const CategoryServiceDetailsScreen());
             },
             child: ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-              child: Image.asset(
-                ImagePath.servicecard,
-                height: 100.h,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              child: service.thumbnail.isNotEmpty
+                  ? Image.network(
+                      service.thumbnail,
+                      height: 100.h,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          ImagePath.servicecard,
+                          height: 100.h,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    )
+                  : Image.asset(
+                      ImagePath.servicecard,
+                      height: 100.h,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           Flexible(
@@ -98,99 +150,76 @@ class SubcategoryServiceListScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text(
-                  "Carpentry & Woodwork",
-                  style: getTextStyle(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                    lineHeight: 15.sp,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.to(() => ProviderDetailsScreen());
-                  },
-                  child: Text(
-                    "Mike Handyman service",
+                  Text(
+                    service.title,
                     style: getTextStyle(
-                      fontSize: 10.sp,
-                      color: AppColors.textBlue,
-                      decoration: TextDecoration.underline,
-                      decorationColor: AppColors.textBlue,
+                      fontSize: 11.sp,
                       fontWeight: FontWeight.w600,
+                      color: Colors.black,
                       lineHeight: 15.sp,
                     ),
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
+                    maxLines: 2,
                   ),
-                ),
-                // SizedBox(height: 4.h),
-                Row(
-                  children: [
-                    Icon(Icons.location_on, size: 10.sp, color: Colors.blue),
-                    Flexible(
-                      child: Text(
-                        " Dhaka, Bangladesh",
-                        style: getTextStyle(
-                          fontSize: 10.sp,
-                          color: AppColors.textSecondary,
-                          lineHeight: 18.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => const ProviderDetailsScreen());
+                    },
+                    child: Text(
+                      "View Provider",
+                      style: getTextStyle(
+                        fontSize: 10.sp,
+                        color: AppColors.textBlue,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.textBlue,
+                        fontWeight: FontWeight.w600,
+                        lineHeight: 15.sp,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
-                  ],
-                ),
-                // SizedBox(height: 4.h),
-                Row(
-                  children: [
-                    ...List.generate(
-                      5,
-                      (i) =>
-                          Icon(Icons.star, color: Colors.orange, size: 10.sp),
-                    ),
-                    Flexible(
-                      child: Text(
-                        " 4.8 (170 Reviews)",
-                        style: getTextStyle(
-                          fontSize: 9.sp,
-                          color: AppColors.textSecondary,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                // SizedBox(height: 4.h),
-                Text(
-                  "Start From 450.0 ৳",
-                  style: getTextStyle(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
                   ),
-                ),
-                SizedBox(height: 4.h),
-                CustomButton(
-                  text: "Book Now",
-                  height: 30.h,
-                  // width: double.infinity,
-                  // fontSize: 10.sp,
-                  backgroundColor: AppColors.textPurple,
-                  borderRadius: 6.r,
-                  onPressed: () {
-                    Get.to(() => BookingDetailsScreen());
-                  },
-                  textColor: Colors.white,
-                ),
-              ],
+                  SizedBox(height: 4.h),
+                  Row(
+                    children: [
+                      Icon(Icons.star_half, size: 10.sp, color: Colors.orange),
+                      Flexible(
+                        child: Text(
+                          " ${service.averageRating ?? 'N/A'} (${service.totalBookings} bookings)",
+                          style: getTextStyle(
+                            fontSize: 9.sp,
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'Start From ৳${service.basePrice}',
+                    style: getTextStyle(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  CustomButton(
+                    text: "Book Now",
+                    height: 30.h,
+                    backgroundColor: AppColors.textPurple,
+                    borderRadius: 6.r,
+                    onPressed: () {
+                      Get.to(() => const BookingDetailsScreen());
+                    },
+                    textColor: Colors.white,
+                  ),
+                ],
+              ),
             ),
-          ),),
+          ),
         ],
       ),
     );
@@ -201,14 +230,14 @@ class SubcategoryServiceListScreen extends StatelessWidget {
       shrinkWrap: true,
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: controller.serviceCount.value,
+      itemCount: controller.services.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: 10.h,
-        crossAxisSpacing: 0.w,
+        mainAxisSpacing: 5.h,
+        crossAxisSpacing: 5.w,
         mainAxisExtent: 260.h,
       ),
-      itemBuilder: (context, index) => _buildServiceCard(),
+      itemBuilder: (context, index) => _buildServiceCard(controller, index),
     );
   }
 }

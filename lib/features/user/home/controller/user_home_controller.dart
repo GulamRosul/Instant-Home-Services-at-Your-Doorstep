@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
-import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
+import 'package:protiva502/features/user/home/model/categories_model.dart';
 import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/home/model/user_banner_model.dart';
 
@@ -23,19 +23,10 @@ class UserHomeController extends GetxController {
   final servicesErrorMessage = ''.obs;
   final popularServices = <HomeJobModel>[].obs;
   final allServices = <HomeJobModel>[].obs;
+  final isCategoriesLoading = false.obs;
+  final categoriesErrorMessage = ''.obs;
+  final categories = <CategoryModel>[].obs;
   Timer? _bannerAutoScrollTimer;
-
-  // Mock data for categories
-  final List<Map<String, String>> categories = [
-    {'name': 'Electrician', 'icon': IconPath.electrician},
-    {'name': 'Mechanic', 'icon': IconPath.mechanic},
-    {'name': 'Plumber', 'icon': IconPath.plumber},
-    {'name': 'Carpenter', 'icon': IconPath.carpenter},
-    {'name': 'Automotive', 'icon': IconPath.automotive},
-    {'name': 'Cleaner', 'icon': IconPath.cleaner},
-    {'name': 'Painter', 'icon': IconPath.painter},
-    {'name': 'Technician', 'icon': IconPath.technician},
-  ];
 
   void updateBannerIndex(int index) {
     currentBannerIndex.value = index;
@@ -74,6 +65,7 @@ class UserHomeController extends GetxController {
     super.onInit();
     fetchBanners();
     fetchHomeServices();
+    fetchCategories();
   }
 
   Future<void> fetchHomeServices() async {
@@ -128,6 +120,74 @@ class UserHomeController extends GetxController {
       AppLoggerHelper.error('Unexpected home services fetch error', error);
     } finally {
       isServicesLoading.value = false;
+    }
+  }
+
+  Future<void> fetchCategories() async {
+    try {
+      isCategoriesLoading.value = true;
+      categoriesErrorMessage.value = '';
+
+      final response = await _apiClient.get<dynamic>(
+        ApiEndpoints.categories,
+        queryParameters: {'page': 1, 'limit': 20},
+        options: Options(
+          headers: const {'accept': '*/*'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      debugPrint(
+        'Categories request => ${ApiEndpoints.baseUrl}${ApiEndpoints.categories}?page=1&limit=20',
+      );
+      debugPrint('Categories status => ${response.statusCode}');
+      debugPrint('Categories response => ${response.data}');
+
+      List<CategoryModel> fetchedCategories = [];
+
+      if (response.statusCode == 200) {
+        // Extract categories data - handle multiple possible response structures
+        final categoriesData = _extractCategoriesData(response.data);
+
+        if (categoriesData.isNotEmpty) {
+          fetchedCategories = categoriesData
+              .map(
+                (category) => CategoryModel.fromJson(
+                  category.map((key, value) => MapEntry(key.toString(), value)),
+                ),
+              )
+              .where((category) => category.isActive)
+              .toList()
+            ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+        }
+      }
+
+      if (fetchedCategories.isEmpty && response.statusCode != 200) {
+        categories.clear();
+        categoriesErrorMessage.value =
+            _extractMessage(response.data) ?? 'Failed to load categories';
+        AppLoggerHelper.warning(
+          'Failed to fetch categories: ${categoriesErrorMessage.value}',
+        );
+        return;
+      }
+
+      categories.assignAll(fetchedCategories);
+      debugPrint('Fetched ${fetchedCategories.length} categories');
+      AppLoggerHelper.info('Fetched ${fetchedCategories.length} categories');
+    } on DioException catch (error) {
+      categories.clear();
+      categoriesErrorMessage.value =
+          _extractMessage(error.response?.data) ??
+          error.message ??
+          'Failed to load categories';
+      AppLoggerHelper.error('Categories fetch failed', error);
+    } catch (error) {
+      categories.clear();
+      categoriesErrorMessage.value = 'Failed to load categories';
+      AppLoggerHelper.error('Unexpected categories fetch error', error);
+    } finally {
+      isCategoriesLoading.value = false;
     }
   }
 
@@ -204,6 +264,37 @@ class UserHomeController extends GetxController {
     }
 
     return null;
+  }
+
+  // Extract categories from various possible API response structures
+  List<Map> _extractCategoriesData(dynamic responseData) {
+    final responseMap = _asMap(responseData) ?? <String, dynamic>{};
+
+    // Try different possible response structures
+    // Structure 1: { data: { data: { data: [...] } } }
+    var data = _asMap(responseMap['data']);
+    if (data != null) {
+      var nestedData = _asMap(data['data']);
+      if (nestedData != null) {
+        var categoriesData = nestedData['data'];
+        if (categoriesData is List) {
+          return categoriesData.whereType<Map>().toList();
+        }
+      }
+    }
+
+    // Structure 2: { data: [...] } - direct array in data
+    if (responseMap['data'] is List) {
+      return responseMap['data'].whereType<Map>().toList();
+    }
+
+    // Structure 3: { data: { categories: [...] } }
+    data = _asMap(responseMap['data']);
+    if (data != null && data['categories'] is List) {
+      return data['categories'].whereType<Map>().toList();
+    }
+
+    return [];
   }
 
   Map<String, dynamic>? _asMap(dynamic value) {

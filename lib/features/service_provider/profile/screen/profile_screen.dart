@@ -5,11 +5,31 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
+import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/service_provider/profile/controller/profile_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  ImageProvider<Object> _buildProfileImage(String imagePath) {
+    if (imagePath.trim().isEmpty) {
+      return const NetworkImage(
+        'https://as1.ftcdn.net/v2/jpg/02/43/12/34/1000_F_243123463_zTo9Qg099Lz7fL7Y8HsSZJ1PVGu9fL7x.jpg',
+      );
+    }
+
+    if (imagePath.startsWith('http')) {
+      return NetworkImage(imagePath);
+    }
+
+    return FileImage(File(imagePath));
+  }
+
+  String _displayValue(String value) {
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? 'Not provided' : trimmed;
+  }
 
   void _showImageSourceDialog(
     BuildContext context,
@@ -42,6 +62,188 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  void _showEditFieldDialog({
+    required BuildContext context,
+    required String label,
+    required String currentValue,
+    required ValueChanged<String> onSave,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+  }) {
+    final textController = TextEditingController(text: currentValue);
+
+    showDialog(
+      context: context,
+      barrierColor: const Color(0xFF0F172A).withValues(alpha: 0.45),
+      builder: (dialogContext) => Dialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: EdgeInsets.all(24.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24.r),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF0F172A).withValues(alpha: 0.14),
+                blurRadius: 32,
+                offset: const Offset(0, 20),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 52.w,
+                height: 52.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.r),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1E293B), Color(0xFF475569)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Icon(
+                  Icons.edit_outlined,
+                  color: Colors.white,
+                  size: 24.sp,
+                ),
+              ),
+              SizedBox(height: 18.h),
+              Text(
+                'Edit $label',
+                style: getTextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF0F172A),
+                ),
+              ),
+              SizedBox(height: 6.h),
+              Text(
+                'Update your $label details below and save when you are ready.',
+                style: getTextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF64748B),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(16.r),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.badge_outlined,
+                      size: 18.sp,
+                      color: const Color(0xFF475569),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      label,
+                      style: getTextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF334155),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 14.h),
+              CustomTextField(
+                controller: textController,
+                hintText: 'Enter $label',
+                keyboardType: keyboardType,
+                maxLines: maxLines,
+                minLines: maxLines > 1 ? maxLines : null,
+                backgroundColor: const Color(0xFFF8FAFC),
+                borderColor: const Color(0xFFCBD5E1),
+                borderRadius: 16.r,
+                autofocus: true,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: maxLines > 1 ? 16.h : 14.h,
+                ),
+              ),
+              SizedBox(height: 22.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(dialogContext).pop(),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: Size.fromHeight(48.h),
+                        side: const BorderSide(color: Color(0xFFCBD5E1)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
+                      ),
+                      child: Text(
+                        'Cancel',
+                        style: getTextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF475569),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final updatedValue = textController.text.trim();
+                        if (updatedValue.isEmpty) {
+                          Get.snackbar(
+                            'Required field',
+                            '$label cannot be empty.',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: const Color(0xFF0F172A),
+                            colorText: Colors.white,
+                            margin: EdgeInsets.all(16.w),
+                          );
+                          return;
+                        }
+
+                        onSave(updatedValue);
+                        Navigator.of(dialogContext).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        minimumSize: Size.fromHeight(48.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
+                      ),
+                      child: Text(
+                        'Save Changes',
+                        style: getTextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileController());
@@ -49,115 +251,230 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: const CustomAppBar(title: 'Profile', showBackButton: true),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Profile Image Section
-              Stack(
+      body: Obx(() {
+        if (controller.isLoading.value && !controller.hasLoadedProfile.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.errorMessage.value.isNotEmpty &&
+            !controller.hasLoadedProfile.value) {
+          return Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Obx(
-                    () => Container(
-                      width: 120.w,
-                      height: 120.h,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 4),
-                        image: controller.imagePath.value.isEmpty
-                            ? const DecorationImage(
-                                image: NetworkImage(
-                                  'https://as1.ftcdn.net/v2/jpg/02/43/12/34/1000_F_243123463_zTo9Qg099Lz7fL7Y8HsSZJ1PVGu9fL7x.jpg',
-                                ),
-                                fit: BoxFit.cover,
-                              )
-                            : DecorationImage(
-                                image: FileImage(
-                                  File(controller.imagePath.value),
-                                ),
-                                fit: BoxFit.cover,
-                              ),
-                      ),
+                  Icon(
+                    Icons.error_outline,
+                    size: 44.sp,
+                    color: const Color(0xFFEF4444),
+                  ),
+                  SizedBox(height: 14.h),
+                  Text(
+                    controller.errorMessage.value,
+                    textAlign: TextAlign.center,
+                    style: getTextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF475569),
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: InkWell(
-                      onTap: () => _showImageSourceDialog(context, controller),
-                      child: Container(
-                        padding: EdgeInsets.all(4.w),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.camera_alt_outlined,
-                          size: 20.sp,
-                          color: Colors.grey,
-                        ),
-                      ),
+                  SizedBox(height: 16.h),
+                  ElevatedButton(
+                    onPressed: controller.fetchProfile,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
                     ),
+                    child: const Text('Retry'),
                   ),
                 ],
               ),
-              SizedBox(height: 32.h),
+            ),
+          );
+        }
 
-              // Profile Information Section
-              Text(
-                'Profile Information',
-                style: getTextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF334155),
-                ),
+        return RefreshIndicator(
+          onRefresh: () => controller.fetchProfile(isRefresh: true),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (controller.errorMessage.value.isNotEmpty) ...[
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(bottom: 20.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 14.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFEF2F2),
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(color: const Color(0xFFFECACA)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 18.sp,
+                            color: const Color(0xFFDC2626),
+                          ),
+                          SizedBox(width: 10.w),
+                          Expanded(
+                            child: Text(
+                              controller.errorMessage.value,
+                              style: getTextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF991B1B),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  Stack(
+                    children: [
+                      Container(
+                        width: 120.w,
+                        height: 120.h,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 4),
+                          image: DecorationImage(
+                            image: _buildProfileImage(
+                              controller.imagePath.value,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: () =>
+                              _showImageSourceDialog(context, controller),
+                          child: Container(
+                            padding: EdgeInsets.all(4.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Icons.camera_alt_outlined,
+                              size: 20.sp,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 32.h),
+                  Text(
+                    'Profile Information',
+                    style: getTextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF334155),
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildInfoSection([
+                    _buildInfoItem(
+                      context: context,
+                      label: 'Name',
+                      value: controller.name.value,
+                      onSave: controller.updateName,
+                    ),
+                    _buildInfoItem(
+                      context: context,
+                      label: 'Email',
+                      value: controller.email.value,
+                      onSave: controller.updateEmail,
+                      keyboardType: TextInputType.emailAddress,
+                      isEditable: false,
+                    ),
+                    _buildInfoItem(
+                      context: context,
+                      label: 'Phone',
+                      value: controller.phone.value,
+                      onSave: controller.updatePhone,
+                      keyboardType: TextInputType.phone,
+                    ),
+                    _buildInfoItem(
+                      context: context,
+                      label: 'Profession',
+                      value: controller.profession.value,
+                      onSave: controller.updateProfession,
+                    ),
+                    _buildInfoItem(
+                      context: context,
+                      label: 'Bio',
+                      value: controller.bio.value,
+                      onSave: controller.updateBio,
+                      maxLines: 3,
+                      isLast: true,
+                    ),
+                  ]),
+                  SizedBox(height: 32.h),
+                  Text(
+                    'Address Information',
+                    style: getTextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF334155),
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildInfoSection([
+                    _buildInfoItem(
+                      context: context,
+                      label: 'Street Address',
+                      value: controller.streetAddress.value,
+                      onSave: controller.updateStreet,
+                      maxLines: 2,
+                    ),
+                    _buildInfoItem(
+                      context: context,
+                      label: 'City',
+                      value: controller.city.value,
+                      onSave: controller.updateCity,
+                    ),
+                    _buildInfoItem(
+                      context: context,
+                      label: 'State',
+                      value: controller.state.value,
+                      onSave: controller.updateState,
+                    ),
+                    _buildInfoItem(
+                      context: context,
+                      label: 'Zip Code',
+                      value: controller.zipCode.value,
+                      onSave: controller.updateZip,
+                      keyboardType: TextInputType.number,
+                      isLast: true,
+                    ),
+                  ]),
+                ],
               ),
-              SizedBox(height: 16.h),
-              _buildInfoSection([
-                _buildInfoItem('Name', controller.name.value),
-                _buildInfoItem('Email', controller.email.value),
-                _buildInfoItem('Phone', controller.phone.value),
-                _buildInfoItem('Profession', controller.profession.value),
-                _buildInfoItem('Bio', controller.bio.value, isLast: true),
-              ]),
-
-              SizedBox(height: 32.h),
-
-              // Address Information Section
-              Text(
-                'Address Information',
-                style: getTextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF334155),
-                ),
-              ),
-              SizedBox(height: 16.h),
-              _buildInfoSection([
-                _buildInfoItem(
-                  'Street Address',
-                  controller.streetAddress.value,
-                ),
-                _buildInfoItem('City', controller.city.value),
-                _buildInfoItem('State', controller.state.value),
-                _buildInfoItem(
-                  'zip code',
-                  controller.zipCode.value,
-                  isLast: true,
-                ),
-              ]),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
@@ -172,14 +489,34 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(String label, String value, {bool isLast = false}) {
+  Widget _buildInfoItem({
+    required BuildContext context,
+    required String label,
+    required String value,
+    required ValueChanged<String> onSave,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+    bool isEditable = true,
+    bool isLast = false,
+  }) {
+    final displayValue = _displayValue(value);
+
     return InkWell(
-      onTap: () {
-        // Handle edit logic
-      },
+      onTap: isEditable
+          ? () => _showEditFieldDialog(
+              context: context,
+              label: label,
+              currentValue: value,
+              onSave: onSave,
+              keyboardType: keyboardType,
+              maxLines: maxLines,
+            )
+          : null,
+      borderRadius: BorderRadius.circular(8.r),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         decoration: BoxDecoration(
+          color: isEditable ? Colors.transparent : const Color(0xFFF8FAFC),
           border: isLast
               ? null
               : Border(
@@ -189,31 +526,46 @@ class ProfileScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              label,
-              style: getTextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                color: const Color(0xFF64748B),
-              ),
-            ),
-            Row(
-              children: [
-                Text(
-                  value,
-                  style: getTextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF334155),
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14.sp,
+            Expanded(
+              child: Text(
+                label,
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
                   color: const Color(0xFF64748B),
                 ),
-              ],
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Flexible(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      displayValue,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.right,
+                      style: getTextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: isEditable
+                            ? const Color(0xFF334155)
+                            : const Color(0xFF94A3B8),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  Icon(
+                    isEditable ? Icons.arrow_forward_ios : Icons.lock_outline,
+                    size: 14.sp,
+                    color: isEditable
+                        ? const Color(0xFF64748B)
+                        : const Color(0xFF94A3B8),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

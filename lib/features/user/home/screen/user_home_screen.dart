@@ -167,6 +167,8 @@ class UserHomeScreen extends StatelessWidget {
   }
 
   Widget _buildPromoBanner(UserHomeController controller) {
+    final bannerHeight = 140.h;
+
     return Obx(() {
       if (controller.isBannerLoading.value) {
         return _buildBannerPlaceholder(message: 'Loading banners...');
@@ -183,7 +185,7 @@ class UserHomeScreen extends StatelessWidget {
       return Column(
         children: [
           SizedBox(
-            height: 120.h,
+            height: bannerHeight,
             child: PageView.builder(
               controller: controller.bannerController,
               onPageChanged: controller.updateBannerIndex,
@@ -225,23 +227,26 @@ class UserHomeScreen extends StatelessWidget {
     final description = banner.description.trim();
     final imageUrl = banner.image.trim();
     final link = banner.link.trim();
+    final bannerImageSize = 72.r;
 
     return GestureDetector(
       onTap: link.isNotEmpty ? () => AppDeviceUtility.launchUrl(link) : null,
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.symmetric(horizontal: 2.w),
-        padding: EdgeInsets.all(16.r),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: const Color(0xFF0085B1),
           borderRadius: BorderRadius.circular(16.r),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     title.isNotEmpty ? title : 'Best Handyman Service',
@@ -249,12 +254,12 @@ class UserHomeScreen extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: getTextStyle(
                       color: Colors.white,
-                      fontSize: 18.sp,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
-                      lineHeight: 22.sp,
+                      lineHeight: 20.sp,
                     ),
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 6.h),
                   Text(
                     description.isNotEmpty
                         ? description
@@ -272,16 +277,18 @@ class UserHomeScreen extends StatelessWidget {
             ),
             SizedBox(width: 12.w),
             ClipRRect(
-              borderRadius: BorderRadius.circular(14.r),
+              borderRadius: BorderRadius.circular(12.r),
               child: imageUrl.isNotEmpty
                   ? Image.network(
                       imageUrl,
-                      width: 88.w,
-                      height: 88.h,
+                      width: bannerImageSize,
+                      height: bannerImageSize,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _buildBannerImageFallback(),
+                      errorBuilder: (_, __, ___) => _buildBannerImageFallback(
+                        size: bannerImageSize,
+                      ),
                     )
-                  : _buildBannerImageFallback(),
+                  : _buildBannerImageFallback(size: bannerImageSize),
             ),
           ],
         ),
@@ -291,9 +298,9 @@ class UserHomeScreen extends StatelessWidget {
 
   Widget _buildBannerPlaceholder({required String message}) {
     return Container(
-      height: 120.h,
+      height: 140.h,
       width: double.infinity,
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: const Color(0xFF0085B1),
         borderRadius: BorderRadius.circular(16.r),
@@ -311,16 +318,18 @@ class UserHomeScreen extends StatelessWidget {
             ),
           ),
           SizedBox(width: 12.w),
-          _buildBannerImageFallback(),
+          _buildBannerImageFallback(size: 72.r),
         ],
       ),
     );
   }
 
-  Widget _buildBannerImageFallback() {
+  Widget _buildBannerImageFallback({double? size}) {
+    final resolvedSize = size ?? 72.r;
+
     return Container(
-      width: 88.w,
-      height: 88.h,
+      width: resolvedSize,
+      height: resolvedSize,
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(14.r),

@@ -1,31 +1,223 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/core/services/api_client.dart';
+import 'package:protiva502/core/services/storage_service.dart';
+import 'package:protiva502/core/utils/constants/apiendpoint.dart';
+import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
+import 'package:protiva502/features/user/provoder_details/model/provider_details_model.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
 class ProviderDetailsController extends GetxController {
-  // Stats
-  final String rating = "4.8";
-  final String reviewCount = "170";
-  final String servicesProvided = "30";
+  ProviderDetailsController({required this.providerId});
 
-  // Skills
-  final List<String> skills = ["Handyman", "Gardening", "Renovation"];
+  final String providerId;
+  final ApiClient _apiClient = ApiClient();
+  final isLoading = true.obs;
+  final errorMessage = ''.obs;
+  final provider = Rxn<ProviderDetailsModel>();
 
-  // Tab state for provided services
   var selectedServiceTab = 0.obs;
+
+  List<ProviderJobModel> get jobs => provider.value?.jobs ?? const [];
+
+  List<ProviderReviewModel> get reviews =>
+      provider.value?.receivedReviews ?? const [];
+
+  ProviderJobModel? get selectedJob {
+    if (jobs.isEmpty) {
+      return null;
+    }
+
+    final index = selectedServiceTab.value.clamp(0, jobs.length - 1);
+    return jobs[index];
+  }
+
+  String get displayName => provider.value?.fullName ?? 'Provider';
+
+  String get ratingText {
+    final rating = provider.value?.avgReview ?? 0;
+    return rating % 1 == 0
+        ? rating.toInt().toString()
+        : rating.toStringAsFixed(1);
+  }
+
+  int get reviewCount => provider.value?.reviewCount ?? 0;
+
+  int get servicesProvided => provider.value?.jobCount ?? 0;
+
+  List<String> get skills {
+    final uniqueSkills = <String>{};
+    for (final job in jobs) {
+      for (final item in job.includeService) {
+        final value = item.trim();
+        if (value.isNotEmpty) {
+          uniqueSkills.add(value);
+        }
+      }
+    }
+
+    if (uniqueSkills.isEmpty) {
+      for (final job in jobs) {
+        final title = job.title.trim();
+        if (title.isNotEmpty) {
+          uniqueSkills.add(title);
+        }
+      }
+    }
+
+    return uniqueSkills.toList();
+  }
+
+  String get locationText {
+    final details = provider.value;
+    if (details == null) {
+      return 'Location not available';
+    }
+
+    final parts = <String>[
+      if ((details.city ?? '').trim().isNotEmpty) details.city!.trim(),
+      if ((details.state ?? '').trim().isNotEmpty) details.state!.trim(),
+      _countryLabel(details.country),
+    ];
+
+    if (parts.isEmpty) {
+      return 'Location not available';
+    }
+
+    return parts.join(', ');
+  }
+
+  String get aboutTitle => 'About $displayName';
+
+  String get aboutDescription {
+    final bio = provider.value?.bio?.trim();
+    if (bio != null && bio.isNotEmpty) {
+      return bio;
+    }
+
+    return '$displayName offers professional services tailored to your needs.';
+  }
+
+  bool get isVerified =>
+      provider.value?.verificationStatus.toUpperCase() == 'VERIFIED';
+
+  bool get isServiceAvailable =>
+      provider.value?.providerServiceAvailability == true;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchProviderDetails();
+  }
 
   void changeServiceTab(int index) {
     selectedServiceTab.value = index;
   }
 
-  void sendMessage() {
-    // Logic to open chat with Mike Handyman
-    // debugPrint("Navigating to chat...");
-    Get.to(() => SingleChatScreen());
+  Future<void> fetchProviderDetails() async {
+    if (providerId.trim().isEmpty) {
+      errorMessage.value = 'Provider id is missing';
+      isLoading.value = false;
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final response = await _apiClient.get<dynamic>(
+        ApiEndpoints.providerDetails(providerId),
+        options: Options(
+          headers: const {'accept': '*/*'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      final responseMap = _asMap(response.data);
+      final data = _asMap(responseMap?['data']);
+
+      if (response.statusCode != 200 || data == null) {
+        provider.value = null;
+        errorMessage.value =
+            _extractMessage(response.data) ?? 'Failed to load provider details';
+        return;
+      }
+
+      provider.value = ProviderDetailsModel.fromJson(data);
+
+      if (selectedServiceTab.value >= jobs.length) {
+        selectedServiceTab.value = 0;
+      }
+    } on DioException catch (error) {
+      provider.value = null;
+      errorMessage.value =
+          _extractMessage(error.response?.data) ??
+          error.message ??
+          'Failed to load provider details';
+      AppLoggerHelper.error('Provider details fetch failed', error);
+    } catch (error) {
+      provider.value = null;
+      errorMessage.value = 'Failed to load provider details';
+      AppLoggerHelper.error('Unexpected provider details fetch error', error);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  void bookSpecificService(String serviceName) {
-    // debugPrint("Booking: $serviceName");
+  void sendMessage() {
+    if (providerId.trim().isEmpty) {
+      Get.snackbar('Error', 'Provider information is not available');
+      return;
+    }
+
+    Get.to(
+      () => const SingleChatScreen(),
+      arguments: {
+        'providerId': providerId,
+        'providerName': displayName,
+        'userId': StorageService.getUserId() ?? '',
+        'userRole': 'user',
+      },
+    );
+  }
+
+  void bookSpecificService(String serviceId) {
     Get.to(() => BookingDetailsScreen());
+  }
+
+  Map<String, dynamic>? _asMap(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return value;
+    }
+
+    if (value is Map) {
+      return value.map((key, item) => MapEntry(key.toString(), item));
+    }
+
+    return null;
+  }
+
+  String? _extractMessage(dynamic responseData) {
+    final responseMap = _asMap(responseData);
+    final data = _asMap(responseMap?['data']);
+    final message = data?['message'] ?? responseMap?['message'];
+
+    if (message is String && message.trim().isNotEmpty) {
+      return message;
+    }
+
+    return null;
+  }
+
+  String _countryLabel(String? code) {
+    switch ((code ?? '').toUpperCase()) {
+      case 'BD':
+        return 'Bangladesh';
+      case 'US':
+        return 'United States';
+      default:
+        return (code ?? '').trim();
+    }
   }
 }

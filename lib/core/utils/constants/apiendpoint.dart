@@ -19,11 +19,12 @@ class ApiEndpoints {
 
   static const String createJob = '/job/create-job';
 
-
   static const String categories = '/category/all-categoris-for-user';
   static String subCategories(String categoryId) =>
       '/category/sub-categories/$categoryId';
 
   static String subCategoryServices(String subCategoryId) =>
       '/sub-category/sub-category/$subCategoryId';
+
+  static String providerDetails(String providerId) => '/user/$providerId';
 }

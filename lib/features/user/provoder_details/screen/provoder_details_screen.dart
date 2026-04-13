@@ -1,42 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/provoder_details/controller/provoder_details_controller.dart';
+import 'package:protiva502/features/user/provoder_details/model/provider_details_model.dart';
 
 class ProviderDetailsScreen extends StatelessWidget {
-  const ProviderDetailsScreen({super.key});
+  const ProviderDetailsScreen({super.key, this.providerId = ''});
+
+  final String providerId;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProviderDetailsController());
+    final tag = providerId.isEmpty
+        ? 'provider-details-screen'
+        : 'provider-details-$providerId';
+    final controller = Get.isRegistered<ProviderDetailsController>(tag: tag)
+        ? Get.find<ProviderDetailsController>(tag: tag)
+        : Get.put(ProviderDetailsController(providerId: providerId), tag: tag);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: const CustomAppBar(title: 'Service Profile'),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 20.h),
-            _buildProfileHeader(controller),
-            SizedBox(height: 24.h),
-            _buildAboutSection(controller),
-            SizedBox(height: 24.h),
-            _buildProvideServicesSection(controller),
-            SizedBox(height: 24.h),
-            _buildReviewFeed(),
-            SizedBox(height: 40.h),
-          ],
-        ),
-      ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.errorMessage.value.isNotEmpty) {
+          return _buildStatusState(
+            title: controller.errorMessage.value,
+            buttonText: 'Retry',
+            onPressed: controller.fetchProviderDetails,
+          );
+        }
+
+        final details = controller.provider.value;
+        if (details == null) {
+          return _buildStatusState(title: 'Provider details not found');
+        }
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 20.h),
+              _buildProfileHeader(controller, details),
+              SizedBox(height: 24.h),
+              _buildAboutSection(controller),
+              SizedBox(height: 24.h),
+              _buildProvideServicesSection(controller),
+              SizedBox(height: 24.h),
+              _buildReviewFeed(controller),
+              SizedBox(height: 40.h),
+            ],
+          ),
+        );
+      }),
     );
   }
 
-  Widget _buildProfileHeader(ProviderDetailsController controller) {
+  Widget _buildProfileHeader(
+    ProviderDetailsController controller,
+    ProviderDetailsModel details,
+  ) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
@@ -48,45 +79,70 @@ class ProviderDetailsScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 45.r,
-                    backgroundImage: AssetImage(ImagePath.profile),
+                    backgroundImage: (details.avatar ?? '').trim().isNotEmpty
+                        ? NetworkImage(details.avatar!.trim())
+                        : const AssetImage(ImagePath.profile) as ImageProvider,
                   ),
-                  CircleAvatar(
-                    radius: 12.r,
-                    backgroundColor: Colors.amber,
-                    child: Icon(Icons.check, size: 14.sp, color: Colors.white),
-                  ),
+                  if (controller.isVerified)
+                    CircleAvatar(
+                      radius: 12.r,
+                      backgroundColor: Colors.amber,
+                      child: Icon(
+                        Icons.check,
+                        size: 14.sp,
+                        color: Colors.white,
+                      ),
+                    ),
                 ],
               ),
               SizedBox(width: 16.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Mike Handyman service",
-                    style: getTextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      controller.displayName,
+                      style: getTextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on_outlined,
-                        size: 18.sp,
-                        color: Colors.blue,
-                      ),
-                      Text(
-                        " Dhaka, Bangladesh",
-                        style: getTextStyle(
-                          fontSize: 13.sp,
-                          color: AppColors.textSecondary,
-                          fontWeight: FontWeight.w500,
+                    SizedBox(height: 8.h),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.location_on_outlined,
+                          size: 18.sp,
+                          color: Colors.blue,
                         ),
+                        Expanded(
+                          child: Text(
+                            ' ${controller.locationText}',
+                            style: getTextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6.h),
+                    Text(
+                      controller.isServiceAvailable
+                          ? 'Available for service'
+                          : 'Currently unavailable',
+                      style: getTextStyle(
+                        fontSize: 12.sp,
+                        color: controller.isServiceAvailable
+                            ? const Color(0xFF16A34A)
+                            : AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -102,13 +158,18 @@ class ProviderDetailsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
                         5,
-                        (i) =>
-                            Icon(Icons.star, color: Colors.orange, size: 14.sp),
+                        (i) => Icon(
+                          i < details.avgReview.round()
+                              ? Icons.star
+                              : Icons.star_border,
+                          color: Colors.orange,
+                          size: 14.sp,
+                        ),
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(
-                      "${controller.rating} (${controller.reviewCount} Reviews)",
+                      "${controller.ratingText} (${controller.reviewCount} Reviews)",
                       textAlign: TextAlign.center,
                       style: getTextStyle(
                         fontSize: 13.sp,
@@ -139,7 +200,6 @@ class ProviderDetailsScreen extends StatelessWidget {
             onPressed: controller.sendMessage,
             backgroundColor: AppColors.textPurple,
             textColor: Colors.white,
-            
           ),
         ],
       ),
@@ -159,12 +219,12 @@ class ProviderDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "About Mike Handyman Service",
+            controller.aboutTitle,
             style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
           ),
           SizedBox(height: 8.h),
           Text(
-            "Get professional carpentry and woodwork solutions for your home, office, or business. From custom furniture design and installation...",
+            controller.aboutDescription,
             style: getTextStyle(
               fontSize: 13.sp,
               color: Colors.black54,
@@ -177,21 +237,28 @@ class ProviderDetailsScreen extends StatelessWidget {
             style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
           ),
           SizedBox(height: 8.h),
-          Wrap(
-            spacing: 8.w,
-            children: controller.skills
-                .map(
-                  (skill) => Chip(
-                    label: Text(skill, style: getTextStyle(fontSize: 12.sp)),
-                    backgroundColor: Colors.white,
-                    side: BorderSide(color: Colors.grey.shade200),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
+          if (controller.skills.isEmpty)
+            Text(
+              'No skills available',
+              style: getTextStyle(fontSize: 12.sp, color: Colors.black54),
+            )
+          else
+            Wrap(
+              spacing: 8.w,
+              runSpacing: 8.h,
+              children: controller.skills
+                  .map(
+                    (skill) => Chip(
+                      label: Text(skill, style: getTextStyle(fontSize: 12.sp)),
+                      backgroundColor: Colors.white,
+                      side: BorderSide(color: Colors.grey.shade200),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
                     ),
-                  ),
-                )
-                .toList(),
-          ),
+                  )
+                  .toList(),
+            ),
         ],
       ),
     );
@@ -214,37 +281,57 @@ class ProviderDetailsScreen extends StatelessWidget {
                 ),
               ),
               Text(
-                "Professional solutions tailored to your needs.",
+                controller.jobs.isEmpty
+                    ? "No published services available right now."
+                    : "Professional solutions tailored to your needs.",
                 style: getTextStyle(fontSize: 12.sp, color: Colors.grey),
               ),
             ],
           ),
         ),
-        SizedBox(height: 16.h),
-        Obx(
-          () => SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+        if (controller.jobs.isEmpty) ...[
+          SizedBox(height: 16.h),
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Row(
+            child: _buildInfoCard('This provider has no services to show yet.'),
+          ),
+        ] else ...[
+          SizedBox(height: 16.h),
+          Obx(
+            () => Column(
               children: [
-                _buildServiceTab("Carpentry & Woodwork", 0, controller),
-                SizedBox(width: 12.w),
-                _buildServiceTab("Maintenance", 1, controller),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Row(
+                    children: List.generate(controller.jobs.length, (index) {
+                      final isLast = index == controller.jobs.length - 1;
+                      return Padding(
+                        padding: EdgeInsets.only(right: isLast ? 0 : 12.w),
+                        child: _buildServiceTab(
+                          controller.jobs[index].title,
+                          index,
+                          controller,
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                SizedBox(
+                  height: 250.h,
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: controller.selectedJob == null ? 0 : 1,
+                    itemBuilder: (context, index) =>
+                        _buildServiceCard(controller, controller.selectedJob!),
+                  ),
+                ),
               ],
             ),
           ),
-        ),
-        SizedBox(height: 16.h),
-        // Horizontal list of service cards
-        SizedBox(
-          height: 250.h,
-          child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            scrollDirection: Axis.horizontal,
-            itemCount: 2,
-            itemBuilder: (context, index) => _buildServiceCard(controller),
-          ),
-        ),
+        ],
       ],
     );
   }
@@ -298,7 +385,10 @@ class ProviderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceCard(ProviderDetailsController controller) {
+  Widget _buildServiceCard(
+    ProviderDetailsController controller,
+    ProviderJobModel service,
+  ) {
     return Container(
       width: 180.w,
       margin: EdgeInsets.only(right: 16.w),
@@ -312,12 +402,25 @@ class ProviderDetailsScreen extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-            child: Image.asset(
-              ImagePath.servicecard,
-              height: 100.h,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+            child: service.thumbnail.trim().isNotEmpty
+                ? Image.network(
+                    service.thumbnail,
+                    height: 100.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Image.asset(
+                      ImagePath.servicecard,
+                      height: 100.h,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Image.asset(
+                    ImagePath.servicecard,
+                    height: 100.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
           ),
           Padding(
             padding: EdgeInsets.all(8.r),
@@ -325,22 +428,43 @@ class ProviderDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Basic Woodwork",
+                  service.title,
                   style: getTextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.bold,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  "Building and repairing small structures...",
+                  service.description.isNotEmpty
+                      ? service.description
+                      : 'Professional service from this provider.',
                   style: getTextStyle(
                     fontSize: 10.sp,
                     color: AppColors.textSecondary,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    ...List.generate(
+                      5,
+                      (i) => Icon(
+                        i < service.averageRating.round()
+                            ? Icons.star
+                            : Icons.star_border,
+                        color: Colors.orange,
+                        size: 12.sp,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  "Start From 450.0 ৳",
+                  "Start From ${service.basePrice.toStringAsFixed(service.basePrice % 1 == 0 ? 0 : 2)} ৳",
                   style: getTextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
@@ -349,28 +473,11 @@ class ProviderDetailsScreen extends StatelessWidget {
                 SizedBox(height: 8.h),
                 CustomButton(
                   text: "Book For Service",
-                  onPressed: () =>
-                      controller.bookSpecificService("Basic Woodwork"),
+                  onPressed: () => controller.bookSpecificService(service.id),
                   backgroundColor: AppColors.textPurple,
                   textColor: Colors.white,
                   height: 30.h,
-                  // fontSize: 10.sp,
                 ),
-                // SizedBox(
-                //   width: double.infinity,
-                //   height: 30.h,
-                //   child: ElevatedButton(
-                //     onPressed: () =>
-                //         controller.bookSpecificService("Basic Woodwork"),
-                //     style: ElevatedButton.styleFrom(
-                //       backgroundColor: AppColors.textPurple,
-                //     ),
-                //     child: Text(
-                //       "Book For Service",
-                //       style: getTextStyle(color: Colors.white, fontSize: 10.sp),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -379,7 +486,7 @@ class ProviderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReviewFeed() {
+  Widget _buildReviewFeed(ProviderDetailsController controller) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
@@ -390,14 +497,16 @@ class ProviderDetailsScreen extends StatelessWidget {
             style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
           ),
           SizedBox(height: 12.h),
-          // Reusing your Review Card logic
-          ...List.generate(3, (index) => _buildSingleReview()),
+          if (controller.reviews.isEmpty)
+            _buildInfoCard('No reviews available yet.')
+          else
+            ...controller.reviews.map((review) => _buildSingleReview(review)),
         ],
       ),
     );
   }
 
-  Widget _buildSingleReview() {
+  Widget _buildSingleReview(ProviderReviewModel review) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(16.r),
@@ -419,7 +528,7 @@ class ProviderDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Fabio",
+                    "Customer Review",
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w700,
@@ -428,22 +537,31 @@ class ProviderDetailsScreen extends StatelessWidget {
                   Row(
                     children: List.generate(
                       5,
-                      (i) =>
-                          Icon(Icons.star, color: Colors.orange, size: 12.sp),
+                      (i) => Icon(
+                        i < review.rating ? Icons.star : Icons.star_border,
+                        color: Colors.orange,
+                        size: 12.sp,
+                      ),
                     ),
                   ),
                 ],
               ),
               const Spacer(),
               Text(
-                "August 14, 2025",
+                review.createdAt == null
+                    ? 'Recently'
+                    : DateFormat(
+                        'dd MMM yyyy',
+                      ).format(review.createdAt!.toLocal()),
                 style: getTextStyle(fontSize: 11.sp, color: Colors.grey),
               ),
             ],
           ),
           SizedBox(height: 8.h),
           Text(
-            "Mike Handyman Service is a great, he helped me through the problems that i really want...",
+            review.comment.isNotEmpty
+                ? review.comment
+                : 'No written feedback provided.',
             style: getTextStyle(
               fontSize: 12.sp,
               color: AppColors.textSecondary,
@@ -452,6 +570,61 @@ class ProviderDetailsScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildStatusState({
+    required String title,
+    String? buttonText,
+    VoidCallback? onPressed,
+  }) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: getTextStyle(
+                fontSize: 14.sp,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            if (buttonText != null && onPressed != null) ...[
+              SizedBox(height: 16.h),
+              CustomButton(
+                text: buttonText,
+                onPressed: onPressed,
+                backgroundColor: AppColors.textPurple,
+                textColor: Colors.white,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(String message) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(16.r),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Text(
+        message,
+        style: getTextStyle(
+          fontSize: 13.sp,
+          color: AppColors.textSecondary,
+          lineHeight: 18.sp,
+        ),
       ),
     );
   }

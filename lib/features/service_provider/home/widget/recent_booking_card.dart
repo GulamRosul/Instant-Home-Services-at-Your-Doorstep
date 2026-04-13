@@ -130,7 +130,11 @@ class RecentBookingCard extends StatelessWidget {
                     Spacer(),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => ProviderDetailsScreen());
+                        Get.to(
+                          () => ProviderDetailsScreen(
+                            providerId: booking.providerId ?? '',
+                          ),
+                        );
                       },
                       child: Text(
                         'View Details',

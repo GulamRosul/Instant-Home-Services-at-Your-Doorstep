@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:protiva502/app.dart';
 import 'package:protiva502/core/services/storage_service.dart';
+import 'package:protiva502/firebase_options.dart';
 
 // void main() {
 //   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +33,8 @@ import 'package:protiva502/core/services/storage_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageService.init();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

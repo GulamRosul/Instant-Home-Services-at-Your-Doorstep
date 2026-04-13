@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "242025959192",
+    "project_id": "kaajbd-603b3",
+    "storage_bucket": "kaajbd-603b3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242025959192:android:d27a749896f5573122986d",
+        "android_client_info": {
+          "package_name": "com.example.protiva502"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjd2IjfIUMuSpNKPjCX1nxw4nGPvAooS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

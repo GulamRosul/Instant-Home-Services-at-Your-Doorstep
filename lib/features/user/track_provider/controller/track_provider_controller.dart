@@ -186,11 +186,16 @@ class TrackProviderController extends GetxController {
     // Extract raw booking ID without # symbol
     String rawBookingId = bookingId.value.replaceAll('#', '');
 
+    // Determine which ID is the provider and which is the client
+    String providerId = userRole.value == 'user' ? _otherUserId ?? '' : _currentUserId ?? '';
+    String clientId = userRole.value == 'user' ? _currentUserId ?? '' : _otherUserId ?? '';
+
     Get.to(() => SingleChatScreen(), arguments: {
       'bookingId': rawBookingId,
       'userId': _currentUserId,
-      'otherUserId': _otherUserId,
-      'personName': personName.value,
+      'providerId': providerId,
+      'clientId': clientId,
+      'providerName': personName.value,
       'userRole': userRole.value,
     });
   }

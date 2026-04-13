@@ -248,7 +248,31 @@ class BookingController extends GetxController {
   }
 
   void handleMessage(int index) {
-    Get.to(() => SingleChatScreen());
+    final booking = filteredBookings[index];
+
+    // Ensure we have valid IDs for messaging
+    final clientId = booking.clientId?.isNotEmpty == true ? booking.clientId! : '';
+    final providerId = booking.providerId?.isNotEmpty == true ? booking.providerId! : '';
+
+    if (clientId.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Client information is not available for this booking',
+      );
+      return;
+    }
+
+    Get.to(
+      () => SingleChatScreen(),
+      arguments: {
+        'bookingId': booking.id,
+        'userId': providerId,
+        'userRole': 'provider',
+        'providerName': 'Service Provider',
+        'clientId': clientId,
+        'providerId': providerId,
+      },
+    );
   }
 
   void handleViewDetails(int index) {

@@ -378,6 +378,7 @@ class AllBookingScreen extends StatelessWidget {
           if (booking.message != null && booking.message!.isNotEmpty) ...[
             SizedBox(height: 8.h),
             Container(
+              
               width: double.infinity,
               padding: EdgeInsets.all(10.r),
               decoration: BoxDecoration(

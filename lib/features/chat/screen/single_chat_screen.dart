@@ -21,7 +21,7 @@ class SingleChatScreen extends StatelessWidget {
       body: Column(
         children: [
           // 2. Place your custom header here as the first element
-          _buildChatHeader(context),
+          _buildChatHeader(context, controller),
 
           // Message List (Takes up remaining space)
           Expanded(
@@ -49,7 +49,7 @@ class SingleChatScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChatHeader(BuildContext context) {
+  Widget _buildChatHeader(BuildContext context, SingleChatController controller) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
       decoration: BoxDecoration(
@@ -79,9 +79,7 @@ class SingleChatScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 24.r,
-                  backgroundImage: AssetImage(
-                    ImagePath.profile,
-                  ), // Replace with your image asset or NetworkImage
+                  backgroundImage: AssetImage(ImagePath.profile),
                   backgroundColor: Colors.grey.shade200,
                 ),
                 Positioned(
@@ -91,7 +89,7 @@ class SingleChatScreen extends StatelessWidget {
                     height: 14.h,
                     width: 14.w,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF22C55E), // Green for "Active"
+                      color: const Color(0xFF22C55E),
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2.5),
                     ),
@@ -103,28 +101,34 @@ class SingleChatScreen extends StatelessWidget {
 
             // Name and Status
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Mike Handyman service",
-                    style: getTextStyle(
-                      color: const Color(0xFF1E293B), // Dark Slate color
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w500,
+              child: Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      controller.otherUserName.value,
+                      style: getTextStyle(
+                        color: const Color(0xFF1E293B),
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    "Active now",
-                    style: getTextStyle(
-                      color: const Color(0xFF64748B), // Slate grey
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
+                    SizedBox(height: 2.h),
+                    Text(
+                      controller.isOtherUserTyping.value
+                          ? "typing..."
+                          : controller.connectionStatus.value,
+                      style: getTextStyle(
+                        color: controller.isOtherUserTyping.value
+                            ? const Color(0xFF0891B2)
+                            : const Color(0xFF64748B),
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 
@@ -204,12 +208,7 @@ class SingleChatScreen extends StatelessWidget {
 
   Widget _buildMessageInput(SingleChatController controller) {
     return Container(
-      padding: EdgeInsets.fromLTRB(
-        10.w,
-        10.h,
-        20.w,
-        30.h,
-      ), // Adjusted for bottom safety
+      padding: EdgeInsets.fromLTRB(10.w, 10.h, 20.w, 30.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -236,10 +235,17 @@ class SingleChatScreen extends StatelessWidget {
           ),
           Expanded(
             child: CustomTextField(
-              controller: controller
-                  .messageController, // Crucial: Pass the controller here
+              controller: controller.messageController,
               hintText: "Type a message...",
               backgroundColor: Colors.white,
+              onChanged: (value) {
+                // Emit typing start when user starts typing
+                if (value.isNotEmpty) {
+                  controller.emitTypingStart();
+                } else {
+                  controller.emitTypingStop();
+                }
+              },
             ),
           ),
           SizedBox(width: 12.w),

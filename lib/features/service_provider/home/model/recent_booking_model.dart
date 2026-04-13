@@ -14,6 +14,8 @@ class RecentBookingModel {
     required this.status,
     required this.message,
     required this.createdAt,
+    required this.clientId,
+    required this.providerId,
   });
 
   final String id;
@@ -30,6 +32,8 @@ class RecentBookingModel {
   final String status;
   final String message;
   final DateTime? createdAt;
+  final String? clientId;
+  final String? providerId;
 
   factory RecentBookingModel.fromJson(Map<String, dynamic> json) {
     return RecentBookingModel(
@@ -48,6 +52,8 @@ class RecentBookingModel {
       status: json['status']?.toString() ?? '',
       message: json['message']?.toString() ?? '',
       createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
+      clientId: json['clientId']?.toString(),
+      providerId: json['providerId']?.toString(),
     );
   }
 
@@ -66,6 +72,8 @@ class RecentBookingModel {
     String? status,
     String? message,
     DateTime? createdAt,
+    String? clientId,
+    String? providerId,
   }) {
     return RecentBookingModel(
       id: id ?? this.id,
@@ -82,6 +90,8 @@ class RecentBookingModel {
       status: status ?? this.status,
       message: message ?? this.message,
       createdAt: createdAt ?? this.createdAt,
+      clientId: clientId ?? this.clientId,
+      providerId: providerId ?? this.providerId,
     );
   }
 }

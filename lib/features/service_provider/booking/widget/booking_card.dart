@@ -211,7 +211,25 @@ class BookingCard extends StatelessWidget {
 
     if (status == 'Accepted') {
       return GestureDetector(
-        onTap: () => Get.to(() => TrackProviderScreen()),
+        onTap: () => Get.to(
+          () => TrackProviderScreen(),
+          arguments: {
+            'providerName':
+                'Service Provider', // You may need to fetch actual provider name
+            'serviceName': booking.serviceName,
+            'location': booking.locationDetails.isNotEmpty
+                ? booking.locationDetails
+                : 'Location not available',
+            'rating':
+                '4.8 (170 Reviews)', // You may need to fetch actual rating
+            'cost': '৳ ${booking.serviceAmount.toStringAsFixed(2)}',
+            'bookingId': booking.id,
+            'clientId': booking.clientId,
+            'providerId': booking.providerId,
+            'userId': booking.providerId,
+            'userRole': 'provider',
+          },
+        ),
         child: cardContent,
       );
     }

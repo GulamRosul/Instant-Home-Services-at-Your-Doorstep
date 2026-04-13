@@ -659,7 +659,23 @@ class AllBookingScreen extends StatelessWidget {
 
   void _handleBookingAction(UserBookingItem booking) {
     if (booking.canTrack) {
-      Get.to(() => const TrackProviderScreen());
+      Get.to(
+        () => const TrackProviderScreen(),
+        arguments: {
+          'providerName':
+              'Service Provider', // You may need to fetch actual provider name from API
+          'serviceName': booking.serviceName,
+          'location': booking.locationText,
+          'rating':
+              '4.8 (170 Reviews)', // You may need to fetch actual rating from API
+          'cost': '\$${booking.totalAmount.toStringAsFixed(2)}',
+          'bookingId': booking.reference,
+          'providerId': booking.providerId,
+          'clientId': booking.clientId,
+          'userId': booking.clientId,
+          'userRole': 'user',
+        },
+      );
       return;
     }
 
@@ -714,10 +730,10 @@ class AllBookingScreen extends StatelessWidget {
 
   String _formatCurrency(double amount) {
     if (amount == amount.truncateToDouble()) {
-      return '\$${amount.toStringAsFixed(0)}';
+      return '${amount.toStringAsFixed(0)}';
     }
 
-    return '\$${amount.toStringAsFixed(2)}';
+    return '${amount.toStringAsFixed(2)}';
   }
 
   String _shortReference(String reference) {

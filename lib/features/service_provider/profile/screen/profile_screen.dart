@@ -217,14 +217,16 @@ class ProfileScreen extends StatelessWidget {
                             onPressed: isSaving
                                 ? null
                                 : () async {
-                                    final updatedValue =
-                                        textController.text.trim();
+                                    final updatedValue = textController.text
+                                        .trim();
                                     if (updatedValue.isEmpty) {
                                       Get.snackbar(
                                         'Required field',
                                         '$label cannot be empty.',
                                         snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: const Color(0xFF0F172A),
+                                        backgroundColor: const Color(
+                                          0xFF0F172A,
+                                        ),
                                         colorText: Colors.white,
                                         margin: EdgeInsets.all(16.w),
                                       );
@@ -334,11 +336,17 @@ class ProfileScreen extends StatelessWidget {
                   SizedBox(height: 16.h),
                   ElevatedButton(
                     onPressed: controller.fetchProfile,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Retry'),
+                    style:
+                        ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                        ).copyWith(
+                          overlayColor: WidgetStateProperty.all(
+                            Colors.transparent,
+                          ),
+                          side: WidgetStateProperty.all(BorderSide.none),
+                        ),
+                    child: const Text('  Retry  '),
                   ),
                 ],
               ),

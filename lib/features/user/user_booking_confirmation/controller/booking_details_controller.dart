@@ -73,7 +73,14 @@ class BookingDetailsController extends GetxController {
       isShowSeconds: false,
       minutesInterval: 5,
       borderRadius: const BorderRadius.all(Radius.circular(16)),
-      title: const Text("Select Date & Time"),
+      title: const Text("\nSelect Date & Time"),
+      barrierColor: Colors.white.withValues(alpha: 0.8),
+      // backgroundColor: Colors.white,
+      // theme: ThemeData.light(),
+      theme: ThemeData(
+        colorScheme: const ColorScheme.light(surface: Colors.white),
+        dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+      ),
     );
 
     if (pickedDateTime == null) {

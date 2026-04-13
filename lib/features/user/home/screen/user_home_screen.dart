@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/services/storage_service.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/device/device_utility.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
@@ -61,9 +63,7 @@ class UserHomeScreen extends StatelessWidget {
                 },
               ),
               // SizedBox(height: 16.h),
-              Obx(
-                () => _buildCategoryGrid(controller),
-              ),
+              Obx(() => _buildCategoryGrid(controller)),
               SizedBox(height: 24.h),
               _buildSectionHeader(
                 "Popular Services",
@@ -118,33 +118,44 @@ class UserHomeScreen extends StatelessWidget {
     final displayName = StorageService.getDisplayName();
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        CircleAvatar(
-          radius: 22.r,
-          backgroundImage: const AssetImage(ImagePath.profile),
-        ),
-        SizedBox(width: 12.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
           children: [
-            Text(
-              'Good Morning!',
-              style: getTextStyle(
-                fontSize: 16.sp,
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-              ),
+            CircleAvatar(
+              radius: 22.r,
+              backgroundImage: const AssetImage(ImagePath.profile),
             ),
-            SizedBox(height: 4.h),
-            Text(
-              displayName,
-              style: getTextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.black,
-              ),
+            SizedBox(width: 12.w),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Good Morning!',
+                  style: getTextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  displayName,
+                  style: getTextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
           ],
+        ),
+        SvgPicture.asset(
+          IconPath.kaajbd,
+          width: 24.w,
+          height: 24.h,
+          // color: Colors.black,
         ),
       ],
     );
@@ -409,11 +420,7 @@ class UserHomeScreen extends StatelessWidget {
                           );
                         },
                       )
-                    : Icon(
-                        Icons.category,
-                        size: 24.sp,
-                        color: Colors.grey,
-                      ),
+                    : Icon(Icons.category, size: 24.sp, color: Colors.grey),
                 SizedBox(height: 8.h),
                 Text(
                   category.name,

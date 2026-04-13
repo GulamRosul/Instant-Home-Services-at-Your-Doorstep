@@ -109,7 +109,10 @@ class SubcategoryServiceListScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+          ),
         ],
       ),
       child: Column(
@@ -163,7 +166,9 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => const ProviderDetailsScreen());
+                      Get.to(
+                        () => ProviderDetailsScreen(providerId: service.userId),
+                      );
                     },
                     child: Text(
                       "View Provider",

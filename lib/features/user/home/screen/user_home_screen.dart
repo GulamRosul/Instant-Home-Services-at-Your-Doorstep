@@ -536,7 +536,9 @@ class UserHomeScreen extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(() => ProviderDetailsScreen());
+                    Get.to(
+                      () => ProviderDetailsScreen(providerId: service.userId),
+                    );
                   },
                   child: Text(
                     service.description.isNotEmpty

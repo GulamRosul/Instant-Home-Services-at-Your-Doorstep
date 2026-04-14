@@ -11,9 +11,12 @@ import 'package:protiva502/core/utils/device/device_utility.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
+import 'package:protiva502/features/user/home/controller/generic_listing_controller.dart';
+import 'package:protiva502/features/user/home/model/expert_recommendation_model.dart';
 import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/home/model/user_banner_model.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
+import 'package:protiva502/features/user/home/screen/generic_listing_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
@@ -68,7 +71,16 @@ class UserHomeScreen extends StatelessWidget {
               _buildSectionHeader(
                 "Popular Services",
                 onSeeAllTap: () {
-                  Get.to(() => const AvailableCategoryScreen());
+                  Get.to(
+                    () => GenericListingScreen<HomeJobModel>(
+                      title: "Popular Services",
+                      type: ListingType.popularServices,
+                      initialItems: controller.popularServices,
+                      fetchFunction: controller.fetchPopularServices,
+                      itemBuilder: (service) =>
+                          _buildServiceCard(service as HomeJobModel),
+                    ),
+                  );
                 },
               ),
               SizedBox(height: 16.h),
@@ -86,16 +98,33 @@ class UserHomeScreen extends StatelessWidget {
               _buildSectionHeader(
                 "Recommended Expert For You",
                 onSeeAllTap: () {
-                  Get.to(() => const AvailableCategoryScreen());
+                  Get.to(
+                    () => GenericListingScreen<ExpertRecommendationModel>(
+                      title: "Recommended Experts",
+                      type: ListingType.recommendedExperts,
+                      initialItems: controller.recommendedExperts,
+                      fetchFunction: controller.fetchAllExperts,
+                      itemBuilder: (expert) => _buildExpertItem(expert),
+                    ),
+                  );
                 },
               ),
               SizedBox(height: 16.h),
-              _buildExpertCard(),
+              _buildExpertCard(controller),
               SizedBox(height: 24.h),
               _buildSectionHeader(
                 "All Services",
                 onSeeAllTap: () {
-                  Get.to(() => const AvailableCategoryScreen());
+                  Get.to(
+                    () => GenericListingScreen<HomeJobModel>(
+                      title: "All Services",
+                      type: ListingType.allServices,
+                      initialItems: controller.allServices,
+                      fetchFunction: controller.fetchAllServices,
+                      itemBuilder: (service) =>
+                          _buildServiceCard(service as HomeJobModel),
+                    ),
+                  );
                 },
               ),
               Obx(
@@ -640,69 +669,115 @@ class UserHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildExpertCard() {
-    return Container(
-      padding: EdgeInsets.all(12.r),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.grey.shade200),
+  Widget _buildExpertCard(UserHomeController controller) {
+    return Obx(
+      () => _buildSectionBody(
+        isLoading: controller.isExpertsLoading.value,
+        errorMessage: controller.expertsErrorMessage.value,
+        isEmpty: controller.recommendedExperts.isEmpty,
+        child: controller.recommendedExperts.isEmpty
+            ? const SizedBox.shrink()
+            : SizedBox(
+                height: 120.h,
+                child: PageView.builder(
+                  controller: controller.expertPageController,
+                  onPageChanged: (index) {
+                    controller.updateExpertPage(index);
+                  },
+                  itemCount: controller.recommendedExperts.length,
+                  itemBuilder: (context, index) {
+                    final expert = controller.recommendedExperts[index];
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.w),
+                      child: _buildExpertItem(expert),
+                    );
+                  },
+                ),
+              ),
       ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 25.r,
-            backgroundImage: const AssetImage(ImagePath.profile),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Mike Handyman carpentry service",
-                  style: getTextStyle(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  "– Dhaka, Canada",
-                  style: getTextStyle(
-                    fontSize: 11.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.check_circle, color: Colors.orange, size: 14.sp),
-                    SizedBox(width: 4.w),
-                    Text("Verified", style: getTextStyle(fontSize: 11.sp)),
-                    const Spacer(),
-                    Text(
-                      "Starting : ",
-                      style: getTextStyle(
-                        fontSize: 11.sp,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      "৳ 20.00",
-                      style: getTextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+    );
+  }
+
+  Widget _buildExpertItem(ExpertRecommendationModel expert) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(
+          () => ProviderDetailsScreen(providerId: expert.userId),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 0.r, horizontal: 12.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 25.r,
+              backgroundImage: const AssetImage(ImagePath.profile),
             ),
-          ),
-        ],
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    expert.fullName,
+                    style: getTextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    '– ${expert.city ?? expert.country}',
+                    style: getTextStyle(
+                      fontSize: 11.sp,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.check_circle,
+                        color: expert.verificationStatus == 'VERIFIED'
+                            ? Colors.orange
+                            : Colors.grey,
+                        size: 14.sp,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        expert.verificationStatus,
+                        style: getTextStyle(fontSize: 11.sp),
+                      ),
+                      const Spacer(),
+                      if (expert.avgRating > 0)
+                        Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber, size: 12.sp),
+                            SizedBox(width: 2.w),
+                            Text(
+                              expert.avgRating.toStringAsFixed(1),
+                              style: getTextStyle(fontSize: 11.sp),
+                            ),
+                          ],
+                        ),
+                      // 10.h.verticalSpace,
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

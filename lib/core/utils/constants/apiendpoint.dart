@@ -17,6 +17,9 @@ class ApiEndpoints {
   static const String withdrawCard = '/withdraw/card';
   static const String withdrawMobileBanking = '/withdraw/mobile-banking';
 
+  static const String getRecommendedExperts = '/expart-recommendation/expert-recommendations';
+
+
   static const String createJob = '/job/create-job';
 
   static const String categories = '/category/all-categoris-for-user';

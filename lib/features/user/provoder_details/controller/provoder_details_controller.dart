@@ -171,12 +171,15 @@ class ProviderDetailsController extends GetxController {
       return;
     }
 
+    final userId = StorageService.getUserId() ?? '';
+
     Get.to(
       () => const SingleChatScreen(),
       arguments: {
         'providerId': providerId,
+        'clientId': userId,
         'providerName': displayName,
-        'userId': StorageService.getUserId() ?? '',
+        'userId': userId,
         'userRole': 'user',
       },
     );

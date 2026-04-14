@@ -19,6 +19,7 @@ import 'package:protiva502/features/user/home/model/sub_category_model.dart';
 class CreateJobController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   final ApiClient _apiClient = ApiClient();
+  
 
   // Step Management
   var currentStep = 0.obs;
@@ -742,7 +743,7 @@ class CreateJobController extends GetxController {
         return false;
       }
 
-      final response = await _apiClient.get<dynamic>(
+      final response = await _apiClient.delete<dynamic>(
         ApiEndpoints.deleteJob(jobId),
         options: Options(
           headers: {

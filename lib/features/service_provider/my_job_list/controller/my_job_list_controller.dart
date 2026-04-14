@@ -230,32 +230,27 @@ class MyJobListController extends GetxController {
 
   void handleEditListing(int index) {
     final job = listings[index];
-    Get.toNamed(
-      AppRoute.postJob,
-      arguments: job,
-    );
+    Get.toNamed(AppRoute.postJob, arguments: job);
   }
 
   void handleDeleteListing(int index) {
     final job = listings[index];
-    
+
     Get.dialog(
       AlertDialog(
+        backgroundColor: Colors.white,
         title: const Text('Delete Job'),
         content: Text('Are you sure you want to delete "${job.title}"?'),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () async {
               Get.back(); // Close dialog
-              
+
               // Get CreateJobController to use its deleteJob method
-              final createJobController = Get.find<CreateJobController>();
+              final createJobController = Get.put(CreateJobController());
               final success = await createJobController.deleteJob(job.id);
-              
+
               if (success) {
                 // Remove from list after successful deletion
                 listings.removeAt(index);
@@ -266,10 +261,7 @@ class MyJobListController extends GetxController {
                 );
               }
             },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
-            ),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

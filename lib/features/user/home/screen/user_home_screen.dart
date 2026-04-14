@@ -413,7 +413,7 @@ class UserHomeScreen extends StatelessWidget {
     if (controller.isCategoriesLoading.value) {
       return _buildCategoryShimmerLoader();
     }
-    
+
     return GridView.builder(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
@@ -581,8 +581,8 @@ class UserHomeScreen extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    service.description.isNotEmpty
-                        ? service.description
+                    service.userFirstName.isNotEmpty
+                        ? service.userFirstName
                         : 'Service details',
                     style: getTextStyle(
                       fontSize: 10.sp,
@@ -713,9 +713,7 @@ class UserHomeScreen extends StatelessWidget {
   Widget _buildExpertItem(ExpertRecommendationModel expert) {
     return GestureDetector(
       onTap: () {
-        Get.to(
-          () => ProviderDetailsScreen(providerId: expert.userId),
-        );
+        Get.to(() => ProviderDetailsScreen(providerId: expert.userId));
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 0.r, horizontal: 12.w),

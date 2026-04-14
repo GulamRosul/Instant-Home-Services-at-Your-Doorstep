@@ -9,6 +9,7 @@ class HomeJobModel {
     required this.averageRating,
     required this.totalBookings,
     required this.isPopular,
+    this.userFirstName = '',
   });
 
   final String id;
@@ -20,8 +21,15 @@ class HomeJobModel {
   final double averageRating;
   final int totalBookings;
   final bool isPopular;
+  final String userFirstName;
 
   factory HomeJobModel.fromJson(Map<String, dynamic> json) {
+    String firstName = '';
+    final user = json['user'];
+    if (user is Map) {
+      firstName = (user['firstName'] ?? '').toString();
+    }
+
     return HomeJobModel(
       id: json['id']?.toString() ?? '',
       userId: json['userId']?.toString() ?? '',
@@ -33,6 +41,7 @@ class HomeJobModel {
           double.tryParse(json['averageRating']?.toString() ?? '') ?? 0,
       totalBookings: int.tryParse(json['totalBookings']?.toString() ?? '') ?? 0,
       isPopular: json['isPopuler'] == true || json['isPopular'] == true,
+      userFirstName: firstName,
     );
   }
 }

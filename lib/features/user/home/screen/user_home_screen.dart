@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/common/widgets/shimmer_effect.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/device/device_utility.dart';
@@ -92,6 +93,7 @@ class UserHomeScreen extends StatelessWidget {
                   child: _buildServiceHorizontalList(
                     controller.popularServices,
                   ),
+                  shimmerChild: _buildServiceShimmerLoader(),
                 ),
               ),
               SizedBox(height: 24.h),
@@ -133,6 +135,7 @@ class UserHomeScreen extends StatelessWidget {
                   errorMessage: controller.servicesErrorMessage.value,
                   isEmpty: controller.allServices.isEmpty,
                   child: _buildServiceGrid(controller.allServices),
+                  shimmerChild: _buildServiceGridShimmerLoader(),
                 ),
               ),
               SizedBox(height: 100.h), // Space for floating nav bar
@@ -407,6 +410,10 @@ class UserHomeScreen extends StatelessWidget {
   }
 
   Widget _buildCategoryGrid(UserHomeController controller) {
+    if (controller.isCategoriesLoading.value) {
+      return _buildCategoryShimmerLoader();
+    }
+    
     return GridView.builder(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
@@ -473,8 +480,12 @@ class UserHomeScreen extends StatelessWidget {
     required String errorMessage,
     required bool isEmpty,
     required Widget child,
+    Widget? shimmerChild,
   }) {
     if (isLoading) {
+      if (shimmerChild != null) {
+        return shimmerChild;
+      }
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -694,6 +705,7 @@ class UserHomeScreen extends StatelessWidget {
                   },
                 ),
               ),
+        shimmerChild: _buildExpertShimmerLoader(),
       ),
     );
   }
@@ -795,6 +807,60 @@ class UserHomeScreen extends StatelessWidget {
         mainAxisExtent: 260.h,
       ),
       itemBuilder: (context, index) => _buildServiceCard(services[index]),
+    );
+  }
+
+  Widget _buildServiceShimmerLoader() {
+    return SizedBox(
+      height: 220.h,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 3,
+        itemBuilder: (context, index) => const ShimmerServiceCard(),
+      ),
+    );
+  }
+
+  Widget _buildCategoryShimmerLoader() {
+    return GridView.builder(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 8,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        mainAxisSpacing: 5.h,
+        crossAxisSpacing: 6.w,
+        childAspectRatio: 0.8,
+      ),
+      itemBuilder: (context, index) => const ShimmerCategoryItem(),
+    );
+  }
+
+  Widget _buildExpertShimmerLoader() {
+    return SizedBox(
+      height: 220.h,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 3,
+        itemBuilder: (context, index) => const ShimmerServiceCard(),
+      ),
+    );
+  }
+
+  Widget _buildServiceGridShimmerLoader() {
+    return GridView.builder(
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 4,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 10.h,
+        crossAxisSpacing: 0.w,
+        mainAxisExtent: 260.h,
+      ),
+      itemBuilder: (context, index) => const ShimmerServiceCard(),
     );
   }
 }

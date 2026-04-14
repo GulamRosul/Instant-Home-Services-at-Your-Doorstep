@@ -152,6 +152,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
               padding: EdgeInsets.all(8.r),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     service.title,
@@ -184,7 +185,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                       maxLines: 1,
                     ),
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 2.h),
                   Row(
                     children: [
                       Icon(Icons.star_half, size: 10.sp, color: Colors.orange),
@@ -201,7 +202,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 2.h),
                   Text(
                     'Start From ৳${service.basePrice}',
                     style: getTextStyle(
@@ -210,10 +211,10 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 2.h),
                   CustomButton(
                     text: "Book Now",
-                    height: 30.h,
+                    height: 28.h,
                     backgroundColor: AppColors.textPurple,
                     borderRadius: 6.r,
                     onPressed: () {

@@ -4,8 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
-import 'package:protiva502/core/utils/constants/image_path.dart';
-import 'package:protiva502/features/service_provider/home/model/active_job_model.dart';
+import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/my_job_list_controller.dart';
 
 class MyJobListScreen extends StatelessWidget {
@@ -100,11 +99,12 @@ class MyJobListScreen extends StatelessWidget {
             SizedBox(height: 24.h),
             Expanded(
               child: Obx(() {
-                if (controller.isLoading.value) {
+                if (controller.isLoading.value && controller.listings.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (controller.errorMessage.value.isNotEmpty) {
+                if (controller.errorMessage.value.isNotEmpty &&
+                    controller.listings.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -120,7 +120,8 @@ class MyJobListScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 12.h),
                         ElevatedButton(
-                          onPressed: controller.fetchMyActiveJobs,
+                          onPressed: () =>
+                              controller.fetchMyActiveJobs(refresh: true),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF787BEB),
                             shape: RoundedRectangleBorder(
@@ -156,12 +157,28 @@ class MyJobListScreen extends StatelessWidget {
                 }
 
                 return RefreshIndicator(
-                  onRefresh: controller.fetchMyActiveJobs,
+                  onRefresh: () => controller.fetchMyActiveJobs(refresh: true),
                   child: ListView.separated(
-                    itemCount: controller.listings.length,
+                    controller: controller.scrollController,
+                    itemCount:
+                        controller.listings.length +
+                        (controller.isLoadingMore.value ? 1 : 0),
                     separatorBuilder: (context, index) =>
                         SizedBox(height: 16.h),
                     itemBuilder: (context, index) {
+                      if (index == controller.listings.length) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                          child: const Center(
+                            child: SizedBox(
+                              height: 40,
+                              width: 40,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        );
+                      }
+
                       final item = controller.listings[index];
                       return _buildJobCard(context, controller, item, index);
                     },
@@ -178,9 +195,14 @@ class MyJobListScreen extends StatelessWidget {
   Widget _buildJobCard(
     BuildContext context,
     MyJobListController controller,
-    ActiveJobModel item,
+    JobModel item,
     int index,
   ) {
+    double ratingValue = 0;
+    if (item.averageRating != null) {
+      ratingValue = double.tryParse(item.averageRating.toString()) ?? 0;
+    }
+
     return Container(
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
@@ -197,27 +219,52 @@ class MyJobListScreen extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(4.r),
-                    child: Image.asset(
-                      ImagePath.servicecard,
-                      width: 60.w,
-                      height: 40.w,
-                      fit: BoxFit.cover,
-                    ),
+                    child: item.thumbnail.isNotEmpty
+                        ? Image.network(
+                            item.thumbnail,
+                            width: 60.w,
+                            height: 40.w,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                width: 60.w,
+                                height: 40.w,
+                                color: Colors.grey[300],
+                                child: Icon(Icons.image_not_supported),
+                              );
+                            },
+                          )
+                        : Container(
+                            width: 60.w,
+                            height: 40.w,
+                            color: Colors.grey[300],
+                            child: Icon(Icons.image),
+                          ),
                   ),
                   SizedBox(height: 8.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(IconPath.star, height: 14.h),
-                      Text(
-                        ' ${item.averageRating.toStringAsFixed(1)} ',
-                        style: getTextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
+                  if (ratingValue > 0)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(IconPath.star, height: 14.h),
+                        Text(
+                          ' ${ratingValue.toStringAsFixed(1)} ',
+                          style: getTextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
+                      ],
+                    )
+                  else
+                    Text(
+                      'No rating',
+                      style: getTextStyle(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey,
                       ),
-                    ],
-                  ),
+                    ),
                 ],
               ),
               SizedBox(width: 12.w),
@@ -321,7 +368,7 @@ class MyJobListScreen extends StatelessWidget {
                         ),
                         children: [
                           TextSpan(
-                            text: '${item.basePrice.toStringAsFixed(0)} ৳',
+                            text: '${item.basePrice} ৳',
                             style: getTextStyle(
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w600,

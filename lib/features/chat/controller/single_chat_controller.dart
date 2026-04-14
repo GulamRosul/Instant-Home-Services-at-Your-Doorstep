@@ -33,17 +33,30 @@ class SingleChatController extends GetxController {
     final arguments = Get.arguments;
     if (arguments != null && arguments is Map<String, dynamic>) {
       bookingId.value = arguments['bookingId'] ?? '';
-      currentUserId.value = arguments['userId'] ?? StorageService.getUserId() ?? 'user_123';
-      userRole.value = arguments['userRole'] ?? StorageService.getRole() ?? 'user';
+      currentUserId.value =
+          arguments['userId'] ?? StorageService.getUserId() ?? 'user_123';
+      userRole.value =
+          arguments['userRole'] ?? StorageService.getRole() ?? 'user';
       otherUserName.value = arguments['providerName'] ?? 'Provider';
 
       // Determine receiverId based on userRole
-      // If current user is 'user': receiverId should be providerId (the provider)
-      // If current user is 'provider': receiverId should be clientId (the client/user)
       if (userRole.value == 'provider') {
+        // Provider sends to client
         receiverId.value = arguments['clientId'] ?? '';
       } else {
+        // User (client) sends to provider
         receiverId.value = arguments['providerId'] ?? '';
+      }
+
+      // Fallback: if receiverId is still empty, try to infer from other arguments
+      if (receiverId.value.isEmpty) {
+        if (userRole.value == 'provider' &&
+            arguments.containsKey('receiverId')) {
+          receiverId.value = arguments['receiverId'];
+        } else if (userRole.value == 'user' &&
+            arguments.containsKey('receiverId')) {
+          receiverId.value = arguments['receiverId'];
+        }
       }
 
       // Log for debugging
@@ -167,7 +180,9 @@ class SingleChatController extends GetxController {
     // Validate receiverId is set
     if (receiverId.value.isEmpty) {
       print('Error: Receiver ID not set. Cannot send message.');
-      print('Current state: receiverId=$receiverId, userRole=$userRole.value, bookingId=$bookingId.value');
+      print(
+        'Current state: receiverId=$receiverId, userRole=$userRole.value, bookingId=$bookingId.value',
+      );
       Get.snackbar('Error', 'Cannot send message: receiver not found');
       return;
     }
@@ -251,4 +266,3 @@ class SingleChatController extends GetxController {
     super.onClose();
   }
 }
-

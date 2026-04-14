@@ -7,6 +7,7 @@ import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/user/home/model/categories_model.dart';
+import 'package:protiva502/features/user/home/model/expert_recommendation_model.dart';
 import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/home/model/user_banner_model.dart';
 
@@ -27,6 +28,14 @@ class UserHomeController extends GetxController {
   final categoriesErrorMessage = ''.obs;
   final categories = <CategoryModel>[].obs;
   Timer? _bannerAutoScrollTimer;
+
+  // Expert Recommendation properties
+  final isExpertsLoading = false.obs;
+  final expertsErrorMessage = ''.obs;
+  final recommendedExperts = <ExpertRecommendationModel>[].obs;
+  final expertPageController = PageController();
+  var currentExpertPage = 0.obs;
+  final int _expertsPageSize = 5;
 
   void updateBannerIndex(int index) {
     currentBannerIndex.value = index;
@@ -66,6 +75,7 @@ class UserHomeController extends GetxController {
     fetchBanners();
     fetchHomeServices();
     fetchCategories();
+    fetchRecommendedExperts();
   }
 
   Future<void> fetchHomeServices() async {
@@ -150,15 +160,18 @@ class UserHomeController extends GetxController {
         final categoriesData = _extractCategoriesData(response.data);
 
         if (categoriesData.isNotEmpty) {
-          fetchedCategories = categoriesData
-              .map(
-                (category) => CategoryModel.fromJson(
-                  category.map((key, value) => MapEntry(key.toString(), value)),
-                ),
-              )
-              .where((category) => category.isActive)
-              .toList()
-            ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+          fetchedCategories =
+              categoriesData
+                  .map(
+                    (category) => CategoryModel.fromJson(
+                      category.map(
+                        (key, value) => MapEntry(key.toString(), value),
+                      ),
+                    ),
+                  )
+                  .where((category) => category.isActive)
+                  .toList()
+                ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
         }
       }
 
@@ -250,6 +263,80 @@ class UserHomeController extends GetxController {
     }
   }
 
+  Future<void> fetchRecommendedExperts({int page = 1}) async {
+    try {
+      if (page == 1) {
+        isExpertsLoading.value = true;
+      }
+      expertsErrorMessage.value = '';
+
+      final response = await _apiClient.get<dynamic>(
+        ApiEndpoints.getRecommendedExperts,
+        queryParameters: {'page': page, 'limit': _expertsPageSize},
+        options: Options(
+          headers: const {'accept': '*/*'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      debugPrint(
+        'Recommended Experts request => ${ApiEndpoints.baseUrl}${ApiEndpoints.getRecommendedExperts}?page=$page&limit=$_expertsPageSize',
+      );
+      debugPrint('Recommended Experts status => ${response.statusCode}');
+      debugPrint('Recommended Experts response => ${response.data}');
+
+      final experts = _extractExperts(response.data);
+
+      if (response.statusCode == 200 && experts.isNotEmpty) {
+        if (page == 1) {
+          recommendedExperts.assignAll(experts);
+        } else {
+          recommendedExperts.addAll(experts);
+        }
+        AppLoggerHelper.info('Fetched ${experts.length} recommended experts');
+      } else if (response.statusCode != 200) {
+        if (page == 1) {
+          recommendedExperts.clear();
+        }
+        expertsErrorMessage.value =
+            _extractMessage(response.data) ??
+            'Failed to load recommended experts';
+        AppLoggerHelper.warning(
+          'Failed to fetch experts: ${expertsErrorMessage.value}',
+        );
+      }
+    } on DioException catch (error) {
+      if (currentExpertPage.value == 1) {
+        recommendedExperts.clear();
+      }
+      expertsErrorMessage.value =
+          _extractMessage(error.response?.data) ??
+          error.message ??
+          'Failed to load recommended experts';
+      AppLoggerHelper.error('Expert fetch failed', error);
+    } catch (error) {
+      if (currentExpertPage.value == 1) {
+        recommendedExperts.clear();
+      }
+      expertsErrorMessage.value = 'Failed to load recommended experts';
+      AppLoggerHelper.error('Unexpected expert fetch error', error);
+    } finally {
+      isExpertsLoading.value = false;
+    }
+  }
+
+  void updateExpertPage(int pageIndex) {
+    currentExpertPage.value = pageIndex;
+    final nextPageToLoad = (pageIndex ~/ _expertsPageSize) + 1;
+    final totalLoadedPages =
+        (recommendedExperts.length + _expertsPageSize - 1) ~/ _expertsPageSize;
+
+    // Load more if user scrolls to next page
+    if (nextPageToLoad > totalLoadedPages && totalLoadedPages > 0) {
+      fetchRecommendedExperts(page: nextPageToLoad);
+    }
+  }
+
   String? _extractMessage(dynamic responseData) {
     final responseMap = _asMap(responseData);
     if (responseMap == null) {
@@ -297,6 +384,25 @@ class UserHomeController extends GetxController {
     return [];
   }
 
+  List<ExpertRecommendationModel> _extractExperts(dynamic responseData) {
+    final responseMap = _asMap(responseData);
+    final data = _asMap(responseMap?['data']);
+    final expertsData = data?['data'];
+
+    if (expertsData is! List) {
+      return const [];
+    }
+
+    return expertsData
+        .whereType<Map>()
+        .map(
+          (item) => ExpertRecommendationModel.fromJson(
+            item.map((key, value) => MapEntry(key.toString(), value)),
+          ),
+        )
+        .toList();
+  }
+
   Map<String, dynamic>? _asMap(dynamic value) {
     if (value is Map<String, dynamic>) {
       return value;
@@ -329,10 +435,69 @@ class UserHomeController extends GetxController {
         .toList();
   }
 
+  // Methods for pagination in GenericListingScreen
+  Future<List<HomeJobModel>> fetchPopularServices(int page, int limit) async {
+    try {
+      final response = await _apiClient.get<dynamic>(
+        ApiEndpoints.homeJobs,
+        queryParameters: {'isPopuler': true, 'page': page, 'limit': limit},
+        options: Options(
+          headers: const {'accept': '*/*'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      return _extractJobs(response.data);
+    } catch (error) {
+      AppLoggerHelper.error('Failed to fetch popular services', error);
+      rethrow;
+    }
+  }
+
+  Future<List<HomeJobModel>> fetchAllServices(int page, int limit) async {
+    try {
+      final response = await _apiClient.get<dynamic>(
+        ApiEndpoints.homeJobs,
+        queryParameters: {'page': page, 'limit': limit},
+        options: Options(
+          headers: const {'accept': '*/*'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      return _extractJobs(response.data);
+    } catch (error) {
+      AppLoggerHelper.error('Failed to fetch all services', error);
+      rethrow;
+    }
+  }
+
+  Future<List<ExpertRecommendationModel>> fetchAllExperts(
+    int page,
+    int limit,
+  ) async {
+    try {
+      final response = await _apiClient.get<dynamic>(
+        ApiEndpoints.getRecommendedExperts,
+        queryParameters: {'page': page, 'limit': limit},
+        options: Options(
+          headers: const {'accept': '*/*'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      return _extractExperts(response.data);
+    } catch (error) {
+      AppLoggerHelper.error('Failed to fetch recommended experts', error);
+      rethrow;
+    }
+  }
+
   @override
   void onClose() {
     _stopBannerAutoScroll();
     bannerController.dispose();
+    expertPageController.dispose();
     super.onClose();
   }
 }

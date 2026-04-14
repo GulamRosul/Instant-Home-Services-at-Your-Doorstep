@@ -21,6 +21,10 @@ class ApiEndpoints {
 
 
   static const String createJob = '/job/create-job';
+  static const String getJobs = '/job/my-job';
+  static  String updateJob(String jobId) => '/job/$jobId/update-jon-content';
+  static  String deleteJob(String jobId) => '/job/delete-jon/$jobId';
+  static  String updateThumbnail(String jobId) => '/job/$jobId/update/thumbnail';
 
   static const String categories = '/category/all-categoris-for-user';
   static String subCategories(String categoryId) =>

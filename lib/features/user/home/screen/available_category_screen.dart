@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
+import 'package:protiva502/core/common/widgets/shimmer_effect.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/user/home/controller/available_category_controller.dart';
 import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
@@ -34,11 +36,9 @@ class AvailableCategoryScreen extends StatelessWidget {
 
           // Horizontally Scrollable Categories
           Obx(() {
-            if (controller.isCategoriesLoading.value && controller.categories.isEmpty) {
-              return SizedBox(
-                height: 90.h,
-                child: const Center(child: CircularProgressIndicator()),
-              );
+            if (controller.isCategoriesLoading.value &&
+                controller.categories.isEmpty) {
+              return _buildCategoriesShimmerLoader();
             }
 
             if (controller.categoriesErrorMessage.value.isNotEmpty) {
@@ -154,7 +154,7 @@ class AvailableCategoryScreen extends StatelessWidget {
           Expanded(
             child: Obx(() {
               if (controller.isSubCategoriesLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return _buildSubCategoriesShimmerLoader();
               }
 
               if (controller.subCategoriesErrorMessage.value.isNotEmpty) {
@@ -267,6 +267,99 @@ class AvailableCategoryScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildCategoriesShimmerLoader() {
+    return SizedBox(
+      height: 90.h,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return Container(
+            width: 80.w,
+            margin: EdgeInsets.only(right: 12.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: const ShimmerCategoryItem(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSubCategoriesShimmerLoader() {
+    return ListView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return Container(
+          margin: EdgeInsets.only(bottom: 12.h),
+          padding: EdgeInsets.all(16.r),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.r),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF0085B1),
+                    shape: BoxShape.circle,
+                  ),
+                  width: 40.w,
+                  height: 40.w,
+                ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 14.h,
+                        width: 150.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Container(
+                        height: 11.h,
+                        width: 200.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      Container(
+                        height: 12.h,
+                        width: 80.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

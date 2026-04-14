@@ -140,10 +140,9 @@ class ServiceDetailsStep extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
                 border: Border.all(color: Color(0xFFCBD5E1)),
               ),
-              child: const Center(child: CircularProgressIndicator(
-                color: AppColors.textPurple,
-                
-              )),
+              child: const Center(
+                child: CircularProgressIndicator(color: AppColors.textPurple),
+              ),
             );
           }
 
@@ -294,27 +293,12 @@ class ServiceDetailsStep extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Obx(
-                () => controller.uploadedImagePath.value.isEmpty
-                    ? CustomDashedBorder(
-                        color: const Color(0xFFCBD5E1),
-                        strokeWidth: 1.5,
-                        dashWidth: 4,
-                        dashSpace: 4,
-                        borderRadius: 8.r,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFF475569).withValues(alpha: 0.1),
-                          ),
-                          padding: EdgeInsets.all(20.w),
-                          child: SvgPicture.asset(
-                            IconPath.galary,
-                            height: 50.h,
-                            width: 50.w,
-                          ),
-                        ),
-                      )
-                    : Container(
+              Obx(() {
+                // Show new uploaded image if selected
+                if (controller.uploadedImagePath.value.isNotEmpty) {
+                  return Column(
+                    children: [
+                      Container(
                         width: 120.w,
                         height: 120.w,
                         decoration: BoxDecoration(
@@ -327,64 +311,147 @@ class ServiceDetailsStep extends StatelessWidget {
                           ),
                         ),
                       ),
-              ),
-              SizedBox(height: 20.h),
-              Text(
-                'Please upload square image, size less than 100KB',
-                style: getTextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    InkWell(
-                      onTap: () => controller.pickImage(),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 8.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(4.r),
-                          border: Border.all(color: const Color(0xFF1E293B)),
-                        ),
+                      SizedBox(height: 12.h),
+                      GestureDetector(
+                        onTap: () {
+                          controller.uploadedImagePath.value = '';
+                        },
                         child: Text(
-                          'Choose File',
+                          'Change Image',
                           style: getTextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 12.sp,
+                            color: const Color(0xFF7079F0),
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF1E293B),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 16.w),
-                    Obx(
-                      () => Text(
-                        controller.uploadedImagePath.value.isEmpty
-                            ? 'No File Chosen'
-                            : 'File Selected',
-                        style: getTextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF64748B),
+                    ],
+                  );
+                }
+
+                // Show existing thumbnail URL in edit mode
+                if (controller.isEditMode.value &&
+                    controller.thumbnailUrl.value.isNotEmpty) {
+                  return Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: Image.network(
+                          controller.thumbnailUrl.value,
+                          width: 120.w,
+                          height: 120.w,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 120.w,
+                              height: 120.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.r),
+                                color: Colors.grey[300],
+                              ),
+                              child: const Icon(Icons.image_not_supported),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      GestureDetector(
+                        onTap: () => controller.pickImage(),
+                        child: Text(
+                          'Change Image',
+                          style: getTextStyle(
+                            fontSize: 12.sp,
+                            color: const Color(0xFF7079F0),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
+                // Show empty state with upload option
+                return Column(
+                  children: [
+                    CustomDashedBorder(
+                      color: const Color(0xFFCBD5E1),
+                      strokeWidth: 1.5,
+                      dashWidth: 4,
+                      dashSpace: 4,
+                      borderRadius: 8.r,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF475569).withValues(alpha: 0.1),
+                        ),
+                        padding: EdgeInsets.all(20.w),
+                        child: SvgPicture.asset(
+                          IconPath.galary,
+                          height: 50.h,
+                          width: 50.w,
                         ),
                       ),
                     ),
+                    SizedBox(height: 20.h),
+                    Text(
+                      'Please upload square image, size less than 100KB',
+                      style: getTextStyle(
+                        fontSize: 12.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 20.h),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 12.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            onTap: () => controller.pickImage(),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 8.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4.r),
+                                border: Border.all(
+                                  color: const Color(0xFF1E293B),
+                                ),
+                              ),
+                              child: Text(
+                                'Choose File',
+                                style: getTextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF1E293B),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16.w),
+                          Text(
+                            'No File Chosen',
+                            style: getTextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF64748B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
-                ),
-              ),
+                );
+              }),
             ],
           ),
         ),

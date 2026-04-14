@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/create_job_controller.dart';
+import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/widgets/job_details_step.dart';
 import 'package:protiva502/features/service_provider/my_job_list/widgets/service_details_step.dart';
 import 'package:protiva502/features/service_provider/my_job_list/widgets/preview_step.dart';
@@ -14,6 +15,15 @@ class PostJobScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CreateJobController());
+
+    // Check if there's a job argument (for edit mode)
+    final jobArgument = Get.arguments;
+    if (jobArgument is JobModel) {
+      // Initialize edit mode with the job data
+      Future.microtask(() {
+        controller.initializeEditMode(jobArgument);
+      });
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -28,14 +38,14 @@ class PostJobScreen extends StatelessWidget {
           ),
           onPressed: () => controller.previousStep(),
         ),
-        title: Text(
-          'Job Post',
+        title: Obx(() => Text(
+          controller.isEditMode.value ? 'Edit Job' : 'Job Post',
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
             color: Color(0xFF3F3F3F),
           ),
-        ),
+        )),
         centerTitle: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
@@ -105,6 +115,7 @@ class PostJobScreen extends StatelessWidget {
   Widget _buildBottomButton(CreateJobController controller) {
     return Obx(() {
       bool isPreview = controller.currentStep.value == 2;
+      bool isEditMode = controller.isEditMode.value;
       return Container(
         width: double.infinity,
         height: 54.h,
@@ -126,7 +137,7 @@ class PostJobScreen extends StatelessWidget {
                 side: WidgetStateProperty.all(BorderSide.none),
               ),
           child: Text(
-            isPreview ? 'Post Job' : 'Next Step',
+            isPreview ? (isEditMode ? 'Update Job' : 'Post Job') : 'Next Step',
             style: getTextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,

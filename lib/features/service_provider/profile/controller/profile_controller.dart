@@ -288,10 +288,23 @@ class ProfileController extends GetxController {
     }
 
     final data = _asMap(responseMap['data']);
-    final nestedData = _asMap(data?['data']);
+    if (data == null) {
+      return null;
+    }
+
+    // Handle { data: { user: { ... } } }
+    if (data.containsKey('user')) {
+      final userData = _asMap(data['user']);
+      if (userData != null) {
+        return userData;
+      }
+    }
+
+    // Handle { data: { data: { rest: { ... } } } }
+    final nestedData = _asMap(data['data']);
     final rest = _asMap(nestedData?['rest']);
 
-    return rest ?? nestedData;
+    return rest ?? nestedData ?? data;
   }
 
   Map<String, dynamic>? _asMap(dynamic value) {
@@ -314,11 +327,14 @@ class ProfileController extends GetxController {
 
     final data = _asMap(responseMap['data']);
     final nestedData = _asMap(data?['data']);
-    final message =
-        nestedData?['message'] ?? data?['message'] ?? responseMap['message'];
 
-    if (message is String && message.trim().isNotEmpty) {
-      return message;
+    final message = nestedData?['message'] ??
+        data?['message'] ??
+        responseMap['message'] ??
+        responseMap['status'];
+
+    if (message != null && message.toString().trim().isNotEmpty) {
+      return message.toString();
     }
 
     return null;

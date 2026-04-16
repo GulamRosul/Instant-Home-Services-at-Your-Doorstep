@@ -110,10 +110,16 @@ class _MapScreenState extends State<MapScreen> {
     final isTrackingMode = widget.trackingController != null;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.isPickerMode ? 'Pick Location' : 'Google Map'),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   title: Text(widget.isPickerMode ? 'Pick Location' : 'Google Map'),
+      //   centerTitle: false,
+      // ),
+      appBar: widget.isPickerMode
+          ? AppBar(
+              title: Text(widget.isPickerMode ? 'Pick Location' : ''),
+              centerTitle: false,
+            )
+          : null,
       body: isTrackingMode
           ? _buildTrackingModeBody()
           : Obx(() {
@@ -156,7 +162,10 @@ class _MapScreenState extends State<MapScreen> {
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                controller.mapAvailabilityMessage.value.isNotEmpty
+                                controller
+                                        .mapAvailabilityMessage
+                                        .value
+                                        .isNotEmpty
                                     ? controller.mapAvailabilityMessage.value
                                     : 'Google Maps is unavailable right now.',
                                 textAlign: TextAlign.center,
@@ -215,7 +224,10 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                         if (controller.searchError.value.isNotEmpty) ...[
                           const SizedBox(height: 12),
-                          _buildMessageCard(context, controller.searchError.value),
+                          _buildMessageCard(
+                            context,
+                            controller.searchError.value,
+                          ),
                         ],
                         if (controller.errorMessage.value.isNotEmpty) ...[
                           const SizedBox(height: 12),
@@ -300,59 +312,63 @@ class _MapScreenState extends State<MapScreen> {
   Widget _buildTrackingModeBody() {
     final trackingController = widget.trackingController!;
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          // Map View
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-            child: Container(
-              height: 400.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
+    return CustomScrollView(
+      slivers: [
+        // Map View - Scrollable and Dynamic with SliverAppBar
+        SliverAppBar(
+          expandedHeight: 450.h,
+          pinned: false,
+          flexibleSpace: FlexibleSpaceBar(
+            background: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(16.r),
-                overflow: Overflow.hidden,
-              ),
-              child: Obx(() {
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                if (controller.isMapAvailable.value) {
-                  return GoogleMap(
-                    initialCameraPosition: controller.initialCameraPosition,
-                    onMapCreated: controller.onMapCreated,
-                    myLocationEnabled: controller.hasLocation,
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    mapToolbarEnabled: false,
-                    markers: controller.markers.toSet(),
-                    polylines: controller.polylines.toSet(),
-                  );
-                } else {
-                  return Container(
-                    color: Colors.grey.shade200,
-                    child: const Center(
-                      child: Icon(Icons.map, size: 48, color: Colors.grey),
-                    ),
-                  );
-                }
-              }),
+                  if (controller.isMapAvailable.value) {
+                    return GoogleMap(
+                      initialCameraPosition: controller.initialCameraPosition,
+                      onMapCreated: controller.onMapCreated,
+                      myLocationEnabled: controller.hasLocation,
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                      mapToolbarEnabled: false,
+                      markers: controller.markers.toSet(),
+                      polylines: controller.polylines.toSet(),
+                    );
+                  } else {
+                    return Container(
+                      color: Colors.grey.shade200,
+                      child: const Center(
+                        child: Icon(Icons.map, size: 48, color: Colors.grey),
+                      ),
+                    );
+                  }
+                }),
+              ),
             ),
           ),
+        ),
 
-          // Estimated Arrival Card
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-            child: _buildEstimatedArrivalCard(trackingController),
-          ),
+        // Estimated Arrival Card and Tracking Card
+        SliverList(
+          delegate: SliverChildListDelegate([
+            // Estimated Arrival Card
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+              child: _buildEstimatedArrivalCard(trackingController),
+            ),
 
-          // Tracking Card
-          _buildTrackingCard(trackingController),
+            // Tracking Card
+            _buildTrackingCard(trackingController),
 
-          SizedBox(height: 40.h),
-        ],
-      ),
+            SizedBox(height: 40.h),
+          ]),
+        ),
+      ],
     );
   }
 
@@ -378,8 +394,7 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Widget _buildEstimatedArrivalCard(
-      TrackProviderController controller) {
+  Widget _buildEstimatedArrivalCard(TrackProviderController controller) {
     return Obx(
       () => Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),

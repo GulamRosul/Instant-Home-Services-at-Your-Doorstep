@@ -52,5 +52,6 @@ class IconPath {
   static const String instragram = 'assets/icons/instragram.svg';
   static const String youtube = 'assets/icons/youtube.svg';
   static const String twitter = 'assets/icons/twitter.svg';
+  static const String whatsapp2 = 'assets/icons/whatapp.svg';
   static const String msg = 'assets/icons/msg.svg';
 }

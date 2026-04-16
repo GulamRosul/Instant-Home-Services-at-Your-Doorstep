@@ -71,6 +71,10 @@ class ProfileController extends GetxController {
       final responseMap = _asMap(response.data) ?? <String, dynamic>{};
       final profileData = _extractProfileData(responseMap);
 
+      debugPrint(
+        'Profile fetch response: ${response.statusCode} ${response.data}',
+      );
+
       if (response.statusCode != 200 || profileData == null) {
         if (!isRefresh) {
           _clearProfile();
@@ -241,7 +245,8 @@ class ProfileController extends GetxController {
     final profileData = _extractProfileData(response.data);
 
     if (response.statusCode != 200 || profileData == null) {
-      final message = _extractMessage(response.data) ?? 'Failed to update profile.';
+      final message =
+          _extractMessage(response.data) ?? 'Failed to update profile.';
       errorMessage.value = message;
       AppLoggerHelper.warning(
         'Profile update failed for $fieldName: ${response.statusCode} ${response.data}',
@@ -328,7 +333,8 @@ class ProfileController extends GetxController {
     final data = _asMap(responseMap['data']);
     final nestedData = _asMap(data?['data']);
 
-    final message = nestedData?['message'] ??
+    final message =
+        nestedData?['message'] ??
         data?['message'] ??
         responseMap['message'] ??
         responseMap['status'];

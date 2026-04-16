@@ -28,7 +28,7 @@ import 'package:protiva502/features/user/home/screen/category_service_details_sc
 import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
 import 'package:protiva502/features/user/home/screen/user_home_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
-import 'package:protiva502/features/user/track_provider/screen/track_provider_screen.dart';
+import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
 
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 

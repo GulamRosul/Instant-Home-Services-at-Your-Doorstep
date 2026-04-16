@@ -8,7 +8,7 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/google_map/controller/map_controller.dart';
 import 'package:protiva502/features/google_map/model/picked_location_data.dart';
-import 'package:protiva502/features/user/track_provider/controller/track_provider_controller.dart';
+import 'package:protiva502/features/tracking/controller/tracking_controller.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({
@@ -110,12 +110,11 @@ class _MapScreenState extends State<MapScreen> {
     final isTrackingMode = widget.trackingController != null;
 
     return Scaffold(
-      appBar: !isTrackingMode
-          ? AppBar(
-              title: Text(widget.isPickerMode ? 'Pick Location' : 'Google Map'),
-              centerTitle: false,
-            )
-          : null,
+      appBar: AppBar(
+        title: Text(widget.isPickerMode ? 'Pick Location' : 'Track'),
+        centerTitle: false,
+      ),
+
       body: isTrackingMode
           ? _buildTrackingModeBody()
           : Obx(() {
@@ -310,42 +309,48 @@ class _MapScreenState extends State<MapScreen> {
 
     return Stack(
       children: [
-        // Full-screen interactive map
-        Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        // Map taking top 2/3 of screen
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: MediaQuery.of(context).size.height * 2 / 3,
+          child: Obx(() {
+            if (controller.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (controller.isMapAvailable.value) {
-            return GoogleMap(
-              initialCameraPosition: controller.initialCameraPosition,
-              onMapCreated: controller.onMapCreated,
-              myLocationEnabled: controller.hasLocation,
-              myLocationButtonEnabled: false,
-              zoomControlsEnabled: false,
-              mapToolbarEnabled: false,
-              markers: controller.markers.toSet(),
-              polylines: controller.polylines.toSet(),
-            );
-          } else {
-            return Container(
-              color: Colors.grey.shade200,
-              child: const Center(
-                child: Icon(Icons.map, size: 48, color: Colors.grey),
-              ),
-            );
-          }
-        }),
-
-        // Scrollable cards overlay at the bottom
+            if (controller.isMapAvailable.value) {
+              return GoogleMap(
+                initialCameraPosition: controller.initialCameraPosition,
+                onMapCreated: controller.onMapCreated,
+                myLocationEnabled: controller.hasLocation,
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                mapToolbarEnabled: false,
+                markers: controller.markers.toSet(),
+                polylines: controller.polylines.toSet(),
+              );
+            } else {
+              return Container(
+                color: Colors.grey.shade200,
+                child: const Center(
+                  child: Icon(Icons.map, size: 48, color: Colors.grey),
+                ),
+              );
+            }
+          }),
+        ),
+        // Draggable sheet - full height for proper constraints
         Positioned(
           bottom: 0,
           left: 0,
           right: 0,
+          top: 0,
           child: DraggableScrollableSheet(
-            initialChildSize: 0.35,
-            minChildSize: 0.2,
-            maxChildSize: 0.85,
+            initialChildSize: 0.33,
+            minChildSize: 0.25,
+            maxChildSize: 0.9,
             builder: (context, scrollController) {
               return Container(
                 decoration: BoxDecoration(
@@ -362,41 +367,39 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                   ],
                 ),
-                child: SingleChildScrollView(
+                child: ListView(
                   controller: scrollController,
-                  child: Column(
-                    children: [
-                      // Drag handle
-                      Padding(
-                        padding: EdgeInsets.only(top: 8.h),
-                        child: Container(
-                          height: 4.h,
-                          width: 40.w,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(2.r),
-                          ),
+                  children: [
+                    // Drag handle
+                    Padding(
+                      padding: EdgeInsets.only(top: 8.h),
+                      child: Container(
+                        height: 4.h,
+                        width: 40.w,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(2.r),
                         ),
                       ),
-                      SizedBox(height: 16.h),
+                    ),
+                    SizedBox(height: 16.h),
 
-                      // Estimated Arrival Card
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: _buildEstimatedArrivalCard(trackingController),
-                      ),
-                      SizedBox(height: 16.h),
+                    // Estimated Arrival Card
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: _buildEstimatedArrivalCard(trackingController),
+                    ),
+                    SizedBox(height: 16.h),
 
-                      // Tracking Card
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: _buildTrackingCard(trackingController),
-                      ),
-                      SizedBox(height: 20.h),
-                    ],
-                  ),
-                );
-              };
+                    // Tracking Card
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: _buildTrackingCard(trackingController),
+                    ),
+                    SizedBox(height: 20.h),
+                  ],
+                ),
+              );
             },
           ),
         ),

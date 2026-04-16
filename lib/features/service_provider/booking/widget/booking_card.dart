@@ -6,7 +6,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
-import 'package:protiva502/features/user/track_provider/screen/track_provider_screen.dart';
+import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
 
 class BookingCard extends StatelessWidget {
   final BookingController controller;

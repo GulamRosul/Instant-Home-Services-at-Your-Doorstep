@@ -9,7 +9,7 @@ import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/all_bookings/controller/all_booking_controller.dart';
 import 'package:protiva502/features/user/all_bookings/model/all_booking_model.dart';
 import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart';
-import 'package:protiva502/features/user/track_provider/screen/track_provider_screen.dart';
+import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
 class AllBookingScreen extends StatelessWidget {

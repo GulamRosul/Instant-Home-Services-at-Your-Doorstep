@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/features/google_map/screen/map_screen.dart';
-import 'package:protiva502/features/user/track_provider/controller/track_provider_controller.dart';
+import 'package:protiva502/features/tracking/controller/tracking_controller.dart';
 
 class TrackProviderScreen extends StatelessWidget {
   const TrackProviderScreen({super.key});

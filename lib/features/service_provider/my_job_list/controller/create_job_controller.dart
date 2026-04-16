@@ -19,7 +19,6 @@ import 'package:protiva502/features/user/home/model/sub_category_model.dart';
 class CreateJobController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   final ApiClient _apiClient = ApiClient();
-  
 
   // Step Management
   var currentStep = 0.obs;
@@ -58,7 +57,7 @@ class CreateJobController extends GetxController {
   final isCreatingJob = false.obs;
   final createdJob = Rxn<CreateJobModel>();
   final isUpdatingJob = false.obs;
-  
+
   // Job deletion state
   final isDeletingJob = false.obs;
 
@@ -659,12 +658,17 @@ class CreateJobController extends GetxController {
         'categoryId': selectedCategoryId.value,
         'subCategoryId': selectedSubCategoryId.value,
         'title': jobTitleController.text.trim(),
-        'slug': jobTitleController.text.trim().toLowerCase().replaceAll(' ', '-'),
+        'slug': jobTitleController.text.trim().toLowerCase().replaceAll(
+          ' ',
+          '-',
+        ),
         'description': jobDescriptionController.text.trim(),
         'basePrice': basePriceController.text.trim(),
         'priceType': priceType.value == "Fixed" ? "FIXED" : priceType.value,
         'includeService': includedServices,
-        'thumbnail': thumbnailUrl.value.isNotEmpty ? thumbnailUrl.value : (editingJob.value?.thumbnail ?? ''),
+        'thumbnail': thumbnailUrl.value.isNotEmpty
+            ? thumbnailUrl.value
+            : (editingJob.value?.thumbnail ?? ''),
         'features': editingJob.value?.features,
         'images': editingJob.value?.images ?? [],
         'videos': editingJob.value?.videos ?? [],
@@ -695,13 +699,17 @@ class CreateJobController extends GetxController {
 
       EasyLoading.dismiss();
 
-      AppLoggerHelper.info('Update job response status: ${response.statusCode}');
+      AppLoggerHelper.info(
+        'Update job response status: ${response.statusCode}',
+      );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jobData = _extractJobData(response.data);
         if (jobData != null) {
           createdJob.value = CreateJobModel.fromJson(jobData);
-          AppLoggerHelper.info('Job updated successfully: ${createdJob.value?.id}');
+          AppLoggerHelper.info(
+            'Job updated successfully: ${createdJob.value?.id}',
+          );
           _showSuccessDialog(isUpdate: true);
           _resetForm();
         } else {
@@ -746,10 +754,7 @@ class CreateJobController extends GetxController {
       final response = await _apiClient.delete<dynamic>(
         ApiEndpoints.deleteJob(jobId),
         options: Options(
-          headers: {
-            'accept': '*/*',
-            'Authorization': 'Bearer $token',
-          },
+          headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
           validateStatus: (status) => status != null && status < 500,
         ),
       );

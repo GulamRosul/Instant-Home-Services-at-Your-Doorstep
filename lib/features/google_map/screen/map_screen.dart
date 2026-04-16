@@ -314,41 +314,41 @@ class _MapScreenState extends State<MapScreen> {
 
     return CustomScrollView(
       slivers: [
-        // Map View - Scrollable and Dynamic with SliverAppBar
-        SliverAppBar(
-          expandedHeight: 450.h,
-          pinned: false,
-          flexibleSpace: FlexibleSpaceBar(
-            background: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16.r),
-                child: Obx(() {
-                  if (controller.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+        // Map View - Fully scrollable and interactive (no AppBar blocking)
+        SliverToBoxAdapter(
+          child: Container(
+            height: 450.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.r),
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                  if (controller.isMapAvailable.value) {
-                    return GoogleMap(
-                      initialCameraPosition: controller.initialCameraPosition,
-                      onMapCreated: controller.onMapCreated,
-                      myLocationEnabled: controller.hasLocation,
-                      myLocationButtonEnabled: false,
-                      zoomControlsEnabled: false,
-                      mapToolbarEnabled: false,
-                      markers: controller.markers.toSet(),
-                      polylines: controller.polylines.toSet(),
-                    );
-                  } else {
-                    return Container(
-                      color: Colors.grey.shade200,
-                      child: const Center(
-                        child: Icon(Icons.map, size: 48, color: Colors.grey),
-                      ),
-                    );
-                  }
-                }),
-              ),
+                if (controller.isMapAvailable.value) {
+                  return GoogleMap(
+                    initialCameraPosition: controller.initialCameraPosition,
+                    onMapCreated: controller.onMapCreated,
+                    myLocationEnabled: controller.hasLocation,
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: false,
+                    mapToolbarEnabled: false,
+                    markers: controller.markers.toSet(),
+                    polylines: controller.polylines.toSet(),
+                  );
+                } else {
+                  return Container(
+                    color: Colors.grey.shade200,
+                    child: const Center(
+                      child: Icon(Icons.map, size: 48, color: Colors.grey),
+                    ),
+                  );
+                }
+              }),
             ),
           ),
         ),

@@ -110,13 +110,9 @@ class _MapScreenState extends State<MapScreen> {
     final isTrackingMode = widget.trackingController != null;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(widget.isPickerMode ? 'Pick Location' : 'Google Map'),
-      //   centerTitle: false,
-      // ),
-      appBar: widget.isPickerMode
+      appBar: !isTrackingMode
           ? AppBar(
-              title: Text(widget.isPickerMode ? 'Pick Location' : ''),
+              title: Text(widget.isPickerMode ? 'Pick Location' : 'Google Map'),
               centerTitle: false,
             )
           : null,
@@ -312,61 +308,97 @@ class _MapScreenState extends State<MapScreen> {
   Widget _buildTrackingModeBody() {
     final trackingController = widget.trackingController!;
 
-    return CustomScrollView(
-      slivers: [
-        // Map View - Fully scrollable and interactive (no AppBar blocking)
-        SliverToBoxAdapter(
-          child: Container(
-            height: 450.h,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16.r),
-              child: Obx(() {
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+    return Stack(
+      children: [
+        // Full-screen interactive map
+        Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-                if (controller.isMapAvailable.value) {
-                  return GoogleMap(
-                    initialCameraPosition: controller.initialCameraPosition,
-                    onMapCreated: controller.onMapCreated,
-                    myLocationEnabled: controller.hasLocation,
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    mapToolbarEnabled: false,
-                    markers: controller.markers.toSet(),
-                    polylines: controller.polylines.toSet(),
-                  );
-                } else {
-                  return Container(
-                    color: Colors.grey.shade200,
-                    child: const Center(
-                      child: Icon(Icons.map, size: 48, color: Colors.grey),
+          if (controller.isMapAvailable.value) {
+            return GoogleMap(
+              initialCameraPosition: controller.initialCameraPosition,
+              onMapCreated: controller.onMapCreated,
+              myLocationEnabled: controller.hasLocation,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              mapToolbarEnabled: false,
+              markers: controller.markers.toSet(),
+              polylines: controller.polylines.toSet(),
+            );
+          } else {
+            return Container(
+              color: Colors.grey.shade200,
+              child: const Center(
+                child: Icon(Icons.map, size: 48, color: Colors.grey),
+              ),
+            );
+          }
+        }),
+
+        // Scrollable cards overlay at the bottom
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: DraggableScrollableSheet(
+            initialChildSize: 0.35,
+            minChildSize: 0.2,
+            maxChildSize: 0.85,
+            builder: (context, scrollController) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24.r),
+                    topRight: Radius.circular(24.r),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 15,
+                      offset: const Offset(0, -5),
                     ),
-                  );
-                }
-              }),
-            ),
+                  ],
+                ),
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Column(
+                    children: [
+                      // Drag handle
+                      Padding(
+                        padding: EdgeInsets.only(top: 8.h),
+                        child: Container(
+                          height: 4.h,
+                          width: 40.w,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(2.r),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+
+                      // Estimated Arrival Card
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: _buildEstimatedArrivalCard(trackingController),
+                      ),
+                      SizedBox(height: 16.h),
+
+                      // Tracking Card
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: _buildTrackingCard(trackingController),
+                      ),
+                      SizedBox(height: 20.h),
+                    ],
+                  ),
+                );
+              };
+            },
           ),
-        ),
-
-        // Estimated Arrival Card and Tracking Card
-        SliverList(
-          delegate: SliverChildListDelegate([
-            // Estimated Arrival Card
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-              child: _buildEstimatedArrivalCard(trackingController),
-            ),
-
-            // Tracking Card
-            _buildTrackingCard(trackingController),
-
-            SizedBox(height: 40.h),
-          ]),
         ),
       ],
     );

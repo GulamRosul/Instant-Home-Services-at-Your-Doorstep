@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SocialMediaController extends GetxController {
   final String facebookUrl = "http://www.facebook.com/kaajbd";
-  final String twitterUrl = "https://twitter.com/kaajbd";
+  final String whatsappUrl = "https://wa.me/8801798036636";
   final String youtubeUrl = "https://www.youtube.com/@kaajbdofficial";
   final String instagramUrl = "http://www.instagram.com/kaajbdofficial";
 

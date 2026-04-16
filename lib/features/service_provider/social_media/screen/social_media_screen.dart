@@ -63,7 +63,7 @@ class SocialMediaScreen extends StatelessWidget {
 
             _buildSocialCard(
               title: 'Facebook',
-              handle: '@Kaajbd.com',
+              handle: 'kaajbd',
               icon: IconPath.facebook,
               iconColor: Color(0xFF0C63D4),
               onTap: () => controller.launchSocialUrl(controller.facebookUrl),
@@ -71,17 +71,18 @@ class SocialMediaScreen extends StatelessWidget {
             SizedBox(height: 16.h),
 
             _buildSocialCard(
-              title: 'Twitter',
-              handle: '@Kaajbd.com',
-              icon: IconPath.twitter,
-              iconColor: Color(0xFF0C85D0),
-              onTap: () => controller.launchSocialUrl(controller.twitterUrl),
+              title: 'WhatsApp',
+              handle: 'Kaaj Bd',
+              icon: IconPath.whatsapp2,
+              iconColor: Color(0xFF25D366),
+              // iconColor: Colors.black,
+              onTap: () => controller.launchSocialUrl(controller.whatsappUrl),
             ),
             SizedBox(height: 16.h),
 
             _buildSocialCard(
               title: 'YouTube',
-              handle: '@Kaajbd.com',
+              handle: '@kaajbdofficial',
               icon: IconPath.youtube,
               iconColor: Color(0xFFFF0000),
               onTap: () => controller.launchSocialUrl(controller.youtubeUrl),
@@ -90,7 +91,7 @@ class SocialMediaScreen extends StatelessWidget {
 
             _buildSocialCard(
               title: 'Instagram',
-              handle: '@Kaajbd.com',
+              handle: 'kaajbdofficial',
               icon: IconPath.instragram,
               iconColor: const Color(0xFFE4405F),
               onTap: () => controller.launchSocialUrl(controller.instagramUrl),
@@ -155,7 +156,7 @@ class SocialMediaScreen extends StatelessWidget {
     required String title,
     required String handle,
     required String icon,
-    required Color iconColor,
+    Color? iconColor,
     required VoidCallback onTap,
   }) {
     return GestureDetector(

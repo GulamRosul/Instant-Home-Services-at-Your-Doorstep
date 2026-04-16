@@ -252,15 +252,23 @@ class ProfileScreen extends StatelessWidget {
 
                                     setState(() => isSaving = false);
                                   },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              minimumSize: Size.fromHeight(48.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14.r),
-                              ),
-                            ),
+                            style:
+                                ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  minimumSize: Size.fromHeight(48.h),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14.r),
+                                  ),
+                                ).copyWith(
+                                  overlayColor: WidgetStateProperty.all(
+                                    Colors.transparent,
+                                  ),
+                                  side: WidgetStateProperty.all(
+                                    BorderSide.none,
+                                  ),
+                                ),
                             child: isSaving
                                 ? SizedBox(
                                     width: 20.w,

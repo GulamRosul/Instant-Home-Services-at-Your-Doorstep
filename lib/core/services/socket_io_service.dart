@@ -52,7 +52,7 @@ class SocketIOService {
       }
 
       _socket = IO.io(
-        'https://protiva-backend.onrender.com',
+        'https://protiva-backend-ukw2.onrender.com',
         optionsBuilder.build(),
       );
 

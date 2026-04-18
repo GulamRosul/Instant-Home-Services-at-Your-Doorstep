@@ -10,7 +10,7 @@ import 'package:protiva502/features/service_provider/auhecntication/screen/provi
 import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 
 class ProviderLoginController extends GetxController {
-  static const String _baseUrl = 'https://protiva-backend.onrender.com/api/v1';
+  static const String _baseUrl = 'https://protiva-backend-ukw2.onrender.com/api/v1';
   static const String _loginEndpoint = '$_baseUrl/auth/login';
   static const String _deviceId = '21';
 

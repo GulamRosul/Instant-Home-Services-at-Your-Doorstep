@@ -478,10 +478,19 @@ class ProfileScreen extends StatelessWidget {
                   _buildInfoSection([
                     _buildInfoItem(
                       context: context,
-                      label: 'Name',
-                      value: controller.name.value,
+                      label: 'First name',
+                      value: controller.firstName.value,
                       onSave: (value) => controller.updateProfileField(
-                        fieldName: 'name',
+                        fieldName: 'firstName',
+                        value: value,
+                      ),
+                    ),
+                    _buildInfoItem(
+                      context: context,
+                      label: 'Last name',
+                      value: controller.lastName.value,
+                      onSave: (value) => controller.updateProfileField(
+                        fieldName: 'lastName',
                         value: value,
                       ),
                     ),
@@ -505,16 +514,17 @@ class ProfileScreen extends StatelessWidget {
                         value: value,
                       ),
                       keyboardType: TextInputType.phone,
+                      isEditable: false,
                     ),
-                    _buildInfoItem(
-                      context: context,
-                      label: 'Profession',
-                      value: controller.profession.value,
-                      onSave: (value) => controller.updateProfileField(
-                        fieldName: 'profession',
-                        value: value,
-                      ),
-                    ),
+                    // _buildInfoItem(
+                    //   context: context,
+                    //   label: 'Profession',
+                    //   value: controller.profession.value,
+                    //   onSave: (value) => controller.updateProfileField(
+                    //     fieldName: 'profession',
+                    //     value: value,
+                    //   ),
+                    // ),
                     _buildInfoItem(
                       context: context,
                       label: 'Bio',

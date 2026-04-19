@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,6 +26,20 @@ import 'package:protiva502/features/user/user_booking_confirmation/screen/bookin
 
 class UserHomeScreen extends StatelessWidget {
   const UserHomeScreen({super.key});
+
+  ImageProvider<Object> _buildProfileImage(String imagePath) {
+    final trimmedPath = imagePath.trim();
+
+    if (trimmedPath.isEmpty) {
+      return const AssetImage(ImagePath.profile);
+    }
+
+    if (trimmedPath.startsWith('http')) {
+      return NetworkImage(trimmedPath);
+    }
+
+    return FileImage(File(trimmedPath));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +95,7 @@ class UserHomeScreen extends StatelessWidget {
                       type: ListingType.popularServices,
                       initialItems: controller.popularServices,
                       fetchFunction: controller.fetchPopularServices,
-                      itemBuilder: (service) =>
-                          _buildServiceCard(service as HomeJobModel),
+                      itemBuilder: (service) => _buildServiceCard(service),
                     ),
                   );
                 },
@@ -124,8 +139,7 @@ class UserHomeScreen extends StatelessWidget {
                       type: ListingType.allServices,
                       initialItems: controller.allServices,
                       fetchFunction: controller.fetchAllServices,
-                      itemBuilder: (service) =>
-                          _buildServiceCard(service as HomeJobModel),
+                      itemBuilder: (service) => _buildServiceCard(service),
                     ),
                   );
                 },
@@ -158,9 +172,9 @@ class UserHomeScreen extends StatelessWidget {
             Obx(
               () => CircleAvatar(
                 radius: 22.r,
-                backgroundImage: controller.profileImage.value.isNotEmpty
-                    ? NetworkImage(controller.profileImage.value)
-                    : const AssetImage(ImagePath.profile),
+                backgroundImage: _buildProfileImage(
+                  controller.profileImage.value,
+                ),
                 onBackgroundImageError: (exception, stackTrace) {
                   // Fallback to asset image if network image fails
                 },

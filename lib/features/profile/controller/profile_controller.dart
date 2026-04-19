@@ -13,6 +13,8 @@ class ProfileController extends GetxController {
 
   // Profile Information
   var name = ''.obs;
+  var firstName = ''.obs;
+  var lastName = ''.obs;
   var email = ''.obs;
   var phone = ''.obs;
   var profession = ''.obs;
@@ -281,6 +283,8 @@ class ProfileController extends GetxController {
     _firstName = '';
     _lastName = '';
     name.value = '';
+    firstName.value = '';
+    lastName.value = '';
     email.value = '';
     phone.value = '';
     profession.value = '';
@@ -359,6 +363,8 @@ class ProfileController extends GetxController {
     errorMessage.value = '';
     _firstName = _asString(profileData['firstName']);
     _lastName = _asString(profileData['lastName']);
+    firstName.value = _firstName;
+    lastName.value = _lastName;
     name.value = _buildFullName(_firstName, _lastName);
     email.value = _asString(profileData['email']);
     phone.value = _asString(profileData['phone']);

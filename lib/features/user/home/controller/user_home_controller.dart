@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
+import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/user/home/model/categories_model.dart';
@@ -88,6 +89,16 @@ class UserHomeController extends GetxController {
   Future<void> fetchProfileData() async {
     try {
       isProfileLoading.value = true;
+      await StorageService.ensureInitialized();
+
+      profileImage.value = StorageService.getAvatar()?.trim() ?? '';
+
+      final firstName = StorageService.getFirstName()?.trim() ?? '';
+      final lastName = StorageService.getLastName()?.trim() ?? '';
+      final fullName = '$firstName $lastName'.trim();
+      if (fullName.isNotEmpty) {
+        profileName.value = fullName;
+      }
 
       final token = await SecureStorageService.getToken();
       if (token == null || token.isEmpty) {
@@ -115,8 +126,27 @@ class UserHomeController extends GetxController {
       final responseMap = _asMap(response.data) ?? <String, dynamic>{};
       final data = _asMap(responseMap['data']) ?? <String, dynamic>{};
 
-      profileName.value = data['firstName'] ?? data['fullName'] ?? '';
-      profileImage.value = data['profileImage'] ?? '';
+      final fetchedFirstName = (data['firstName'] ?? '').toString().trim();
+      final fetchedLastName = (data['lastName'] ?? '').toString().trim();
+      final fetchedName = '$fetchedFirstName $fetchedLastName'.trim().isNotEmpty
+          ? '$fetchedFirstName $fetchedLastName'.trim()
+          : (data['fullName'] ?? '').toString().trim();
+      final fetchedAvatar = (data['avatar'] ?? data['profileImage'] ?? '')
+          .toString()
+          .trim();
+
+      if (fetchedName.isNotEmpty) {
+        profileName.value = fetchedName;
+      }
+      if (fetchedAvatar.isNotEmpty) {
+        profileImage.value = fetchedAvatar;
+      }
+
+      await StorageService.saveUser(
+        firstName: fetchedFirstName.isEmpty ? null : fetchedFirstName,
+        lastName: fetchedLastName.isEmpty ? null : fetchedLastName,
+        avatar: fetchedAvatar.isEmpty ? null : fetchedAvatar,
+      );
     } on DioException catch (error) {
       AppLoggerHelper.error('Profile fetch failed', error);
     } catch (error) {

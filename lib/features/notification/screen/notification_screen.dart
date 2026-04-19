@@ -32,29 +32,57 @@ class NotificationScreen extends StatelessWidget {
         ],
       ),
       body: Obx(() {
+        if (controller.isLoading.value && controller.notifications.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.error.value.isNotEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Error: ${controller.error.value}',
+                  textAlign: TextAlign.center,
+                  style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+                ),
+                SizedBox(height: 16.h),
+                ElevatedButton(
+                  onPressed: () => controller.fetchNotifications(),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          );
+        }
+
         if (controller.notifications.isEmpty) {
           return _buildEmptyState();
         }
-        return ListView.builder(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-          itemCount: controller.notifications.length,
-          itemBuilder: (context, index) {
-            final item = controller.notifications[index];
 
-            // Logic to show Date Group Header (Today/Yesterday)
-            bool showHeader =
-                index == 0 ||
-                item['dateGroup'] !=
-                    controller.notifications[index - 1]['dateGroup'];
+        return RefreshIndicator(
+          onRefresh: () => controller.refreshNotifications(),
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            itemCount: controller.notifications.length,
+            itemBuilder: (context, index) {
+              final item = controller.notifications[index];
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (showHeader) _buildDateHeader(item['dateGroup']),
-                _buildNotificationTile(item, index, controller),
-              ],
-            );
-          },
+              // Logic to show Date Group Header (Today/Yesterday)
+              bool showHeader =
+                  index == 0 ||
+                  item['dateGroup'] !=
+                      controller.notifications[index - 1]['dateGroup'];
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (showHeader) _buildDateHeader(item['dateGroup']),
+                  _buildNotificationTile(item, index, controller),
+                ],
+              );
+            },
+          ),
         );
       }),
     );
@@ -80,7 +108,10 @@ class NotificationScreen extends StatelessWidget {
     NotificationController controller,
   ) {
     return GestureDetector(
-      onTap: () => controller.markAsRead(index),
+      onTap: () {
+        controller.markAsRead(index);
+        _showNotificationDialog(item);
+      },
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
         padding: EdgeInsets.all(12.r),
@@ -133,12 +164,66 @@ class NotificationScreen extends StatelessWidget {
                       color: Colors.black54,
                       lineHeight: 15.sp,
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showNotificationDialog(Map<String, dynamic> item) {
+    Get.dialog(
+      AlertDialog(
+        title: Text(
+          item['title'],
+          style: getTextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                item['message'],
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.black87,
+                  lineHeight: 18.sp,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                item['time'],
+                style: getTextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Close',
+              style: getTextStyle(
+                color: AppColors.textPurple,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

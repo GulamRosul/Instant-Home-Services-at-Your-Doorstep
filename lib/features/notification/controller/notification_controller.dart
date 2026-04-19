@@ -5,36 +5,19 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
+import 'package:protiva502/core/utils/constants/apiendpoint.dart';
+import 'package:protiva502/features/notification/model/notification_model.dart';
 
 class NotificationController extends GetxController {
-  // Mock data for notifications
-  final List<Map<String, dynamic>> notifications = [
-    {
-      'title': 'Booking Accepted',
-      'message': 'Mike Handyman has accepted your Carpentry request.',
-      'time': '10:30 AM',
-      'isRead': false,
-      'type': 'booking',
-      'dateGroup': 'Today',
-    },
-    {
-      'title': 'Payment Successful',
-      'message': 'Your payment of ৳ 450.00 was successful.',
-      'time': '09:15 AM',
-      'isRead': true,
-      'type': 'payment',
-      'dateGroup': 'Today',
-    },
-    {
-      'title': 'New Service Available',
-      'message': 'New plumbing services are now available in your area.',
-      'time': 'Yesterday',
-      'isRead': true,
-      'type': 'system',
-      'dateGroup': 'Yesterday',
-    },
-  ].obs;
+  final RxList<Map<String, dynamic>> notifications =
+      <Map<String, dynamic>>[].obs;
+  final RxBool isLoading = false.obs;
+  final RxString error = ''.obs;
+
+  final ApiClient _apiClient = ApiClient();
 
   late FirebaseMessaging _firebaseMessaging;
   String? _fcmToken;
@@ -43,6 +26,140 @@ class NotificationController extends GetxController {
   void onInit() {
     super.onInit();
     _initializeFirebaseMessaging();
+    fetchNotifications();
+  }
+
+  /// Fetch notifications from API
+  Future<void> fetchNotifications() async {
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      debugPrint('📡 [NOTIFICATION] Fetching notifications from API...');
+      final response = await _apiClient.get(ApiEndpoints.getNotifications);
+
+      debugPrint('📡 [NOTIFICATION] Response status: ${response.statusCode}');
+      debugPrint('📡 [NOTIFICATION] Response data type: ${response.data.runtimeType}');
+      debugPrint('📡 [NOTIFICATION] Response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+
+        debugPrint('📡 [NOTIFICATION] Data keys: ${data.keys}');
+        debugPrint('📡 [NOTIFICATION] Data[data] type: ${data['data'].runtimeType}');
+
+        if (data['data'] is List) {
+          final List<dynamic> notificationList = data['data'];
+          debugPrint('📡 [NOTIFICATION] Found ${notificationList.length} notifications in list');
+
+          final List<Map<String, dynamic>> formattedNotifications = [];
+
+          for (final item in notificationList) {
+            try {
+              final notification = NotificationModel.fromJson(item);
+              formattedNotifications.add(
+                _formatNotificationForDisplay(notification),
+              );
+            } catch (e) {
+              debugPrint('❌ [NOTIFICATION] Error parsing item: $e');
+            }
+          }
+
+          notifications.value = formattedNotifications;
+          debugPrint(
+            '✅ [NOTIFICATION] Successfully formatted ${formattedNotifications.length} notifications',
+          );
+        } else {
+          debugPrint('❌ [NOTIFICATION] data[data] is not a List: ${data['data'].runtimeType}');
+        }
+      } else {
+        error.value = 'Failed to fetch notifications: ${response.statusCode}';
+        debugPrint(
+          '❌ [NOTIFICATION] Failed to fetch notifications: ${response.statusCode}',
+        );
+      }
+    } catch (e, stackTrace) {
+      error.value = 'Error fetching notifications: $e';
+      debugPrint('❌ [NOTIFICATION] Error fetching notifications: $e');
+      debugPrint('❌ [NOTIFICATION] Stack trace: $stackTrace');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Format notification for display
+  Map<String, dynamic> _formatNotificationForDisplay(
+    NotificationModel notification,
+  ) {
+    return {
+      'id': notification.id,
+      'title': notification.title,
+      'message': notification.message,
+      'time': _formatTime(notification.createdAt),
+      'isRead': notification.isRead,
+      'type': _mapNotificationType(notification.type),
+      'dateGroup': _getDateGroup(notification.createdAt),
+      'fullNotification': notification,
+    };
+  }
+
+  /// Format time to display format
+  String _formatTime(DateTime dateTime) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final notificationDate = DateTime(
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+    );
+
+    if (notificationDate == today) {
+      return DateFormat('h:mm a').format(dateTime);
+    } else if (notificationDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('MMM d').format(dateTime);
+    }
+  }
+
+  /// Get date group for notifications
+  String _getDateGroup(DateTime dateTime) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final notificationDate = DateTime(
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+    );
+
+    if (notificationDate == today) {
+      return 'Today';
+    } else if (notificationDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('MMM d, yyyy').format(dateTime);
+    }
+  }
+
+  /// Map API notification type to display type
+  String _mapNotificationType(String type) {
+    switch (type) {
+      case 'BOOKING_NEW':
+      case 'BOOKING_ACCEPTED':
+      case 'BOOKING_REJECTED':
+      case 'BOOKING_CANCELLED':
+        return 'booking';
+      case 'PAYMENT_SUCCESSFUL':
+      case 'PAYMENT_FAILED':
+      case 'WITHDRAW_REQUEST':
+        return 'payment';
+      case 'MESSAGE':
+        return 'message';
+      default:
+        return 'system';
+    }
   }
 
   /// Initialize Firebase Messaging
@@ -208,6 +325,11 @@ class NotificationController extends GetxController {
 
   void clearAll() {
     notifications.clear();
+  }
+
+  /// Refresh notifications from API
+  Future<void> refreshNotifications() async {
+    await fetchNotifications();
   }
 
   @override

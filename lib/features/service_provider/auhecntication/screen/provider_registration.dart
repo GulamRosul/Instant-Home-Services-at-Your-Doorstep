@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
-import 'package:protiva502/core/common/widgets/custom_popupmenu_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
@@ -16,7 +15,9 @@ class ProviderRegistration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProviderRegController());
+    final controller = Get.isRegistered<ProviderRegController>()
+        ? Get.find<ProviderRegController>()
+        : Get.put(ProviderRegController());
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -67,33 +68,44 @@ class ProviderRegistration extends StatelessWidget {
               ],
             ),
             SizedBox(height: 24.h),
-            FieldLabel(label: 'Service Category'),
-            Obx(
-              () => CustomPopupMenu(
-                value: controller.selectedServiceCategory.value,
-                items: controller.serviceCategories,
-                onSelected: controller.onServiceCategoryChanged,
-              ),
-            ),
-            SizedBox(height: 16.h),
+            // FieldLabel(label: 'Service Category'),
+            // Obx(
+            //   () => CustomPopupMenu(
+            //     value: controller.selectedServiceCategory.value,
+            //     items: controller.serviceCategories,
+            //     onSelected: controller.onServiceCategoryChanged,
+            //   ),
+            // ),
+            // SizedBox(height: 16.h),
 
-            // Sub-Category (dropdown)
-            FieldLabel(label: 'Sub-Category'),
-            Obx(
-              () => CustomPopupMenu(
-                value: controller.selectedSubCategory.value,
-                items: controller.subCategories,
-                onSelected: controller.onSubCategoryChanged,
-              ),
-            ),
-            SizedBox(height: 16.h),
+            // // Sub-Category (dropdown)
+            // FieldLabel(label: 'Sub-Category'),
+            // Obx(
+            //   () => CustomPopupMenu(
+            //     value: controller.selectedSubCategory.value,
+            //     items: controller.subCategories,
+            //     onSelected: controller.onSubCategoryChanged,
+            //   ),
+            // ),
+            // SizedBox(height: 16.h),
 
             // Service location
             FieldLabel(label: 'Service location'),
             CustomTextField(
               borderRadius: 4.r,
               controller: controller.serviceLocationController,
-              hintText: 'Canada',
+              hintText: 'Dhaka City',
+              backgroundColor: const Color(0xFFF1F5F9),
+              borderColor: AppColors.defaultBorder.withValues(alpha: 0.3),
+              textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
+            ),
+            SizedBox(height: 16.h),
+
+            FieldLabel(label: 'City'),
+            CustomTextField(
+              borderRadius: 4.r,
+              controller: controller.cityController,
+              hintText: 'Dhaka',
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.3),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
@@ -105,8 +117,8 @@ class ProviderRegistration extends StatelessWidget {
             CustomTextField(
               borderRadius: 4.r,
               controller: controller.yearOfExperienceController,
-              hintText: 'e.g. 5',
-              keyboardType: TextInputType.number,
+              hintText: 'e.g. 3 years',
+              keyboardType: TextInputType.text,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.3),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),

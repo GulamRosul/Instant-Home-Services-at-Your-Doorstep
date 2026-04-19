@@ -1,7 +1,8 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
-  static const String baseUrl = 'https://protiva-backend-ukw2.onrender.com/api/v1';
+  static const String baseUrl =
+      'https://protiva-backend-ukw2.onrender.com/api/v1';
   static const String register = '/auth/register';
   static const String login = '/auth/login';
   static const String authMe = '/auth/me';
@@ -17,14 +18,14 @@ class ApiEndpoints {
   static const String withdrawCard = '/withdraw/card';
   static const String withdrawMobileBanking = '/withdraw/mobile-banking';
 
-  static const String getRecommendedExperts = '/expart-recommendation/expert-recommendations';
-
+  static const String getRecommendedExperts =
+      '/expart-recommendation/expert-recommendations';
 
   static const String createJob = '/job/create-job';
   static const String getJobs = '/job/my-job';
-  static  String updateJob(String jobId) => '/job/$jobId/update-jon-content';
-  static  String deleteJob(String jobId) => '/job/delete-jon/$jobId';
-  static  String updateThumbnail(String jobId) => '/job/$jobId/update/thumbnail';
+  static String updateJob(String jobId) => '/job/$jobId/update-jon-content';
+  static String deleteJob(String jobId) => '/job/delete-jon/$jobId';
+  static String updateThumbnail(String jobId) => '/job/$jobId/update/thumbnail';
 
   static const String categories = '/category/all-categoris-for-user';
   static String subCategories(String categoryId) =>
@@ -34,4 +35,7 @@ class ApiEndpoints {
       '/sub-category/sub-category/$subCategoryId';
 
   static String providerDetails(String providerId) => '/user/$providerId';
+
+  static String updateBookingStatus(String bookingId, String status) =>
+      '/bookings/$bookingId/status/$status';
 }

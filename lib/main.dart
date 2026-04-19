@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:protiva502/app.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/firebase_options.dart';
+import 'package:protiva502/features/notification/controller/notification_controller.dart';
 
 // void main() {
 //   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +37,9 @@ Future<void> main() async {
   await StorageService.init();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize NotificationController as a persistent controller
+  Get.put<NotificationController>(NotificationController(), permanent: true);
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

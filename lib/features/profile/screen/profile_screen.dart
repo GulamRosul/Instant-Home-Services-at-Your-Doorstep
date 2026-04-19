@@ -6,8 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/common/widgets/shimmer_effect.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
-import 'package:protiva502/features/service_provider/profile/controller/profile_controller.dart';
+import 'package:protiva502/features/profile/controller/profile_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -315,7 +316,7 @@ class ProfileScreen extends StatelessWidget {
       appBar: const CustomAppBar(title: 'Profile', showBackButton: true),
       body: Obx(() {
         if (controller.isLoading.value && !controller.hasLoadedProfile.value) {
-          return const Center(child: CircularProgressIndicator());
+          return _buildLoadingShimmer();
         }
 
         if (controller.errorMessage.value.isNotEmpty &&
@@ -581,6 +582,109 @@ class ProfileScreen extends StatelessWidget {
         border: Border.all(color: Colors.blue.withValues(alpha: 0.05)),
       ),
       child: Column(children: children),
+    );
+  }
+
+  Widget _buildLoadingShimmer() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Profile Image Shimmer
+            ShimmerEffect(width: 120.w, height: 120.h, borderRadius: 60.r),
+            SizedBox(height: 32.h),
+            // Profile Information Title
+            ShimmerEffect(width: 150.w, height: 20.h, borderRadius: 8.r),
+            SizedBox(height: 16.h),
+            // Profile Information Items Shimmer
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Column(
+                children: List.generate(
+                  5,
+                  (index) => Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 12.h,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ShimmerEffect(
+                              width: 80.w,
+                              height: 14.h,
+                              borderRadius: 6.r,
+                            ),
+                            SizedBox(height: 8.h),
+                            ShimmerEffect(
+                              width: 200.w,
+                              height: 14.h,
+                              borderRadius: 6.r,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (index < 4)
+                        Divider(height: 1, color: Colors.grey.shade100),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 32.h),
+            // Address Information Title
+            ShimmerEffect(width: 160.w, height: 20.h, borderRadius: 8.r),
+            SizedBox(height: 16.h),
+            // Address Information Items Shimmer
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Column(
+                children: List.generate(
+                  4,
+                  (index) => Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 12.h,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ShimmerEffect(
+                              width: 70.w,
+                              height: 14.h,
+                              borderRadius: 6.r,
+                            ),
+                            SizedBox(height: 8.h),
+                            ShimmerEffect(
+                              width: 180.w,
+                              height: 14.h,
+                              borderRadius: 6.r,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (index < 3)
+                        Divider(height: 1, color: Colors.grey.shade100),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

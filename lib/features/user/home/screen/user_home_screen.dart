@@ -6,11 +6,11 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/common/widgets/shimmer_effect.dart';
-import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/device/device_utility.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/core/utils/helpers/app_helper.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
 import 'package:protiva502/features/user/home/controller/generic_listing_controller.dart';
 import 'package:protiva502/features/user/home/model/expert_recommendation_model.dart';
@@ -147,23 +147,30 @@ class UserHomeScreen extends StatelessWidget {
   }
 
   Widget _buildHeader() {
-    final displayName = StorageService.getDisplayName();
+    final controller = Get.find<UserHomeController>();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
-            CircleAvatar(
-              radius: 22.r,
-              backgroundImage: const AssetImage(ImagePath.profile),
+            Obx(
+              () => CircleAvatar(
+                radius: 22.r,
+                backgroundImage: controller.profileImage.value.isNotEmpty
+                    ? NetworkImage(controller.profileImage.value)
+                    : const AssetImage(ImagePath.profile),
+                onBackgroundImageError: (exception, stackTrace) {
+                  // Fallback to asset image if network image fails
+                },
+              ),
             ),
             SizedBox(width: 12.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Good Morning!',
+                  AppHelperFunctions.getDynamicGreeting(),
                   style: getTextStyle(
                     fontSize: 16.sp,
                     color: Colors.black,
@@ -171,12 +178,16 @@ class UserHomeScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 4.h),
-                Text(
-                  displayName,
-                  style: getTextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black,
+                Obx(
+                  () => Text(
+                    controller.profileName.value.isNotEmpty
+                        ? controller.profileName.value
+                        : 'User',
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ],

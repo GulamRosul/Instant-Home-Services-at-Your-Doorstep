@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
-import 'package:protiva502/features/service_provider/auhecntication/controller/provider_logo_bio_controller.dart';
-import 'package:protiva502/features/service_provider/payment_system/screen/provider_pricing_screen.dart';
+import 'package:protiva502/features/service_provider/auhecntication/controller/provider_reg_controller.dart';
 
 class ProviderLogoBioScreen extends StatelessWidget {
   const ProviderLogoBioScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProviderLogoBioController());
+    final controller = Get.isRegistered<ProviderRegController>()
+        ? Get.find<ProviderRegController>()
+        : Get.put(ProviderRegController());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
@@ -25,34 +25,10 @@ class ProviderLogoBioScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFF5F5F7),
         elevation: 0,
         surfaceTintColor: const Color(0xFFF5F5F7),
-        leading: SizedBox(),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 12.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                SizedBox(height: 10.h),
-                // Main Skip (underlined, darker)
-                GestureDetector(
-                  onTap: () async {
-                    await Get.to(() => const ProviderPricingScreen());
-                  },
-                  child: Text(
-                    'Skip',
-                    style: getTextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20.sp),
+          onPressed: Get.back,
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
@@ -61,63 +37,9 @@ class ProviderLogoBioScreen extends StatelessWidget {
           children: [
             Center(
               child: GestureDetector(
-                onTap: () {
-                  Get.bottomSheet(
-                    Container(
-                      padding: EdgeInsets.all(20.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.r),
-                          topRight: Radius.circular(20.r),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Select Image Source',
-                            style: getTextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          SizedBox(height: 20.h),
-                          ListTile(
-                            leading: const Icon(Icons.camera_alt),
-                            title: Text(
-                              'Camera',
-                              style: getTextStyle(
-                                color: Colors.black,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                            onTap: () {
-                              Get.back();
-                              controller.pickLogo(ImageSource.camera);
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.photo_library),
-                            title: Text(
-                              'Gallery',
-                              style: getTextStyle(
-                                color: Colors.black,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                            onTap: () {
-                              Get.back();
-                              controller.pickLogo(ImageSource.gallery);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+                onTap: controller.pickAvatarImage,
                 child: Obx(() {
-                  final path = controller.logoPath.value;
+                  final path = controller.avatarImage.value?.path;
                   return Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -181,7 +103,7 @@ class ProviderLogoBioScreen extends StatelessWidget {
                   ),
                   child: TextField(
                     controller: controller.bioController,
-                    maxLength: ProviderLogoBioController.maxBioLength,
+                    maxLength: ProviderRegController.maxBioLength,
                     maxLines: 5,
                     minLines: 4,
                     onChanged: (v) => controller.updateBioCount(v.length),
@@ -218,7 +140,7 @@ class ProviderLogoBioScreen extends StatelessWidget {
                   bottom: 10.h,
                   child: Obx(
                     () => Text(
-                      '${controller.bioCharCount.value}/${ProviderLogoBioController.maxBioLength}',
+                      '${controller.bioCharCount.value}/${ProviderRegController.maxBioLength}',
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: Color.fromARGB(255, 135, 133, 133),
@@ -230,12 +152,18 @@ class ProviderLogoBioScreen extends StatelessWidget {
             ),
             SizedBox(height: 61.h),
 
-            CustomButton(
-              borderRadius: 6.r,
-              text: 'Next',
-              onPressed: controller.handleNext,
-              backgroundColor: Color(0xFF334155),
-              textColor: Colors.white,
+            Obx(
+              () => CustomButton(
+                borderRadius: 6.r,
+                text: controller.isRegistering.value
+                    ? 'Submitting...'
+                    : 'Complete Registration',
+                onPressed: controller.isRegistering.value
+                    ? null
+                    : controller.submitProviderRegistration,
+                backgroundColor: Color(0xFF334155),
+                textColor: Colors.white,
+              ),
             ),
             SizedBox(height: 40.h),
           ],

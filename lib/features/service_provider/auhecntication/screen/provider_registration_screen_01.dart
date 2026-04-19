@@ -16,7 +16,9 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProviderRegController());
+    final controller = Get.isRegistered<ProviderRegController>()
+        ? Get.find<ProviderRegController>()
+        : Get.put(ProviderRegController());
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -78,10 +80,10 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
 
-            _buildLabel('Name'),
+            _buildLabel('Full name'),
             CustomTextField(
               controller: controller.companyNameController,
-              hintText: 'Enter your name',
+              hintText: 'Enter your full name',
               backgroundColor: const Color(0xFFF8F9FA),
               borderColor: const Color(0xFFE2E8F0),
             ),
@@ -135,17 +137,17 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
                 showPasswordToggleText: true,
               ),
             ),
-            SizedBox(height: 16.h),
+            // SizedBox(height: 16.h),
 
-            _buildLabel('Face Verification'),
-            Obx(
-              () => _buildImageUploadContainer(
-                onTap: controller.pickFaceVerificationImage,
-                imagePath: controller.faceVerificationImage.value?.path,
-                title: 'Upload or capture your photo',
-                subtitle: 'For identity verification',
-              ),
-            ),
+            // _buildLabel('Face Verification'),
+            // Obx(
+            //   () => _buildImageUploadContainer(
+            //     onTap: controller.pickFaceVerificationImage,
+            //     imagePath: controller.faceVerificationImage.value?.path,
+            //     title: 'Upload or capture your photo',
+            //     subtitle: 'For identity verification',
+            //   ),
+            // ),
             SizedBox(height: 30.h),
 
             CustomButton(

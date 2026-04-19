@@ -41,9 +41,9 @@ class ApiEndpoints {
   static String updateBookingStatus(String bookingId, String status) =>
       '/bookings/$bookingId/status/$status';
 
-static const String makePayment = '/payment/make-payment';
+  static const String makePayment = '/payment/make-payment';
 
+  static const String getNotifications = '/notification/get-my-ntg';
 
-static const String getNotifications = '/notification/get-my-ntg';
-
+  static const String homeSearch = '/job/home-search';
 }

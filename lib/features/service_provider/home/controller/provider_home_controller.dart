@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
@@ -29,6 +30,10 @@ class ProviderHomeController extends GetxController {
   var totalEarnings = "0.00".obs;
   var pendingAmount = "0.00".obs;
   var bookingsServed = "0/0".obs;
+
+  // Stats data for the UI
+  var isStatsLoading = false.obs;
+
   var isActiveJobsLoading = false.obs;
   var activeJobsErrorMessage = ''.obs;
   final activeJobs = <ActiveJobModel>[].obs;
@@ -69,7 +74,8 @@ class ProviderHomeController extends GetxController {
         'Provider profile request => ${ApiEndpoints.baseUrl}${ApiEndpoints.authMe}',
       );
       debugPrint('Provider profile status => ${response.statusCode}');
-      debugPrint('Provider profile response => ${response.data}');
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      debugPrint('Provider profile response => ${encoder.convert(response.data)}');
 
       if (response.statusCode != 200) {
         return;
@@ -112,7 +118,8 @@ class ProviderHomeController extends GetxController {
         'Provider wallet request => ${ApiEndpoints.baseUrl}${ApiEndpoints.providerWallet}',
       );
       debugPrint('Provider wallet status => ${response.statusCode}');
-      debugPrint('Provider wallet response => ${response.data}');
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      debugPrint('Provider wallet response => ${encoder.convert(response.data)}');
 
       if (response.statusCode != 200) {
         walletErrorMessage.value = 'Failed to load wallet';
@@ -164,7 +171,8 @@ class ProviderHomeController extends GetxController {
         'Provider active jobs request => ${ApiEndpoints.baseUrl}${ApiEndpoints.myActiveJob}?page=1&limit=10',
       );
       debugPrint('Provider active jobs status => ${response.statusCode}');
-      debugPrint('Provider active jobs response => ${response.data}');
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      debugPrint('Provider active jobs response => ${encoder.convert(response.data)}');
 
       if (response.statusCode != 200) {
         activeJobsErrorMessage.value = 'Failed to load active jobs';
@@ -219,10 +227,11 @@ class ProviderHomeController extends GetxController {
       );
 
       debugPrint(
-        'Provider recent bookings request => ${ApiEndpoints.baseUrl}${ApiEndpoints.recentBookings}?page=1&limit=10',
+        'Provider recent bookings request => ${ApiEndpoints.baseUrl}${ApiEndpoints.recentBookings}?page=1&limit=100',
       );
       debugPrint('Provider recent bookings status => ${response.statusCode}');
-      debugPrint('Provider recent bookings response => ${response.data}');
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      debugPrint('Provider recent bookings response => ${encoder.convert(response.data)}');
 
       if (response.statusCode != 200) {
         recentBookingsErrorMessage.value = 'Failed to load recent bookings';

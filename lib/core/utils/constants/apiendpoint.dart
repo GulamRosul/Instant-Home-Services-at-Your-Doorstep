@@ -1,6 +1,8 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
+  // static const String baseUrl =
+  //     'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
   static const String baseUrl =
       'https://protiva-backend-ukw2.onrender.com/api/v1';
   static const String register = '/auth/register';
@@ -38,4 +40,7 @@ class ApiEndpoints {
 
   static String updateBookingStatus(String bookingId, String status) =>
       '/bookings/$bookingId/status/$status';
+
+static const String makePayment = '/payment/make-payment';
+
 }

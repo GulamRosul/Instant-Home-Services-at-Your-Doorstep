@@ -13,6 +13,13 @@ class JobDetailsStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<CreateJobController>();
 
+    // Map enum values to display labels
+    final Map<String, String> priceTypeLabels = {
+      'FIXED': 'Fixed',
+      'HOURLY': 'Hourly',
+      'NEGOTIABLE': 'Negotiable',
+    };
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -76,12 +83,13 @@ class JobDetailsStep extends StatelessWidget {
         SizedBox(height: 8.h),
         Obx(
           () => CustomPopupMenu(
-            value: controller.priceType.value.isEmpty
-                ? 'Fixed'
-                : controller.priceType.value,
-            items: const ["Fixed", "Hourly", "Negotiable"],
+            value: priceTypeLabels[controller.priceType.value] ?? 'Fixed',
+            items: priceTypeLabels.values.toList(),
             onSelected: (value) {
-              controller.priceType.value = value;
+              // Map display label back to enum value
+              controller.priceType.value = priceTypeLabels.entries
+                  .firstWhere((entry) => entry.value == value)
+                  .key;
             },
           ),
         ),

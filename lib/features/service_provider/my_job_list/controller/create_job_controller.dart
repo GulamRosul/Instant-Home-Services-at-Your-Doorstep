@@ -36,7 +36,7 @@ class CreateJobController extends GetxController {
   var selectedSubCategoryId = "".obs;
   final jobDescriptionController = TextEditingController();
   final basePriceController = TextEditingController();
-  var priceType = "Fixed".obs;
+  var priceType = "FIXED".obs;
 
   // Step 2: Service Details
   var includedServices = <String>["Basic cleaning service"].obs;
@@ -107,7 +107,7 @@ class CreateJobController extends GetxController {
     basePriceController.text = job.basePrice;
     selectedCategoryId.value = job.categoryId;
     selectedSubCategoryId.value = job.subCategoryId;
-    priceType.value = job.priceType == 'FIXED' ? 'Fixed' : job.priceType;
+    priceType.value = job.priceType;
     includedServices.assignAll(job.includeService);
     thumbnailUrl.value = job.thumbnail;
 
@@ -481,7 +481,7 @@ class CreateJobController extends GetxController {
         'title': jobTitleController.text.trim(),
         'description': jobDescriptionController.text.trim(),
         'basePrice': basePriceController.text.trim(),
-        'priceType': priceType.value == "Fixed" ? "FIXED" : priceType.value,
+        'priceType': priceType.value,
         'includeService': includedServices,
         'image': await MultipartFile.fromFile(
           uploadedImagePath.value,
@@ -568,7 +568,7 @@ class CreateJobController extends GetxController {
     selectedSpecificService.value = '';
     selectedSubCategoryId.value = '';
     includedServices.assignAll(['Basic cleaning service']);
-    priceType.value = 'Fixed';
+    priceType.value = 'FIXED';
     currentStep.value = 0;
     isEditMode.value = false;
     editingJobId.value = '';
@@ -664,7 +664,7 @@ class CreateJobController extends GetxController {
         ),
         'description': jobDescriptionController.text.trim(),
         'basePrice': basePriceController.text.trim(),
-        'priceType': priceType.value == "Fixed" ? "FIXED" : priceType.value,
+        'priceType': priceType.value,
         'includeService': includedServices,
         'thumbnail': thumbnailUrl.value.isNotEmpty
             ? thumbnailUrl.value

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
+import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/features/service_provider/home/model/active_job_model.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
@@ -56,6 +57,16 @@ class ProviderHomeController extends GetxController {
   Future<void> fetchProfileData() async {
     try {
       isProfileLoading.value = true;
+      await StorageService.ensureInitialized();
+
+      profileImage.value = StorageService.getAvatar()?.trim() ?? '';
+
+      final firstName = StorageService.getFirstName()?.trim() ?? '';
+      final lastName = StorageService.getLastName()?.trim() ?? '';
+      final fullName = '$firstName $lastName'.trim();
+      if (fullName.isNotEmpty) {
+        profileName.value = fullName;
+      }
 
       final token = await SecureStorageService.getToken();
       if (token == null || token.isEmpty) {
@@ -75,7 +86,9 @@ class ProviderHomeController extends GetxController {
       );
       debugPrint('Provider profile status => ${response.statusCode}');
       const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-      debugPrint('Provider profile response => ${encoder.convert(response.data)}');
+      debugPrint(
+        'Provider profile response => ${encoder.convert(response.data)}',
+      );
 
       if (response.statusCode != 200) {
         return;
@@ -84,8 +97,27 @@ class ProviderHomeController extends GetxController {
       final responseMap = _asMap(response.data) ?? <String, dynamic>{};
       final data = _asMap(responseMap['data']) ?? <String, dynamic>{};
 
-      profileName.value = data['firstName'] ?? data['fullName'] ?? '';
-      profileImage.value = data['profileImage'] ?? '';
+      final fetchedFirstName = (data['firstName'] ?? '').toString().trim();
+      final fetchedLastName = (data['lastName'] ?? '').toString().trim();
+      final fetchedName = '$fetchedFirstName $fetchedLastName'.trim().isNotEmpty
+          ? '$fetchedFirstName $fetchedLastName'.trim()
+          : (data['fullName'] ?? '').toString().trim();
+      final fetchedAvatar = (data['avatar'] ?? data['profileImage'] ?? '')
+          .toString()
+          .trim();
+
+      if (fetchedName.isNotEmpty) {
+        profileName.value = fetchedName;
+      }
+      if (fetchedAvatar.isNotEmpty) {
+        profileImage.value = fetchedAvatar;
+      }
+
+      await StorageService.saveUser(
+        firstName: fetchedFirstName.isEmpty ? null : fetchedFirstName,
+        lastName: fetchedLastName.isEmpty ? null : fetchedLastName,
+        avatar: fetchedAvatar.isEmpty ? null : fetchedAvatar,
+      );
     } on DioException catch (_) {
       // Handle error silently, use fallback values
     } catch (_) {
@@ -119,7 +151,9 @@ class ProviderHomeController extends GetxController {
       );
       debugPrint('Provider wallet status => ${response.statusCode}');
       const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-      debugPrint('Provider wallet response => ${encoder.convert(response.data)}');
+      debugPrint(
+        'Provider wallet response => ${encoder.convert(response.data)}',
+      );
 
       if (response.statusCode != 200) {
         walletErrorMessage.value = 'Failed to load wallet';
@@ -172,7 +206,9 @@ class ProviderHomeController extends GetxController {
       );
       debugPrint('Provider active jobs status => ${response.statusCode}');
       const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-      debugPrint('Provider active jobs response => ${encoder.convert(response.data)}');
+      debugPrint(
+        'Provider active jobs response => ${encoder.convert(response.data)}',
+      );
 
       if (response.statusCode != 200) {
         activeJobsErrorMessage.value = 'Failed to load active jobs';
@@ -231,7 +267,9 @@ class ProviderHomeController extends GetxController {
       );
       debugPrint('Provider recent bookings status => ${response.statusCode}');
       const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-      debugPrint('Provider recent bookings response => ${encoder.convert(response.data)}');
+      debugPrint(
+        'Provider recent bookings response => ${encoder.convert(response.data)}',
+      );
 
       if (response.statusCode != 200) {
         recentBookingsErrorMessage.value = 'Failed to load recent bookings';

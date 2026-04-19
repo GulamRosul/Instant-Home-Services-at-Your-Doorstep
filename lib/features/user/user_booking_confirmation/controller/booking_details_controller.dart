@@ -14,7 +14,7 @@ class BookingDetailsController extends GetxController {
   final locationController = TextEditingController();
   final messageController = TextEditingController();
   final selectedPreferredDateTime = Rxn<DateTime>();
-  final selectedCountryCode = "+1".obs;
+  final selectedCountryCode = "+880".obs;
   final selectedLocationLatitude = RxnDouble();
   final selectedLocationLongitude = RxnDouble();
 

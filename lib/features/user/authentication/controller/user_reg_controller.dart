@@ -22,10 +22,17 @@ class UserRegController extends GetxController {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  // Country Code State
+  final selectedCountryCode = '+880'.obs;
+
   // Password Visibility State
   var isPasswordVisible = false.obs;
   var isConfirmPasswordVisible = false.obs;
   final isLoading = false.obs;
+
+  void updateCountryCode(String dialCode) {
+    selectedCountryCode.value = dialCode;
+  }
 
   void togglePasswordVisibility() =>
       isPasswordVisible.value = !isPasswordVisible.value;
@@ -44,11 +51,13 @@ class UserRegController extends GetxController {
       return;
     }
 
+    final fullPhone = '${selectedCountryCode.value}${phoneController.text.trim()}';
+
     final payload = {
       'firstName': firstNameController.text.trim(),
       'lastName': lastNameController.text.trim(),
       'email': emailController.text.trim(),
-      'phone': phoneController.text.trim(),
+      'phone': fullPhone,
       'password': passwordController.text,
       'role': 'CLIENT',
     };

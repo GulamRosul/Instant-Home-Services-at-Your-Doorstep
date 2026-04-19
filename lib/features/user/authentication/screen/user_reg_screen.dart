@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -71,11 +72,27 @@ class UserRegScreen extends StatelessWidget {
             _buildFieldLabel("Phone"),
             CustomTextField(
               controller: controller.phoneController,
-              hintText: '+1 (555) 123-4567',
+              hintText: '1XXXXXXXXX',
               keyboardType: TextInputType.phone,
               backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
+              prefixIcon: CountryCodePicker(
+                onChanged: (country) => controller.updateCountryCode(
+                  country.dialCode ?? controller.selectedCountryCode.value,
+                ),
+                initialSelection: controller.selectedCountryCode.value,
+                favorite: const ["+880", "BD"],
+                showCountryOnly: false,
+                showOnlyCountryWhenClosed: false,
+                alignLeft: false,
+                padding: EdgeInsets.zero,
+                textStyle: getTextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
             ),
 
             SizedBox(height: 16.h),

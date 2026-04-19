@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/services/socket_io_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
+import 'package:protiva502/core/services/debug_logger_service.dart';
 
 class SingleChatController extends GetxController {
   final TextEditingController messageController = TextEditingController();
@@ -43,13 +44,26 @@ class SingleChatController extends GetxController {
       if (userRole.value == 'provider') {
         // Provider sends to client
         receiverId.value = arguments['clientId'] ?? '';
+
+        // FIX: If clientId equals currentUserId (backend sends wrong ID),
+        // try to use the userId from arguments or look for the other party
+        if (receiverId.value == currentUserId.value ||
+            receiverId.value.isEmpty) {
+          // Try alternative argument names
+          if (arguments.containsKey('userId') &&
+              arguments['userId'] != currentUserId.value) {
+            receiverId.value = arguments['userId'];
+          } else if (arguments.containsKey('receiverId')) {
+            receiverId.value = arguments['receiverId'];
+          }
+        }
       } else {
         // User (client) sends to provider
         receiverId.value = arguments['providerId'] ?? '';
       }
 
-      // Fallback: if receiverId is still empty, try to infer from other arguments
-      if (receiverId.value.isEmpty) {
+      // Additional fallback: if receiverId is still empty or matches currentUserId
+      if (receiverId.value.isEmpty || receiverId.value == currentUserId.value) {
         if (userRole.value == 'provider' &&
             arguments.containsKey('receiverId')) {
           receiverId.value = arguments['receiverId'];
@@ -60,12 +74,51 @@ class SingleChatController extends GetxController {
       }
 
       // Log for debugging
+      DebugLoggerService.chatAction(
+        'Chat initialized from arguments',
+        data: {
+          'bookingId': bookingId.value,
+          'currentUserId': currentUserId.value,
+          'receiverId': receiverId.value,
+          'userRole': userRole.value,
+          'otherUserName': otherUserName.value,
+          'allArguments': arguments,
+        },
+      );
+
       print('Chat initialized:');
       print('  BookingId: ${bookingId.value}');
       print('  CurrentUserId: ${currentUserId.value}');
       print('  ReceiverId: ${receiverId.value}');
       print('  UserRole: ${userRole.value}');
       print('  OtherUserName: ${otherUserName.value}');
+
+      // Validate receiverId is not the same as currentUserId
+      if (receiverId.value == currentUserId.value) {
+        DebugLoggerService.error(
+          'CHAT',
+          '⚠️ CRITICAL: ReceiverId matches CurrentUserId - messages will be sent to self!',
+          error: {
+            'currentUserId': currentUserId.value,
+            'receiverId': receiverId.value,
+            'userRole': userRole.value,
+          },
+        );
+        // Defer snackbar to after build phase
+        Future.microtask(() {
+          Get.snackbar(
+            'Error',
+            'Chat initialization failed: Invalid receiver ID',
+            duration: const Duration(seconds: 5),
+          );
+        });
+      }
+    } else {
+      DebugLoggerService.error(
+        'CHAT',
+        'No arguments provided to chat screen',
+        error: arguments,
+      );
     }
   }
 
@@ -83,14 +136,42 @@ class SingleChatController extends GetxController {
 
     // Get auth token from secure storage
     final token = await SecureStorageService.getToken();
+    DebugLoggerService.log(
+      'AUTH',
+      'Token retrieved',
+      data: {'tokenLength': token?.length ?? 0},
+    );
 
     // Connect to socket with auth token
+    DebugLoggerService.log(
+      'SOCKET',
+      'Initiating socket connection',
+      data: {
+        'userId': currentUserId.value,
+        'hasToken': token != null && token.isNotEmpty,
+      },
+    );
     socketService.connect(userId: currentUserId.value, token: token);
 
     // Join messaging room
     if (bookingId.value.isNotEmpty) {
+      DebugLoggerService.log(
+        'SOCKET',
+        'Joining messaging room',
+        data: {
+          'bookingId': bookingId.value,
+          'userId': currentUserId.value,
+          'receiverId': receiverId.value,
+        },
+      );
       socketService.joinMessagingRoom(bookingId.value);
       connectionStatus.value = 'Connected';
+    } else {
+      DebugLoggerService.error(
+        'SOCKET',
+        'Cannot join room: bookingId is empty',
+      );
+      connectionStatus.value = 'Error: No booking ID';
     }
   }
 
@@ -101,6 +182,16 @@ class SingleChatController extends GetxController {
       final senderName = data['senderName'] ?? otherUserName.value;
       final messageId = data['messageId'] ?? _generateMessageId();
       final messageType = data['messageType'] ?? 'TEXT';
+
+      DebugLoggerService.chatAction(
+        'Displaying received message on UI',
+        data: {
+          'messageId': messageId,
+          'senderId': data['senderId'],
+          'contentLength': message.length,
+          'messageType': messageType,
+        },
+      );
 
       messages.add({
         'message': message,
@@ -118,12 +209,22 @@ class SingleChatController extends GetxController {
       // Mark message as read
       if (messageId.isNotEmpty) {
         Future.delayed(const Duration(milliseconds: 500), () {
+          DebugLoggerService.log(
+            'CHAT',
+            'Marking message as read',
+            data: {'messageId': messageId},
+          );
           socketService.markMessagesAsRead([messageId]);
         });
       }
 
-      print('Message received: $message');
+      print('Message received and displayed: $message');
     } catch (e) {
+      DebugLoggerService.error(
+        'CHAT',
+        'Error handling received message',
+        error: e,
+      );
       print('Error handling received message: $e');
     }
   }
@@ -146,17 +247,25 @@ class SingleChatController extends GetxController {
     }
   }
 
-  /// Handle other user typing
+  /// Handle typing start indicator
   void _handleTypingStart(String userId) {
     if (userId == receiverId.value) {
       isOtherUserTyping.value = true;
+      DebugLoggerService.chatAction(
+        'Other user started typing',
+        data: {'userId': userId},
+      );
     }
   }
 
-  /// Handle other user stopped typing
+  /// Handle typing stop indicator
   void _handleTypingStop(String userId) {
     if (userId == receiverId.value) {
       isOtherUserTyping.value = false;
+      DebugLoggerService.chatAction(
+        'Other user stopped typing',
+        data: {'userId': userId},
+      );
     }
   }
 
@@ -170,16 +279,30 @@ class SingleChatController extends GetxController {
   /// Handle socket errors
   void _handleError(String error) {
     connectionStatus.value = 'Error: $error';
+    DebugLoggerService.error('SOCKET', 'Socket error received', error: error);
     print('Socket error: $error');
   }
 
   /// Send a message
   void sendMessage() {
-    if (messageController.text.trim().isEmpty) return;
+    if (messageController.text.trim().isEmpty) {
+      DebugLoggerService.log('CHAT', '⚠️ Cannot send empty message');
+      return;
+    }
 
     // Validate receiverId is set
     if (receiverId.value.isEmpty) {
-      print('Error: Receiver ID not set. Cannot send message.');
+      final errorMsg = 'Error: Receiver ID not set. Cannot send message.';
+      DebugLoggerService.error(
+        'CHAT',
+        errorMsg,
+        error: {
+          'receiverId': receiverId.value,
+          'userRole': userRole.value,
+          'bookingId': bookingId.value,
+        },
+      );
+      print(errorMsg);
       print(
         'Current state: receiverId=$receiverId, userRole=$userRole.value, bookingId=$bookingId.value',
       );
@@ -189,6 +312,17 @@ class SingleChatController extends GetxController {
 
     final messageText = messageController.text.trim();
     final messageId = _generateMessageId();
+
+    DebugLoggerService.chatAction(
+      'Message prepare to send',
+      data: {
+        'messageId': messageId,
+        'contentLength': messageText.length,
+        'receiverId': receiverId.value,
+        'bookingId': bookingId.value,
+        'currentUserId': currentUserId.value,
+      },
+    );
 
     // Add to local messages immediately for UI feedback
     messages.add({
@@ -205,11 +339,31 @@ class SingleChatController extends GetxController {
     scrollToBottom();
 
     // Send via socket
-    socketService.sendMessage(
-      receiverId: receiverId.value,
-      content: messageText,
-      messageType: 'TEXT',
-    );
+    try {
+      DebugLoggerService.log(
+        'SOCKET',
+        'Emitting message:send via socket service',
+        data: {
+          'receiverId': receiverId.value,
+          'bookingId': bookingId.value,
+          'messageLength': messageText.length,
+        },
+      );
+
+      socketService.sendMessage(
+        receiverId: receiverId.value,
+        content: messageText,
+        messageType: 'TEXT',
+      );
+
+      DebugLoggerService.chatAction(
+        'Message sent successfully',
+        data: {'messageId': messageId, 'receiverId': receiverId.value},
+      );
+    } catch (e) {
+      DebugLoggerService.error('SOCKET', 'Failed to send message', error: e);
+      Get.snackbar('Error', 'Failed to send message: ${e.toString()}');
+    }
 
     // Emit typing stop after sending
     socketService.emitTypingStop();

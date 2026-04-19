@@ -6,13 +6,16 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
+import 'package:protiva502/features/notification/controller/notification_controller.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 
 class ProviderLoginController extends GetxController {
-  static const String _baseUrl = 'https://protiva-backend-ukw2.onrender.com/api/v1';
+  static const String _baseUrl =
+      // 'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
+      'https://protiva-backend-ukw2.onrender.com/api/v1';
   static const String _loginEndpoint = '$_baseUrl/auth/login';
-  static const String _deviceId = '21';
+  static const String _defaultDeviceId = '21';
 
   // Text Editing Controllers
   final usernameController = TextEditingController();
@@ -36,19 +39,37 @@ class ProviderLoginController extends GetxController {
       final uri = Uri.parse(_loginEndpoint);
       final payload = jsonEncode({'email': username, 'password': password});
 
+      // Get FCM token - initialize notification controller if not already done
+      String deviceId = _defaultDeviceId;
+      try {
+        final notificationController = Get.isRegistered<NotificationController>()
+            ? Get.find<NotificationController>()
+            : Get.put(NotificationController());
+
+        // Wait for FCM token to be available
+        await Future.delayed(const Duration(milliseconds: 300));
+        final fcmToken = notificationController.getFcmToken();
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          deviceId = fcmToken;
+          debugPrint('Provider login using FCM token as device-id');
+        }
+      } catch (e) {
+        debugPrint('Failed to get FCM token, using default device-id: $e');
+      }
+
       debugPrint('Provider login URL => $uri');
-      debugPrint('Provider login device-id => $_deviceId');
+      debugPrint('Provider login device-id => $deviceId');
       debugPrint('Provider login body => $payload');
       log('Provider login URL => $uri', name: 'ProviderLogin');
-      log('Provider login device-id => $_deviceId', name: 'ProviderLogin');
+      log('Provider login device-id => $deviceId', name: 'ProviderLogin');
       log('Provider login body => $payload', name: 'ProviderLogin');
 
       try {
         final response = await http.post(
           uri,
-          headers: const {
+          headers: {
             'accept': '*/*',
-            'device-id': _deviceId,
+            'device-id': deviceId,
             'Content-Type': 'application/json',
           },
           body: payload,
@@ -93,6 +114,19 @@ class ProviderLoginController extends GetxController {
               data?['message']?.toString() ??
               'Login successful';
           Get.snackbar('Success', message);
+
+          // Get FCM token for logging (controller should already be initialized)
+          String? fcmToken;
+          try {
+            if (Get.isRegistered<NotificationController>()) {
+              final notificationController = Get.find<NotificationController>();
+              fcmToken = notificationController.getFcmToken();
+            }
+          } catch (_) {}
+          if (fcmToken != null) {
+            debugPrint('📱 [PROVIDER LOGIN] FCM Token confirmed: $fcmToken');
+          }
+
           Get.offAll(() => const ProviderNavbarScreen());
         } else {
           Get.snackbar('Login failed', _extractMessage(responseData));

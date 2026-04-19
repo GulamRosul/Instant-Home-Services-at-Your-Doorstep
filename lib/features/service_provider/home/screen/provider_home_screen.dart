@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/common/widgets/shimmer_effect.dart';
 import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
 import 'package:protiva502/features/service_provider/home/widget/active_job.dart';
 import 'package:protiva502/features/service_provider/home/widget/home_header_appber.dart';
@@ -30,7 +31,11 @@ class ProviderHomeScreen extends StatelessWidget {
             SizedBox(height: 24.h),
 
             // Wallet Card
-            WalletCard(controller: controller),
+            Obx(
+              () => controller.isWalletLoading.value
+                  ? _buildWalletShimmer()
+                  : WalletCard(controller: controller),
+            ),
             SizedBox(height: 24.h),
             // Application Limit Warning (Obx)
             // Obx(
@@ -41,7 +46,11 @@ class ProviderHomeScreen extends StatelessWidget {
             // if (controller.isLimitReached.value) SizedBox(height: 20.h),
 
             // Stats Grid
-            StatsGrid(controller: controller),
+            Obx(
+              () => controller.isStatsLoading.value
+                  ? _buildStatsShimmer()
+                  : StatsGrid(controller: controller),
+            ),
             SizedBox(height: 24.h),
             // Active Jobs Section
             _buildSectionHeader(
@@ -49,7 +58,11 @@ class ProviderHomeScreen extends StatelessWidget {
               controller.handleViewAllActiveJobs,
             ),
             SizedBox(height: 12.h),
-            ActiveJobsSection(controller: controller),
+            Obx(
+              () => controller.isActiveJobsLoading.value
+                  ? _buildActiveJobsShimmer()
+                  : ActiveJobsSection(controller: controller),
+            ),
             SizedBox(height: 24.h),
 
             // Recent Bookings Section
@@ -58,7 +71,11 @@ class ProviderHomeScreen extends StatelessWidget {
               controller.handleViewAllRecentBookings,
             ),
             SizedBox(height: 12.h),
-            RecentBookingsSection(controller: controller),
+            Obx(
+              () => controller.isRecentBookingsLoading.value
+                  ? _buildRecentBookingsShimmer()
+                  : RecentBookingsSection(controller: controller),
+            ),
             SizedBox(height: 80.h),
           ],
         ),
@@ -92,6 +109,64 @@ class ProviderHomeScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildWalletShimmer() {
+    return ShimmerEffect(
+      height: 140.h,
+      width: double.infinity,
+      borderRadius: 16,
+      margin: EdgeInsets.zero,
+    );
+  }
+
+  Widget _buildStatsShimmer() {
+    return GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisSpacing: 16.w,
+      mainAxisSpacing: 16.h,
+      children: List.generate(
+        4,
+        (index) => ShimmerEffect(
+          height: 100.h,
+          width: double.infinity,
+          borderRadius: 12,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActiveJobsShimmer() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: List.generate(
+          2,
+          (index) => Padding(
+            padding: EdgeInsets.only(right: 12.w),
+            child: ShimmerServiceCard(width: 160, height: 220),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecentBookingsShimmer() {
+    return Column(
+      children: List.generate(
+        2,
+        (index) => Padding(
+          padding: EdgeInsets.only(bottom: 12.h),
+          child: ShimmerEffect(
+            height: 110.h,
+            width: double.infinity,
+            borderRadius: 12,
+          ),
+        ),
+      ),
     );
   }
 }

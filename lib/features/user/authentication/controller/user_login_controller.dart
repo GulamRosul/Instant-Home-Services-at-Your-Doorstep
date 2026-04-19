@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
+import 'package:protiva502/features/notification/controller/notification_controller.dart';
 
 class UserLoginController extends GetxController {
   final ApiClient _apiClient = ApiClient();
@@ -45,9 +47,33 @@ class UserLoginController extends GetxController {
       isLoading.value = true;
       debugPrint('🔄 [LOGIN] Sending login request...');
 
+      // Get FCM token - initialize notification controller if not already done
+      String deviceId = '21'; // Default device ID
+      try {
+        final notificationController = Get.isRegistered<NotificationController>()
+            ? Get.find<NotificationController>()
+            : Get.put(NotificationController());
+
+        // Wait for FCM token to be available
+        await Future.delayed(const Duration(milliseconds: 300));
+        final fcmToken = notificationController.getFcmToken();
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          deviceId = fcmToken;
+          debugPrint('🔐 [LOGIN] Using FCM token as device-id');
+        }
+      } catch (e) {
+        debugPrint('❌ [LOGIN] Failed to get FCM token, using default: $e');
+      }
+
+      // Create options with device-id header
+      final options = Options(
+        headers: {'device-id': deviceId},
+      );
+
       final response = await _apiClient.post(
         ApiEndpoints.login,
         data: {"email": email, "password": password},
+        options: options,
       );
 
       debugPrint('📡 [LOGIN] Response status code: ${response.statusCode}');
@@ -119,6 +145,19 @@ class UserLoginController extends GetxController {
       debugPrint(
         '✅ [LOGIN] All data saved successfully, navigating to home...',
       );
+
+      // Get FCM token for logging (controller should already be initialized)
+      String? fcmToken;
+      try {
+        if (Get.isRegistered<NotificationController>()) {
+          final notificationController = Get.find<NotificationController>();
+          fcmToken = notificationController.getFcmToken();
+        }
+      } catch (_) {}
+      if (fcmToken != null) {
+        debugPrint('📱 [LOGIN] FCM Token confirmed: $fcmToken');
+      }
+
       Get.offAll(() => const MainNavigationScreen());
     } catch (e, stackTrace) {
       debugPrint('❌ [LOGIN] Exception caught: $e');

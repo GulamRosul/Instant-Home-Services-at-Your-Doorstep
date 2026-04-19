@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,7 @@ import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
+import 'package:protiva502/features/service_provider/booking/model/booking_status_response_model.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
 
 class BookingController extends GetxController {
@@ -118,7 +120,7 @@ class BookingController extends GetxController {
 
       final response = await _apiClient.get<dynamic>(
         ApiEndpoints.recentBookings,
-        queryParameters: {'page': 1, 'limit': 10},
+        queryParameters: {'page': 1, 'limit': 100},
         options: Options(
           headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
           validateStatus: (status) => status != null && status < 500,
@@ -126,10 +128,11 @@ class BookingController extends GetxController {
       );
 
       debugPrint(
-        'Provider booking request => ${ApiEndpoints.baseUrl}${ApiEndpoints.recentBookings}?page=1&limit=10',
+        'Provider booking request => ${ApiEndpoints.baseUrl}${ApiEndpoints.recentBookings}?page=1&limit=100',
       );
       debugPrint('Provider booking status => ${response.statusCode}');
-      debugPrint('Provider booking response => ${response.data}');
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      debugPrint('Provider booking response => ${encoder.convert(response.data)}');
 
       if (response.statusCode != 200) {
         errorMessage.value = 'Failed to load bookings';
@@ -146,6 +149,8 @@ class BookingController extends GetxController {
         return;
       }
 
+      debugPrint('Raw items list: $items');
+
       bookings.assignAll(
         items.whereType<Map>().map(
           (item) => RecentBookingModel.fromJson(
@@ -155,6 +160,19 @@ class BookingController extends GetxController {
       );
 
       debugPrint('Provider booking length => ${bookings.length}');
+      for (int i = 0; i < bookings.length; i++) {
+        try {
+          final booking = bookings[i];
+          debugPrint('Booking $i Details:');
+          debugPrint('  Service: ${booking.serviceName}');
+          debugPrint('  Status: ${booking.status}');
+          debugPrint('  Amount: ${booking.serviceAmount}');
+          debugPrint('  Client ID: ${booking.clientId}');
+          debugPrint('  Provider ID: ${booking.providerId}');
+        } catch (e) {
+          debugPrint('Error printing booking $i: $e');
+        }
+      }
     } on DioException catch (_) {
       errorMessage.value = 'Failed to load bookings';
       bookings.clear();
@@ -215,44 +233,142 @@ class BookingController extends GetxController {
     selectedTabIndex.value = index;
   }
 
-  void handleAccept(int index) {
+  Future<void> handleAccept(int index) async {
     final booking = filteredBookings[index];
-    final originalIndex = bookings.indexWhere((b) => b.id == booking.id);
-
-    if (originalIndex != -1) {
-      bookings[originalIndex] = bookings[originalIndex].copyWith(
-        status: 'ACCEPTED',
-      );
-      bookings.refresh();
-      Get.snackbar(
-        'Accepted',
-        'Booking for ${bookings[originalIndex].serviceName} has been accepted.',
-      );
-    }
+    await _updateBookingStatus(booking, 'ACCEPTED', index);
   }
 
-  void handleReject(int index) {
+  Future<void> handleReject(int index) async {
     final booking = filteredBookings[index];
-    final originalIndex = bookings.indexWhere((b) => b.id == booking.id);
+    await _updateBookingStatus(booking, 'REJECTED', index);
+  }
 
-    if (originalIndex != -1) {
-      bookings[originalIndex] = bookings[originalIndex].copyWith(
-        status: 'REJECTED',
+  Future<void> _updateBookingStatus(
+    RecentBookingModel booking,
+    String status,
+    int index,
+  ) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final token = await SecureStorageService.getToken();
+      if (token == null || token.isEmpty) {
+        errorMessage.value = 'Provider token not found';
+        Get.snackbar('Error', 'Authentication failed. Please login again.');
+        return;
+      }
+
+      final response = await _apiClient.patch<dynamic>(
+        ApiEndpoints.updateBookingStatus(booking.id, status),
+        options: Options(
+          headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
+          validateStatus: (statusCode) =>
+              statusCode != null && statusCode < 500,
+        ),
       );
-      bookings.refresh();
+
+      debugPrint(
+        'Booking status update request => ${ApiEndpoints.baseUrl}${ApiEndpoints.updateBookingStatus(booking.id, status)}',
+      );
+      debugPrint('Booking status update response => ${response.statusCode}');
+      debugPrint('Booking status update data => ${response.data}');
+
+      if (response.statusCode != 200) {
+        errorMessage.value = 'Failed to update booking status';
+        Get.snackbar('Error', 'Failed to update booking status');
+        return;
+      }
+
+      final responseMap = _asMap(response.data) ?? <String, dynamic>{};
+      final innerDataMap = _asMap(responseMap['data']) ?? <String, dynamic>{};
+
+      final bookingResponse = BookingStatusResponseModel.fromJson(innerDataMap);
+
+      if (bookingResponse.success && bookingResponse.data != null) {
+        final originalIndex = bookings.indexWhere((b) => b.id == booking.id);
+
+        if (originalIndex != -1) {
+          bookings[originalIndex] = bookings[originalIndex].copyWith(
+            status: status,
+          );
+          bookings.refresh();
+
+          final statusLabel = status == 'ACCEPTED' ? 'accepted' : 'rejected';
+          Get.snackbar(
+            status == 'ACCEPTED' ? 'Accepted' : 'Rejected',
+            'Booking for ${bookings[originalIndex].serviceName} has been $statusLabel.',
+            snackPosition: SnackPosition.TOP,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            borderRadius: 12,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            backgroundColor: status == 'ACCEPTED'
+                ? const Color(0xFF22C55E)
+                : const Color(0xFFEF4444),
+            colorText: Colors.white,
+            icon: Icon(
+              status == 'ACCEPTED' ? Icons.check_circle : Icons.error,
+              color: Colors.white,
+            ),
+            duration: const Duration(seconds: 2),
+            animationDuration: const Duration(milliseconds: 300),
+            boxShadows: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            isDismissible: true,
+            forwardAnimationCurve: Curves.easeOutBack,
+          );
+        }
+      } else {
+        errorMessage.value =
+            bookingResponse.message ?? 'Failed to update booking status';
+        Get.snackbar(
+          'Error',
+          bookingResponse.message ?? 'Failed to update booking status',
+        );
+      }
+    } on DioException catch (e) {
+      errorMessage.value = 'Network error while updating booking status';
+      debugPrint('DioException: ${e.message}');
       Get.snackbar(
-        'Rejected',
-        'Booking for ${bookings[originalIndex].serviceName} has been rejected.',
+        'Error',
+        'Network error. Please check your connection and try again.',
       );
+    } catch (e) {
+      errorMessage.value = 'Error while updating booking status';
+      debugPrint('Exception: $e');
+      Get.snackbar('Error', 'An unexpected error occurred');
+    } finally {
+      isLoading.value = false;
     }
   }
 
   void handleMessage(int index) {
     final booking = filteredBookings[index];
 
+    // Debug logging
+    debugPrint('=== MESSAGE HANDLER DEBUG ===');
+    debugPrint('Booking Index: $index');
+    debugPrint('Booking ID: ${booking.id}');
+    debugPrint('Booking Client ID: ${booking.clientId}');
+    debugPrint('Booking Provider ID: ${booking.providerId}');
+    debugPrint('Current User ID: ${booking.providerId}');
+    debugPrint('===========================');
+
     // Ensure we have valid IDs for messaging
-    final clientId = booking.clientId?.isNotEmpty == true ? booking.clientId! : '';
-    final providerId = booking.providerId?.isNotEmpty == true ? booking.providerId! : '';
+    final clientId = booking.clientId?.isNotEmpty == true
+        ? booking.clientId!
+        : '';
+    final providerId = booking.providerId?.isNotEmpty == true
+        ? booking.providerId!
+        : '';
+
+    debugPrint('Extracted Client ID: $clientId');
+    debugPrint('Extracted Provider ID: $providerId');
 
     if (clientId.isEmpty) {
       Get.snackbar(

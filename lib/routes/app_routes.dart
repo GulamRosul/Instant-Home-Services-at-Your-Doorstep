@@ -35,7 +35,7 @@ import 'package:protiva502/features/user/user_booking_confirmation/screen/bookin
 import 'package:protiva502/features/service_provider/language_settings/screen/language_settings_screen.dart';
 import 'package:protiva502/features/service_provider/settings/screen/settings_screen.dart';
 import 'package:protiva502/features/service_provider/wallet/screen/wallet_screen.dart';
-import 'package:protiva502/features/service_provider/profile/screen/profile_screen.dart';
+import 'package:protiva502/features/profile/screen/profile_screen.dart';
 import 'package:protiva502/features/service_provider/booking/screen/provider_booking_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/model/booking_confirmation_data.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/confirm_booking_screen.dart';

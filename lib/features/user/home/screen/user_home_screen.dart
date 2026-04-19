@@ -18,6 +18,7 @@ import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/home/model/user_banner_model.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
 import 'package:protiva502/features/user/home/screen/generic_listing_screen.dart';
+import 'package:protiva502/features/user/home/search_screen/screen/search_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
@@ -205,19 +206,25 @@ class UserHomeScreen extends StatelessWidget {
   }
 
   Widget _buildSearchBar() {
-    return CustomTextField(
-      hintText: "Search Service",
-      suffixIcon: Container(
-        // padding: EdgeInsets.all(6.r),
-        margin: EdgeInsets.all(4.r),
-        decoration: const BoxDecoration(
-          color: Colors.black,
-          shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => const SearchScreen());
+      },
+      child: CustomTextField(
+        enabled: false,
+        hintText: "Search Service",
+        suffixIcon: Container(
+          // padding: EdgeInsets.all(6.r),
+          margin: EdgeInsets.all(4.r),
+          decoration: const BoxDecoration(
+            color: Colors.black,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(Icons.search, color: Colors.white, size: 18.sp),
         ),
-        child: Icon(Icons.search, color: Colors.white, size: 18.sp),
+        backgroundColor: Colors.white,
+        borderRadius: 50.r,
       ),
-      backgroundColor: Colors.white,
-      borderRadius: 50.r,
     );
   }
 

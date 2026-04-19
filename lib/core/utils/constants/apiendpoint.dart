@@ -9,6 +9,7 @@ class ApiEndpoints {
   static const String login = '/auth/login';
   static const String authMe = '/auth/me';
   static const String authProfile = '/auth/profile';
+  static const String updateUserProfile = '/auth/updateUserProfile';
   static const String userBanners = '/marketing/user/banners';
   static const String homeJobs = '/job/home-jobs';
   static const String myAllBookings = '/bookings/my-all-booking';

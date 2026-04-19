@@ -427,8 +427,10 @@ class ProfileScreen extends StatelessWidget {
                         bottom: 0,
                         right: 0,
                         child: InkWell(
-                          onTap: () =>
-                              _showImageSourceDialog(context, controller),
+                          onTap: controller.isUpdatingProfile.value
+                              ? null
+                              : () =>
+                                    _showImageSourceDialog(context, controller),
                           child: Container(
                             padding: EdgeInsets.all(4.w),
                             decoration: BoxDecoration(
@@ -442,11 +444,22 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: Icon(
-                              Icons.camera_alt_outlined,
-                              size: 20.sp,
-                              color: Colors.grey,
-                            ),
+                            child: controller.isUpdatingProfile.value
+                                ? SizedBox(
+                                    width: 20.w,
+                                    height: 20.w,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        AppColors.primary,
+                                      ),
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.camera_alt_outlined,
+                                    size: 20.sp,
+                                    color: Colors.grey,
+                                  ),
                           ),
                         ),
                       ),

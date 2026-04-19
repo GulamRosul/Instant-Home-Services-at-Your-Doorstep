@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -73,10 +74,26 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
             _buildLabel('Phone'),
             CustomTextField(
               controller: controller.phoneController,
-              hintText: '+1 (555) 123-4567',
+              hintText: '1XXXXXXXXX',
               backgroundColor: const Color(0xFFF8F9FA),
               borderColor: const Color(0xFFE2E8F0),
               keyboardType: TextInputType.phone,
+              prefixIcon: CountryCodePicker(
+                onChanged: (country) => controller.updateCountryCode(
+                  country.dialCode ?? controller.selectedCountryCode.value,
+                ),
+                initialSelection: controller.selectedCountryCode.value,
+                favorite: const ["+880", "BD"],
+                showCountryOnly: false,
+                showOnlyCountryWhenClosed: false,
+                alignLeft: false,
+                padding: EdgeInsets.zero,
+                textStyle: getTextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
             ),
             SizedBox(height: 16.h),
 

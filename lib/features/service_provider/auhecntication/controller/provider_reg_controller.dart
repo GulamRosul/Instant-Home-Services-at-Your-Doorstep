@@ -26,6 +26,9 @@ class ProviderRegController extends GetxController {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  // Country Code State
+  final selectedCountryCode = '+880'.obs;
+
   final Rx<XFile?> nidImage = Rx<XFile?>(null);
   final Rx<XFile?> avatarImage = Rx<XFile?>(null);
   final Rx<XFile?> faceVerificationImage = Rx<XFile?>(null);
@@ -59,6 +62,10 @@ class ProviderRegController extends GetxController {
     'Assembly',
     'Mounting',
   ];
+
+  void updateCountryCode(String dialCode) {
+    selectedCountryCode.value = dialCode;
+  }
 
   void onServiceCategoryChanged(String? value) {
     if (value != null) selectedServiceCategory.value = value;
@@ -118,6 +125,8 @@ class ProviderRegController extends GetxController {
     isRegistering.value = true;
 
     final nameParts = _splitName(companyNameController.text.trim());
+    final fullPhone = '${selectedCountryCode.value}${phoneController.text.trim()}';
+
     final request = http.MultipartRequest(
       'POST',
       Uri.parse(_addProviderEndpoint),
@@ -128,7 +137,7 @@ class ProviderRegController extends GetxController {
       'firstName': nameParts.$1,
       'lastName': nameParts.$2,
       'email': emailController.text.trim(),
-      'phone': phoneController.text.trim(),
+      'phone': fullPhone,
       'password': passwordController.text,
       'serviceLocation': serviceLocationController.text.trim(),
       'yearOfExprience': yearOfExperienceController.text.trim(),

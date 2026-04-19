@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
@@ -177,9 +177,103 @@ class ProfileController extends GetxController {
   }
 
   Future<void> pickImage(ImageSource source) async {
+    if (isUpdatingProfile.value) {
+      return;
+    }
+
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
-      imagePath.value = pickedFile.path;
+      await updateProfileAvatar(pickedFile.path);
+    }
+  }
+
+  Future<bool> updateProfileAvatar(String filePath) async {
+    final normalizedPath = filePath.trim();
+
+    if (normalizedPath.isEmpty) {
+      return false;
+    }
+
+    if (isUpdatingProfile.value) {
+      return false;
+    }
+
+    try {
+      isUpdatingProfile.value = true;
+      errorMessage.value = '';
+
+      final token = await SecureStorageService.getToken();
+
+      if (token == null || token.trim().isEmpty) {
+        const message = 'Please sign in to update your profile picture.';
+        errorMessage.value = message;
+        _showErrorSnackbar(message);
+        return false;
+      }
+
+      final formData = FormData.fromMap({
+        'avatar': await MultipartFile.fromFile(
+          normalizedPath,
+          filename: normalizedPath.split('/').last,
+        ),
+      });
+
+      final response = await _apiClient.patch<dynamic>(
+        ApiEndpoints.updateUserProfile,
+        data: formData,
+        options: Options(
+          headers: {
+            'accept': '*/*',
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'multipart/form-data',
+          },
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      AppLoggerHelper.info(
+        'Profile avatar update response: ${response.statusCode} ${response.data}',
+      );
+
+      final avatarUrl = _extractAvatarUrl(response.data);
+      if (response.statusCode != 200 || avatarUrl == null) {
+        final message =
+            _extractMessage(response.data) ??
+            'Failed to update profile picture.';
+        errorMessage.value = message;
+        AppLoggerHelper.warning(
+          'Profile avatar update failed: ${response.statusCode} ${response.data}',
+        );
+        _showErrorSnackbar(message);
+        return false;
+      }
+
+      imagePath.value = avatarUrl;
+      errorMessage.value = '';
+
+      await StorageService.ensureInitialized();
+      await StorageService.saveUser(avatar: avatarUrl);
+
+      AppLoggerHelper.info('Profile avatar updated successfully');
+      _showSuccessSnackbar('Profile picture updated successfully.');
+      return true;
+    } on DioException catch (error) {
+      final message =
+          _extractMessage(error.response?.data) ??
+          error.message ??
+          'Failed to update profile picture.';
+      errorMessage.value = message;
+      AppLoggerHelper.error('Profile avatar update failed', error);
+      _showErrorSnackbar(message);
+      return false;
+    } catch (error) {
+      const message = 'Failed to update profile picture.';
+      errorMessage.value = message;
+      AppLoggerHelper.error('Unexpected profile avatar update error', error);
+      _showErrorSnackbar(message);
+      return false;
+    } finally {
+      isUpdatingProfile.value = false;
     }
   }
 
@@ -344,6 +438,25 @@ class ProfileController extends GetxController {
     }
 
     return null;
+  }
+
+  String? _extractAvatarUrl(dynamic responseData) {
+    final responseMap = _asMap(responseData);
+    if (responseMap == null) {
+      return null;
+    }
+
+    final data = responseMap['data'];
+    if (data is String && data.trim().isNotEmpty) {
+      return data.trim();
+    }
+
+    final dataMap = _asMap(data);
+    final avatar =
+        dataMap?['avatar'] ?? dataMap?['data']?['avatar'] ?? dataMap?['url'];
+
+    final avatarUrl = _asString(avatar);
+    return avatarUrl.isEmpty ? null : avatarUrl;
   }
 
   String _asString(dynamic value) {

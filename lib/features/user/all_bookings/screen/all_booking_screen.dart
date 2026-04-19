@@ -11,6 +11,7 @@ import 'package:protiva502/features/user/all_bookings/model/all_booking_model.da
 import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart';
 import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
 
 class AllBookingScreen extends StatelessWidget {
   const AllBookingScreen({super.key});
@@ -378,7 +379,6 @@ class AllBookingScreen extends StatelessWidget {
           if (booking.message != null && booking.message!.isNotEmpty) ...[
             SizedBox(height: 8.h),
             Container(
-              
               width: double.infinity,
               padding: EdgeInsets.all(10.r),
               decoration: BoxDecoration(
@@ -415,20 +415,40 @@ class AllBookingScreen extends StatelessWidget {
             ),
           ] else ...[
             Divider(height: 24.h),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () => _handleBookingAction(booking),
-                child: Text(
-                  booking.canTrack ? 'Track Provider' : 'View Details',
-                  style: getTextStyle(
-                    fontSize: 12.sp,
-                    color: AppColors.textPurple,
-                    decoration: TextDecoration.underline,
-                    decorationColor: AppColors.textPurple,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (normalizeBookingStatus(booking.status) == 'ACCEPTED') ...[
+                  // SizedBox(width: 16.w),
+                  GestureDetector(
+                    onTap: () => _handlePayment(booking),
+                    child: Text(
+                      'Make Payment',
+                      style: getTextStyle(
+                        fontSize: 14.sp,
+                        color: const Color(0xFF7079F0),
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => _handleBookingAction(booking),
+                    child: Text(
+                      booking.canTrack ? 'Track Provider' : 'View Details',
+                      style: getTextStyle(
+                        fontSize: 12.sp,
+                        color: AppColors.textPurple,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.textPurple,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ],
@@ -681,6 +701,16 @@ class AllBookingScreen extends StatelessWidget {
     }
 
     _showBookingStateMessage(booking);
+  }
+
+  void _handlePayment(UserBookingItem booking) {
+    Get.to(
+      () => const PaymentScreen(),
+      arguments: {
+        'bookingId': booking.reference,
+        'amount': booking.totalAmount.toInt(),
+      },
+    );
   }
 
   void _showBookingStateMessage(UserBookingItem booking) {

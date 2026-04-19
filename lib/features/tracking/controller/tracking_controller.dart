@@ -15,7 +15,8 @@ class TrackProviderController extends GetxController {
   late Rx<String> serviceName = "Handyman service".obs;
   late Rx<String> location = "Toronto, Canada".obs;
   late Rx<String> rating = "4.8 (170 Reviews)".obs;
-  late Rx<String> personCost = "৳ 20.00".obs; // Cost for user view, Earnings for provider view
+  late Rx<String> personCost =
+      "৳ 20.00".obs; // Cost for user view, Earnings for provider view
   late Rx<String> bookingId = "#BK12345".obs;
 
   // Tracking Data - Observable for real-time updates
@@ -56,26 +57,40 @@ class TrackProviderController extends GetxController {
     // Load person details
     if (arguments != null) {
       if (arguments is Map<String, dynamic>) {
-        personName.value = arguments['personName'] ??
+        personName.value =
+            arguments['personName'] ??
             arguments['providerName'] ??
             personName.value;
         serviceName.value = arguments['serviceName'] ?? serviceName.value;
         location.value = arguments['location'] ?? location.value;
         rating.value = arguments['rating'] ?? rating.value;
-        personCost.value = arguments['personCost'] ??
-            arguments['cost'] ??
-            personCost.value;
+        personCost.value =
+            arguments['personCost'] ?? arguments['cost'] ?? personCost.value;
         bookingId.value = arguments['bookingId'] ?? bookingId.value;
         _currentUserId = arguments['userId'];
-        _otherUserId = arguments['personId'] ?? arguments['providerId'];
+
+        // For provider role, other user ID should be clientId
+        // For user role, other user ID should be providerId
+        if (userRole.value == 'provider') {
+          _otherUserId =
+              arguments['clientId'] ??
+              arguments['personId'] ??
+              arguments['providerId'];
+        } else {
+          _otherUserId = arguments['providerId'] ?? arguments['personId'];
+        }
       }
     }
 
     // Get current user ID from storage if not set
     _currentUserId ??= StorageService.getUserId();
 
-    // Get other user ID from storage as fallback
-    _otherUserId ??= StorageService.getUserId();
+    // Get other user ID from storage as fallback - but NOT from the same userId
+    if (_otherUserId == null || _otherUserId!.isEmpty) {
+      // This is a fallback - ideally arguments should always have the other user ID
+      _otherUserId =
+          _currentUserId; // Will be handled in messagePerson with validation
+    }
   }
 
   /// Initialize Socket.IO connection for tracking
@@ -144,11 +159,13 @@ class TrackProviderController extends GetxController {
         providerLatitude.value = (providerState['latitude'] as num).toDouble();
       }
       if (providerState.containsKey('longitude')) {
-        providerLongitude.value = (providerState['longitude'] as num).toDouble();
+        providerLongitude.value = (providerState['longitude'] as num)
+            .toDouble();
       }
 
       print(
-          'Tracking State: User(${userLatitude.value}, ${userLongitude.value}) Provider(${providerLatitude.value}, ${providerLongitude.value})');
+        'Tracking State: User(${userLatitude.value}, ${userLongitude.value}) Provider(${providerLatitude.value}, ${providerLongitude.value})',
+      );
     } catch (e) {
       print('Error handling tracking state: $e');
     }
@@ -186,18 +203,46 @@ class TrackProviderController extends GetxController {
     // Extract raw booking ID without # symbol
     String rawBookingId = bookingId.value.replaceAll('#', '');
 
-    // Determine which ID is the provider and which is the client
-    String providerId = userRole.value == 'user' ? _otherUserId ?? '' : _currentUserId ?? '';
-    String clientId = userRole.value == 'user' ? _currentUserId ?? '' : _otherUserId ?? '';
+    // Ensure we have valid IDs before navigating
+    if (_currentUserId == null || _currentUserId!.isEmpty) {
+      print('Error: Current user ID not available');
+      Get.snackbar('Error', 'Unable to initiate chat: User ID not found');
+      return;
+    }
 
-    Get.to(() => SingleChatScreen(), arguments: {
-      'bookingId': rawBookingId,
-      'userId': _currentUserId,
-      'providerId': providerId,
-      'clientId': clientId,
-      'providerName': personName.value,
-      'userRole': userRole.value,
-    });
+    if (_otherUserId == null ||
+        _otherUserId!.isEmpty ||
+        _otherUserId == _currentUserId) {
+      print('Error: Other user ID invalid or matches current user');
+      Get.snackbar('Error', 'Unable to initiate chat: Invalid receiver ID');
+      return;
+    }
+
+    print('MessagePerson Debug:');
+    print('  Current User ID: $_currentUserId');
+    print('  Other User ID: $_otherUserId');
+    print('  User Role: ${userRole.value}');
+    print('  Booking ID: $rawBookingId');
+
+    // Determine which ID is the provider and which is the client
+    String providerId = userRole.value == 'user'
+        ? _otherUserId ?? ''
+        : _currentUserId ?? '';
+    String clientId = userRole.value == 'user'
+        ? _currentUserId ?? ''
+        : _otherUserId ?? '';
+
+    Get.to(
+      () => SingleChatScreen(),
+      arguments: {
+        'bookingId': rawBookingId,
+        'userId': _currentUserId,
+        'providerId': providerId,
+        'clientId': clientId,
+        'providerName': personName.value,
+        'userRole': userRole.value,
+      },
+    );
   }
 
   // Provider-specific actions

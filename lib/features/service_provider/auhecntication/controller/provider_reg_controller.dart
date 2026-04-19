@@ -11,6 +11,7 @@ import 'package:protiva502/features/service_provider/auhecntication/screen/provi
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 
 class ProviderRegController extends GetxController {
+  // static const String _baseUrl = 'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
   static const String _baseUrl = 'https://protiva-backend-ukw2.onrender.com/api/v1';
   static const String _registerEndpoint = '$_baseUrl/auth/register';
   static const String _providerRole = 'PROVIDER';

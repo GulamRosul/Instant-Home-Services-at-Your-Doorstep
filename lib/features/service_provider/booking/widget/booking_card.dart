@@ -7,6 +7,7 @@ import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
 import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
+import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
 
 class BookingCard extends StatelessWidget {
   final BookingController controller;
@@ -171,6 +172,27 @@ class BookingCard extends StatelessWidget {
                   ),
                 ),
               ),
+              // if (status == 'ACCEPTED') ...[
+              //   SizedBox(width: 16.w),
+              //   GestureDetector(
+              //     onTap: () => Get.to(
+              //       () => const PaymentScreen(),
+              //       arguments: {
+              //         'bookingId': booking.id,
+              //         'amount': booking.serviceAmount.toInt(),
+              //       },
+              //     ),
+              //     child: Text(
+              //       'Make Payment',
+              //       style: getTextStyle(
+              //         fontSize: 14.sp,
+              //         color: const Color(0xFF7079F0),
+              //         decoration: TextDecoration.underline,
+              //         fontWeight: FontWeight.w600,
+              //       ),
+              //     ),
+              //   ),
+              // ],
             ],
           ),
           if (status == 'Pending') ...[
@@ -220,14 +242,12 @@ class BookingCard extends StatelessWidget {
         onTap: () => Get.to(
           () => TrackProviderScreen(),
           arguments: {
-            'providerName':
-                'Service Provider', // You may need to fetch actual provider name
+            'providerName': 'Service Provider',
             'serviceName': booking.serviceName,
             'location': booking.locationDetails.isNotEmpty
                 ? booking.locationDetails
                 : 'Location not available',
-            'rating':
-                '4.8 (170 Reviews)', // You may need to fetch actual rating
+            'rating': '4.8 (170 Reviews)',
             'cost': '৳ ${booking.serviceAmount.toStringAsFixed(2)}',
             'bookingId': booking.id,
             'clientId': booking.clientId,

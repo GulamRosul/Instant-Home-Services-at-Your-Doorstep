@@ -125,6 +125,11 @@ class UserBookingItem {
     final normalized = normalizeBookingStatus(status);
     return normalized == 'ACCEPTED' || normalized == 'IN_PROGRESS';
   }
+
+  bool get isPendingPayment {
+    final normalized = normalizeBookingStatus(paymentStatus);
+    return normalized == 'PENDING' || normalized == 'UNPAID';
+  }
 }
 
 String normalizeBookingStatus(String? value) {

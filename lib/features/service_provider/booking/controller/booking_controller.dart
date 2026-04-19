@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -119,7 +120,7 @@ class BookingController extends GetxController {
 
       final response = await _apiClient.get<dynamic>(
         ApiEndpoints.recentBookings,
-        queryParameters: {'page': 1, 'limit': 10},
+        queryParameters: {'page': 1, 'limit': 100},
         options: Options(
           headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
           validateStatus: (status) => status != null && status < 500,
@@ -127,10 +128,11 @@ class BookingController extends GetxController {
       );
 
       debugPrint(
-        'Provider booking request => ${ApiEndpoints.baseUrl}${ApiEndpoints.recentBookings}?page=1&limit=10',
+        'Provider booking request => ${ApiEndpoints.baseUrl}${ApiEndpoints.recentBookings}?page=1&limit=100',
       );
       debugPrint('Provider booking status => ${response.statusCode}');
-      debugPrint('Provider booking response => ${response.data}');
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      debugPrint('Provider booking response => ${encoder.convert(response.data)}');
 
       if (response.statusCode != 200) {
         errorMessage.value = 'Failed to load bookings';
@@ -147,6 +149,8 @@ class BookingController extends GetxController {
         return;
       }
 
+      debugPrint('Raw items list: $items');
+
       bookings.assignAll(
         items.whereType<Map>().map(
           (item) => RecentBookingModel.fromJson(
@@ -156,6 +160,19 @@ class BookingController extends GetxController {
       );
 
       debugPrint('Provider booking length => ${bookings.length}');
+      for (int i = 0; i < bookings.length; i++) {
+        try {
+          final booking = bookings[i];
+          debugPrint('Booking $i Details:');
+          debugPrint('  Service: ${booking.serviceName}');
+          debugPrint('  Status: ${booking.status}');
+          debugPrint('  Amount: ${booking.serviceAmount}');
+          debugPrint('  Client ID: ${booking.clientId}');
+          debugPrint('  Provider ID: ${booking.providerId}');
+        } catch (e) {
+          debugPrint('Error printing booking $i: $e');
+        }
+      }
     } on DioException catch (_) {
       errorMessage.value = 'Failed to load bookings';
       bookings.clear();
@@ -333,6 +350,15 @@ class BookingController extends GetxController {
   void handleMessage(int index) {
     final booking = filteredBookings[index];
 
+    // Debug logging
+    debugPrint('=== MESSAGE HANDLER DEBUG ===');
+    debugPrint('Booking Index: $index');
+    debugPrint('Booking ID: ${booking.id}');
+    debugPrint('Booking Client ID: ${booking.clientId}');
+    debugPrint('Booking Provider ID: ${booking.providerId}');
+    debugPrint('Current User ID: ${booking.providerId}');
+    debugPrint('===========================');
+
     // Ensure we have valid IDs for messaging
     final clientId = booking.clientId?.isNotEmpty == true
         ? booking.clientId!
@@ -340,6 +366,9 @@ class BookingController extends GetxController {
     final providerId = booking.providerId?.isNotEmpty == true
         ? booking.providerId!
         : '';
+
+    debugPrint('Extracted Client ID: $clientId');
+    debugPrint('Extracted Provider ID: $providerId');
 
     if (clientId.isEmpty) {
       Get.snackbar(

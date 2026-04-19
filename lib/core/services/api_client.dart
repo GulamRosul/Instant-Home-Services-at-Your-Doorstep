@@ -14,6 +14,8 @@ class ApiClient {
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       headers: const {'accept': '*/*', 'Content-Type': 'application/json'},
+      validateStatus: (status) =>
+          status != null, // Accept all status codes, don't throw
     ),
   );
 

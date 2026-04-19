@@ -4,7 +4,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
+import 'package:protiva502/core/utils/helpers/app_helper.dart';
 import 'package:protiva502/features/notification/screen/notification_screen.dart';
+import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
 
 class HomeHeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeHeaderAppBar({super.key});
@@ -14,6 +16,8 @@ class HomeHeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ProviderHomeController>();
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -23,57 +27,61 @@ class HomeHeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 24.r,
-              backgroundImage: Image.asset(IconPath.profile).image,
+            Obx(
+              () => CircleAvatar(
+                radius: 24.r,
+                backgroundImage: controller.profileImage.value.isNotEmpty
+                    ? NetworkImage(controller.profileImage.value)
+                    : Image.asset(IconPath.profile).image,
+                onBackgroundImageError: (exception, stackTrace) {
+                  // Fallback to asset image if network image fails
+                },
+              ),
             ),
             SizedBox(width: 12.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      'Good Morning!',
-                      style: getTextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF3F3F3F),
-                      ),
-                    ),
-                    // SizedBox(width: 8.w),
-                    // Container(
-                    //   padding: EdgeInsets.symmetric(
-                    //     horizontal: 10.w,
-                    //     vertical: 2.h,
-                    //   ),
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.black,
-                    //     borderRadius: BorderRadius.circular(10.r),
-                    //   ),
-                    //   child: Text(
-                    //     'Get Verified',
-                    //     style: getTextStyle(
-                    //       fontSize: 12.sp,
-                    //       color: Colors.white,
-                    //       fontWeight: FontWeight.w400,
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
                 Text(
-                  'Mike Johnson',
+                  AppHelperFunctions.getDynamicGreeting(),
                   style: getTextStyle(
                     fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFF334155),
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF3F3F3F),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 4.h),
+                Obx(
+                  () => Text(
+                    controller.profileName.value.isNotEmpty
+                        ? controller.profileName.value
+                        : 'Provider',
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF334155),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
+            // const Spacer(),
+            // Obx(
+            //   () => Text(
+            //     controller.profileName.value.isNotEmpty
+            //         ? controller.profileName.value
+            //         : 'Provider',
+            //     style: getTextStyle(
+            //       fontSize: 14.sp,
+            //       fontWeight: FontWeight.w400,
+            //       color: Color(0xFF334155),
+            //     ),
+            //     maxLines: 1,
+            //     overflow: TextOverflow.ellipsis,
+            //   ),
+            // ),
             const Spacer(),
             Stack(
               children: [

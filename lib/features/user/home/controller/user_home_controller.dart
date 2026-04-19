@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/services/api_client.dart';
+import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/user/home/model/categories_model.dart';
@@ -13,6 +14,11 @@ import 'package:protiva502/features/user/home/model/user_banner_model.dart';
 
 class UserHomeController extends GetxController {
   final ApiClient _apiClient = ApiClient();
+
+  // Profile data for the header
+  var profileName = ''.obs;
+  var profileImage = ''.obs;
+  var isProfileLoading = false.obs;
 
   // For the banner carousel dots
   var currentBannerIndex = 0.obs;
@@ -72,10 +78,52 @@ class UserHomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    fetchProfileData();
     fetchBanners();
     fetchHomeServices();
     fetchCategories();
     fetchRecommendedExperts();
+  }
+
+  Future<void> fetchProfileData() async {
+    try {
+      isProfileLoading.value = true;
+
+      final token = await SecureStorageService.getToken();
+      if (token == null || token.isEmpty) {
+        return;
+      }
+
+      final response = await _apiClient.get<dynamic>(
+        ApiEndpoints.authMe,
+        options: Options(
+          headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      debugPrint(
+        'User profile request => ${ApiEndpoints.baseUrl}${ApiEndpoints.authMe}',
+      );
+      debugPrint('User profile status => ${response.statusCode}');
+      debugPrint('User profile response => ${response.data}');
+
+      if (response.statusCode != 200) {
+        return;
+      }
+
+      final responseMap = _asMap(response.data) ?? <String, dynamic>{};
+      final data = _asMap(responseMap['data']) ?? <String, dynamic>{};
+
+      profileName.value = data['firstName'] ?? data['fullName'] ?? '';
+      profileImage.value = data['profileImage'] ?? '';
+    } on DioException catch (error) {
+      AppLoggerHelper.error('Profile fetch failed', error);
+    } catch (error) {
+      AppLoggerHelper.error('Unexpected profile fetch error', error);
+    } finally {
+      isProfileLoading.value = false;
+    }
   }
 
   Future<void> fetchHomeServices() async {

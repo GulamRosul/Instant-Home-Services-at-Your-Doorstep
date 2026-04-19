@@ -18,6 +18,11 @@ class ProviderHomeController extends GetxController {
   var applicationsCount = 1.obs;
   final int maxApplications = 2;
 
+  // Profile data for the header
+  var profileName = ''.obs;
+  var profileImage = ''.obs;
+  var isProfileLoading = false.obs;
+
   // Wallet data for the UI
   var isWalletLoading = false.obs;
   var walletErrorMessage = ''.obs;
@@ -37,9 +42,51 @@ class ProviderHomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    fetchProfileData();
     fetchProviderWallet();
     fetchActiveJobs();
     fetchRecentBookings();
+  }
+
+  Future<void> fetchProfileData() async {
+    try {
+      isProfileLoading.value = true;
+
+      final token = await SecureStorageService.getToken();
+      if (token == null || token.isEmpty) {
+        return;
+      }
+
+      final response = await _apiClient.get<dynamic>(
+        ApiEndpoints.authMe,
+        options: Options(
+          headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      debugPrint(
+        'Provider profile request => ${ApiEndpoints.baseUrl}${ApiEndpoints.authMe}',
+      );
+      debugPrint('Provider profile status => ${response.statusCode}');
+      debugPrint('Provider profile response => ${response.data}');
+
+      if (response.statusCode != 200) {
+        return;
+      }
+
+      final responseMap = _asMap(response.data) ?? <String, dynamic>{};
+      final data = _asMap(responseMap['data']) ?? <String, dynamic>{};
+
+      profileName.value = data['firstName'] ?? data['fullName'] ?? '';
+      profileImage.value = data['profileImage'] ?? '';
+    } on DioException catch (_) {
+      // Handle error silently, use fallback values
+    } catch (_) {
+      // Handle error silently, use fallback values
+    } finally {
+      isProfileLoading.value = false;
+    }
   }
 
   Future<void> fetchProviderWallet() async {

@@ -9,6 +9,7 @@ class SecureStorageService {
 
   static const _tokenKey = 'token';
   static const _refreshTokenKey = 'refreshToken';
+  static const _fcmTokenKey = 'fcmToken';
 
   static Future<void> saveToken(String token) async {
     await _writeValue(_tokenKey, token);
@@ -20,6 +21,14 @@ class SecureStorageService {
 
   static Future<String?> getToken() async {
     return _readValue(_tokenKey);
+  }
+
+  static Future<void> saveFcmToken(String token) async {
+    await _writeValue(_fcmTokenKey, token);
+  }
+
+  static Future<String?> getFcmToken() async {
+    return _readValue(_fcmTokenKey);
   }
 
   static Future<void> clearAll() async {
@@ -73,5 +82,6 @@ class SecureStorageService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
     await prefs.remove(_refreshTokenKey);
+    await prefs.remove(_fcmTokenKey);
   }
 }

@@ -175,34 +175,40 @@ class BookingCard extends StatelessWidget {
           ),
           if (status == 'Pending') ...[
             SizedBox(height: 20.h),
-            Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 44.h,
-                    child: CustomButton(
-                      text: 'Accept',
-                      onPressed: () => controller.handleAccept(index),
-                      backgroundColor: const Color(0xFF22C55E),
-                      textColor: Colors.white,
-                      borderRadius: 6.r,
+            Obx(
+              () => Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 44.h,
+                      child: CustomButton(
+                        text: 'Accept',
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : () => controller.handleAccept(index),
+                        backgroundColor: const Color(0xFF22C55E),
+                        textColor: Colors.white,
+                        borderRadius: 6.r,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: SizedBox(
-                    height: 44.h,
-                    child: CustomButton(
-                      text: 'Reject',
-                      onPressed: () => controller.handleReject(index),
-                      backgroundColor: const Color(0xFFEF4444),
-                      textColor: Colors.white,
-                      borderRadius: 6.r,
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: SizedBox(
+                      height: 44.h,
+                      child: CustomButton(
+                        text: 'Reject',
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : () => controller.handleReject(index),
+                        backgroundColor: const Color(0xFFEF4444),
+                        textColor: Colors.white,
+                        borderRadius: 6.r,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ],

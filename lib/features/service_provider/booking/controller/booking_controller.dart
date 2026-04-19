@@ -5,6 +5,7 @@ import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
+import 'package:protiva502/features/service_provider/booking/model/booking_status_response_model.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
 
 class BookingController extends GetxController {
@@ -215,35 +216,117 @@ class BookingController extends GetxController {
     selectedTabIndex.value = index;
   }
 
-  void handleAccept(int index) {
+  Future<void> handleAccept(int index) async {
     final booking = filteredBookings[index];
-    final originalIndex = bookings.indexWhere((b) => b.id == booking.id);
-
-    if (originalIndex != -1) {
-      bookings[originalIndex] = bookings[originalIndex].copyWith(
-        status: 'ACCEPTED',
-      );
-      bookings.refresh();
-      Get.snackbar(
-        'Accepted',
-        'Booking for ${bookings[originalIndex].serviceName} has been accepted.',
-      );
-    }
+    await _updateBookingStatus(booking, 'ACCEPTED', index);
   }
 
-  void handleReject(int index) {
+  Future<void> handleReject(int index) async {
     final booking = filteredBookings[index];
-    final originalIndex = bookings.indexWhere((b) => b.id == booking.id);
+    await _updateBookingStatus(booking, 'REJECTED', index);
+  }
 
-    if (originalIndex != -1) {
-      bookings[originalIndex] = bookings[originalIndex].copyWith(
-        status: 'REJECTED',
+  Future<void> _updateBookingStatus(
+    RecentBookingModel booking,
+    String status,
+    int index,
+  ) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final token = await SecureStorageService.getToken();
+      if (token == null || token.isEmpty) {
+        errorMessage.value = 'Provider token not found';
+        Get.snackbar('Error', 'Authentication failed. Please login again.');
+        return;
+      }
+
+      final response = await _apiClient.patch<dynamic>(
+        ApiEndpoints.updateBookingStatus(booking.id, status),
+        options: Options(
+          headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
+          validateStatus: (statusCode) =>
+              statusCode != null && statusCode < 500,
+        ),
       );
-      bookings.refresh();
+
+      debugPrint(
+        'Booking status update request => ${ApiEndpoints.baseUrl}${ApiEndpoints.updateBookingStatus(booking.id, status)}',
+      );
+      debugPrint('Booking status update response => ${response.statusCode}');
+      debugPrint('Booking status update data => ${response.data}');
+
+      if (response.statusCode != 200) {
+        errorMessage.value = 'Failed to update booking status';
+        Get.snackbar('Error', 'Failed to update booking status');
+        return;
+      }
+
+      final responseMap = _asMap(response.data) ?? <String, dynamic>{};
+      final innerDataMap = _asMap(responseMap['data']) ?? <String, dynamic>{};
+
+      final bookingResponse = BookingStatusResponseModel.fromJson(innerDataMap);
+
+      if (bookingResponse.success && bookingResponse.data != null) {
+        final originalIndex = bookings.indexWhere((b) => b.id == booking.id);
+
+        if (originalIndex != -1) {
+          bookings[originalIndex] = bookings[originalIndex].copyWith(
+            status: status,
+          );
+          bookings.refresh();
+
+          final statusLabel = status == 'ACCEPTED' ? 'accepted' : 'rejected';
+          Get.snackbar(
+            status == 'ACCEPTED' ? 'Accepted' : 'Rejected',
+            'Booking for ${bookings[originalIndex].serviceName} has been $statusLabel.',
+            snackPosition: SnackPosition.TOP,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            borderRadius: 12,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            backgroundColor: status == 'ACCEPTED'
+                ? const Color(0xFF22C55E)
+                : const Color(0xFFEF4444),
+            colorText: Colors.white,
+            icon: Icon(
+              status == 'ACCEPTED' ? Icons.check_circle : Icons.error,
+              color: Colors.white,
+            ),
+            duration: const Duration(seconds: 2),
+            animationDuration: const Duration(milliseconds: 300),
+            boxShadows: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            isDismissible: true,
+            forwardAnimationCurve: Curves.easeOutBack,
+          );
+        }
+      } else {
+        errorMessage.value =
+            bookingResponse.message ?? 'Failed to update booking status';
+        Get.snackbar(
+          'Error',
+          bookingResponse.message ?? 'Failed to update booking status',
+        );
+      }
+    } on DioException catch (e) {
+      errorMessage.value = 'Network error while updating booking status';
+      debugPrint('DioException: ${e.message}');
       Get.snackbar(
-        'Rejected',
-        'Booking for ${bookings[originalIndex].serviceName} has been rejected.',
+        'Error',
+        'Network error. Please check your connection and try again.',
       );
+    } catch (e) {
+      errorMessage.value = 'Error while updating booking status';
+      debugPrint('Exception: $e');
+      Get.snackbar('Error', 'An unexpected error occurred');
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -251,8 +334,12 @@ class BookingController extends GetxController {
     final booking = filteredBookings[index];
 
     // Ensure we have valid IDs for messaging
-    final clientId = booking.clientId?.isNotEmpty == true ? booking.clientId! : '';
-    final providerId = booking.providerId?.isNotEmpty == true ? booking.providerId! : '';
+    final clientId = booking.clientId?.isNotEmpty == true
+        ? booking.clientId!
+        : '';
+    final providerId = booking.providerId?.isNotEmpty == true
+        ? booking.providerId!
+        : '';
 
     if (clientId.isEmpty) {
       Get.snackbar(

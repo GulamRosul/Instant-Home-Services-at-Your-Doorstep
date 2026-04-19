@@ -43,4 +43,7 @@ class ApiEndpoints {
 
 static const String makePayment = '/payment/make-payment';
 
+
+static const String getNotifications = '/notification/get-my-ntg';
+
 }

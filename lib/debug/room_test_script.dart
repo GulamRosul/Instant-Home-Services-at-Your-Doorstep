@@ -19,9 +19,7 @@ void runRoomConnectionTest() {
   DebugLoggerService.log(
     'TEST',
     '🚀 Starting Room Connection Test',
-    data: {
-      'timestamp': DateTime.now().toIso8601String(),
-    },
+    data: {'timestamp': DateTime.now().toIso8601String()},
   );
 
   // Configuration
@@ -99,17 +97,29 @@ Future<void> _testConnection(
 
   socketService.onTypingStart = (userId) {
     print('✍️ $userId is typing...');
-    DebugLoggerService.log('TEST', 'User typing start', data: {'userId': userId});
+    DebugLoggerService.log(
+      'TEST',
+      'User typing start',
+      data: {'userId': userId},
+    );
   };
 
   socketService.onTypingStop = (userId) {
     print('⏹️ $userId stopped typing');
-    DebugLoggerService.log('TEST', 'User typing stop', data: {'userId': userId});
+    DebugLoggerService.log(
+      'TEST',
+      'User typing stop',
+      data: {'userId': userId},
+    );
   };
 
   socketService.onMessageDeleted = (messageId) {
     print('🗑️ Message deleted: $messageId');
-    DebugLoggerService.log('TEST', 'Message deleted', data: {'messageId': messageId});
+    DebugLoggerService.log(
+      'TEST',
+      'Message deleted',
+      data: {'messageId': messageId},
+    );
   };
 
   socketService.onError = (error) {
@@ -172,7 +182,6 @@ Future<void> _testConnection(
 
     // Wait 30 seconds before cleanup
     await Future.delayed(const Duration(seconds: 30));
-
   } catch (e) {
     print('''
 ╔═══════════════════════════════════════════════════════════════╗

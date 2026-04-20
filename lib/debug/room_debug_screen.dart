@@ -30,10 +30,7 @@ class _RoomDebugScreenState extends State<RoomDebugScreen> {
       final token = await SecureStorageService.getToken() ?? 'YOUR_TOKEN_HERE';
       final userId = 'YOUR_USER_ID'; // Replace with actual user ID
 
-      await _roomDebug.connectAndDebugRoom(
-        userId: userId,
-        token: token,
-      );
+      await _roomDebug.connectAndDebugRoom(userId: userId, token: token);
 
       setState(() {
         _isConnected = _roomDebug.socketService.isConnected;
@@ -137,7 +134,9 @@ class _RoomDebugScreenState extends State<RoomDebugScreen> {
                                       'Test message from debug - ${DateTime.now()}',
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Message sent!')),
+                                  const SnackBar(
+                                    content: Text('Message sent!'),
+                                  ),
                                 );
                               }
                             }
@@ -162,9 +161,7 @@ class _RoomDebugScreenState extends State<RoomDebugScreen> {
                     onPressed: () {
                       _roomDebug.printConnectionStatus();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Check console logs'),
-                        ),
+                        const SnackBar(content: Text('Check console logs')),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -201,13 +198,11 @@ class _RoomDebugScreenState extends State<RoomDebugScreen> {
                   setState(() {
                     _isConnected = false;
                   });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Disconnected')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('Disconnected')));
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 child: const Text('Disconnect'),
               ),
             ),

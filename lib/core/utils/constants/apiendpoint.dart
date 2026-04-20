@@ -7,7 +7,7 @@ class ApiEndpoints {
       'https://protiva-backend-ukw2.onrender.com/api/v1';
 
   /// Socket.IO Server URL (same host as API)
-  static const String socketUrl = 'https://x3081msx-3000.asse.devtunnels.ms';
+  static const String socketUrl = 'https://protiva-be.onrender.com/messaging';
   static const String register = '/auth/register';
   static const String login = '/auth/login';
   static const String authMe = '/auth/me';

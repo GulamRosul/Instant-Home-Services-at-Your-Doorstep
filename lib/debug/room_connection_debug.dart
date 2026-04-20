@@ -49,8 +49,8 @@ class RoomConnectionDebug {
         'DEBUG',
         '✅ Socket Connected Successfully',
         data: {
-          'socketId': socketService._socket.id,
           'isConnected': socketService.isConnected,
+          'timestamp': DateTime.now().toIso8601String(),
         },
       );
 
@@ -59,13 +59,8 @@ class RoomConnectionDebug {
 
       // Join the room
       _joinRoomWithDebug();
-
     } catch (e) {
-      DebugLoggerService.error(
-        'DEBUG',
-        'Connection failed',
-        error: e,
-      );
+      DebugLoggerService.error('DEBUG', 'Connection failed', error: e);
       printDebug('❌ Connection Error: $e');
     }
   }
@@ -93,7 +88,6 @@ class RoomConnectionDebug {
 
       printDebug('✅ Join event emitted');
       printDebug('═══════════════════════════════════════');
-
     } catch (e) {
       DebugLoggerService.error('DEBUG', 'Failed to join room', error: e);
       printDebug('❌ Join Error: $e');
@@ -109,16 +103,14 @@ class RoomConnectionDebug {
         '🔌 Connection Status Changed',
         data: {'connected': connected},
       );
-      printDebug('${connected ? '✅' : '❌'} Connection: ${connected ? 'CONNECTED' : 'DISCONNECTED'}');
+      printDebug(
+        '${connected ? '✅' : '❌'} Connection: ${connected ? 'CONNECTED' : 'DISCONNECTED'}',
+      );
     };
 
     // Message received
     socketService.onMessageReceived = (data) {
-      DebugLoggerService.log(
-        'DEBUG',
-        '📨 Message Received',
-        data: data,
-      );
+      DebugLoggerService.log('DEBUG', '📨 Message Received', data: data);
       printDebug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       printDebug('📨 NEW MESSAGE');
       printDebug('From: ${data['senderId']}');
@@ -130,11 +122,7 @@ class RoomConnectionDebug {
 
     // Message read
     socketService.onMessageRead = (data) {
-      DebugLoggerService.log(
-        'DEBUG',
-        '✅ Message Read',
-        data: data,
-      );
+      DebugLoggerService.log('DEBUG', '✅ Message Read', data: data);
       printDebug('✅ Message read: ${data['messageIds']}');
     };
 
@@ -223,7 +211,9 @@ class RoomConnectionDebug {
     printDebug('═══════════════════════════════════════');
 
     for (var log in logs) {
-      printDebug('[${log.timestamp.toIso8601String()}] ${log.category}: ${log.message}');
+      printDebug(
+        '[${log.timestamp.toIso8601String()}] ${log.category}: ${log.message}',
+      );
       if (log.data != null) {
         printDebug('  Data: ${log.data}');
       }

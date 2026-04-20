@@ -39,18 +39,24 @@ class NotificationController extends GetxController {
       final response = await _apiClient.get(ApiEndpoints.getNotifications);
 
       debugPrint('📡 [NOTIFICATION] Response status: ${response.statusCode}');
-      debugPrint('📡 [NOTIFICATION] Response data type: ${response.data.runtimeType}');
+      debugPrint(
+        '📡 [NOTIFICATION] Response data type: ${response.data.runtimeType}',
+      );
       debugPrint('📡 [NOTIFICATION] Response data: ${response.data}');
 
       if (response.statusCode == 200) {
         final data = response.data;
 
         debugPrint('📡 [NOTIFICATION] Data keys: ${data.keys}');
-        debugPrint('📡 [NOTIFICATION] Data[data] type: ${data['data'].runtimeType}');
+        debugPrint(
+          '📡 [NOTIFICATION] Data[data] type: ${data['data'].runtimeType}',
+        );
 
         if (data['data'] is List) {
           final List<dynamic> notificationList = data['data'];
-          debugPrint('📡 [NOTIFICATION] Found ${notificationList.length} notifications in list');
+          debugPrint(
+            '📡 [NOTIFICATION] Found ${notificationList.length} notifications in list',
+          );
 
           final List<Map<String, dynamic>> formattedNotifications = [];
 
@@ -70,7 +76,9 @@ class NotificationController extends GetxController {
             '✅ [NOTIFICATION] Successfully formatted ${formattedNotifications.length} notifications',
           );
         } else {
-          debugPrint('❌ [NOTIFICATION] data[data] is not a List: ${data['data'].runtimeType}');
+          debugPrint(
+            '❌ [NOTIFICATION] data[data] is not a List: ${data['data'].runtimeType}',
+          );
         }
       } else {
         error.value = 'Failed to fetch notifications: ${response.statusCode}';
@@ -183,6 +191,11 @@ class NotificationController extends GetxController {
         debugPrint(
           '🔔 [NOTIFICATION] iOS permission status: ${settings.authorizationStatus}',
         );
+      } else if (Platform.isAndroid) {
+        // For Android, we need to set up notification channel
+        debugPrint('🔔 [NOTIFICATION] Setting up Android notifications...');
+        // Note: AndroidNotificationChannel setup should be in main.dart
+        // This is just a log to indicate Android handling
       }
 
       // Get FCM token
@@ -202,6 +215,13 @@ class NotificationController extends GetxController {
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         _handleNotificationTap(message);
       });
+
+      // Handle notification when app is terminated and opened by tapping notification
+      final RemoteMessage? initialMessage = await _firebaseMessaging
+          .getInitialMessage();
+      if (initialMessage != null) {
+        _handleNotificationTap(initialMessage);
+      }
 
       debugPrint('✅ [NOTIFICATION] Firebase Messaging initialized');
     } catch (e, stackTrace) {
@@ -230,6 +250,7 @@ class NotificationController extends GetxController {
           // Save token to secure storage
           await SecureStorageService.saveFcmToken(token);
           debugPrint('💾 [FCM TOKEN] Token saved to secure storage');
+
           return; // Success, exit retry loop
         }
       } catch (e) {
@@ -252,6 +273,8 @@ class NotificationController extends GetxController {
     debugPrint('🔄 [FCM TOKEN] Token refreshed: $newToken');
     _fcmToken = newToken;
     SecureStorageService.saveFcmToken(newToken);
+    // Token refresh will be sent to backend on next login
+    debugPrint('💾 [FCM TOKEN] Token refreshed and saved to secure storage');
   }
 
   /// Handle foreground notifications

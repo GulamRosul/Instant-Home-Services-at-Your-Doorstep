@@ -260,7 +260,7 @@ class TrackProviderController extends GetxController {
 
   @override
   void onClose() {
-    socketService.leaveRoom();
+    // socketService.leaveRoom();
     socketService.disconnect();
     super.onClose();
   }

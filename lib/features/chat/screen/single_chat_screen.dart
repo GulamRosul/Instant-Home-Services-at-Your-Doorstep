@@ -12,34 +12,49 @@ class SingleChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create controller only if it doesn't exist
+    // final controller = Get.putIfAbsent<SingleChatController>(
+    //   () => SingleChatController(),
+    // );
+
     final controller = Get.put(SingleChatController());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       resizeToAvoidBottomInset: true,
-      // 1. Remove the appBar property entirely
       body: Column(
         children: [
-          // 2. Place your custom header here as the first element
+          // 1. Custom header as first element
           _buildChatHeader(context, controller),
 
           // Message List (Takes up remaining space)
           Expanded(
-            child: Obx(
-              () => ListView.builder(
+            child: Obx(() {
+              // Sort messages by time (oldest first)
+              final sortedMessages = List<Map<String, dynamic>>.from(
+                controller.messages,
+              );
+              sortedMessages.sort((a, b) {
+                final timeA = a['time'] ?? '';
+                final timeB = b['time'] ?? '';
+                return timeA.toString().compareTo(timeB.toString());
+              });
+
+              return ListView.builder(
                 controller: controller.scrollController,
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-                itemCount: controller.messages.length,
+                itemCount: sortedMessages.length,
                 itemBuilder: (context, index) {
-                  final chat = controller.messages[index];
+                  final chat = sortedMessages[index];
                   return _buildChatBubble(
                     chat['message'],
                     chat['isMe'],
                     chat['time'],
+                    status: chat['status'] ?? 'received',
                   );
                 },
-              ),
-            ),
+              );
+            }),
           ),
 
           // Message Input Field (Stays at the bottom)
@@ -49,7 +64,10 @@ class SingleChatScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChatHeader(BuildContext context, SingleChatController controller) {
+  Widget _buildChatHeader(
+    BuildContext context,
+    SingleChatController controller,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
       decoration: BoxDecoration(
@@ -149,7 +167,12 @@ class SingleChatScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChatBubble(String message, bool isMe, String time) {
+  Widget _buildChatBubble(
+    String message,
+    bool isMe,
+    String time, {
+    String status = 'received',
+  }) {
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Column(
@@ -192,13 +215,32 @@ class SingleChatScreen extends StatelessWidget {
               left: isMe ? 0 : 4.w,
               right: isMe ? 4.w : 0,
             ),
-            child: Text(
-              time,
-              style: getTextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w400,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  time,
+                  style: getTextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                if (isMe) ...[
+                  SizedBox(width: 4.w),
+                  // Status indicator for sent messages
+                  if (status == 'sending')
+                    Icon(Icons.schedule, size: 12.sp, color: Colors.grey)
+                  else if (status == 'sent')
+                    Icon(Icons.check, size: 12.sp, color: Colors.grey)
+                  else if (status == 'read')
+                    Icon(
+                      Icons.done_all,
+                      size: 12.sp,
+                      color: AppColors.textBlue,
+                    ),
+                ],
+              ],
             ),
           ),
         ],

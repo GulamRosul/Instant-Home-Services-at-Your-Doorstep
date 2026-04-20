@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/services/socket_io_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
@@ -36,7 +37,7 @@ class SingleChatController extends GetxController {
   void _loadChatArguments() {
     final arguments = Get.arguments;
     if (arguments != null && arguments is Map<String, dynamic>) {
-      bookingId.value = arguments['bookingId'] ?? '';
+      bookingId.value = 'cmo5lhl69000q1wf6i7uu0g0h';
       currentUserId.value =
           arguments['userId'] ?? StorageService.getUserId() ?? 'user_123';
       userRole.value =
@@ -46,10 +47,12 @@ class SingleChatController extends GetxController {
       // Determine receiverId based on userRole
       if (userRole.value == 'provider') {
         // Provider sends to client
-        receiverId.value = arguments['clientId'] ?? arguments['receiverId'] ?? '';
+        receiverId.value =
+            arguments['clientId'] ?? arguments['receiverId'] ?? '';
       } else {
         // User (client) sends to provider
-        receiverId.value = arguments['providerId'] ?? arguments['receiverId'] ?? '';
+        receiverId.value =
+            arguments['providerId'] ?? arguments['receiverId'] ?? '';
       }
 
       // Log for debugging
@@ -108,57 +111,53 @@ class SingleChatController extends GetxController {
 
     // Get auth token from secure storage
     final token = await SecureStorageService.getToken();
-    DebugLoggerService.log(
-      'AUTH',
-      'Token retrieved',
-      data: {'tokenLength': token?.length ?? 0},
-    );
 
-    // Connect to socket with auth token
-    DebugLoggerService.log(
-      'SOCKET',
-      'Initiating socket connection',
-      data: {
-        'userId': currentUserId.value,
-        'hasToken': token != null && token.isNotEmpty,
-      },
+    // Print clean status to console
+    _printCleanConsole('═══════════════════════════════════════');
+    _printCleanConsole('🔌 SOCKET CONNECTION STATUS');
+    _printCleanConsole('═══════════════════════════════════════');
+    _printCleanConsole(
+      '📋 BookingId: ${bookingId.value.isEmpty ? '❌ EMPTY' : bookingId.value}',
     );
+    _printCleanConsole('👤 UserId: $currentUserId');
+    _printCleanConsole(
+      '🔐 Token: ${token == null ? '❌ NO TOKEN' : '✅ HAS TOKEN (${token.length} chars)'}',
+    );
+    _printCleanConsole('⏳ Status: Connecting...');
+    _printCleanConsole('═══════════════════════════════════════\n');
 
     try {
       await socketService.connect(
         userId: currentUserId.value,
         token: token,
-        timeout: const Duration(seconds: 15),
+        timeout: const Duration(seconds: 30),
       );
+
+      _printCleanConsole('✅ SOCKET CONNECTED SUCCESSFULLY\n');
 
       // Connection successful, now join room
       if (bookingId.value.isNotEmpty) {
-        DebugLoggerService.log(
-          'SOCKET',
-          'Socket connected, joining messaging room',
-          data: {
-            'bookingId': bookingId.value,
-            'userId': currentUserId.value,
-            'receiverId': receiverId.value,
-          },
-        );
+        _printCleanConsole('📢 Joining messaging room: ${bookingId.value}\n');
         socketService.joinMessagingRoom(bookingId.value);
         connectionStatus.value = 'Connected';
+        _printCleanConsole('✅ ROOM JOINED: ${bookingId.value}\n');
       } else {
-        DebugLoggerService.error(
-          'SOCKET',
-          'Cannot join room: bookingId is empty',
-        );
+        _printCleanConsole('❌ ERROR: BookingId is EMPTY - Cannot join room\n');
         connectionStatus.value = 'Error: No booking ID';
       }
     } catch (e) {
-      DebugLoggerService.error(
-        'SOCKET',
-        'Socket connection failed or timed out',
-        error: e,
-      );
+      _printCleanConsole('❌ CONNECTION FAILED\n');
+      _printCleanConsole('Error: $e\n');
       connectionStatus.value = 'Connection failed';
       _handleError('Failed to connect: $e');
+    }
+  }
+
+  /// Print clean console output without verbose logging
+  void _printCleanConsole(String message) {
+    if (kDebugMode) {
+      // ignore: avoid_print
+      print(message);
     }
   }
 
@@ -171,10 +170,10 @@ class SingleChatController extends GetxController {
   void _handleConnectionStatusChanged(bool connected) {
     if (connected) {
       connectionStatus.value = 'Connected';
-      DebugLoggerService.log('SOCKET', 'Connection established');
+      _printCleanConsole('✅ Connection Established\n');
     } else {
       connectionStatus.value = 'Disconnected';
-      DebugLoggerService.log('SOCKET', 'Connection lost');
+      _printCleanConsole('❌ Connection Lost\n');
     }
   }
 
@@ -185,16 +184,6 @@ class SingleChatController extends GetxController {
       final senderId = data['senderId'] ?? '';
       final message = data['content'] ?? '';
       final messageType = data['messageType'] ?? 'TEXT';
-
-      DebugLoggerService.chatAction(
-        'Handling message received from server',
-        data: {
-          'serverId': serverId,
-          'senderId': senderId,
-          'isCurrentUser': senderId == currentUserId.value,
-          'contentLength': message.length,
-        },
-      );
 
       // Check if this is a confirmation of a message we just sent
       if (senderId == currentUserId.value) {
@@ -216,15 +205,6 @@ class SingleChatController extends GetxController {
 
         if (localMessageIndex != null) {
           // Found our local message - update it with server data
-          final localMessageId = messages[localMessageIndex]['messageId'];
-          DebugLoggerService.chatAction(
-            'Updating local message with server confirmation',
-            data: {
-              'localMessageId': localMessageId,
-              'serverMessageId': serverId,
-            },
-          );
-
           messages[localMessageIndex] = {
             'message': message,
             'isMe': true,
@@ -240,19 +220,10 @@ class SingleChatController extends GetxController {
           };
 
           messages.refresh();
-          DebugLoggerService.log(
-            'CHAT',
-            '✅ Message sent confirmed by server',
-            data: {'messageId': serverId},
-          );
+          _printCleanConsole('✅ CONFIRMED: "$message" (ID: ${serverId.substring(0, 8)}...)');
 
           // Mark as read immediately if socket is connected
           if (serverId.isNotEmpty && socketService.isConnected) {
-            DebugLoggerService.log(
-              'CHAT',
-              'Marking message as read',
-              data: {'messageId': serverId},
-            );
             socketService.markMessagesAsRead([serverId]);
           }
 
@@ -276,24 +247,13 @@ class SingleChatController extends GetxController {
           'sender': data['sender'],
         });
 
-        DebugLoggerService.chatAction(
-          'Message from other user added to UI',
-          data: {
-            'messageId': serverId,
-            'senderName': data['sender']?['firstName'] ?? 'User',
-          },
-        );
+        _printCleanConsole('📥 RECEIVED: "${data['sender']?['firstName'] ?? 'User'}" - "$message"');
 
         // Auto-scroll to latest message
         scrollToBottom();
 
         // Mark message as read immediately if connected
         if (serverId.isNotEmpty && socketService.isConnected) {
-          DebugLoggerService.log(
-            'CHAT',
-            'Marking message as read',
-            data: {'messageId': serverId},
-          );
           socketService.markMessagesAsRead([serverId]);
         }
       }
@@ -355,9 +315,7 @@ class SingleChatController extends GetxController {
   void _handleMessageDeleted(String messageId) {
     try {
       final initialLength = messages.length;
-      messages.removeWhere(
-        (msg) => msg['messageId'] == messageId,
-      );
+      messages.removeWhere((msg) => msg['messageId'] == messageId);
 
       if (messages.length < initialLength) {
         messages.refresh();
@@ -380,7 +338,7 @@ class SingleChatController extends GetxController {
   /// Handle socket errors
   void _handleError(String error) {
     connectionStatus.value = 'Error: $error';
-    DebugLoggerService.error('SOCKET', 'Socket error received', error: error);
+    _printCleanConsole('⚠️ Socket Error: $error\n');
   }
 
   /// Send a message
@@ -420,17 +378,6 @@ class SingleChatController extends GetxController {
     final messageText = messageController.text.trim();
     final localMessageId = _generateMessageId();
 
-    DebugLoggerService.chatAction(
-      'Message prepare to send',
-      data: {
-        'localMessageId': localMessageId,
-        'contentLength': messageText.length,
-        'receiverId': receiverId.value,
-        'bookingId': bookingId.value,
-        'currentUserId': currentUserId.value,
-      },
-    );
-
     // Add to local messages immediately for UI feedback with 'sending' status
     messages.add({
       'message': messageText,
@@ -452,32 +399,15 @@ class SingleChatController extends GetxController {
 
     // Send via socket
     try {
-      DebugLoggerService.log(
-        'SOCKET',
-        'Emitting message:send via socket service',
-        data: {
-          'receiverId': receiverId.value,
-          'bookingId': bookingId.value,
-          'messageLength': messageText.length,
-          'localMessageId': localMessageId,
-        },
-      );
-
       socketService.sendMessage(
         receiverId: receiverId.value,
         content: messageText,
         messageType: 'TEXT',
       );
 
-      DebugLoggerService.chatAction(
-        'Message sent to server',
-        data: {
-          'localMessageId': localMessageId,
-          'status': 'sending',
-          'receiverId': receiverId.value,
-        },
-      );
+      _printCleanConsole('📤 MESSAGE SENT: "$messageText"');
     } catch (e) {
+      _printCleanConsole('❌ SEND FAILED: ${e.toString()}');
       DebugLoggerService.error('SOCKET', 'Failed to send message', error: e);
       Get.snackbar('Error', 'Failed to send message: ${e.toString()}');
     }

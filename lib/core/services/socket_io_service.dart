@@ -70,17 +70,21 @@ class SocketIOService {
           .setPath('/socket.io')
           .setReconnectionDelay(1000)
           .setReconnectionDelayMax(5000)
-          .setReconnectionAttempts(5)
-          .setExtraHeaders({
-            'Content-Type': 'application/json',
-            'Accept': '*/*',
-          });
+          .setReconnectionAttempts(5);
 
-      // Add auth token if provided
+      // Add auth token to headers if provided
       if (token != null && token.isNotEmpty) {
-        optionsBuilder.setAuth({'Authorization': 'Bearer $token'});
-        DebugLoggerService.log('SOCKET', 'Auth token set');
+        optionsBuilder.setExtraHeaders({
+          'Content-Type': 'application/json',
+          'Accept': '*/*',
+          'Authorization': 'Bearer $token',
+        });
+        DebugLoggerService.log('SOCKET', '✅ Auth token added to headers');
       } else {
+        optionsBuilder.setExtraHeaders({
+          'Content-Type': 'application/json',
+          'Accept': '*/*',
+        });
         DebugLoggerService.log('SOCKET', '⚠️ Warning: No auth token provided');
       }
 
@@ -94,7 +98,17 @@ class SocketIOService {
       );
 
       // Wait for connection with timeout
-      await _waitForConnection(timeout);
+      try {
+        await _waitForConnection(timeout);
+      } catch (e) {
+        DebugLoggerService.error(
+          'SOCKET',
+          '⏱️ Connection timeout - server not responding',
+          error: 'Timeout after ${timeout.inSeconds}s: $e',
+        );
+        _socket.disconnect();
+        rethrow;
+      }
     } catch (e) {
       DebugLoggerService.error(
         'SOCKET',

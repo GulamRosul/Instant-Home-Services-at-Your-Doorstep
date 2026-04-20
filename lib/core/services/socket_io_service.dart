@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:protiva502/core/services/debug_logger_service.dart';
+import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 
 enum MessageType { TEXT, IMAGE, VIDEO, AUDIO, FILE, LOCATION }
 
@@ -8,8 +10,14 @@ class SocketIOService {
   static final SocketIOService _instance = SocketIOService._internal();
 
   late IO.Socket _socket;
-  String? _currentBookingId;
+  String? _currentMessagingBookingId;
+  String? _currentTrackingBookingId;
   String? _currentUserId;
+
+  // Connection state tracking
+  bool _isConnected = false;
+  bool _messagingListenersSetup = false;
+  bool _trackingListenersSetup = false;
 
   // Callbacks for messaging
   Function(Map<String, dynamic>)? onMessageReceived;
@@ -18,6 +26,7 @@ class SocketIOService {
   Function(String)? onTypingStop;
   Function(String)? onError;
   Function(String)? onMessageDeleted;
+  Function(bool)? onConnectionStatusChanged;
 
   // Callbacks for tracking
   Function(Map<String, dynamic>)? onLocationBroadcast;
@@ -30,14 +39,29 @@ class SocketIOService {
     return _instance;
   }
 
+  /// Get current connection status
+  bool get isConnected => _isConnected;
+
+  /// Get messaging booking ID
+  String? get messagingBookingId => _currentMessagingBookingId;
+
   /// Initialize Socket.IO connection
-  Future<void> connect({required String userId, String? token}) async {
+  Future<void> connect({
+    required String userId,
+    String? token,
+    Duration timeout = const Duration(seconds: 10),
+  }) async {
+    if (_isConnected) {
+      DebugLoggerService.log('SOCKET', 'Already connected, skipping connect');
+      return;
+    }
+
     _currentUserId = userId;
 
     try {
       DebugLoggerService.socketConnection(
         'Initializing',
-        details: 'userId=$userId',
+        details: 'userId=$userId, url=${ApiEndpoints.socketUrl}',
       );
 
       final optionsBuilder = IO.OptionBuilder()
@@ -60,17 +84,17 @@ class SocketIOService {
         DebugLoggerService.log('SOCKET', '⚠️ Warning: No auth token provided');
       }
 
-      _socket = IO.io(
-        'https://protiva-be.onrender.com',
-        optionsBuilder.build(),
-      );
+      _socket = IO.io(ApiEndpoints.socketUrl, optionsBuilder.build());
 
       _setupSocketListeners();
       _socket.connect();
 
       DebugLoggerService.socketConnection(
-        'Connecting to https://protiva-be.onrender.com',
+        'Connecting to ${ApiEndpoints.socketUrl}',
       );
+
+      // Wait for connection with timeout
+      await _waitForConnection(timeout);
     } catch (e) {
       DebugLoggerService.error(
         'SOCKET',
@@ -78,12 +102,29 @@ class SocketIOService {
         error: e,
       );
       onError?.call('Failed to connect: $e');
+      _isConnected = false;
+      onConnectionStatusChanged?.call(false);
+    }
+  }
+
+  /// Wait for socket connection with timeout
+  Future<void> _waitForConnection(Duration timeout) async {
+    final startTime = DateTime.now();
+    while (!_isConnected) {
+      if (DateTime.now().difference(startTime) > timeout) {
+        throw TimeoutException(
+          'Socket connection timeout after ${timeout.inSeconds} seconds',
+        );
+      }
+      await Future.delayed(const Duration(milliseconds: 100));
     }
   }
 
   /// Setup general socket listeners
   void _setupSocketListeners() {
     _socket.on('connect', (_) {
+      _isConnected = true;
+      onConnectionStatusChanged?.call(true);
       DebugLoggerService.socketConnection(
         '✅ Connected',
         details: 'id=${_socket.id}',
@@ -92,6 +133,10 @@ class SocketIOService {
     });
 
     _socket.on('disconnect', (reason) {
+      _isConnected = false;
+      onConnectionStatusChanged?.call(false);
+      _messagingListenersSetup = false;
+      _trackingListenersSetup = false;
       DebugLoggerService.socketConnection(
         '❌ Disconnected',
         details: reason.toString(),
@@ -114,18 +159,20 @@ class SocketIOService {
       DebugLoggerService.error('SOCKET', 'Connection error', error: error);
       onError?.call(error.toString());
     });
-
-    // Log all other events for debugging
-    _socket.onAny((event, data) {
-      DebugLoggerService.log('SOCKET_RAW', '🔄 Event: $event', data: data);
-    });
   }
 
   // ==================== MESSAGING METHODS ====================
 
   /// Join a messaging room for a specific booking
   void joinMessagingRoom(String bookingId) {
-    _currentBookingId = bookingId;
+    if (!_isConnected) {
+      final error = 'Socket not connected. Cannot join room.';
+      DebugLoggerService.error('SOCKET', error);
+      onError?.call(error);
+      return;
+    }
+
+    _currentMessagingBookingId = bookingId;
 
     DebugLoggerService.socketEvent(
       'join:room',
@@ -134,26 +181,20 @@ class SocketIOService {
     );
     _socket.emit('join:room', {'bookingId': bookingId});
 
-    _setupMessagingListeners();
+    // Setup listeners only once per socket connection
+    if (!_messagingListenersSetup) {
+      _setupMessagingListeners();
+      _messagingListenersSetup = true;
+    }
+
     DebugLoggerService.chatAction(
       'Joined messaging room',
       data: {'bookingId': bookingId, 'userId': _currentUserId},
     );
   }
 
-  /// Setup listeners for messaging events
+  /// Setup listeners for messaging events (called only once)
   void _setupMessagingListeners() {
-    // Remove old listeners if they exist (prevents duplicates)
-    _socket.off('message:new');
-    _socket.off('message:read');
-    _socket.off('typing:start');
-    _socket.off('typing:stop');
-    _socket.off('message:delete');
-    _socket.off('error');
-    _socket.off('message:notification');
-    _socket.off('join:room');
-    _socket.off('leave:room');
-
     // Listen for incoming messages
     _socket.on('message:new', (data) {
       DebugLoggerService.socketEvent(
@@ -229,16 +270,8 @@ class SocketIOService {
 
     // Listen for room joined confirmation
     _socket.on('join:room', (data) {
-      DebugLoggerService.socketEvent(
-        'join:room',
-        isEmit: false,
-        payload: data,
-      );
-      DebugLoggerService.log(
-        'MESSAGE',
-        '✅ Joined room',
-        data: data,
-      );
+      DebugLoggerService.socketEvent('join:room', isEmit: false, payload: data);
+      DebugLoggerService.log('MESSAGE', '✅ Joined room', data: data);
     });
 
     // Listen for room left event
@@ -248,11 +281,7 @@ class SocketIOService {
         isEmit: false,
         payload: data,
       );
-      DebugLoggerService.log(
-        'MESSAGE',
-        '✅ Left room',
-        data: data,
-      );
+      DebugLoggerService.log('MESSAGE', '✅ Left room', data: data);
     });
   }
 
@@ -264,7 +293,7 @@ class SocketIOService {
     String? mediaUrl,
     Map<String, dynamic>? metadata,
   }) {
-    if (_currentBookingId == null) {
+    if (_currentMessagingBookingId == null) {
       final error = 'No active booking room';
       DebugLoggerService.error('MESSAGE', error);
       onError?.call(error);
@@ -290,7 +319,7 @@ class SocketIOService {
     }
 
     final payload = {
-      'bookingId': _currentBookingId,
+      'bookingId': _currentMessagingBookingId,
       'receiverId': receiverId,
       'content': content,
       'messageType': messageType.toUpperCase(),
@@ -306,7 +335,7 @@ class SocketIOService {
     DebugLoggerService.chatAction(
       'Sending message',
       data: {
-        'bookingId': _currentBookingId,
+        'bookingId': _currentMessagingBookingId,
         'receiverId': receiverId,
         'contentLength': content.length,
         'messageType': messageType,
@@ -320,7 +349,7 @@ class SocketIOService {
 
   /// Mark messages as read
   void markMessagesAsRead(List<String> messageIds) {
-    if (_currentBookingId == null) {
+    if (_currentMessagingBookingId == null) {
       DebugLoggerService.error(
         'MESSAGE',
         'Cannot mark as read: No active booking room',
@@ -329,7 +358,10 @@ class SocketIOService {
       return;
     }
 
-    final payload = {'bookingId': _currentBookingId, 'messageIds': messageIds};
+    final payload = {
+      'bookingId': _currentMessagingBookingId,
+      'messageIds': messageIds,
+    };
 
     DebugLoggerService.socketEvent(
       'message:read',
@@ -341,7 +373,7 @@ class SocketIOService {
 
   /// Delete a message
   void deleteMessage(String messageId) {
-    if (_currentBookingId == null) {
+    if (_currentMessagingBookingId == null) {
       DebugLoggerService.error(
         'MESSAGE',
         'Cannot delete: No active booking room',
@@ -350,7 +382,10 @@ class SocketIOService {
       return;
     }
 
-    final payload = {'bookingId': _currentBookingId, 'messageId': messageId};
+    final payload = {
+      'bookingId': _currentMessagingBookingId,
+      'messageId': messageId,
+    };
 
     DebugLoggerService.socketEvent(
       'message:delete',
@@ -362,7 +397,7 @@ class SocketIOService {
 
   /// Emit typing start event
   void emitTypingStart() {
-    if (_currentBookingId == null) {
+    if (_currentMessagingBookingId == null) {
       DebugLoggerService.error(
         'MESSAGE',
         'Cannot emit typing:start: No active booking room',
@@ -371,7 +406,7 @@ class SocketIOService {
       return;
     }
 
-    final payload = {'bookingId': _currentBookingId};
+    final payload = {'bookingId': _currentMessagingBookingId};
     DebugLoggerService.socketEvent(
       'typing:start',
       isEmit: true,
@@ -382,7 +417,7 @@ class SocketIOService {
 
   /// Emit typing stop event
   void emitTypingStop() {
-    if (_currentBookingId == null) {
+    if (_currentMessagingBookingId == null) {
       DebugLoggerService.error(
         'MESSAGE',
         'Cannot emit typing:stop: No active booking room',
@@ -391,7 +426,7 @@ class SocketIOService {
       return;
     }
 
-    final payload = {'bookingId': _currentBookingId};
+    final payload = {'bookingId': _currentMessagingBookingId};
     DebugLoggerService.socketEvent(
       'typing:stop',
       isEmit: true,
@@ -404,54 +439,87 @@ class SocketIOService {
 
   /// Join a tracking room for real-time location sharing
   void joinTrackingRoom(String bookingId) {
-    _currentBookingId = bookingId;
+    if (!_isConnected) {
+      final error = 'Socket not connected. Cannot join tracking room.';
+      DebugLoggerService.error('SOCKET', error);
+      onTrackingError?.call(error);
+      return;
+    }
+
+    _currentTrackingBookingId = bookingId;
 
     _socket.emit('tracking:join', {'bookingId': bookingId});
 
-    _setupTrackingListeners();
-    debugPrint('Joined tracking room: $bookingId');
+    // Setup listeners only once per socket connection
+    if (!_trackingListenersSetup) {
+      _setupTrackingListeners();
+      _trackingListenersSetup = true;
+    }
+
+    DebugLoggerService.chatAction(
+      'Joined tracking room',
+      data: {'bookingId': bookingId, 'userId': _currentUserId},
+    );
   }
 
-  /// Setup listeners for tracking events
+  /// Setup listeners for tracking events (called only once)
   void _setupTrackingListeners() {
     // Listen for location broadcasts from other user
     _socket.on('location:broadcast', (data) {
-      debugPrint('Location broadcast received: $data');
+      DebugLoggerService.socketEvent(
+        'location:broadcast',
+        isEmit: false,
+        payload: data,
+      );
       onLocationBroadcast?.call(data);
     });
 
     // Listen for current tracking state
     _socket.on('tracking:state', (data) {
-      debugPrint('Tracking state received: $data');
+      DebugLoggerService.socketEvent(
+        'tracking:state',
+        isEmit: false,
+        payload: data,
+      );
       onTrackingState?.call(data);
     });
 
     // Listen for location updates
     _socket.on('location:updated', (data) {
-      debugPrint('Location updated: $data');
+      DebugLoggerService.socketEvent(
+        'location:updated',
+        isEmit: false,
+        payload: data,
+      );
       onLocationBroadcast?.call(data);
     });
 
     // Listen for when other user joins
     _socket.on('tracking:joined', (data) {
-      debugPrint('User joined tracking: $data');
+      DebugLoggerService.socketEvent(
+        'tracking:joined',
+        isEmit: false,
+        payload: data,
+      );
     });
 
     // Listen for when other user leaves
     _socket.on('tracking:left', (data) {
-      debugPrint('User left tracking: $data');
+      DebugLoggerService.socketEvent(
+        'tracking:left',
+        isEmit: false,
+        payload: data,
+      );
     });
 
     // Listen for tracking errors
     _socket.on('tracking:error', (data) {
-      debugPrint('Tracking error: $data');
+      DebugLoggerService.socketEvent(
+        'tracking:error',
+        isEmit: false,
+        payload: data,
+      );
       onTrackingError?.call(data['error'] ?? 'Unknown error');
-    });
-
-    // Listen for generic errors
-    _socket.on('error', (data) {
-      debugPrint('Tracking error: $data');
-      onTrackingError?.call(data.toString());
     });
   }
 
@@ -463,13 +531,13 @@ class SocketIOService {
     required double speed,
     required double heading,
   }) {
-    if (_currentBookingId == null) {
-      onTrackingError?.call('No active booking room');
+    if (_currentTrackingBookingId == null) {
+      onTrackingError?.call('No active tracking room');
       return;
     }
 
     _socket.emit('location:update', {
-      'bookingId': _currentBookingId,
+      'bookingId': _currentTrackingBookingId,
       'latitude': latitude,
       'longitude': longitude,
       'accuracy': accuracy,
@@ -480,44 +548,61 @@ class SocketIOService {
 
   /// Request current location state
   void requestLocationState() {
-    if (_currentBookingId == null) {
-      onTrackingError?.call('No active booking room');
+    if (_currentTrackingBookingId == null) {
+      onTrackingError?.call('No active tracking room');
       return;
     }
 
-    _socket.emit('location:current', {'bookingId': _currentBookingId});
+    _socket.emit('location:current', {'bookingId': _currentTrackingBookingId});
   }
 
   // ==================== CONNECTION MANAGEMENT ====================
 
-  /// Check if socket is connected
-  bool isConnected() {
-    return _socket.connected;
-  }
-
-  /// Leave current room
-  void leaveRoom() {
-    if (_currentBookingId != null) {
+  /// Leave current messaging room
+  void leaveMessagingRoom() {
+    if (_currentMessagingBookingId != null) {
       DebugLoggerService.socketEvent(
         'room:leave',
         isEmit: true,
-        payload: {'bookingId': _currentBookingId},
+        payload: {'bookingId': _currentMessagingBookingId},
       );
-      _socket.emit('room:leave', {'bookingId': _currentBookingId});
+      _socket.emit('room:leave', {'bookingId': _currentMessagingBookingId});
       DebugLoggerService.log(
         'MESSAGE',
-        'Left room',
-        data: {'bookingId': _currentBookingId},
+        'Left messaging room',
+        data: {'bookingId': _currentMessagingBookingId},
       );
-      _currentBookingId = null;
+      _currentMessagingBookingId = null;
+    }
+  }
+
+  /// Leave current tracking room
+  void leaveTrackingRoom() {
+    if (_currentTrackingBookingId != null) {
+      DebugLoggerService.socketEvent(
+        'tracking:leave',
+        isEmit: true,
+        payload: {'bookingId': _currentTrackingBookingId},
+      );
+      _socket.emit('tracking:leave', {'bookingId': _currentTrackingBookingId});
+      DebugLoggerService.log(
+        'TRACKING',
+        'Left tracking room',
+        data: {'bookingId': _currentTrackingBookingId},
+      );
+      _currentTrackingBookingId = null;
     }
   }
 
   /// Disconnect socket
   void disconnect() {
-    leaveRoom();
+    leaveMessagingRoom();
+    leaveTrackingRoom();
     _socket.disconnect();
     _socket.dispose();
+    _isConnected = false;
+    _messagingListenersSetup = false;
+    _trackingListenersSetup = false;
     DebugLoggerService.socketConnection('Disconnected by client');
   }
 

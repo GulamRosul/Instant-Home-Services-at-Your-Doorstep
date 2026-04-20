@@ -22,6 +22,9 @@ class SingleChatController extends GetxController {
   late Rx<bool> isOtherUserTyping = false.obs;
   late Rx<String> connectionStatus = 'Connecting...'.obs;
 
+  // Map to track pending messages by their local ID for deduplication
+  final Map<String, int> _localMessageIndices = {};
+
   @override
   void onInit() {
     super.onInit();
@@ -43,34 +46,10 @@ class SingleChatController extends GetxController {
       // Determine receiverId based on userRole
       if (userRole.value == 'provider') {
         // Provider sends to client
-        receiverId.value = arguments['clientId'] ?? '';
-
-        // FIX: If clientId equals currentUserId (backend sends wrong ID),
-        // try to use the userId from arguments or look for the other party
-        if (receiverId.value == currentUserId.value ||
-            receiverId.value.isEmpty) {
-          // Try alternative argument names
-          if (arguments.containsKey('userId') &&
-              arguments['userId'] != currentUserId.value) {
-            receiverId.value = arguments['userId'];
-          } else if (arguments.containsKey('receiverId')) {
-            receiverId.value = arguments['receiverId'];
-          }
-        }
+        receiverId.value = arguments['clientId'] ?? arguments['receiverId'] ?? '';
       } else {
         // User (client) sends to provider
-        receiverId.value = arguments['providerId'] ?? '';
-      }
-
-      // Additional fallback: if receiverId is still empty or matches currentUserId
-      if (receiverId.value.isEmpty || receiverId.value == currentUserId.value) {
-        if (userRole.value == 'provider' &&
-            arguments.containsKey('receiverId')) {
-          receiverId.value = arguments['receiverId'];
-        } else if (userRole.value == 'user' &&
-            arguments.containsKey('receiverId')) {
-          receiverId.value = arguments['receiverId'];
-        }
+        receiverId.value = arguments['providerId'] ?? arguments['receiverId'] ?? '';
       }
 
       // Log for debugging
@@ -82,16 +61,8 @@ class SingleChatController extends GetxController {
           'receiverId': receiverId.value,
           'userRole': userRole.value,
           'otherUserName': otherUserName.value,
-          'allArguments': arguments,
         },
       );
-
-      print('Chat initialized:');
-      print('  BookingId: ${bookingId.value}');
-      print('  CurrentUserId: ${currentUserId.value}');
-      print('  ReceiverId: ${receiverId.value}');
-      print('  UserRole: ${userRole.value}');
-      print('  OtherUserName: ${otherUserName.value}');
 
       // Validate receiverId is not the same as currentUserId
       if (receiverId.value == currentUserId.value) {
@@ -133,6 +104,7 @@ class SingleChatController extends GetxController {
     socketService.onTypingStop = _handleTypingStop;
     socketService.onMessageDeleted = _handleMessageDeleted;
     socketService.onError = _handleError;
+    socketService.onConnectionStatusChanged = _handleConnectionStatusChanged;
 
     // Get auth token from secure storage
     final token = await SecureStorageService.getToken();
@@ -151,81 +123,186 @@ class SingleChatController extends GetxController {
         'hasToken': token != null && token.isNotEmpty,
       },
     );
-    socketService.connect(userId: currentUserId.value, token: token);
 
-    // Join messaging room
-    if (bookingId.value.isNotEmpty) {
-      DebugLoggerService.log(
-        'SOCKET',
-        'Joining messaging room',
-        data: {
-          'bookingId': bookingId.value,
-          'userId': currentUserId.value,
-          'receiverId': receiverId.value,
-        },
+    try {
+      await socketService.connect(
+        userId: currentUserId.value,
+        token: token,
+        timeout: const Duration(seconds: 15),
       );
-      socketService.joinMessagingRoom(bookingId.value);
-      connectionStatus.value = 'Connected';
-    } else {
+
+      // Connection successful, now join room
+      if (bookingId.value.isNotEmpty) {
+        DebugLoggerService.log(
+          'SOCKET',
+          'Socket connected, joining messaging room',
+          data: {
+            'bookingId': bookingId.value,
+            'userId': currentUserId.value,
+            'receiverId': receiverId.value,
+          },
+        );
+        socketService.joinMessagingRoom(bookingId.value);
+        connectionStatus.value = 'Connected';
+      } else {
+        DebugLoggerService.error(
+          'SOCKET',
+          'Cannot join room: bookingId is empty',
+        );
+        connectionStatus.value = 'Error: No booking ID';
+      }
+    } catch (e) {
       DebugLoggerService.error(
         'SOCKET',
-        'Cannot join room: bookingId is empty',
+        'Socket connection failed or timed out',
+        error: e,
       );
-      connectionStatus.value = 'Error: No booking ID';
+      connectionStatus.value = 'Connection failed';
+      _handleError('Failed to connect: $e');
     }
   }
 
-  /// Handle incoming message
+  /// Wait for socket to be ready before joining room (legacy - kept for backward compatibility)
+  void _waitForSocketConnection() {
+    // This is now handled in _initializeSocket with proper async/await
+  }
+
+  /// Handle connection status changes
+  void _handleConnectionStatusChanged(bool connected) {
+    if (connected) {
+      connectionStatus.value = 'Connected';
+      DebugLoggerService.log('SOCKET', 'Connection established');
+    } else {
+      connectionStatus.value = 'Disconnected';
+      DebugLoggerService.log('SOCKET', 'Connection lost');
+    }
+  }
+
+  /// Handle incoming message (with deduplication for sent messages)
   void _handleMessageReceived(Map<String, dynamic> data) {
     try {
+      final serverId = data['id'] ?? '';
+      final senderId = data['senderId'] ?? '';
       final message = data['content'] ?? '';
-      final senderName = data['senderName'] ?? otherUserName.value;
-      final messageId = data['messageId'] ?? _generateMessageId();
       final messageType = data['messageType'] ?? 'TEXT';
 
       DebugLoggerService.chatAction(
-        'Displaying received message on UI',
+        'Handling message received from server',
         data: {
-          'messageId': messageId,
-          'senderId': data['senderId'],
+          'serverId': serverId,
+          'senderId': senderId,
+          'isCurrentUser': senderId == currentUserId.value,
           'contentLength': message.length,
-          'messageType': messageType,
         },
       );
 
-      messages.add({
-        'message': message,
-        'isMe': false,
-        'time': _getCurrentTime(),
-        'messageId': messageId,
-        'messageType': messageType,
-        'isRead': false,
-        'senderId': data['senderId'],
-      });
+      // Check if this is a confirmation of a message we just sent
+      if (senderId == currentUserId.value) {
+        // This is our own message echoing back from server
+        // Search through all messages for the local version
+        int? localMessageIndex;
 
-      // Auto-scroll to latest message
-      scrollToBottom();
+        for (int i = 0; i < messages.length; i++) {
+          final msg = messages[i];
+          // Match on: local message ID + content + type (most reliable)
+          if (msg['isLocal'] == true &&
+              msg['message'] == message &&
+              msg['messageType'] == messageType &&
+              msg['senderId'] == currentUserId.value) {
+            localMessageIndex = i;
+            break;
+          }
+        }
 
-      // Mark message as read
-      if (messageId.isNotEmpty) {
-        Future.delayed(const Duration(milliseconds: 500), () {
+        if (localMessageIndex != null) {
+          // Found our local message - update it with server data
+          final localMessageId = messages[localMessageIndex]['messageId'];
+          DebugLoggerService.chatAction(
+            'Updating local message with server confirmation',
+            data: {
+              'localMessageId': localMessageId,
+              'serverMessageId': serverId,
+            },
+          );
+
+          messages[localMessageIndex] = {
+            'message': message,
+            'isMe': true,
+            'time': messages[localMessageIndex]['time'],
+            'messageId': serverId, // Use server ID
+            'messageType': messageType,
+            'isRead': data['isRead'] ?? false,
+            'senderId': senderId,
+            'status': 'sent', // Update status to sent
+            'isLocal': false, // Mark as confirmed
+            'createdAt': data['createdAt'],
+            'sender': data['sender'],
+          };
+
+          messages.refresh();
+          DebugLoggerService.log(
+            'CHAT',
+            '✅ Message sent confirmed by server',
+            data: {'messageId': serverId},
+          );
+
+          // Mark as read immediately if socket is connected
+          if (serverId.isNotEmpty && socketService.isConnected) {
+            DebugLoggerService.log(
+              'CHAT',
+              'Marking message as read',
+              data: {'messageId': serverId},
+            );
+            socketService.markMessagesAsRead([serverId]);
+          }
+
+          return; // Don't add duplicate
+        }
+      }
+
+      // This is a message from the other user
+      if (senderId != currentUserId.value) {
+        messages.add({
+          'message': message,
+          'isMe': false,
+          'time': _getCurrentTime(),
+          'messageId': serverId,
+          'messageType': messageType,
+          'isRead': data['isRead'] ?? false,
+          'senderId': senderId,
+          'status': 'received',
+          'isLocal': false,
+          'createdAt': data['createdAt'],
+          'sender': data['sender'],
+        });
+
+        DebugLoggerService.chatAction(
+          'Message from other user added to UI',
+          data: {
+            'messageId': serverId,
+            'senderName': data['sender']?['firstName'] ?? 'User',
+          },
+        );
+
+        // Auto-scroll to latest message
+        scrollToBottom();
+
+        // Mark message as read immediately if connected
+        if (serverId.isNotEmpty && socketService.isConnected) {
           DebugLoggerService.log(
             'CHAT',
             'Marking message as read',
-            data: {'messageId': messageId},
+            data: {'messageId': serverId},
           );
-          socketService.markMessagesAsRead([messageId]);
-        });
+          socketService.markMessagesAsRead([serverId]);
+        }
       }
-
-      print('Message received and displayed: $message');
     } catch (e) {
       DebugLoggerService.error(
         'CHAT',
         'Error handling received message',
         error: e,
       );
-      print('Error handling received message: $e');
     }
   }
 
@@ -238,12 +315,17 @@ class SingleChatController extends GetxController {
         for (var msg in messages) {
           if (messageIds.contains(msg['messageId'])) {
             msg['isRead'] = true;
+            msg['status'] = 'read';
+            DebugLoggerService.chatAction(
+              'Message marked as read',
+              data: {'messageId': msg['messageId']},
+            );
           }
         }
         messages.refresh(); // Notify observers
       }
     } catch (e) {
-      print('Error handling message read: $e');
+      DebugLoggerService.error('CHAT', 'Error handling message read', error: e);
     }
   }
 
@@ -271,22 +353,51 @@ class SingleChatController extends GetxController {
 
   /// Handle message deletion
   void _handleMessageDeleted(String messageId) {
-    messages.removeWhere((msg) => msg['messageId'] == messageId);
-    messages.refresh();
-    print('Message deleted: $messageId');
+    try {
+      final initialLength = messages.length;
+      messages.removeWhere(
+        (msg) => msg['messageId'] == messageId,
+      );
+
+      if (messages.length < initialLength) {
+        messages.refresh();
+        DebugLoggerService.chatAction(
+          'Message deleted from UI',
+          data: {'messageId': messageId},
+        );
+      } else {
+        DebugLoggerService.log(
+          'CHAT',
+          'Message to delete not found',
+          data: {'messageId': messageId},
+        );
+      }
+    } catch (e) {
+      DebugLoggerService.error('CHAT', 'Error deleting message', error: e);
+    }
   }
 
   /// Handle socket errors
   void _handleError(String error) {
     connectionStatus.value = 'Error: $error';
     DebugLoggerService.error('SOCKET', 'Socket error received', error: error);
-    print('Socket error: $error');
   }
 
   /// Send a message
   void sendMessage() {
     if (messageController.text.trim().isEmpty) {
       DebugLoggerService.log('CHAT', '⚠️ Cannot send empty message');
+      return;
+    }
+
+    // Validate socket is connected
+    if (!socketService.isConnected) {
+      DebugLoggerService.error(
+        'SOCKET',
+        'Cannot send: Socket not connected',
+        error: {'connectionStatus': connectionStatus.value},
+      );
+      Get.snackbar('Error', 'Connection lost. Please reconnect.');
       return;
     }
 
@@ -302,21 +413,17 @@ class SingleChatController extends GetxController {
           'bookingId': bookingId.value,
         },
       );
-      print(errorMsg);
-      print(
-        'Current state: receiverId=$receiverId, userRole=$userRole.value, bookingId=$bookingId.value',
-      );
       Get.snackbar('Error', 'Cannot send message: receiver not found');
       return;
     }
 
     final messageText = messageController.text.trim();
-    final messageId = _generateMessageId();
+    final localMessageId = _generateMessageId();
 
     DebugLoggerService.chatAction(
       'Message prepare to send',
       data: {
-        'messageId': messageId,
+        'localMessageId': localMessageId,
         'contentLength': messageText.length,
         'receiverId': receiverId.value,
         'bookingId': bookingId.value,
@@ -324,16 +431,21 @@ class SingleChatController extends GetxController {
       },
     );
 
-    // Add to local messages immediately for UI feedback
+    // Add to local messages immediately for UI feedback with 'sending' status
     messages.add({
       'message': messageText,
       'isMe': true,
       'time': _getCurrentTime(),
-      'messageId': messageId,
+      'messageId': localMessageId,
       'messageType': 'TEXT',
       'isRead': false,
       'senderId': currentUserId.value,
+      'status': 'sending', // Mark as sending
+      'isLocal': true, // Mark as local (not yet confirmed)
     });
+
+    // Track this message for deduplication
+    _localMessageIndices[localMessageId] = messages.length - 1;
 
     messageController.clear();
     scrollToBottom();
@@ -347,6 +459,7 @@ class SingleChatController extends GetxController {
           'receiverId': receiverId.value,
           'bookingId': bookingId.value,
           'messageLength': messageText.length,
+          'localMessageId': localMessageId,
         },
       );
 
@@ -357,8 +470,12 @@ class SingleChatController extends GetxController {
       );
 
       DebugLoggerService.chatAction(
-        'Message sent successfully',
-        data: {'messageId': messageId, 'receiverId': receiverId.value},
+        'Message sent to server',
+        data: {
+          'localMessageId': localMessageId,
+          'status': 'sending',
+          'receiverId': receiverId.value,
+        },
       );
     } catch (e) {
       DebugLoggerService.error('SOCKET', 'Failed to send message', error: e);
@@ -371,17 +488,23 @@ class SingleChatController extends GetxController {
 
   /// Emit typing indicator when user starts typing
   void emitTypingStart() {
-    socketService.emitTypingStart();
+    if (socketService.isConnected) {
+      socketService.emitTypingStart();
+    }
   }
 
   /// Emit typing stop when user finishes typing
   void emitTypingStop() {
-    socketService.emitTypingStop();
+    if (socketService.isConnected) {
+      socketService.emitTypingStop();
+    }
   }
 
   /// Delete a message
   void deleteMessage(String messageId) {
-    socketService.deleteMessage(messageId);
+    if (socketService.isConnected) {
+      socketService.deleteMessage(messageId);
+    }
     messages.removeWhere((msg) => msg['messageId'] == messageId);
     messages.refresh();
   }
@@ -413,10 +536,11 @@ class SingleChatController extends GetxController {
 
   @override
   void onClose() {
-    socketService.leaveRoom();
+    socketService.leaveMessagingRoom();
     socketService.disconnect();
     messageController.dispose();
     scrollController.dispose();
+    _localMessageIndices.clear();
     super.onClose();
   }
 }

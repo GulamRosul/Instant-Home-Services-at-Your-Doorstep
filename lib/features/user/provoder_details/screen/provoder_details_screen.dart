@@ -194,13 +194,13 @@ class ProviderDetailsScreen extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 24.h),
-          CustomButton(
-            text: "Send Message",
-            onPressed: controller.sendMessage,
-            backgroundColor: AppColors.textPurple,
-            textColor: Colors.white,
-          ),
+          // SizedBox(height: 24.h),
+          // CustomButton(
+          //   text: "Send Message",
+          //   onPressed: controller.sendMessage,
+          //   backgroundColor: AppColors.textPurple,
+          //   textColor: Colors.white,
+          // ),
         ],
       ),
     );

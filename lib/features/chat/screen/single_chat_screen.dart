@@ -30,22 +30,30 @@ class SingleChatScreen extends StatelessWidget {
           // Message List (Takes up remaining space)
           Expanded(
             child: Obx(() {
-              // Sort messages by time (oldest first)
-              final sortedMessages = List<Map<String, dynamic>>.from(
-                controller.messages,
-              );
-              sortedMessages.sort((a, b) {
-                final timeA = a['time'] ?? '';
-                final timeB = b['time'] ?? '';
-                return timeA.toString().compareTo(timeB.toString());
-              });
+              final showTopLoader = controller.isLoadingMoreHistory.value;
+              final itemCount =
+                  controller.messages.length + (showTopLoader ? 1 : 0);
 
               return ListView.builder(
                 controller: controller.scrollController,
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-                itemCount: sortedMessages.length,
+                itemCount: itemCount,
                 itemBuilder: (context, index) {
-                  final chat = sortedMessages[index];
+                  if (showTopLoader && index == 0) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 12.h),
+                      child: const Center(
+                        child: SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    );
+                  }
+
+                  final chatIndex = showTopLoader ? index - 1 : index;
+                  final chat = controller.messages[chatIndex];
                   return _buildChatBubble(
                     chat['message'],
                     chat['isMe'],

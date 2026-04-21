@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:protiva502/core/services/debug_logger_service.dart';
 import 'package:protiva502/core/services/socket_io_service.dart';
 

@@ -97,10 +97,19 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
 
-            _buildLabel('Full name'),
+            _buildLabel('First Name'),
             CustomTextField(
-              controller: controller.companyNameController,
-              hintText: 'Enter your full name',
+              controller: controller.firstNameController,
+              hintText: 'Enter your first name',
+              backgroundColor: const Color(0xFFF8F9FA),
+              borderColor: const Color(0xFFE2E8F0),
+            ),
+            SizedBox(height: 16.h),
+
+            _buildLabel('Last Name'),
+            CustomTextField(
+              controller: controller.lastNameController,
+              hintText: 'Enter your last name',
               backgroundColor: const Color(0xFFF8F9FA),
               borderColor: const Color(0xFFE2E8F0),
             ),

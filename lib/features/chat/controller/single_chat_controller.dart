@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/services/socket_io_service.dart';
+import 'package:protiva502/core/services/chat_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/services/debug_logger_service.dart';
@@ -10,8 +11,9 @@ class SingleChatController extends GetxController {
   final TextEditingController messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
-  // Socket.IO Service
+  // Socket.IO Services
   late SocketIOService socketService;
+  late ChatService chatService;
 
   // Chat Data
   var messages = <Map<String, dynamic>>[].obs;
@@ -99,14 +101,17 @@ class SingleChatController extends GetxController {
   /// Initialize Socket.IO connection for messaging
   Future<void> _initializeSocket() async {
     socketService = SocketIOService();
+    chatService = ChatService();
 
-    // Setup callbacks
-    socketService.onMessageReceived = _handleMessageReceived;
-    socketService.onMessageRead = _handleMessageRead;
-    socketService.onTypingStart = _handleTypingStart;
-    socketService.onTypingStop = _handleTypingStop;
-    socketService.onMessageDeleted = _handleMessageDeleted;
-    socketService.onError = _handleError;
+    // Setup messaging callbacks on ChatService
+    chatService.onMessageReceived = _handleMessageReceived;
+    chatService.onMessageRead = _handleMessageRead;
+    chatService.onTypingStart = _handleTypingStart;
+    chatService.onTypingStop = _handleTypingStop;
+    chatService.onMessageDeleted = _handleMessageDeleted;
+    chatService.onError = _handleError;
+
+    // Setup connection callbacks on SocketIOService
     socketService.onConnectionStatusChanged = _handleConnectionStatusChanged;
 
     // Get auth token from secure storage
@@ -138,7 +143,7 @@ class SingleChatController extends GetxController {
       // Connection successful, now join room
       if (bookingId.value.isNotEmpty) {
         _printCleanConsole('📢 Joining messaging room: ${bookingId.value}\n');
-        socketService.joinMessagingRoom(bookingId.value);
+        chatService.joinMessagingRoom(bookingId.value);
         connectionStatus.value = 'Connected';
         _printCleanConsole('✅ ROOM JOINED: ${bookingId.value}\n');
       } else {
@@ -220,11 +225,13 @@ class SingleChatController extends GetxController {
           };
 
           messages.refresh();
-          _printCleanConsole('✅ CONFIRMED: "$message" (ID: ${serverId.substring(0, 8)}...)');
+          _printCleanConsole(
+            '✅ CONFIRMED: "$message" (ID: ${serverId.substring(0, 8)}...)',
+          );
 
           // Mark as read immediately if socket is connected
-          if (serverId.isNotEmpty && socketService.isConnected) {
-            socketService.markMessagesAsRead([serverId]);
+          if (serverId.isNotEmpty && chatService.isConnected) {
+            chatService.markMessagesAsRead([serverId]);
           }
 
           return; // Don't add duplicate
@@ -247,14 +254,16 @@ class SingleChatController extends GetxController {
           'sender': data['sender'],
         });
 
-        _printCleanConsole('📥 RECEIVED: "${data['sender']?['firstName'] ?? 'User'}" - "$message"');
+        _printCleanConsole(
+          '📥 RECEIVED: "${data['sender']?['firstName'] ?? 'User'}" - "$message"',
+        );
 
         // Auto-scroll to latest message
         scrollToBottom();
 
         // Mark message as read immediately if connected
-        if (serverId.isNotEmpty && socketService.isConnected) {
-          socketService.markMessagesAsRead([serverId]);
+        if (serverId.isNotEmpty && chatService.isConnected) {
+          chatService.markMessagesAsRead([serverId]);
         }
       }
     } catch (e) {
@@ -399,7 +408,7 @@ class SingleChatController extends GetxController {
 
     // Send via socket
     try {
-      socketService.sendMessage(
+      chatService.sendMessage(
         receiverId: receiverId.value,
         content: messageText,
         messageType: 'TEXT',
@@ -413,27 +422,27 @@ class SingleChatController extends GetxController {
     }
 
     // Emit typing stop after sending
-    socketService.emitTypingStop();
+    chatService.emitTypingStop();
   }
 
   /// Emit typing indicator when user starts typing
   void emitTypingStart() {
     if (socketService.isConnected) {
-      socketService.emitTypingStart();
+      chatService.emitTypingStart();
     }
   }
 
   /// Emit typing stop when user finishes typing
   void emitTypingStop() {
     if (socketService.isConnected) {
-      socketService.emitTypingStop();
+      chatService.emitTypingStop();
     }
   }
 
   /// Delete a message
   void deleteMessage(String messageId) {
     if (socketService.isConnected) {
-      socketService.deleteMessage(messageId);
+      chatService.deleteMessage(messageId);
     }
     messages.removeWhere((msg) => msg['messageId'] == messageId);
     messages.refresh();
@@ -466,7 +475,7 @@ class SingleChatController extends GetxController {
 
   @override
   void onClose() {
-    socketService.leaveMessagingRoom();
+    chatService.leaveMessagingRoom();
     socketService.disconnect();
     messageController.dispose();
     scrollController.dispose();

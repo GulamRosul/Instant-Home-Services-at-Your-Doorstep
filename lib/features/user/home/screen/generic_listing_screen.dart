@@ -39,7 +39,9 @@ class GenericListingScreen<T> extends StatelessWidget {
       appBar: CustomAppBar(title: title),
       body: Obx(() {
         if (controller.isLoading.value && controller.items.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.textPurple),
+          );
         }
 
         if (controller.errorMessage.value.isNotEmpty &&

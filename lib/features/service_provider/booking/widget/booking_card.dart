@@ -130,7 +130,7 @@ class BookingCard extends StatelessWidget {
           SizedBox(height: 16.h),
           const Divider(color: Color(0xFFDBDBDB)),
           SizedBox(height: 12.h),
-          _buildInfoRow(null, 'Client: ${booking.contactPhone}'),
+          // _buildInfoRow(null, 'Client: ${booking.contactPhone}'),
           _buildInfoRow(
             null,
             'Payment: ${controller.paymentMethodLabelOf(booking)}',
@@ -149,17 +149,17 @@ class BookingCard extends StatelessWidget {
           SizedBox(height: 16.h),
           Row(
             children: [
-              GestureDetector(
-                onTap: () => controller.handleMessage(index),
-                child: Text(
-                  'Massage',
-                  style: getTextStyle(
-                    fontSize: 14.sp,
-                    color: const Color(0xFF0F172A),
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: () => controller.handleMessage(index),
+              //   child: Text(
+              //     'Massage',
+              //     style: getTextStyle(
+              //       fontSize: 14.sp,
+              //       color: const Color(0xFF0F172A),
+              //       decoration: TextDecoration.underline,
+              //     ),
+              //   ),
+              // ),
               SizedBox(width: 16.w),
               GestureDetector(
                 onTap: () => controller.handleViewDetails(index),

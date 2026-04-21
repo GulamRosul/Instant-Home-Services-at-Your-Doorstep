@@ -6,8 +6,14 @@ import 'package:protiva502/core/services/chat_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/services/debug_logger_service.dart';
+import 'package:protiva502/core/services/api_client.dart';
+import 'package:protiva502/core/utils/constants/apiendpoint.dart';
+import 'package:protiva502/features/chat/model/chat_message_model.dart';
 
 class SingleChatController extends GetxController {
+  static const int _initialHistoryLimit = 20;
+  static const int _paginationHistoryLimit = 10;
+
   final TextEditingController messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
@@ -24,15 +30,35 @@ class SingleChatController extends GetxController {
   late Rx<String> userRole = ''.obs; // 'user' or 'provider'
   late Rx<bool> isOtherUserTyping = false.obs;
   late Rx<String> connectionStatus = 'Connecting...'.obs;
+  final RxBool isLoadingHistory = false.obs;
+  final RxBool isLoadingMoreHistory = false.obs;
+  final RxBool hasMoreHistory = true.obs;
 
   // Map to track pending messages by their local ID for deduplication
   final Map<String, int> _localMessageIndices = {};
+  int _historyOffset = 0;
 
   @override
   void onInit() {
     super.onInit();
     _loadChatArguments();
+    _setupScrollPaginationListener();
+    _loadInitialMessages();
     _initializeSocket();
+  }
+
+  void _setupScrollPaginationListener() {
+    scrollController.addListener(_onScrollForPagination);
+  }
+
+  void _onScrollForPagination() {
+    if (!scrollController.hasClients) {
+      return;
+    }
+
+    if (scrollController.position.pixels <= 120 && hasMoreHistory.value) {
+      _loadMoreMessages();
+    }
   }
 
   /// Load chat arguments passed from previous screen
@@ -114,6 +140,156 @@ class SingleChatController extends GetxController {
     }
 
     return '';
+  }
+
+  Future<void> _loadInitialMessages() async {
+    if (bookingId.value.isEmpty) {
+      return;
+    }
+
+    isLoadingHistory.value = true;
+    hasMoreHistory.value = true;
+    _historyOffset = 0;
+
+    try {
+      final token = await SecureStorageService.getToken();
+      if (token == null || token.isEmpty) {
+        DebugLoggerService.log(
+          'CHAT',
+          'No token found while fetching message history',
+        );
+      }
+
+      final history = await _fetchMessageHistory(
+        limit: _initialHistoryLimit,
+        offset: _historyOffset,
+      );
+
+      messages.assignAll(
+        history
+            .map(
+              (message) => message.toUiMap(currentUserId: currentUserId.value),
+            )
+            .toList(),
+      );
+
+      _historyOffset += history.length;
+      hasMoreHistory.value = history.length == _initialHistoryLimit;
+
+      if (messages.isNotEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollToBottom();
+        });
+      }
+    } catch (error) {
+      DebugLoggerService.error(
+        'CHAT',
+        'Failed to load initial message history',
+        error: error,
+      );
+    } finally {
+      isLoadingHistory.value = false;
+    }
+  }
+
+  Future<void> _loadMoreMessages() async {
+    if (isLoadingMoreHistory.value || !hasMoreHistory.value) {
+      return;
+    }
+
+    if (bookingId.value.isEmpty) {
+      return;
+    }
+
+    isLoadingMoreHistory.value = true;
+
+    try {
+      final olderHistory = await _fetchMessageHistory(
+        limit: _paginationHistoryLimit,
+        offset: _historyOffset,
+      );
+
+      if (olderHistory.isEmpty) {
+        hasMoreHistory.value = false;
+        return;
+      }
+
+      final existingIds = messages
+          .map((message) => (message['messageId'] ?? '').toString())
+          .where((id) => id.isNotEmpty)
+          .toSet();
+
+      final olderUiMessages = olderHistory
+          .map((message) => message.toUiMap(currentUserId: currentUserId.value))
+          .where(
+            (message) =>
+                !existingIds.contains((message['messageId'] ?? '').toString()),
+          )
+          .toList();
+
+      if (olderUiMessages.isNotEmpty) {
+        messages.insertAll(0, olderUiMessages);
+      }
+
+      _historyOffset += olderHistory.length;
+      if (olderHistory.length < _paginationHistoryLimit) {
+        hasMoreHistory.value = false;
+      }
+    } catch (error) {
+      DebugLoggerService.error(
+        'CHAT',
+        'Failed to load more message history',
+        error: error,
+      );
+    } finally {
+      isLoadingMoreHistory.value = false;
+    }
+  }
+
+  Future<List<ChatMessageModel>> _fetchMessageHistory({
+    required int limit,
+    required int offset,
+  }) async {
+    final response = await ApiClient().get<dynamic>(
+      ApiEndpoints.fetchMessage(),
+      queryParameters: {
+        'bookingId': bookingId.value,
+        'limit': limit,
+        'offset': offset,
+      },
+    );
+
+    final statusCode = response.statusCode ?? 0;
+    if (statusCode < 200 || statusCode >= 300) {
+      throw Exception('History request failed with status: $statusCode');
+    }
+
+    final responseData = response.data;
+    if (responseData is! Map<String, dynamic>) {
+      return <ChatMessageModel>[];
+    }
+
+    final rawList = responseData['data'];
+    if (rawList is! List) {
+      return <ChatMessageModel>[];
+    }
+
+    final parsed = rawList
+        .whereType<Map>()
+        .map((raw) => ChatMessageModel.fromJson(Map<String, dynamic>.from(raw)))
+        .toList();
+
+    parsed.sort((a, b) {
+      final aDate =
+          DateTime.tryParse(a.createdAt ?? '') ??
+          DateTime.fromMillisecondsSinceEpoch(0);
+      final bDate =
+          DateTime.tryParse(b.createdAt ?? '') ??
+          DateTime.fromMillisecondsSinceEpoch(0);
+      return aDate.compareTo(bDate);
+    });
+
+    return parsed;
   }
 
   /// Initialize Socket.IO connection for messaging
@@ -203,6 +379,11 @@ class SingleChatController extends GetxController {
       final message = data['content'] ?? '';
       final messageType = data['messageType'] ?? 'TEXT';
 
+      if (serverId.toString().isNotEmpty &&
+          _isAlreadyInMessageList(serverId.toString())) {
+        return;
+      }
+
       // Check if this is a confirmation of a message we just sent
       if (senderId == currentUserId.value) {
         // This is our own message echoing back from server
@@ -251,19 +432,10 @@ class SingleChatController extends GetxController {
 
       // This is a message from the other user
       if (senderId != currentUserId.value) {
-        messages.add({
-          'message': message,
-          'isMe': false,
-          'time': _getCurrentTime(),
-          'messageId': serverId,
-          'messageType': messageType,
-          'isRead': data['isRead'] ?? false,
-          'senderId': senderId,
-          'status': 'received',
-          'isLocal': false,
-          'createdAt': data['createdAt'],
-          'sender': data['sender'],
-        });
+        final socketMessage = ChatMessageModel.fromJson(
+          Map<String, dynamic>.from(data),
+        );
+        messages.add(socketMessage.toUiMap(currentUserId: currentUserId.value));
 
         _printCleanConsole(
           '📥 RECEIVED: "${data['sender']?['firstName'] ?? 'User'}" - "$message"',
@@ -284,6 +456,15 @@ class SingleChatController extends GetxController {
         error: e,
       );
     }
+  }
+
+  bool _isAlreadyInMessageList(String messageId) {
+    for (final message in messages) {
+      if ((message['messageId'] ?? '').toString() == messageId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /// Handle message read receipt
@@ -409,6 +590,7 @@ class SingleChatController extends GetxController {
       'senderId': currentUserId.value,
       'status': 'sending', // Mark as sending
       'isLocal': true, // Mark as local (not yet confirmed)
+      'createdAt': DateTime.now().toIso8601String(),
     });
 
     // Track this message for deduplication
@@ -488,6 +670,7 @@ class SingleChatController extends GetxController {
   void onClose() {
     chatService.leaveMessagingRoom();
     socketService.disconnect();
+    scrollController.removeListener(_onScrollForPagination);
     messageController.dispose();
     scrollController.dispose();
     _localMessageIndices.clear();

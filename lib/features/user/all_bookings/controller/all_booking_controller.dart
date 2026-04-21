@@ -20,7 +20,6 @@ class AllBookingController extends GetxController {
     'Pending',
     'Accepted',
     'Rejected',
-    'In-Progress',
     'Completed',
     'Cancelled',
   ];

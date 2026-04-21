@@ -4,28 +4,19 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:protiva502/core/services/debug_logger_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 
-enum MessageType { TEXT, IMAGE, VIDEO, AUDIO, FILE, LOCATION }
-
 class SocketIOService {
   static final SocketIOService _instance = SocketIOService._internal();
 
   late IO.Socket _socket;
-  String? _currentMessagingBookingId;
   String? _currentTrackingBookingId;
   String? _currentUserId;
 
   // Connection state tracking
   bool _isConnected = false;
-  bool _messagingListenersSetup = false;
   bool _trackingListenersSetup = false;
 
-  // Callbacks for messaging
-  Function(Map<String, dynamic>)? onMessageReceived;
-  Function(Map<String, dynamic>)? onMessageRead;
-  Function(String)? onTypingStart;
-  Function(String)? onTypingStop;
+  // Callbacks for connection
   Function(String)? onError;
-  Function(String)? onMessageDeleted;
   Function(bool)? onConnectionStatusChanged;
 
   // Callbacks for tracking
@@ -42,8 +33,8 @@ class SocketIOService {
   /// Get current connection status
   bool get isConnected => _isConnected;
 
-  /// Get messaging booking ID
-  String? get messagingBookingId => _currentMessagingBookingId;
+  /// Get socket instance for direct access
+  IO.Socket get socket => _socket;
 
   /// Initialize Socket.IO connection
   Future<void> connect({
@@ -149,7 +140,6 @@ class SocketIOService {
     _socket.on('disconnect', (reason) {
       _isConnected = false;
       onConnectionStatusChanged?.call(false);
-      _messagingListenersSetup = false;
       _trackingListenersSetup = false;
       DebugLoggerService.socketConnection(
         '❌ Disconnected',
@@ -173,280 +163,6 @@ class SocketIOService {
       DebugLoggerService.error('SOCKET', 'Connection error', error: error);
       onError?.call(error.toString());
     });
-  }
-
-  // ==================== MESSAGING METHODS ====================
-
-  /// Join a messaging room for a specific booking
-  void joinMessagingRoom(String bookingId) {
-    if (!_isConnected) {
-      final error = 'Socket not connected. Cannot join room.';
-      DebugLoggerService.error('SOCKET', error);
-      onError?.call(error);
-      return;
-    }
-
-    _currentMessagingBookingId = bookingId;
-
-    DebugLoggerService.socketEvent(
-      'join:room',
-      isEmit: true,
-      payload: {'bookingId': bookingId},
-    );
-    _socket.emit('join:room', {'bookingId': bookingId});
-
-    // Setup listeners only once per socket connection
-    if (!_messagingListenersSetup) {
-      _setupMessagingListeners();
-      _messagingListenersSetup = true;
-    }
-
-    DebugLoggerService.chatAction(
-      'Joined messaging room',
-      data: {'bookingId': bookingId, 'userId': _currentUserId},
-    );
-  }
-
-  /// Setup listeners for messaging events (called only once)
-  void _setupMessagingListeners() {
-    // Listen for incoming messages
-    _socket.on('message:new', (data) {
-      DebugLoggerService.socketEvent(
-        'message:new',
-        isEmit: false,
-        payload: data,
-      );
-      DebugLoggerService.chatAction(
-        'Message received',
-        data: {
-          'senderId': data['senderId'],
-          'content': data['content'],
-          'messageType': data['messageType'],
-          'receivedAt': DateTime.now().toIso8601String(),
-        },
-      );
-      onMessageReceived?.call(data);
-    });
-
-    // Listen for message read receipts
-    _socket.on('message:read', (data) {
-      DebugLoggerService.socketEvent(
-        'message:read',
-        isEmit: false,
-        payload: data,
-      );
-      onMessageRead?.call(data);
-    });
-
-    // Listen for typing start indicator
-    _socket.on('typing:start', (data) {
-      DebugLoggerService.socketEvent(
-        'typing:start',
-        isEmit: false,
-        payload: data,
-      );
-      onTypingStart?.call(data['userId'] ?? '');
-    });
-
-    // Listen for typing stop indicator
-    _socket.on('typing:stop', (data) {
-      DebugLoggerService.socketEvent(
-        'typing:stop',
-        isEmit: false,
-        payload: data,
-      );
-      onTypingStop?.call(data['userId'] ?? '');
-    });
-
-    // Listen for message deletion
-    _socket.on('message:delete', (data) {
-      DebugLoggerService.socketEvent(
-        'message:delete',
-        isEmit: false,
-        payload: data,
-      );
-      onMessageDeleted?.call(data['messageId']);
-    });
-
-    // Listen for message notifications
-    _socket.on('message:notification', (data) {
-      DebugLoggerService.socketEvent(
-        'message:notification',
-        isEmit: false,
-        payload: data,
-      );
-      DebugLoggerService.chatAction(
-        'Message notification received',
-        data: data,
-      );
-      onMessageReceived?.call(data);
-    });
-
-    // Listen for room joined confirmation
-    _socket.on('join:room', (data) {
-      DebugLoggerService.socketEvent('join:room', isEmit: false, payload: data);
-      DebugLoggerService.log('MESSAGE', '✅ Joined room', data: data);
-    });
-
-    // Listen for room left event
-    _socket.on('leave:room', (data) {
-      DebugLoggerService.socketEvent(
-        'leave:room',
-        isEmit: false,
-        payload: data,
-      );
-      DebugLoggerService.log('MESSAGE', '✅ Left room', data: data);
-    });
-  }
-
-  /// Send a message
-  void sendMessage({
-    required String receiverId,
-    required String content,
-    required String messageType,
-    String? mediaUrl,
-    Map<String, dynamic>? metadata,
-  }) {
-    if (_currentMessagingBookingId == null) {
-      final error = 'No active booking room';
-      DebugLoggerService.error('MESSAGE', error);
-      onError?.call(error);
-      return;
-    }
-
-    if (receiverId.isEmpty) {
-      final error = 'Receiver ID is empty';
-      DebugLoggerService.error(
-        'MESSAGE',
-        error,
-        error: {'receiverId': receiverId},
-      );
-      onError?.call(error);
-      return;
-    }
-
-    if (content.isEmpty) {
-      final error = 'Message content is empty';
-      DebugLoggerService.error('MESSAGE', error);
-      onError?.call(error);
-      return;
-    }
-
-    final payload = {
-      'bookingId': _currentMessagingBookingId,
-      'receiverId': receiverId,
-      'content': content,
-      'messageType': messageType.toUpperCase(),
-      'mediaUrl': mediaUrl,
-      'metadata': metadata,
-    };
-
-    DebugLoggerService.socketEvent(
-      'message:send',
-      isEmit: true,
-      payload: payload,
-    );
-    DebugLoggerService.chatAction(
-      'Sending message',
-      data: {
-        'bookingId': _currentMessagingBookingId,
-        'receiverId': receiverId,
-        'contentLength': content.length,
-        'messageType': messageType,
-        'sentAt': DateTime.now().toIso8601String(),
-        'socketId': _socket.id,
-      },
-    );
-
-    _socket.emit('message:send', payload);
-  }
-
-  /// Mark messages as read
-  void markMessagesAsRead(List<String> messageIds) {
-    if (_currentMessagingBookingId == null) {
-      DebugLoggerService.error(
-        'MESSAGE',
-        'Cannot mark as read: No active booking room',
-      );
-      onError?.call('No active booking room');
-      return;
-    }
-
-    final payload = {
-      'bookingId': _currentMessagingBookingId,
-      'messageIds': messageIds,
-    };
-
-    DebugLoggerService.socketEvent(
-      'message:read',
-      isEmit: true,
-      payload: payload,
-    );
-    _socket.emit('message:read', payload);
-  }
-
-  /// Delete a message
-  void deleteMessage(String messageId) {
-    if (_currentMessagingBookingId == null) {
-      DebugLoggerService.error(
-        'MESSAGE',
-        'Cannot delete: No active booking room',
-      );
-      onError?.call('No active booking room');
-      return;
-    }
-
-    final payload = {
-      'bookingId': _currentMessagingBookingId,
-      'messageId': messageId,
-    };
-
-    DebugLoggerService.socketEvent(
-      'message:delete',
-      isEmit: true,
-      payload: payload,
-    );
-    _socket.emit('message:delete', payload);
-  }
-
-  /// Emit typing start event
-  void emitTypingStart() {
-    if (_currentMessagingBookingId == null) {
-      DebugLoggerService.error(
-        'MESSAGE',
-        'Cannot emit typing:start: No active booking room',
-      );
-      onError?.call('No active booking room');
-      return;
-    }
-
-    final payload = {'bookingId': _currentMessagingBookingId};
-    DebugLoggerService.socketEvent(
-      'typing:start',
-      isEmit: true,
-      payload: payload,
-    );
-    _socket.emit('typing:start', payload);
-  }
-
-  /// Emit typing stop event
-  void emitTypingStop() {
-    if (_currentMessagingBookingId == null) {
-      DebugLoggerService.error(
-        'MESSAGE',
-        'Cannot emit typing:stop: No active booking room',
-      );
-      onError?.call('No active booking room');
-      return;
-    }
-
-    final payload = {'bookingId': _currentMessagingBookingId};
-    DebugLoggerService.socketEvent(
-      'typing:stop',
-      isEmit: true,
-      payload: payload,
-    );
-    _socket.emit('typing:stop', payload);
   }
 
   // ==================== TRACKING METHODS ====================
@@ -572,24 +288,6 @@ class SocketIOService {
 
   // ==================== CONNECTION MANAGEMENT ====================
 
-  /// Leave current messaging room
-  void leaveMessagingRoom() {
-    if (_currentMessagingBookingId != null) {
-      DebugLoggerService.socketEvent(
-        'room:leave',
-        isEmit: true,
-        payload: {'bookingId': _currentMessagingBookingId},
-      );
-      _socket.emit('room:leave', {'bookingId': _currentMessagingBookingId});
-      DebugLoggerService.log(
-        'MESSAGE',
-        'Left messaging room',
-        data: {'bookingId': _currentMessagingBookingId},
-      );
-      _currentMessagingBookingId = null;
-    }
-  }
-
   /// Leave current tracking room
   void leaveTrackingRoom() {
     if (_currentTrackingBookingId != null) {
@@ -610,12 +308,10 @@ class SocketIOService {
 
   /// Disconnect socket
   void disconnect() {
-    leaveMessagingRoom();
     leaveTrackingRoom();
     _socket.disconnect();
     _socket.dispose();
     _isConnected = false;
-    _messagingListenersSetup = false;
     _trackingListenersSetup = false;
     DebugLoggerService.socketConnection('Disconnected by client');
   }

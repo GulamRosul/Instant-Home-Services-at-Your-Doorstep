@@ -392,13 +392,14 @@ class ProfileController extends GetxController {
       return null;
     }
 
+    // Swagger shape: { data: { firstName: ..., email: ..., ... } }
     final data = _asMap(responseMap['data']);
-    if (data == null) {
-      return null;
+    if (data != null && _looksLikeProfilePayload(data)) {
+      return data;
     }
 
     // Handle { data: { user: { ... } } }
-    if (data.containsKey('user')) {
+    if (data != null && data.containsKey('user')) {
       final userData = _asMap(data['user']);
       if (userData != null) {
         return userData;
@@ -406,10 +407,24 @@ class ProfileController extends GetxController {
     }
 
     // Handle { data: { data: { rest: { ... } } } }
-    final nestedData = _asMap(data['data']);
+    final nestedData = _asMap(data?['data']);
     final rest = _asMap(nestedData?['rest']);
 
+    // Some endpoints may return a direct user object without a data wrapper.
+    if (_looksLikeProfilePayload(responseMap)) {
+      return responseMap;
+    }
+
     return rest ?? nestedData ?? data;
+  }
+
+  bool _looksLikeProfilePayload(Map<String, dynamic> data) {
+    return data.containsKey('id') ||
+        data.containsKey('email') ||
+        data.containsKey('firstName') ||
+        data.containsKey('lastName') ||
+        data.containsKey('avatar') ||
+        data.containsKey('phone');
   }
 
   Map<String, dynamic>? _asMap(dynamic value) {

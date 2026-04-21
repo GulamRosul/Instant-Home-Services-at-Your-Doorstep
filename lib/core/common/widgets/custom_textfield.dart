@@ -155,7 +155,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             color: Colors.black,
-            lineHeight: 12.sp,
+            lineHeight: 14.sp,
           ),
       decoration: InputDecoration(
         labelText: widget.labelText,

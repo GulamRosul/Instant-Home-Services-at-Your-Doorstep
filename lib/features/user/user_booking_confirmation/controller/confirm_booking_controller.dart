@@ -93,6 +93,9 @@ class ConfirmBookingController extends GetxController {
 
       if ((response.statusCode == 200 || response.statusCode == 201) &&
           isSuccess) {
+        final createdBookingId = _extractBookingId(response.data);
+        final payableAmount = _extractAmount(response.data, bookingData);
+
         Get.dialog(
           BookingSuccessDialog(
             message:
@@ -105,7 +108,13 @@ class ConfirmBookingController extends GetxController {
         if (Get.isDialogOpen ?? false) {
           Get.back();
         }
-        Get.to(() => const PaymentScreen());
+        Get.to(
+          () => const PaymentScreen(),
+          arguments: {
+            'bookingId': createdBookingId ?? '',
+            'amount': payableAmount,
+          },
+        );
         return;
       }
 
@@ -181,6 +190,61 @@ class ConfirmBookingController extends GetxController {
     }
 
     return null;
+  }
+
+  String? _extractBookingId(dynamic responseData) {
+    final responseMap = _asMap(responseData);
+    final data = _asMap(responseMap?['data']);
+    final booking = _asMap(data?['booking']);
+
+    final rawId =
+        booking?['id'] ??
+        data?['bookingId'] ??
+        data?['id'] ??
+        responseMap?['bookingId'];
+
+    if (rawId is String && rawId.trim().isNotEmpty) {
+      return rawId.trim();
+    }
+
+    return null;
+  }
+
+  int _extractAmount(
+    dynamic responseData,
+    BookingConfirmationData bookingData,
+  ) {
+    final responseMap = _asMap(responseData);
+    final data = _asMap(responseMap?['data']);
+    final booking = _asMap(data?['booking']);
+
+    final rawAmount =
+        data?['serviceAmount'] ??
+        data?['amount'] ??
+        booking?['serviceAmount'] ??
+        booking?['amount'] ??
+        bookingData.service?.basePrice;
+
+    return _toInt(rawAmount);
+  }
+
+  int _toInt(dynamic value) {
+    if (value is int) {
+      return value;
+    }
+
+    if (value is num) {
+      return value.round();
+    }
+
+    if (value is String) {
+      final parsed = num.tryParse(value.trim());
+      if (parsed != null) {
+        return parsed.round();
+      }
+    }
+
+    return 0;
   }
 
   Map<String, dynamic>? _asMap(dynamic value) {

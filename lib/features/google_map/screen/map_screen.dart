@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/google_map/controller/map_controller.dart';
@@ -187,34 +188,57 @@ class _MapScreenState extends State<MapScreen> {
                         Material(
                           elevation: 4,
                           borderRadius: BorderRadius.circular(16),
-                          child: TextField(
+                          // child: TextField(
+                          //   controller: searchController,
+                          //   textInputAction: TextInputAction.search,
+                          //   onSubmitted: (_) => _submitSearch(),
+                          //   decoration: InputDecoration(
+                          //     hintText: 'Search destination',
+                          //     prefixIcon: const Icon(Icons.search),
+                          // suffixIcon: controller.isSearching.value
+                          //     ? const Padding(
+                          //         padding: EdgeInsets.all(12),
+                          //         child: SizedBox(
+                          //           width: 20,
+                          //           height: 20,
+                          //           child: CircularProgressIndicator(
+                          //             strokeWidth: 2,
+                          //           ),
+                          //         ),
+                          //       )
+                          //     : IconButton(
+                          //         onPressed: _submitSearch,
+                          //         icon: const Icon(Icons.arrow_forward),
+                          //       ),
+                          //     border: OutlineInputBorder(
+                          //       borderRadius: BorderRadius.circular(16),
+                          //       borderSide: BorderSide.none,
+                          //     ),
+                          //     filled: true,
+                          //   ),
+                          // ),
+                          child: CustomTextField(
+                            backgroundColor: Colors.white,
                             controller: searchController,
                             textInputAction: TextInputAction.search,
                             onSubmitted: (_) => _submitSearch(),
-                            decoration: InputDecoration(
-                              hintText: 'Search destination',
-                              prefixIcon: const Icon(Icons.search),
-                              suffixIcon: controller.isSearching.value
-                                  ? const Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                        ),
+                            hintText: 'Search destination',
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: controller.isSearching.value
+                                ? const Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
                                       ),
-                                    )
-                                  : IconButton(
-                                      onPressed: _submitSearch,
-                                      icon: const Icon(Icons.arrow_forward),
                                     ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide.none,
-                              ),
-                              filled: true,
-                            ),
+                                  )
+                                : IconButton(
+                                    onPressed: _submitSearch,
+                                    icon: const Icon(Icons.arrow_forward),
+                                  ),
                           ),
                         ),
                         if (controller.searchError.value.isNotEmpty) ...[

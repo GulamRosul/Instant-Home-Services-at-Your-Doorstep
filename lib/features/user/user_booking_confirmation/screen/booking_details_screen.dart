@@ -145,6 +145,8 @@ class BookingDetailsScreen extends StatelessWidget {
               CustomTextField(
                 controller: controller.locationController,
                 readOnly: true,
+                maxLines: 5,
+                minLines: 1,
                 suffixIcon: IconButton(
                   onPressed: () => _openMapPicker(controller),
                   icon: Icon(

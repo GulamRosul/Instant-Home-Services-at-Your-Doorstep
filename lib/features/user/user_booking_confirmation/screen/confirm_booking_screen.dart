@@ -83,6 +83,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                   ],
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SvgPicture.asset(
                       IconPath.checkcircle,
@@ -125,50 +126,16 @@ class ConfirmBookingScreen extends StatelessWidget {
                     SizedBox(height: 20.h),
 
                     // Detail Rows
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        _buildDetailItem(
-                          "Service Name",
-                          service?.title ?? 'Selected Service',
-                        ),
-                      ],
+                    _buildDetailItem(
+                      "Service Name",
+                      service?.title ?? 'Selected Service',
                     ),
                     _buildDetailItem("Date & Time", formattedDateTime),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        _buildDetailItem(
-                          "Location",
-                          bookingData.locationDetails,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        _buildDetailItem("Phone", bookingData.phoneNumber),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        _buildDetailItem(
-                          "Service At",
-                          bookingData.locationType,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [_buildDetailItem("Message", message)],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        _buildDetailItem("Total", totalPrice, isBold: true),
-                      ],
-                    ),
+                    _buildDetailItem("Location", bookingData.locationDetails),
+                    _buildDetailItem("Phone", bookingData.phoneNumber),
+                    _buildDetailItem("Service At", bookingData.locationType),
+                    _buildDetailItem("Message", message),
+                    _buildDetailItem("Total", totalPrice, isBold: true),
                   ],
                 ),
               ),
@@ -220,8 +187,10 @@ class ConfirmBookingScreen extends StatelessWidget {
               fontSize: 13.sp,
               color: isBold ? Colors.black : AppColors.textSecondary,
               fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
-              lineHeight: 15.sp,
+              lineHeight: 18.sp,
             ),
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

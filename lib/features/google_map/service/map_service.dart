@@ -36,6 +36,9 @@ class MapService {
   final String apiKey;
   final http.Client _client;
 
+  static const String _nominatimUserAgent =
+      'protiva502/1.0 (support@protiva502.app)';
+
   Future<MapSearchResult?> searchPlace(String query) async {
     final uri = Uri.https(
       'maps.googleapis.com',
@@ -84,6 +87,15 @@ class MapService {
   }
 
   Future<String?> reverseGeocode(LatLng location) async {
+    final googleAddress = await _reverseGeocodeWithGoogle(location);
+    if (googleAddress != null) {
+      return googleAddress;
+    }
+
+    return _reverseGeocodeWithOpenStreetMap(location);
+  }
+
+  Future<String?> _reverseGeocodeWithGoogle(LatLng location) async {
     final uri = Uri.https('maps.googleapis.com', 'maps/api/geocode/json', {
       'latlng': '${location.latitude},${location.longitude}',
       'key': apiKey,
@@ -114,6 +126,34 @@ class MapService {
     }
 
     return formattedAddress.trim();
+  }
+
+  Future<String?> _reverseGeocodeWithOpenStreetMap(LatLng location) async {
+    final uri = Uri.https('nominatim.openstreetmap.org', '/reverse', {
+      'lat': location.latitude.toString(),
+      'lon': location.longitude.toString(),
+      'format': 'jsonv2',
+      'zoom': '18',
+      'addressdetails': '1',
+    });
+
+    final response = await _client.get(
+      uri,
+      headers: {'User-Agent': _nominatimUserAgent},
+    );
+
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    final payload = jsonDecode(response.body) as Map<String, dynamic>;
+    final displayName = payload['display_name'] as String?;
+
+    if (displayName == null || displayName.trim().isEmpty) {
+      return null;
+    }
+
+    return displayName.trim();
   }
 
   Future<MapSearchResult?> lookupApproximateLocationFromIp() async {

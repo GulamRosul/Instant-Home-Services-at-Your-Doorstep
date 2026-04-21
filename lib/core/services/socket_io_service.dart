@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:protiva502/core/services/debug_logger_service.dart';
+import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 
 class SocketIOService {
@@ -50,9 +51,13 @@ class SocketIOService {
     _currentUserId = userId;
 
     try {
+      final resolvedToken = (token != null && token.trim().isNotEmpty)
+          ? token.trim()
+          : await SecureStorageService.getToken();
+
       DebugLoggerService.socketConnection(
         'Initializing',
-        details: 'userId=$userId, url=${ApiEndpoints.socketUrl}',
+        details: 'userId=$userId, url=${ApiEndpoints.socketMessageUrl}',
       );
 
       final optionsBuilder = IO.OptionBuilder()
@@ -64,11 +69,11 @@ class SocketIOService {
           .setReconnectionAttempts(5);
 
       // Add auth token to headers if provided
-      if (token != null && token.isNotEmpty) {
+      if (resolvedToken != null && resolvedToken.isNotEmpty) {
         optionsBuilder.setExtraHeaders({
           'Content-Type': 'application/json',
           'Accept': '*/*',
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer $resolvedToken',
         });
         DebugLoggerService.log('SOCKET', '✅ Auth token added to headers');
       } else {
@@ -79,13 +84,13 @@ class SocketIOService {
         DebugLoggerService.log('SOCKET', '⚠️ Warning: No auth token provided');
       }
 
-      _socket = IO.io(ApiEndpoints.socketUrl, optionsBuilder.build());
+      _socket = IO.io(ApiEndpoints.socketMessageUrl, optionsBuilder.build());
 
       _setupSocketListeners();
       _socket.connect();
 
       DebugLoggerService.socketConnection(
-        'Connecting to ${ApiEndpoints.socketUrl}',
+        'Connecting to ${ApiEndpoints.socketMessageUrl}',
       );
 
       // Wait for connection with timeout

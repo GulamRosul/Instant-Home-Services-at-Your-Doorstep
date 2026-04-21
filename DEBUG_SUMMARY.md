@@ -93,7 +93,7 @@ Get.to(() => const RoomDebugScreen());
 ```json
 {
   "bookingId": "cmo5lhl69000q1wf6i7uu0g0h",
-  "socketUrl": "https://x3081msx-3000.asse.devtunnels.ms",
+  "socketMessageUrl": "https://x3081msx-3000.asse.devtunnels.ms",
   "events": [
     "connected",
     "join:room",

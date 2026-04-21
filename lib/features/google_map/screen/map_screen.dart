@@ -28,12 +28,14 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   late final MapController controller;
   late final bool ownsController;
+  Worker? trackingWorker;
   final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     controller = _resolveController();
+    _bindTrackingMarkers();
   }
 
   MapController _resolveController() {
@@ -48,11 +50,66 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
+    trackingWorker?.dispose();
     searchController.dispose();
     if (ownsController && Get.isRegistered<MapController>()) {
       Get.delete<MapController>();
     }
     super.dispose();
+  }
+
+  void _bindTrackingMarkers() {
+    final trackingController = widget.trackingController;
+    if (trackingController == null) {
+      return;
+    }
+
+    _syncTrackingMarkers(trackingController);
+    trackingWorker = everAll([
+      trackingController.userLatitude,
+      trackingController.userLongitude,
+      trackingController.providerLatitude,
+      trackingController.providerLongitude,
+      trackingController.hasUserLocation,
+      trackingController.hasProviderLocation,
+      trackingController.userLocationDetails,
+    ], (_) => _syncTrackingMarkers(trackingController));
+  }
+
+  void _syncTrackingMarkers(TrackProviderController trackingController) {
+    LatLng? userPosition;
+    LatLng? providerPosition;
+
+    if (trackingController.hasUserLocation.value) {
+      userPosition = LatLng(
+        trackingController.userLatitude.value,
+        trackingController.userLongitude.value,
+      );
+
+      controller.setTrackedUserLocation(
+        userPosition,
+        title: trackingController.userLocationDetails.value,
+      );
+
+      controller.destinationLatLng.value ??= userPosition;
+    }
+
+    if (trackingController.hasProviderLocation.value) {
+      providerPosition = LatLng(
+        trackingController.providerLatitude.value,
+        trackingController.providerLongitude.value,
+      );
+      controller.setTrackedProviderLocation(providerPosition);
+    }
+
+    if (userPosition != null && providerPosition != null) {
+      controller.updateTrackingRoute(
+        providerPosition: providerPosition,
+        userPosition: userPosition,
+      );
+    } else {
+      controller.clearTrackingRoute();
+    }
   }
 
   Future<void> _submitSearch() async {
@@ -511,24 +568,24 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ],
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  'Status',
-                  style: getTextStyle(fontSize: 11.sp, color: Colors.white70),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  controller.trackingStatus.value,
-                  style: getTextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.end,
+            //   children: [
+            //     Text(
+            //       'Status',
+            //       style: getTextStyle(fontSize: 11.sp, color: Colors.white70),
+            //     ),
+            //     SizedBox(height: 4.h),
+            //     Text(
+            //       controller.trackingStatus.value,
+            //       style: getTextStyle(
+            //         fontSize: 12.sp,
+            //         fontWeight: FontWeight.w600,
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),

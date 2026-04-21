@@ -39,7 +39,7 @@ class SingleChatController extends GetxController {
   void _loadChatArguments() {
     final arguments = Get.arguments;
     if (arguments != null && arguments is Map<String, dynamic>) {
-      bookingId.value = 'cmo5lhl69000q1wf6i7uu0g0h';
+      bookingId.value = _resolveBookingId(arguments);
       currentUserId.value =
           arguments['userId'] ?? StorageService.getUserId() ?? 'user_123';
       userRole.value =
@@ -96,6 +96,24 @@ class SingleChatController extends GetxController {
         error: arguments,
       );
     }
+  }
+
+  String _resolveBookingId(Map<String, dynamic> arguments) {
+    final candidates = [
+      arguments['bookingId'],
+      arguments['id'],
+      arguments['bookingNumber'],
+      arguments['reference'],
+    ];
+
+    for (final candidate in candidates) {
+      final value = candidate?.toString().trim() ?? '';
+      if (value.isNotEmpty) {
+        return value;
+      }
+    }
+
+    return '';
   }
 
   /// Initialize Socket.IO connection for messaging
@@ -166,11 +184,6 @@ class SingleChatController extends GetxController {
     }
   }
 
-  /// Wait for socket to be ready before joining room (legacy - kept for backward compatibility)
-  void _waitForSocketConnection() {
-    // This is now handled in _initializeSocket with proper async/await
-  }
-
   /// Handle connection status changes
   void _handleConnectionStatusChanged(bool connected) {
     if (connected) {
@@ -225,9 +238,7 @@ class SingleChatController extends GetxController {
           };
 
           messages.refresh();
-          _printCleanConsole(
-            '✅ CONFIRMED: "$message" (ID: ${serverId.substring(0, 8)}...)',
-          );
+          _printCleanConsole('✅ CONFIRMED: "$message" (ID: $serverId...)');
 
           // Mark as read immediately if socket is connected
           if (serverId.isNotEmpty && chatService.isConnected) {

@@ -7,6 +7,8 @@ class RecentBookingModel {
     required this.preferredDate,
     required this.preferredTime,
     required this.locationDetails,
+    required this.locationLatitude,
+    required this.locationLongitude,
     required this.contactPhone,
     required this.serviceAmount,
     required this.paymentMethod,
@@ -25,6 +27,8 @@ class RecentBookingModel {
   final DateTime? preferredDate;
   final String preferredTime;
   final String locationDetails;
+  final double? locationLatitude;
+  final double? locationLongitude;
   final String contactPhone;
   final double serviceAmount;
   final String paymentMethod;
@@ -44,6 +48,8 @@ class RecentBookingModel {
       preferredDate: DateTime.tryParse(json['preferredDate']?.toString() ?? ''),
       preferredTime: json['preferredTime']?.toString() ?? '',
       locationDetails: json['locationDetails']?.toString() ?? '',
+      locationLatitude: _parseNullableDouble(json['locationLatitude']),
+      locationLongitude: _parseNullableDouble(json['locationLongitude']),
       contactPhone: json['contactPhone']?.toString() ?? '',
       serviceAmount:
           double.tryParse(json['serviceAmount']?.toString() ?? '') ?? 0,
@@ -65,6 +71,8 @@ class RecentBookingModel {
     DateTime? preferredDate,
     String? preferredTime,
     String? locationDetails,
+    double? locationLatitude,
+    double? locationLongitude,
     String? contactPhone,
     double? serviceAmount,
     String? paymentMethod,
@@ -83,6 +91,8 @@ class RecentBookingModel {
       preferredDate: preferredDate ?? this.preferredDate,
       preferredTime: preferredTime ?? this.preferredTime,
       locationDetails: locationDetails ?? this.locationDetails,
+      locationLatitude: locationLatitude ?? this.locationLatitude,
+      locationLongitude: locationLongitude ?? this.locationLongitude,
       contactPhone: contactPhone ?? this.contactPhone,
       serviceAmount: serviceAmount ?? this.serviceAmount,
       paymentMethod: paymentMethod ?? this.paymentMethod,
@@ -94,4 +104,16 @@ class RecentBookingModel {
       providerId: providerId ?? this.providerId,
     );
   }
+}
+
+double? _parseNullableDouble(dynamic value) {
+  if (value == null) {
+    return null;
+  }
+
+  if (value is num) {
+    return value.toDouble();
+  }
+
+  return double.tryParse(value.toString().trim());
 }

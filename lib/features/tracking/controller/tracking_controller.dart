@@ -1,11 +1,15 @@
+import 'dart:async';
+
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:protiva502/core/services/socket_io_service.dart';
+import 'package:protiva502/core/services/location_tracking_service.dart';
+import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 
 class TrackProviderController extends GetxController {
   // Socket.IO Service
-  late SocketIOService socketService;
+  late LocationTrackingService socketService;
 
   // Role - determined on init
   late Rx<String> userRole = "user".obs; // "user" or "provider"
@@ -17,13 +21,16 @@ class TrackProviderController extends GetxController {
   late Rx<String> rating = "4.8 (170 Reviews)".obs;
   late Rx<String> personCost =
       "৳ 20.00".obs; // Cost for user view, Earnings for provider view
-  late Rx<String> bookingId = "#BK12345".obs;
+  late Rx<String> bookingId = ''.obs;
 
   // Tracking Data - Observable for real-time updates
   late Rx<double> providerLatitude = 23.8103.obs;
   late Rx<double> providerLongitude = 90.4125.obs;
   late Rx<double> userLatitude = 23.8110.obs;
   late Rx<double> userLongitude = 90.4140.obs;
+  final hasProviderLocation = false.obs;
+  final hasUserLocation = false.obs;
+  final userLocationDetails = ''.obs;
   late Rx<String> estimatedTime = "12 mins".obs;
   late Rx<String> distance = "2.4 km".obs;
   late Rx<bool> isPersonOnline = true.obs;
@@ -31,6 +38,7 @@ class TrackProviderController extends GetxController {
 
   String? _currentUserId;
   String? _otherUserId;
+  StreamSubscription<Position>? _providerLocationSubscription;
 
   @override
   void onInit() {
@@ -66,8 +74,26 @@ class TrackProviderController extends GetxController {
         rating.value = arguments['rating'] ?? rating.value;
         personCost.value =
             arguments['personCost'] ?? arguments['cost'] ?? personCost.value;
-        bookingId.value = arguments['bookingId'] ?? bookingId.value;
+        bookingId.value = _resolveBookingId(arguments);
         _currentUserId = arguments['userId'];
+        userLocationDetails.value = _resolveUserLocationDetails(arguments);
+
+        final initialUserLatitude = _resolveCoordinate(
+          arguments,
+          primaryKey: 'userLocationLatitude',
+          fallbackKey: 'locationLatitude',
+        );
+        final initialUserLongitude = _resolveCoordinate(
+          arguments,
+          primaryKey: 'userLocationLongitude',
+          fallbackKey: 'locationLongitude',
+        );
+
+        if (initialUserLatitude != null && initialUserLongitude != null) {
+          userLatitude.value = initialUserLatitude;
+          userLongitude.value = initialUserLongitude;
+          hasUserLocation.value = true;
+        }
 
         // For provider role, other user ID should be clientId
         // For user role, other user ID should be providerId
@@ -94,36 +120,142 @@ class TrackProviderController extends GetxController {
   }
 
   /// Initialize Socket.IO connection for tracking
-  void _initializeSocket() {
-    socketService = SocketIOService();
+  Future<void> _initializeSocket() async {
+    socketService = LocationTrackingService();
 
     // Setup callbacks
     socketService.onLocationBroadcast = _handleLocationBroadcast;
     socketService.onTrackingState = _handleTrackingState;
     socketService.onTrackingError = _handleTrackingError;
 
-    // Connect to socket
-    socketService.connect(userId: _currentUserId ?? 'user_123');
-
     // Join tracking room - extract booking ID
-    String rawBookingId = bookingId.value.replaceAll('#', '');
-    socketService.joinTrackingRoom(rawBookingId);
+    final rawBookingId = bookingId.value.replaceAll('#', '').trim();
+    if (rawBookingId.isEmpty) {
+      trackingStatus.value = 'Booking ID missing';
+      return;
+    }
 
-    trackingStatus.value = "Connecting...";
+    trackingStatus.value = 'Connecting...';
+
+    final token = await SecureStorageService.getToken();
+
+    await socketService.connect(
+      userId: _currentUserId ?? 'user_123',
+      token: token,
+      timeout: const Duration(seconds: 30),
+    );
+
+    if (!socketService.isConnected) {
+      trackingStatus.value = 'Error: Socket connection failed';
+      return;
+    }
+
+    socketService.joinTrackingRoom(rawBookingId);
+    socketService.requestLocationState();
+    await _startProviderLocationUpdatesIfNeeded();
+  }
+
+  Future<void> _startProviderLocationUpdatesIfNeeded() async {
+    if (userRole.value.toLowerCase() != 'provider') {
+      return;
+    }
+
+    final isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isServiceEnabled) {
+      trackingStatus.value = 'Enable location service to share live movement';
+      return;
+    }
+
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      trackingStatus.value = 'Location permission required for live tracking';
+      return;
+    }
+
+    try {
+      final currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      _emitProviderLocation(currentPosition);
+    } catch (e) {
+      print('Unable to fetch provider current location: $e');
+    }
+
+    await _providerLocationSubscription?.cancel();
+    _providerLocationSubscription =
+        Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 5,
+          ),
+        ).listen(
+          _emitProviderLocation,
+          onError: (error) {
+            trackingStatus.value = 'Provider location stream error';
+            print('Provider location stream error: $error');
+          },
+        );
+  }
+
+  void _emitProviderLocation(Position position) {
+    final latitude = position.latitude;
+    final longitude = position.longitude;
+    final accuracy = position.accuracy < 0 ? 0.0 : position.accuracy;
+    final speed = position.speed < 0 ? 0.0 : position.speed;
+    final heading = position.heading < 0 ? 0.0 : position.heading;
+
+    providerLatitude.value = latitude;
+    providerLongitude.value = longitude;
+    hasProviderLocation.value = true;
+
+    socketService.updateLocation(
+      latitude: latitude,
+      longitude: longitude,
+      accuracy: accuracy,
+      speed: speed,
+      heading: heading,
+    );
   }
 
   /// Handle location broadcast from provider
   void _handleLocationBroadcast(Map<String, dynamic> data) {
     try {
-      final point = data['point'] ?? {};
-      final state = data['state'] ?? {};
+      final point = data['point'] is Map
+          ? Map<String, dynamic>.from(data['point'])
+          : <String, dynamic>{};
+      final state = data['state'] is Map
+          ? Map<String, dynamic>.from(data['state'])
+          : <String, dynamic>{};
 
-      // Update provider's location
-      if (point.containsKey('latitude')) {
+      final pointRole = point['role']?.toString().toUpperCase();
+
+      // Provider location should be the dynamic location on the map.
+      if (pointRole == 'PROVIDER' && point.containsKey('latitude')) {
         providerLatitude.value = (point['latitude'] as num).toDouble();
+        hasProviderLocation.value = true;
       }
-      if (point.containsKey('longitude')) {
+      if (pointRole == 'PROVIDER' && point.containsKey('longitude')) {
         providerLongitude.value = (point['longitude'] as num).toDouble();
+        hasProviderLocation.value = true;
+      }
+
+      final providerState = state['provider'] is Map
+          ? Map<String, dynamic>.from(state['provider'])
+          : <String, dynamic>{};
+
+      if (providerState.containsKey('latitude')) {
+        providerLatitude.value = (providerState['latitude'] as num).toDouble();
+        hasProviderLocation.value = true;
+      }
+      if (providerState.containsKey('longitude')) {
+        providerLongitude.value = (providerState['longitude'] as num)
+            .toDouble();
+        hasProviderLocation.value = true;
       }
 
       // Update distance and ETA from state
@@ -144,23 +276,42 @@ class TrackProviderController extends GetxController {
   /// Handle tracking state update
   void _handleTrackingState(Map<String, dynamic> data) {
     try {
-      // Update both users' locations from state
-      final clientState = data['client'] ?? {};
-      final providerState = data['provider'] ?? {};
+      final state = data['state'] is Map
+          ? Map<String, dynamic>.from(data['state'])
+          : data;
 
-      if (clientState.containsKey('latitude')) {
-        userLatitude.value = (clientState['latitude'] as num).toDouble();
-      }
-      if (clientState.containsKey('longitude')) {
-        userLongitude.value = (clientState['longitude'] as num).toDouble();
-      }
+      final providerState = state['provider'] is Map
+          ? Map<String, dynamic>.from(state['provider'])
+          : <String, dynamic>{};
+      final clientState = state['client'] is Map
+          ? Map<String, dynamic>.from(state['client'])
+          : (state['user'] is Map
+                ? Map<String, dynamic>.from(state['user'])
+                : <String, dynamic>{});
+      final shouldSetInitialUserLocation = !hasUserLocation.value;
 
       if (providerState.containsKey('latitude')) {
         providerLatitude.value = (providerState['latitude'] as num).toDouble();
+        hasProviderLocation.value = true;
       }
       if (providerState.containsKey('longitude')) {
         providerLongitude.value = (providerState['longitude'] as num)
             .toDouble();
+        hasProviderLocation.value = true;
+      }
+
+      // Keep user location static when already supplied from booking/map args.
+      if (shouldSetInitialUserLocation && clientState.containsKey('latitude')) {
+        userLatitude.value = (clientState['latitude'] as num).toDouble();
+      }
+      if (shouldSetInitialUserLocation &&
+          clientState.containsKey('longitude')) {
+        userLongitude.value = (clientState['longitude'] as num).toDouble();
+      }
+      if (shouldSetInitialUserLocation &&
+          clientState.containsKey('latitude') &&
+          clientState.containsKey('longitude')) {
+        hasUserLocation.value = true;
       }
 
       print(
@@ -201,7 +352,13 @@ class TrackProviderController extends GetxController {
 
   void messagePerson() {
     // Extract raw booking ID without # symbol
-    String rawBookingId = bookingId.value.replaceAll('#', '');
+    String rawBookingId = bookingId.value.replaceAll('#', '').trim();
+
+    if (rawBookingId.isEmpty) {
+      print('Error: Booking ID is missing for chat');
+      Get.snackbar('Error', 'Unable to initiate chat: Booking ID not found');
+      return;
+    }
 
     // Ensure we have valid IDs before navigating
     if (_currentUserId == null || _currentUserId!.isEmpty) {
@@ -258,9 +415,72 @@ class TrackProviderController extends GetxController {
     print("Opening navigation to customer location...");
   }
 
+  String _resolveBookingId(Map<String, dynamic> arguments) {
+    final candidates = [
+      arguments['bookingId'],
+      arguments['id'],
+      arguments['bookingNumber'],
+      arguments['reference'],
+    ];
+
+    for (final candidate in candidates) {
+      final value = candidate?.toString().trim() ?? '';
+      if (value.isNotEmpty) {
+        return value;
+      }
+    }
+
+    return '';
+  }
+
+  String _resolveUserLocationDetails(Map<String, dynamic> arguments) {
+    final candidates = [
+      arguments['userLocationDetails'],
+      arguments['locationDetails'],
+      arguments['location'],
+    ];
+
+    for (final candidate in candidates) {
+      final value = candidate?.toString().trim() ?? '';
+      if (value.isNotEmpty) {
+        return value;
+      }
+    }
+
+    return location.value;
+  }
+
+  double? _resolveCoordinate(
+    Map<String, dynamic> arguments, {
+    required String primaryKey,
+    String? fallbackKey,
+  }) {
+    final candidates = [
+      arguments[primaryKey],
+      if (fallbackKey != null) arguments[fallbackKey],
+    ];
+
+    for (final candidate in candidates) {
+      if (candidate == null) {
+        continue;
+      }
+
+      if (candidate is num) {
+        return candidate.toDouble();
+      }
+
+      final parsed = double.tryParse(candidate.toString().trim());
+      if (parsed != null) {
+        return parsed;
+      }
+    }
+
+    return null;
+  }
+
   @override
   void onClose() {
-    // socketService.leaveRoom();
+    _providerLocationSubscription?.cancel();
     socketService.disconnect();
     super.onClose();
   }

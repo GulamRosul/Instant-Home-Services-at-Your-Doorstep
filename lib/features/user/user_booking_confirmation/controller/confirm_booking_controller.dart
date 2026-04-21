@@ -195,7 +195,7 @@ class ConfirmBookingController extends GetxController {
   String? _extractBookingId(dynamic responseData) {
     final responseMap = _asMap(responseData);
     final data = _asMap(responseMap?['data']);
-    final booking = _asMap(data?['booking']);
+    final booking = _asMap(data?['data']);
 
     final rawId =
         booking?['id'] ??
@@ -216,13 +216,14 @@ class ConfirmBookingController extends GetxController {
   ) {
     final responseMap = _asMap(responseData);
     final data = _asMap(responseMap?['data']);
-    final booking = _asMap(data?['booking']);
+    final booking = _asMap(data?['data']);
 
     final rawAmount =
-        data?['serviceAmount'] ??
-        data?['amount'] ??
         booking?['serviceAmount'] ??
         booking?['amount'] ??
+        data?['id'] ??
+        data?['serviceAmount'] ??
+        data?['amount'] ??
         bookingData.service?.basePrice;
 
     return _toInt(rawAmount);

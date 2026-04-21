@@ -8,7 +8,8 @@ class ApiEndpoints {
   static const String baseUrl = 'http://16.171.13.66/api/v1';
 
   /// Socket.IO Server URL (same host as API)
-  static const String socketUrl = 'https://protiva-be.onrender.com/messaging';
+  static const String socketMessageUrl = 'http://16.171.13.66/messaging';
+  static const String socketTrackingUrl = 'http://16.171.13.66/tracking';
   static const String register = '/auth/register';
   static const String login = '/auth/login';
   static const String authMe = '/auth/me';

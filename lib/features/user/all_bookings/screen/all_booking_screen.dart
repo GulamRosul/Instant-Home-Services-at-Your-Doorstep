@@ -679,6 +679,13 @@ class AllBookingScreen extends StatelessWidget {
   }
 
   void _handleBookingAction(UserBookingItem booking) {
+    final trackingBookingId = _resolveTrackingBookingId(booking);
+
+    if (trackingBookingId.isEmpty) {
+      Get.snackbar('Booking update', 'Booking ID is unavailable for tracking.');
+      return;
+    }
+
     if (booking.canTrack) {
       Get.to(
         () => const TrackProviderScreen(),
@@ -690,11 +697,14 @@ class AllBookingScreen extends StatelessWidget {
           'rating':
               '4.8 (170 Reviews)', // You may need to fetch actual rating from API
           'cost': '\$${booking.totalAmount.toStringAsFixed(2)}',
-          'bookingId': booking.reference,
+          'bookingId': trackingBookingId,
           'providerId': booking.providerId,
           'clientId': booking.clientId,
           'userId': booking.clientId,
           'userRole': 'user',
+          'userLocationLatitude': booking.locationLatitude,
+          'userLocationLongitude': booking.locationLongitude,
+          'userLocationDetails': booking.locationText,
         },
       );
       return;
@@ -773,5 +783,18 @@ class AllBookingScreen extends StatelessWidget {
     }
 
     return '${reference.substring(0, 12)}...';
+  }
+
+  String _resolveTrackingBookingId(UserBookingItem booking) {
+    if (booking.id.trim().isNotEmpty) {
+      return booking.id.trim();
+    }
+
+    final bookingNumber = booking.bookingNumber?.trim() ?? '';
+    if (bookingNumber.isNotEmpty) {
+      return bookingNumber;
+    }
+
+    return '';
   }
 }

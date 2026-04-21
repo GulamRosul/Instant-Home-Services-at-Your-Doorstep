@@ -42,6 +42,8 @@ class UserBookingItem {
     required this.serviceLocation,
     required this.locationAddress,
     required this.locationDetails,
+    required this.locationLatitude,
+    required this.locationLongitude,
     required this.contactPhone,
     required this.contactEmail,
     required this.serviceAmount,
@@ -63,6 +65,8 @@ class UserBookingItem {
   final String? serviceLocation;
   final String? locationAddress;
   final String? locationDetails;
+  final double? locationLatitude;
+  final double? locationLongitude;
   final String? contactPhone;
   final String? contactEmail;
   final double serviceAmount;
@@ -88,6 +92,8 @@ class UserBookingItem {
       serviceLocation: _nullableText(json['serviceLocation']),
       locationAddress: _nullableText(json['locationAddress']),
       locationDetails: _nullableText(json['locationDetails']),
+      locationLatitude: _parseNullableDouble(json['locationLatitude']),
+      locationLongitude: _parseNullableDouble(json['locationLongitude']),
       contactPhone: _nullableText(json['contactPhone']),
       contactEmail: _nullableText(json['contactEmail']),
       serviceAmount: serviceAmount,
@@ -220,6 +226,19 @@ double _parseDouble(dynamic value) {
   }
 
   return double.tryParse(value?.toString() ?? '') ?? 0;
+}
+
+double? _parseNullableDouble(dynamic value) {
+  if (value == null) {
+    return null;
+  }
+
+  if (value is num) {
+    return value.toDouble();
+  }
+
+  final parsed = double.tryParse(value.toString().trim());
+  return parsed;
 }
 
 DateTime? _parseDate(dynamic value) {

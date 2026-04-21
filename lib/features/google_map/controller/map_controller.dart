@@ -40,8 +40,17 @@ class MapController extends GetxController {
 
   static const String _currentMarkerId = 'current_location';
   static const String _destinationMarkerId = 'selected_destination';
+  static const String _trackedUserMarkerId = 'tracked_user_location';
+  static const String _trackedProviderMarkerId = 'tracked_provider_location';
   static const String _routePolylineId = 'route';
+  static const String _trackingRoutePolylineId = 'tracking_route';
   static const double _defaultZoom = 15;
+  static const Duration _trackingRouteThrottle = Duration(seconds: 4);
+  static const double _trackingMinMovementMeters = 8;
+
+  DateTime? _lastTrackingRouteAt;
+  LatLng? _lastTrackingProviderPosition;
+  LatLng? _lastTrackingUserPosition;
 
   CameraPosition get initialCameraPosition => CameraPosition(
     target: destinationLatLng.value ?? currentLatLng.value,
@@ -370,6 +379,145 @@ class MapController extends GetxController {
     try {
       await Geolocator.openAppSettings();
     } catch (_) {}
+  }
+
+  void setTrackedUserLocation(LatLng position, {String? title}) {
+    _updateMarker(
+      position,
+      _trackedUserMarkerId,
+      title?.trim().isNotEmpty == true ? title!.trim() : 'User location',
+      BitmapDescriptor.hueOrange,
+    );
+  }
+
+  void setTrackedProviderLocation(LatLng position, {String? title}) {
+    _updateMarker(
+      position,
+      _trackedProviderMarkerId,
+      title?.trim().isNotEmpty == true ? title!.trim() : 'Provider location',
+      BitmapDescriptor.hueGreen,
+    );
+  }
+
+  Future<void> updateTrackingRoute({
+    required LatLng providerPosition,
+    required LatLng userPosition,
+    bool force = false,
+  }) async {
+    if (!_shouldRefreshTrackingRoute(
+      providerPosition: providerPosition,
+      userPosition: userPosition,
+      force: force,
+    )) {
+      return;
+    }
+
+    try {
+      final polylinePoints = PolylinePoints(apiKey: mapService.apiKey);
+      final result = await polylinePoints.getRouteBetweenCoordinatesV2(
+        request: RoutesApiRequest(
+          origin: PointLatLng(
+            providerPosition.latitude,
+            providerPosition.longitude,
+          ),
+          destination: PointLatLng(
+            userPosition.latitude,
+            userPosition.longitude,
+          ),
+        ),
+      );
+
+      final routePoints = result.primaryRoute?.polylinePoints;
+      polylines.removeWhere(
+        (polyline) => polyline.polylineId.value == _trackingRoutePolylineId,
+      );
+
+      if (routePoints != null && routePoints.isNotEmpty) {
+        polylines.add(
+          Polyline(
+            polylineId: const PolylineId(_trackingRoutePolylineId),
+            points: routePoints
+                .map((point) => LatLng(point.latitude, point.longitude))
+                .toList(),
+            geodesic: true,
+            width: 6,
+          ),
+        );
+      } else {
+        _drawDirectTrackingRoute(providerPosition, userPosition);
+      }
+
+      polylines.refresh();
+      _lastTrackingRouteAt = DateTime.now();
+      _lastTrackingProviderPosition = providerPosition;
+      _lastTrackingUserPosition = userPosition;
+    } catch (_) {
+      // Fallback so the user still sees provider-to-user direction.
+      _drawDirectTrackingRoute(providerPosition, userPosition);
+      polylines.refresh();
+
+      _lastTrackingRouteAt = DateTime.now();
+      _lastTrackingProviderPosition = providerPosition;
+      _lastTrackingUserPosition = userPosition;
+    }
+  }
+
+  void _drawDirectTrackingRoute(LatLng providerPosition, LatLng userPosition) {
+    polylines.removeWhere(
+      (polyline) => polyline.polylineId.value == _trackingRoutePolylineId,
+    );
+    polylines.add(
+      Polyline(
+        polylineId: const PolylineId(_trackingRoutePolylineId),
+        points: [providerPosition, userPosition],
+        geodesic: true,
+        width: 6,
+      ),
+    );
+  }
+
+  void clearTrackingRoute() {
+    polylines.removeWhere(
+      (polyline) => polyline.polylineId.value == _trackingRoutePolylineId,
+    );
+    polylines.refresh();
+  }
+
+  bool _shouldRefreshTrackingRoute({
+    required LatLng providerPosition,
+    required LatLng userPosition,
+    required bool force,
+  }) {
+    if (force || _lastTrackingRouteAt == null) {
+      return true;
+    }
+
+    final elapsed = DateTime.now().difference(_lastTrackingRouteAt!);
+    if (elapsed >= _trackingRouteThrottle) {
+      return true;
+    }
+
+    final previousProvider = _lastTrackingProviderPosition;
+    final previousUser = _lastTrackingUserPosition;
+    if (previousProvider == null || previousUser == null) {
+      return true;
+    }
+
+    final providerMoved = Geolocator.distanceBetween(
+      previousProvider.latitude,
+      previousProvider.longitude,
+      providerPosition.latitude,
+      providerPosition.longitude,
+    );
+    final userMoved = Geolocator.distanceBetween(
+      previousUser.latitude,
+      previousUser.longitude,
+      userPosition.latitude,
+      userPosition.longitude,
+    );
+
+    return providerMoved >= _trackingMinMovementMeters ||
+        userMoved >= _trackingMinMovementMeters;
   }
 
   void _startLiveTracking() {

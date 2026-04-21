@@ -7,7 +7,6 @@ import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
 import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
-import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
 
 class BookingCard extends StatelessWidget {
   final BookingController controller;
@@ -24,6 +23,7 @@ class BookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = controller.statusLabelOf(booking);
+    final trackingBookingId = _resolveTrackingBookingId();
 
     final cardContent = Container(
       padding: EdgeInsets.all(16.w),
@@ -239,23 +239,36 @@ class BookingCard extends StatelessWidget {
 
     if (status == 'Accepted') {
       return GestureDetector(
-        onTap: () => Get.to(
-          () => TrackProviderScreen(),
-          arguments: {
-            'providerName': 'Service Provider',
-            'serviceName': booking.serviceName,
-            'location': booking.locationDetails.isNotEmpty
-                ? booking.locationDetails
-                : 'Location not available',
-            'rating': '4.8 (170 Reviews)',
-            'cost': '৳ ${booking.serviceAmount.toStringAsFixed(2)}',
-            'bookingId': booking.id,
-            'clientId': booking.clientId,
-            'providerId': booking.providerId,
-            'userId': booking.providerId,
-            'userRole': 'provider',
-          },
-        ),
+        onTap: () {
+          if (trackingBookingId.isEmpty) {
+            Get.snackbar(
+              'Booking update',
+              'Booking ID is unavailable for tracking.',
+            );
+            return;
+          }
+
+          Get.to(
+            () => TrackProviderScreen(),
+            arguments: {
+              'providerName': 'Service Provider',
+              'serviceName': booking.serviceName,
+              'location': booking.locationDetails.isNotEmpty
+                  ? booking.locationDetails
+                  : 'Location not available',
+              'rating': '4.8 (170 Reviews)',
+              'cost': '৳ ${booking.serviceAmount.toStringAsFixed(2)}',
+              'bookingId': trackingBookingId,
+              'clientId': booking.clientId,
+              'providerId': booking.providerId,
+              'userId': booking.providerId,
+              'userRole': 'provider',
+              'userLocationLatitude': booking.locationLatitude,
+              'userLocationLongitude': booking.locationLongitude,
+              'userLocationDetails': booking.locationDetails,
+            },
+          );
+        },
         child: cardContent,
       );
     }
@@ -308,5 +321,17 @@ class BookingCard extends StatelessWidget {
     }
 
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  String _resolveTrackingBookingId() {
+    if (booking.id.trim().isNotEmpty) {
+      return booking.id.trim();
+    }
+
+    if (booking.bookingNumber.trim().isNotEmpty) {
+      return booking.bookingNumber.trim();
+    }
+
+    return '';
   }
 }

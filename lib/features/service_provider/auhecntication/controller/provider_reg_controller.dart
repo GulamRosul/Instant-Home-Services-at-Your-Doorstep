@@ -11,17 +11,16 @@ import 'package:protiva502/features/service_provider/auhecntication/screen/provi
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 
 class ProviderRegController extends GetxController {
-
   static const String _baseUrl =
       'https://protiva-backend-ukw2.onrender.com/api/v1';
   static const String _addProviderEndpoint = '$_baseUrl/auth/add-provider';
   static const int maxBioLength = 300;
 
-
   // Personal Information
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
-  final companyNameController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final nidNumberController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -124,8 +123,8 @@ class ProviderRegController extends GetxController {
 
     isRegistering.value = true;
 
-    final nameParts = _splitName(companyNameController.text.trim());
-    final fullPhone = '${selectedCountryCode.value}${phoneController.text.trim()}';
+    final fullPhone =
+        '${selectedCountryCode.value}${phoneController.text.trim()}';
 
     final request = http.MultipartRequest(
       'POST',
@@ -134,8 +133,8 @@ class ProviderRegController extends GetxController {
 
     request.headers['accept'] = '*/*';
     request.fields.addAll({
-      'firstName': nameParts.$1,
-      'lastName': nameParts.$2,
+      'firstName': firstNameController.text.trim(),
+      'lastName': lastNameController.text.trim(),
       'email': emailController.text.trim(),
       'phone': fullPhone,
       'password': passwordController.text,
@@ -212,7 +211,8 @@ class ProviderRegController extends GetxController {
   bool _validateStepOne() {
     if (emailController.text.trim().isEmpty ||
         phoneController.text.trim().isEmpty ||
-        companyNameController.text.trim().isEmpty ||
+        firstNameController.text.trim().isEmpty ||
+        lastNameController.text.trim().isEmpty ||
         nidNumberController.text.trim().isEmpty ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
@@ -265,16 +265,6 @@ class ProviderRegController extends GetxController {
     return true;
   }
 
-  (String, String) _splitName(String fullName) {
-    final parts = fullName
-        .split(RegExp(r'\s+'))
-        .where((e) => e.isNotEmpty)
-        .toList();
-    if (parts.isEmpty) return ('Provider', 'User');
-    if (parts.length == 1) return (parts.first, 'Provider');
-    return (parts.first, parts.sublist(1).join(' '));
-  }
-
   Map<String, dynamic>? _tryDecode(String source) {
     try {
       final decoded = jsonDecode(source);
@@ -295,7 +285,8 @@ class ProviderRegController extends GetxController {
   void _resetForm() {
     emailController.clear();
     phoneController.clear();
-    companyNameController.clear();
+    firstNameController.clear();
+    lastNameController.clear();
     nidNumberController.clear();
     passwordController.clear();
     confirmPasswordController.clear();
@@ -313,7 +304,8 @@ class ProviderRegController extends GetxController {
   void onClose() {
     emailController.dispose();
     phoneController.dispose();
-    companyNameController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     nidNumberController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();

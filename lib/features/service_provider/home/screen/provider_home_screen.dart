@@ -27,7 +27,7 @@ class ProviderHomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search Bar
-            SearchBarWidget(),
+            // SearchBarWidget(),
             SizedBox(height: 24.h),
 
             // Wallet Card

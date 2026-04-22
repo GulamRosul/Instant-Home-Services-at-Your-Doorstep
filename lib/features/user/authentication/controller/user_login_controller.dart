@@ -18,6 +18,9 @@ class UserLoginController extends GetxController {
   var isLoading = false.obs;
   var isPasswordVisible = false.obs;
 
+  var emailError = RxnString();
+  var passwordError = RxnString();
+
   void togglePasswordVisibility() {
     isPasswordVisible.toggle();
   }
@@ -31,14 +34,24 @@ class UserLoginController extends GetxController {
     debugPrint('🔐 [LOGIN] Email: $email');
     debugPrint('🔐 [LOGIN] Password length: ${password.length}');
 
-    if (email.isEmpty || !GetUtils.isEmail(email)) {
-      Get.snackbar("Error", "Enter valid email");
+    // Reset errors
+    emailError.value = null;
+    passwordError.value = null;
+
+    if (email.isEmpty) {
+      emailError.value = "Enter email";
+      debugPrint('❌ [LOGIN] Empty email');
+      return;
+    }
+
+    if (!GetUtils.isEmail(email)) {
+      emailError.value = "Enter valid email";
       debugPrint('❌ [LOGIN] Invalid email format');
       return;
     }
 
     if (password.isEmpty) {
-      Get.snackbar("Error", "Enter password");
+      passwordError.value = "Enter password";
       debugPrint('❌ [LOGIN] Empty password');
       return;
     }
@@ -82,7 +95,12 @@ class UserLoginController extends GetxController {
 
       if (response.statusCode != 200) {
         debugPrint('❌ [LOGIN] Server error: ${response.statusCode}');
-        Get.snackbar("Error", "Server error: ${response.statusCode}");
+        if (response.statusCode == 401) {
+          passwordError.value = "Your password is wrong";
+        } else if (response.statusCode == 404 || response.statusCode == 400) {
+          emailError.value = "Your email is wrong";
+          passwordError.value = "Your password is wrong";
+        }
         return;
       }
 
@@ -163,7 +181,23 @@ class UserLoginController extends GetxController {
       debugPrint('❌ [LOGIN] Exception caught: $e');
       debugPrint('❌ [LOGIN] Stack trace: $stackTrace');
       AppLoggerHelper.error('Login failed with error: $e');
-      Get.snackbar("Error", "Login failed");
+
+      if (e is DioException) {
+        if (e.response?.statusCode == 401) {
+          passwordError.value = "Your password is wrong";
+        } else if (e.response?.statusCode == 404) {
+          emailError.value = "Your email is wrong";
+        } else if (e.response?.statusCode == 400) {
+          // Often 400 is used for invalid credentials or validation
+          emailError.value = "Your email is wrong";
+          passwordError.value = "Your password is wrong";
+        } else {
+          // For other errors like network or 500, we can still use a snackbar or just log it
+          debugPrint('📡 [LOGIN] Other error: ${e.message}');
+        }
+      } else {
+        debugPrint('❌ [LOGIN] Non-Dio error: $e');
+      }
     } finally {
       isLoading.value = false;
       debugPrint('🏁 [LOGIN] Login process completed');

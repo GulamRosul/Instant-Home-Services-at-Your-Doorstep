@@ -25,12 +25,34 @@ class ProviderLoginController extends GetxController {
   var isPasswordVisible = false.obs;
   var isSigningIn = false.obs;
 
+  var emailError = RxnString();
+  var passwordError = RxnString();
+
   void togglePasswordVisibility() =>
       isPasswordVisible.value = !isPasswordVisible.value;
 
   Future<void> handleSignIn() async {
     final username = usernameController.text.trim();
     final password = passwordController.text;
+
+    // Reset errors
+    emailError.value = null;
+    passwordError.value = null;
+
+    if (username.isEmpty) {
+      emailError.value = "Enter email";
+      return;
+    }
+
+    if (!GetUtils.isEmail(username)) {
+      emailError.value = "Enter valid email";
+      return;
+    }
+
+    if (password.isEmpty) {
+      passwordError.value = "Enter password";
+      return;
+    }
 
     if (username.isNotEmpty && password.isNotEmpty) {
       if (isSigningIn.value) return;
@@ -88,6 +110,7 @@ class ProviderLoginController extends GetxController {
 
         final responseData = _tryDecode(response.body);
         if (response.statusCode == 200) {
+          // ... (existing success logic)
           final data = responseData?['data'] as Map<String, dynamic>?;
           final user = data?['user'] as Map<String, dynamic>?;
 
@@ -109,12 +132,6 @@ class ProviderLoginController extends GetxController {
             avatar: user?['avatar']?.toString(),
           );
 
-          final message =
-              responseData?['message']?.toString() ??
-              data?['message']?.toString() ??
-              'Login successful';
-          Get.snackbar('Success', message);
-
           // Get FCM token for logging (controller should already be initialized)
           String? fcmToken;
           try {
@@ -129,7 +146,16 @@ class ProviderLoginController extends GetxController {
 
           Get.offAll(() => const ProviderNavbarScreen());
         } else {
-          Get.snackbar('Login failed', _extractMessage(responseData));
+          if (response.statusCode == 401) {
+            passwordError.value = "Your password is wrong";
+          } else if (response.statusCode == 404) {
+            emailError.value = "Your email is wrong";
+          } else if (response.statusCode == 400) {
+            emailError.value = "Your email is wrong";
+            passwordError.value = "Your password is wrong";
+          } else {
+            debugPrint('Login failed: ${response.statusCode}');
+          }
         }
       } catch (error, stackTrace) {
         debugPrint('Provider login error => $error');
@@ -138,7 +164,8 @@ class ProviderLoginController extends GetxController {
           name: 'ProviderLogin',
           stackTrace: stackTrace,
         );
-        Get.snackbar('Login failed', 'Could not connect to the server');
+        // Removed snackbar for common errors as requested
+        debugPrint('Login failed: Could not connect to the server');
       } finally {
         isSigningIn.value = false;
       }

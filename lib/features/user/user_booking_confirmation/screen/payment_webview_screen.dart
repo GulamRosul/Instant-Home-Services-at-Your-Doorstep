@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/payment_controller.dart';
 
 class PaymentWebViewScreen extends StatefulWidget {
@@ -16,7 +14,6 @@ class PaymentWebViewScreen extends StatefulWidget {
 class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
   late WebViewController _webViewController;
   bool _isLoading = true;
-  bool _pageLoaded = false;
 
   @override
   void initState() {
@@ -40,7 +37,6 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
             debugPrint('WebView page finished loading: $url');
             setState(() {
               _isLoading = false;
-              _pageLoaded = true;
             });
 
             // Check if payment was successful by URL

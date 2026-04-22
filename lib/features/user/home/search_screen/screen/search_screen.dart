@@ -10,8 +10,6 @@ import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/home/search_screen/controller/search_controller.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
-import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
-import 'package:protiva502/core/common/widgets/custom_button.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});

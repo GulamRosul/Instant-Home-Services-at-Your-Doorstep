@@ -109,11 +109,7 @@ class MoreBottomSheet extends StatelessWidget {
                       iconPath: IconPath.logout,
                       label: 'Logout',
                       isLogout: true,
-                      onTap: () async {
-                        Get.back();
-                        await StorageService.clearAll();
-                        Get.offAllNamed(AppRoute.getSecondOnboardingScreen());
-                      },
+                      onTap: () => _showLogoutDialog(context),
                     ),
                   ],
                 ),
@@ -122,6 +118,120 @@ class MoreBottomSheet extends StatelessWidget {
           ),
           SizedBox(height: 40.h),
         ],
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: EdgeInsets.all(24.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFEE2E2),
+                  shape: BoxShape.circle,
+                ),
+                child: SvgPicture.asset(
+                  IconPath.logout,
+                  width: 32.w,
+                  height: 32.h,
+                ),
+              ),
+              SizedBox(height: 24.h),
+              Text(
+                'Logout',
+                style: getTextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 12.h),
+              Text(
+                'Are you sure you want to log out?',
+                textAlign: TextAlign.center,
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.textGrey,
+                ),
+              ),
+              SizedBox(height: 32.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Get.back(),
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                      child: Text(
+                        'No',
+                        style: getTextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 16.w),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Get.back(); // Close dialog
+                        Get.back(); // Close bottom sheet
+                        await StorageService.clearAll();
+                        Get.offAllNamed(AppRoute.getSecondOnboardingScreen());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFEF4444),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                      child: Text(
+                        'Yes',
+                        style: getTextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

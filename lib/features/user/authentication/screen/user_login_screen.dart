@@ -55,12 +55,17 @@ class UserLoginScreen extends StatelessWidget {
 
             // Email Field
             _buildLabel("Email"),
-            CustomTextField(
-              controller: controller.emailController,
-              hintText: 'sarah@example.com',
-              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
-              borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
-              textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
+            Obx(
+              () => CustomTextField(
+                controller: controller.emailController,
+                hintText: 'sarah@example.com',
+                backgroundColor: const Color(
+                  0xFFF1F5F9,
+                ), // Very light grey input
+                borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
+                textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
+                errorText: controller.emailError.value,
+              ),
             ),
             SizedBox(height: 20.h),
 
@@ -78,6 +83,7 @@ class UserLoginScreen extends StatelessWidget {
                 ), // Very light grey input
                 borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
                 textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
+                errorText: controller.passwordError.value,
               ),
             ),
 

@@ -14,7 +14,6 @@ class PaymentWebViewScreen extends StatefulWidget {
 class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
   late WebViewController _webViewController;
   bool _isLoading = true;
-  bool _pageLoaded = false;
 
   @override
   void initState() {
@@ -38,7 +37,6 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
             debugPrint('WebView page finished loading: $url');
             setState(() {
               _isLoading = false;
-              _pageLoaded = true;
             });
 
             // Check if payment was successful by URL

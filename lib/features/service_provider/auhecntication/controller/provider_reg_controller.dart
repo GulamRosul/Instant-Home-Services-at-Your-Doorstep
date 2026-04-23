@@ -29,6 +29,7 @@ class ProviderRegController extends GetxController {
   final selectedCountryCode = '+880'.obs;
 
   final Rx<XFile?> nidImage = Rx<XFile?>(null);
+  final Rx<XFile?> nidBackImage = Rx<XFile?>(null);
   final Rx<XFile?> avatarImage = Rx<XFile?>(null);
   final Rx<XFile?> faceVerificationImage = Rx<XFile?>(null);
 
@@ -78,6 +79,13 @@ class ProviderRegController extends GetxController {
     final XFile? image = await AppHelperFunctions.showImageSourceDialog();
     if (image != null) {
       nidImage.value = image;
+    }
+  }
+
+  Future<void> pickNidBackImage() async {
+    final XFile? image = await AppHelperFunctions.showImageSourceDialog();
+    if (image != null) {
+      nidBackImage.value = image;
     }
   }
 
@@ -152,6 +160,15 @@ class ProviderRegController extends GetxController {
     if (nidImage.value != null) {
       request.files.add(
         await http.MultipartFile.fromPath('nidImage', nidImage.value!.path),
+      );
+    }
+
+    if (nidBackImage.value != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'nidBackImage',
+          nidBackImage.value!.path,
+        ),
       );
     }
 
@@ -239,7 +256,12 @@ class ProviderRegController extends GetxController {
     }
 
     if (nidImage.value == null) {
-      Get.snackbar('Missing info', 'Please upload your NID image');
+      Get.snackbar('Missing info', 'Please upload your NID front image');
+      return false;
+    }
+
+    if (nidBackImage.value == null) {
+      Get.snackbar('Missing info', 'Please upload your NID back image');
       return false;
     }
 
@@ -295,6 +317,7 @@ class ProviderRegController extends GetxController {
     yearOfExperienceController.clear();
     bioController.clear();
     nidImage.value = null;
+    nidBackImage.value = null;
     avatarImage.value = null;
     faceVerificationImage.value = null;
     bioCharCount.value = 0;

@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
-import 'package:protiva502/features/service_provider/social_media/controller/social_media_controller.dart';
+import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
 class SocialMediaScreen extends StatelessWidget {
   const SocialMediaScreen({super.key});

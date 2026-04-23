@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart'; // Ensure illustration path is here
 import 'package:protiva502/features/user/authentication/controller/user_login_controller.dart';
+import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
 class UserLoginScreen extends StatelessWidget {
   const UserLoginScreen({super.key});
@@ -15,12 +18,22 @@ class UserLoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(UserLoginController());
 
+    final socialMediaController = Get.put(SocialMediaController());
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Subtle grey background
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black,
+            size: 24.sp,
+          ),
+          onPressed: () => Get.back(),
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -130,6 +143,18 @@ class UserLoginScreen extends StatelessWidget {
             SizedBox(height: 40.h),
           ],
         ),
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        onPressed: () {
+          socialMediaController.launchSocialUrl(
+            socialMediaController.whatsappUrl,
+          );
+        },
+        backgroundColor: Colors.white,
+        mini: false,
+        child: SvgPicture.asset(IconPath.whatsapp),
       ),
     );
   }

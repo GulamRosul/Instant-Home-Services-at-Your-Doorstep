@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/payment_controller.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/booking_step_progress.dart';
@@ -121,8 +122,8 @@ class PaymentScreen extends StatelessWidget {
             SizedBox(height: 12.h),
             Divider(color: Colors.grey.shade300),
             SizedBox(height: 12.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "Total Amount:",
@@ -132,13 +133,35 @@ class PaymentScreen extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                Text(
-                  "৳ ${controller.amount.value}",
-                  style: getTextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.primary,
-                  ),
+                SizedBox(height: 8.h),
+                Row(
+                  children: [
+                    Text(
+                      "৳",
+                      style: getTextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: CustomTextField(
+                        controller: controller.amountController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        hintText: "Enter amount",
+                        backgroundColor: Colors.white,
+                        borderColor: Colors.grey.shade300,
+                        borderRadius: 8,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 10.h,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

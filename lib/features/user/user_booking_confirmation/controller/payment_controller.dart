@@ -51,6 +51,7 @@ class PaymentController extends GetxController {
       if (args != null && args is Map) {
         bookingId.value = args['bookingId'] ?? '';
         amount.value = args['amount'] ?? 0;
+        amountController.text = amount.value.toString();
       }
     } catch (e) {
       paymentError.value = 'Failed to load booking details';
@@ -82,7 +83,9 @@ class PaymentController extends GetxController {
   }
 
   Future<void> makePayment() async {
-    if (bookingId.isEmpty || amount.value == 0) {
+    final amountValue = double.tryParse(amountController.text) ?? 0;
+
+    if (bookingId.isEmpty || amountValue == 0) {
       Get.snackbar(
         'Error',
         'Booking information missing',
@@ -97,7 +100,7 @@ class PaymentController extends GetxController {
     paymentError.value = '';
 
     try {
-      final payload = {'bookingId': bookingId.value, 'amount': amount.value};
+      final payload = {'bookingId': bookingId.value, 'amount': amountValue};
 
       // Get the auth token
       final token = await SecureStorageService.getToken();
@@ -115,9 +118,7 @@ class PaymentController extends GetxController {
       }
 
       // Add Authorization header
-      final options = Options(
-        headers: {'Authorization': 'Bearer $token'},
-      );
+      final options = Options(headers: {'Authorization': 'Bearer $token'});
 
       final response = await _apiClient.post<dynamic>(
         ApiEndpoints.makePayment,
@@ -153,7 +154,9 @@ class PaymentController extends GetxController {
       } else {
         paymentError.value =
             response.data?['message'] ?? 'Payment initialization failed';
-        debugPrint('Payment Error: $paymentError with status ${response.statusCode}');
+        debugPrint(
+          'Payment Error: $paymentError with status ${response.statusCode}',
+        );
         Get.snackbar(
           'Error',
           paymentError.value,

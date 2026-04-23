@@ -219,56 +219,97 @@ class ServiceDetailsStep extends StatelessWidget {
         SizedBox(height: 16.h),
         Obx(
           () => Column(
-            children: controller.includedServices.asMap().entries.map((entry) {
-              int idx = entry.key;
-              String val = entry.value;
-              return Padding(
-                padding: EdgeInsets.only(bottom: 12.h),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 12.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.r),
-                          border: Border.all(color: Color(0xFFCBD5E1)),
-                        ),
-                        child: Text(
-                          val,
-                          style: getTextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.grey.shade600,
+            children: [
+              ...controller.includedServices.asMap().entries.map((entry) {
+                int idx = entry.key;
+                String val = entry.value;
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 12.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10.r),
+                            border: Border.all(color: Color(0xFFCBD5E1)),
+                          ),
+                          child: Text(
+                            val,
+                            style: getTextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.grey.shade600,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 12.w),
-                    GestureDetector(
-                      onTap: () => idx == 0
-                          ? _showAddServiceDialog(context, controller)
-                          : controller.removeService(idx),
-                      child: Container(
-                        padding: EdgeInsets.all(10.w),
-                        decoration: BoxDecoration(
-                          color: idx == 0
-                              ? const Color(0xFF7079F0)
-                              : const Color(0xFFFEF2F2),
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: SvgPicture.asset(
-                          idx == 0 ? IconPath.add : IconPath.delete,
-                          color: idx == 0 ? Colors.white : Color(0xFFB91C1C),
+                      SizedBox(width: 12.w),
+                      GestureDetector(
+                        onTap: () => controller.removeService(idx),
+                        child: Container(
+                          padding: EdgeInsets.all(10.w),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFEF2F2),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: SvgPicture.asset(
+                            IconPath.delete,
+                            color: Color(0xFFB91C1C),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                );
+              }).toList(),
+              SizedBox(height: 12.h),
+              GestureDetector(
+                onTap: () => _showAddServiceDialog(context, controller),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.r),
+                    border: Border.all(color: Color(0xFFCBD5E1)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(6.w),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF7079F0),
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: SvgPicture.asset(
+                          IconPath.add,
+                          color: Colors.white,
+                          width: 16.w,
+                          height: 16.w,
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        'Add Service',
+                        style: getTextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF7079F0),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              );
-            }).toList(),
+              ),
+            ],
           ),
         ),
         SizedBox(height: 24.h),
@@ -411,7 +452,8 @@ class ServiceDetailsStep extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                        // mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           InkWell(
                             onTap: () => controller.pickImage(),
@@ -437,15 +479,15 @@ class ServiceDetailsStep extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(width: 16.w),
-                          Text(
-                            'No File Chosen',
-                            style: getTextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF64748B),
-                            ),
-                          ),
+                          // SizedBox(width: 16.w),
+                          // Text(
+                          //   'No File Chosen',
+                          //   style: getTextStyle(
+                          //     fontSize: 12.sp,
+                          //     fontWeight: FontWeight.w400,
+                          //     color: const Color(0xFF64748B),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

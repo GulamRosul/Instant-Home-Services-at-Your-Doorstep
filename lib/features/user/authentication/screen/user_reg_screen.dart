@@ -11,6 +11,7 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/user/authentication/controller/user_reg_controller.dart';
 import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
+import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
 class UserRegScreen extends StatelessWidget {
   const UserRegScreen({super.key});
@@ -18,6 +19,7 @@ class UserRegScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UserRegController());
+    final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -183,7 +185,9 @@ class UserRegScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
-        onPressed: () {},
+        onPressed: () {
+          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+        },
         backgroundColor: Colors.white,
         mini: false,
         child: SvgPicture.asset(IconPath.whatsapp),

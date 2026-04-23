@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart'; // Using your reusable AppBar
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/user/authentication/controller/user_otp_controller.dart';
+import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
 class UserOtpScreen extends StatelessWidget {
   const UserOtpScreen({super.key, this.email});
@@ -14,6 +17,8 @@ class UserOtpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UserOtpController());
+
+final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -167,6 +172,16 @@ class UserOtpScreen extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        onPressed: () {
+          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+        },
+        backgroundColor: Colors.white,
+        mini: false,
+        child: SvgPicture.asset(IconPath.whatsapp),
+      ),
+
     );
   }
 

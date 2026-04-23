@@ -12,6 +12,7 @@ import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/create_job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/delete_job_response.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
+import 'package:protiva502/features/service_provider/my_job_list/controller/my_job_list_controller.dart';
 import 'package:protiva502/features/user/home/model/categories_model.dart';
 import 'package:protiva502/features/user/home/model/sub_category_model.dart';
 
@@ -820,8 +821,18 @@ class CreateJobController extends GetxController {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       Get.back();
+                      // Refresh the job list before going back
+                      try {
+                        final myJobListController =
+                            Get.find<MyJobListController>();
+                        await myJobListController.fetchMyActiveJobs(
+                          refresh: true,
+                        );
+                      } catch (e) {
+                        // MyJobListController might not be initialized yet
+                      }
                       Get.back(); // Back to job list screen
                     },
                     child: Container(

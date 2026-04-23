@@ -8,7 +8,7 @@ class ProviderNavbarController extends GetxController {
 
   // Change tab
   void changeTab(int index) {
-    if (index == 3) {
+    if (index == 4) {
       _showMoreBottomSheet();
       return;
     }
@@ -44,6 +44,7 @@ class ProviderNavbarController extends GetxController {
     {'label': 'Home'},
     {'label': 'My Job'},
     {'label': 'Bookings'},
+    {'label': 'Notification'},
     {'label': 'More'},
   ];
 }

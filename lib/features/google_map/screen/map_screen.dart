@@ -171,6 +171,14 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: Text(widget.isPickerMode ? 'Pick Location' : 'Track'),
         centerTitle: false,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black,
+            size: 20.sp,
+          ),
+          onPressed: () => Get.back(),
+        ),
       ),
 
       body: isTrackingMode

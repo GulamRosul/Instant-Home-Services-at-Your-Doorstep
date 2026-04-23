@@ -6,6 +6,7 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/my_job_list_controller.dart';
+import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
 
 class MyJobListScreen extends StatelessWidget {
   const MyJobListScreen({super.key});
@@ -299,7 +300,12 @@ class MyJobListScreen extends StatelessWidget {
                               size: 20.sp,
                             ),
                             onSelected: (value) {
-                              if (value == 'edit') {
+                              if (value == 'view') {
+                                Get.to(
+                                  () => const JobDetailsViewScreen(),
+                                  arguments: item,
+                                );
+                              } else if (value == 'edit') {
                                 controller.handleEditListing(index);
                               } else if (value == 'delete') {
                                 controller.handleDeleteListing(index);
@@ -309,6 +315,16 @@ class MyJobListScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8.r),
                             ),
                             itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'view',
+                                child: Text(
+                                  'View details',
+                                  style: getTextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ),
                               PopupMenuItem(
                                 value: 'edit',
                                 child: Text(

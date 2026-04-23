@@ -208,7 +208,7 @@ class ProviderDetailsScreen extends StatelessWidget {
 
   Widget _buildAboutSection(ProviderDetailsController controller) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.w),
+      margin: EdgeInsets.symmetric(horizontal: 0.w),
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -472,7 +472,7 @@ class ProviderDetailsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 8.h),
                 CustomButton(
-                  text: "Book For Service",
+                  text: "View details",
                   onPressed: () => controller.bookSpecificService(service.id),
                   backgroundColor: AppColors.textPurple,
                   textColor: Colors.white,

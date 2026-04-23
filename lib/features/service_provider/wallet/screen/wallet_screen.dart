@@ -143,7 +143,7 @@ class WalletScreen extends StatelessWidget {
                         Get.find<ProviderNavbarController>().resetHomeSubPage();
                       },
                       icon: const Icon(
-                        Icons.arrow_back,
+                        Icons.arrow_back_ios_new,
                         color: Colors.white,
                         size: 20,
                       ),

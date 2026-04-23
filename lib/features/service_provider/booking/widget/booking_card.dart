@@ -167,32 +167,56 @@ class BookingCard extends StatelessWidget {
                   'View Details',
                   style: getTextStyle(
                     fontSize: 14.sp,
-                    color: const Color(0xFF0F172A),
+                    color: const Color(0xFF7079F0),
                     decoration: TextDecoration.underline,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              // if (status == 'ACCEPTED') ...[
-              //   SizedBox(width: 16.w),
-              //   GestureDetector(
-              //     onTap: () => Get.to(
-              //       () => const PaymentScreen(),
-              //       arguments: {
-              //         'bookingId': booking.id,
-              //         'amount': booking.serviceAmount.toInt(),
-              //       },
-              //     ),
-              //     child: Text(
-              //       'Make Payment',
-              //       style: getTextStyle(
-              //         fontSize: 14.sp,
-              //         color: const Color(0xFF7079F0),
-              //         decoration: TextDecoration.underline,
-              //         fontWeight: FontWeight.w600,
-              //       ),
-              //     ),
-              //   ),
-              // ],
+              if (status == 'Accepted') ...[
+                SizedBox(width: 16.w),
+                GestureDetector(
+                  onTap: () {
+                    if (trackingBookingId.isEmpty) {
+                      Get.snackbar(
+                        'Booking update',
+                        'Booking ID is unavailable for tracking.',
+                      );
+                      return;
+                    }
+
+                    Get.to(
+                      () => TrackProviderScreen(),
+                      arguments: {
+                        'providerName': 'Service Provider',
+                        'serviceName': booking.serviceName,
+                        'location': booking.locationDetails.isNotEmpty
+                            ? booking.locationDetails
+                            : 'Location not available',
+                        'rating': '4.8 (170 Reviews)',
+                        'cost': '৳ ${booking.serviceAmount.toStringAsFixed(2)}',
+                        'bookingId': trackingBookingId,
+                        'clientId': booking.clientId,
+                        'providerId': booking.providerId,
+                        'userId': booking.providerId,
+                        'userRole': 'provider',
+                        'userLocationLatitude': booking.locationLatitude,
+                        'userLocationLongitude': booking.locationLongitude,
+                        'userLocationDetails': booking.locationDetails,
+                      },
+                    );
+                  },
+                  child: Text(
+                    'Track Customer',
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      color: const Color(0xFF7079F0),
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
           if (status == 'Pending') ...[

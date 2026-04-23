@@ -3,9 +3,9 @@ class ApiEndpoints {
 
   // static const String baseUrl =
   //     'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
-  // static const String baseUrl =
-  //     'https://protiva-backend-ukw2.onrender.com/api/v1';
-  static const String baseUrl = 'http://16.171.13.66/api/v1';
+  static const String baseUrl =
+      'https://protiva-backend-ukw2.onrender.com/api/v1';
+  // static const String baseUrl = 'http://16.171.13.66/api/v1';
 
   /// Socket.IO Server URL (same host as API)
   static const String socketMessageUrl = 'http://16.171.13.66/messaging';

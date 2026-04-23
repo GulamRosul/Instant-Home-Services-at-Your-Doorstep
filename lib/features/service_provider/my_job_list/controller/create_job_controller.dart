@@ -881,6 +881,20 @@ class CreateJobController extends GetxController {
       ),
       barrierDismissible: false,
     );
+
+    // Auto redirect after 3 seconds if user doesn't close
+    Future.delayed(const Duration(seconds: 3), () async {
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+        try {
+          final myJobListController = Get.find<MyJobListController>();
+          await myJobListController.fetchMyActiveJobs(refresh: true);
+        } catch (e) {
+          // MyJobListController might not be initialized yet
+        }
+        Get.back(); // Back to job list screen
+      }
+    });
   }
 
   @override

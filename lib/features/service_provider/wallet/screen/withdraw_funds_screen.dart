@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/common/widgets/custom_appbar.dart';
+import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/features/service_provider/wallet/controller/wallet_controller.dart';
 import 'package:protiva502/features/service_provider/provider_navber/controller/provider_navbar_controller.dart';
@@ -16,12 +18,18 @@ class WithdrawFundsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
+
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
+        centerTitle: false,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black, size: 24.sp),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black,
+            size: 24.sp,
+          ),
           onPressed: () {
             Get.find<ProviderNavbarController>().showHomeSubPage(
               const WalletScreen(),
@@ -37,22 +45,23 @@ class WithdrawFundsScreen extends StatelessWidget {
           ),
         ),
         titleSpacing: 0,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20.w),
-            child: Center(
-              child: Text(
-                'Skip',
-                style: getTextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[300]!,
-                ),
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: EdgeInsets.only(right: 20.w),
+        //     child: Center(
+        //       child: Text(
+        //         'Skip',
+        //         style: getTextStyle(
+        //           fontSize: 16.sp,
+        //           fontWeight: FontWeight.w500,
+        //           color: Colors.grey[300]!,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
+      // appBar: CustomAppBar(title: 'Withdraw Funds', showBackButton: true),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
@@ -290,25 +299,36 @@ class WithdrawFundsScreen extends StatelessWidget {
             SizedBox(height: 40.h),
 
             // Continue Button
-            ElevatedButton(
+            CustomButton(
+              text: 'Continue',
               onPressed: controller.handleContinueWithdrawal,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF7079F0),
-                minimumSize: Size(double.infinity, 56.h),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-              child: Text(
-                'Continue',
-                style: getTextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
+              backgroundColor: const Color(0xFF7079F0),
+              textColor: Colors.white,
             ),
+
+            // ElevatedButton(
+            //   onPressed: controller.handleContinueWithdrawal,
+            //   style:
+            //       ElevatedButton.styleFrom(
+            //         backgroundColor: const Color(0xFF7079F0),
+            //         minimumSize: Size(double.infinity, 56.h),
+            //         elevation: 0,
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(12.r),
+            //         ),
+            //       ).copyWith(
+            //         overlayColor: WidgetStateProperty.all(Colors.transparent),
+            //         side: WidgetStateProperty.all(BorderSide.none),
+            //       ),
+            //   child: Text(
+            //     'Continue',
+            //     style: getTextStyle(
+            //       fontSize: 16.sp,
+            //       fontWeight: FontWeight.w600,
+            //       color: Colors.white,
+            //     ),
+            //   ),
+            // ),
             SizedBox(height: 120.h),
           ],
         ),

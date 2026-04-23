@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
@@ -74,6 +75,12 @@ class HomeHeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
               ],
             ),
             const Spacer(),
+            SvgPicture.asset(
+              IconPath.kaajbd,
+              width: 24.w,
+              height: 24.h,
+              // color: Colors.black,
+            ),
           ],
         ),
       ),

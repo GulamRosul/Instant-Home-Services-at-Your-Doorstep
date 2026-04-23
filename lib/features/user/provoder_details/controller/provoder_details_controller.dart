@@ -5,8 +5,9 @@ import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
+import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
+import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
 import 'package:protiva502/features/user/provoder_details/model/provider_details_model.dart';
-import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
 class ProviderDetailsController extends GetxController {
   ProviderDetailsController({required this.providerId});
@@ -186,7 +187,42 @@ class ProviderDetailsController extends GetxController {
   }
 
   void bookSpecificService(String serviceId) {
-    Get.to(() => BookingDetailsScreen());
+    ProviderJobModel? job;
+    try {
+      job = jobs.firstWhere((j) => j.id == serviceId);
+    } catch (e) {
+      Get.snackbar('Error', 'Service not found');
+      return;
+    }
+
+    if (job != null) {
+      // Convert ProviderJobModel to JobModel
+      final jobModel = JobModel(
+        id: job.id,
+        userId: providerId,
+        categoryId: '',
+        subCategoryId: '',
+        title: job.title,
+        slug: '',
+        description: job.description,
+        basePrice: job.basePrice.toString(),
+        priceType: 'FIXED',
+        includeService: job.includeService,
+        thumbnail: job.thumbnail,
+        images: const [],
+        videos: const [],
+        status: job.status,
+        views: 0,
+        clicks: 0,
+        totalBookings: job.totalBookings,
+        averageRating: job.averageRating,
+        isPopuler: false,
+        createdAt: '',
+        updatedAt: '',
+      );
+
+      Get.to(() => const JobDetailsViewScreen(), arguments: jobModel);
+    }
   }
 
   Map<String, dynamic>? _asMap(dynamic value) {

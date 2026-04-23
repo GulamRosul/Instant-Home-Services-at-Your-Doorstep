@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
@@ -924,7 +925,15 @@ class _MapScreenState extends State<MapScreen> {
               backgroundColor: Colors.white,
               textColor: AppColors.textSecondary,
               borderColor: AppColors.textSecondary.withOpacity(0.5),
-              onPressed: () {},
+              onPressed: () async {
+                final Uri phoneUri = Uri(
+                  scheme: 'tel',
+                  path: '+8801798036636',
+                );
+                if (await canLaunchUrl(phoneUri)) {
+                  await launchUrl(phoneUri);
+                }
+              },
             ),
           ],
         ),

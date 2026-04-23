@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
@@ -29,7 +30,7 @@ class ProviderDetailsScreen extends StatelessWidget {
       appBar: const CustomAppBar(title: 'Service Profile'),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return _buildShimmerLoading();
         }
 
         if (controller.errorMessage.value.isNotEmpty) {
@@ -625,6 +626,294 @@ class ProviderDetailsScreen extends StatelessWidget {
           color: AppColors.textSecondary,
           lineHeight: 18.sp,
         ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 20.h),
+            _buildShimmerProfileHeader(),
+            SizedBox(height: 24.h),
+            _buildShimmerAboutSection(),
+            SizedBox(height: 24.h),
+            _buildShimmerServicesSection(),
+            SizedBox(height: 24.h),
+            _buildShimmerReviewSection(),
+            SizedBox(height: 40.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerProfileHeader() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 90.w,
+                height: 90.w,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              SizedBox(width: 16.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 16.h,
+                      color: Colors.white,
+                      margin: EdgeInsets.only(bottom: 8.h),
+                    ),
+                    Container(
+                      height: 14.h,
+                      color: Colors.white,
+                      margin: EdgeInsets.only(bottom: 8.h),
+                    ),
+                    Container(height: 14.h, color: Colors.white, width: 150.w),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 24.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        5,
+                        (i) => Padding(
+                          padding: EdgeInsets.only(right: 4.w),
+                          child: Container(
+                            width: 14.w,
+                            height: 14.w,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Container(height: 13.h, color: Colors.white, width: 100.w),
+                  ],
+                ),
+              ),
+              Container(width: 1.w, height: 50.h, color: Colors.grey.shade300),
+              Expanded(
+                child: Container(height: 50.h, color: Colors.white),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShimmerAboutSection() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Container(
+        padding: EdgeInsets.all(16.r),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 14.h,
+              color: Colors.white,
+              width: 80.w,
+              margin: EdgeInsets.only(bottom: 8.h),
+            ),
+            Container(
+              height: 13.h,
+              color: Colors.white,
+              margin: EdgeInsets.only(bottom: 4.h),
+            ),
+            Container(
+              height: 13.h,
+              color: Colors.white,
+              margin: EdgeInsets.only(bottom: 16.h),
+              width: 200.w,
+            ),
+            Container(
+              height: 14.h,
+              color: Colors.white,
+              width: 50.w,
+              margin: EdgeInsets.only(bottom: 8.h),
+            ),
+            Wrap(
+              spacing: 8.w,
+              runSpacing: 8.h,
+              children: List.generate(
+                3,
+                (index) => Container(
+                  width: 70.w,
+                  height: 30.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerServicesSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 16.h,
+                color: Colors.white,
+                width: 150.w,
+                margin: EdgeInsets.only(bottom: 8.h),
+              ),
+              Container(height: 12.h, color: Colors.white, width: 250.w),
+            ],
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Row(
+            children: List.generate(
+              3,
+              (index) => Padding(
+                padding: EdgeInsets.only(right: index < 2 ? 12.w : 0),
+                child: Container(
+                  height: 40.h,
+                  width: 80.w,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Container(
+            height: 250.h,
+            width: 180.w,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShimmerReviewSection() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 16.h,
+            color: Colors.white,
+            width: 80.w,
+            margin: EdgeInsets.only(bottom: 12.h),
+          ),
+          ...List.generate(
+            2,
+            (index) => Container(
+              margin: EdgeInsets.only(bottom: 12.h),
+              padding: EdgeInsets.all(16.r),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 40.w,
+                        height: 40.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 14.h,
+                              color: Colors.white,
+                              width: 100.w,
+                              margin: EdgeInsets.only(bottom: 4.h),
+                            ),
+                            Row(
+                              children: List.generate(
+                                5,
+                                (i) => Padding(
+                                  padding: EdgeInsets.only(right: 4.w),
+                                  child: Container(
+                                    width: 12.w,
+                                    height: 12.w,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(height: 11.h, width: 70.w, color: Colors.white),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                  Container(
+                    height: 12.h,
+                    color: Colors.white,
+                    margin: EdgeInsets.only(bottom: 4.h),
+                  ),
+                  Container(height: 12.h, color: Colors.white, width: 200.w),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

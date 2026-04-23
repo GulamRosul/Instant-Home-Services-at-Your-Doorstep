@@ -343,7 +343,10 @@ class NotificationController extends GetxController {
   }
 
   void markAsRead(int index) {
-    notifications[index]['isRead'] = true;
+    if (index >= 0 && index < notifications.length) {
+      notifications[index]['isRead'] = true;
+      notifications.refresh(); // Force UI update
+    }
   }
 
   void clearAll() {

@@ -6,6 +6,7 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/service_provider/home/screen/provider_home_screen.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/my_job_list_screen.dart';
 import 'package:protiva502/features/service_provider/booking/screen/booking_screen.dart';
+import 'package:protiva502/features/notification/screen/notification_screen.dart';
 import 'package:protiva502/features/service_provider/provider_navber/controller/provider_navbar_controller.dart';
 
 class ProviderNavbarScreen extends StatelessWidget {
@@ -19,6 +20,7 @@ class ProviderNavbarScreen extends StatelessWidget {
       Obx(() => controller.homeSubPage.value ?? const ProviderHomeScreen()),
       const MyJobListScreen(),
       const BookingScreen(),
+      const NotificationScreen(),
       const Center(child: Text("Provider Settings")),
     ];
 
@@ -45,7 +47,7 @@ class ProviderBottomNavBar extends StatelessWidget {
 
     return Container(
       height: 60.h,
-      margin: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 35.h),
+      margin: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 40.h),
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -69,7 +71,7 @@ class ProviderBottomNavBar extends StatelessWidget {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppColors.textPurple.withValues(alpha: 0.1)
@@ -90,7 +92,7 @@ class ProviderBottomNavBar extends StatelessWidget {
                       Text(
                         controller.navItems[index]['label'],
                         style: getTextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPurple,
                         ),
@@ -115,6 +117,8 @@ class ProviderBottomNavBar extends StatelessWidget {
       case 2:
         return Icons.account_balance_wallet_rounded;
       case 3:
+        return Icons.notifications_rounded;
+      case 4:
         return Icons.grid_view_rounded;
       default:
         return Icons.home;

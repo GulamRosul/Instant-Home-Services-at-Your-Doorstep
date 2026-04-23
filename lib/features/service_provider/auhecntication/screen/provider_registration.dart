@@ -9,6 +9,7 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_reg_controller.dart';
 import 'package:protiva502/features/service_provider/auhecntication/widget/build_field_label.dart';
+import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
 class ProviderRegistration extends StatelessWidget {
   const ProviderRegistration({super.key});
@@ -18,6 +19,8 @@ class ProviderRegistration extends StatelessWidget {
     final controller = Get.isRegistered<ProviderRegController>()
         ? Get.find<ProviderRegController>()
         : Get.put(ProviderRegController());
+
+    final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -171,6 +174,15 @@ class ProviderRegistration extends StatelessWidget {
             SizedBox(height: 40.h),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        onPressed: () {
+          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+        },
+        backgroundColor: Colors.white,
+        mini: false,
+        child: SvgPicture.asset(IconPath.whatsapp),
       ),
     );
   }

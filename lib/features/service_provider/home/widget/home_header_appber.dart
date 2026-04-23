@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/helpers/app_helper.dart';
-import 'package:protiva502/features/notification/screen/notification_screen.dart';
 import 'package:protiva502/features/profile/screen/profile_screen.dart';
 import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
 
@@ -75,49 +73,7 @@ class HomeHeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ],
             ),
-            // const Spacer(),
-            // Obx(
-            //   () => Text(
-            //     controller.profileName.value.isNotEmpty
-            //         ? controller.profileName.value
-            //         : 'Provider',
-            //     style: getTextStyle(
-            //       fontSize: 14.sp,
-            //       fontWeight: FontWeight.w400,
-            //       color: Color(0xFF334155),
-            //     ),
-            //     maxLines: 1,
-            //     overflow: TextOverflow.ellipsis,
-            //   ),
-            // ),
             const Spacer(),
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    // Handle notification tap
-                    Get.to(() => NotificationScreen());
-                  },
-                  child: SvgPicture.asset(
-                    IconPath.notification,
-                    height: 28.sp,
-                    width: 28.sp,
-                  ),
-                ),
-                Positioned(
-                  right: 4,
-                  top: -1,
-                  child: Container(
-                    width: 12.w,
-                    height: 12.w,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

@@ -9,6 +9,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_reg_controller.dart';
+import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
 class ProviderLogoBioScreen extends StatelessWidget {
   const ProviderLogoBioScreen({super.key});
@@ -18,6 +19,8 @@ class ProviderLogoBioScreen extends StatelessWidget {
     final controller = Get.isRegistered<ProviderRegController>()
         ? Get.find<ProviderRegController>()
         : Get.put(ProviderRegController());
+
+      final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
@@ -169,6 +172,16 @@ class ProviderLogoBioScreen extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        onPressed: () {
+          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+        },
+        backgroundColor: Colors.white,
+        mini: false,
+        child: SvgPicture.asset(IconPath.whatsapp),
+      ),
+
     );
   }
 }

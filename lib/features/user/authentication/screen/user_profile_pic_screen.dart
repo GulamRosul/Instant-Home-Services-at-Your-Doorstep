@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/user/authentication/controller/user_profile_pic_controller.dart';
+import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
 class UserProfilePicScreen extends StatelessWidget {
   const UserProfilePicScreen({super.key, this.registeredEmail});
@@ -15,6 +18,7 @@ class UserProfilePicScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UserProfilePicController());
+    final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light background from image
@@ -136,6 +140,18 @@ class UserProfilePicScreen extends StatelessWidget {
           ],
         ),
       ),
+
+      floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        onPressed: () {
+          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+        },
+        backgroundColor: Colors.white,
+        mini: false,
+        child: SvgPicture.asset(IconPath.whatsapp),
+      ),
+
+
     );
   }
 }

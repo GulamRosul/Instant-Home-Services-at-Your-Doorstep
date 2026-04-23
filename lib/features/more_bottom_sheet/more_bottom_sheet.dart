@@ -209,14 +209,20 @@ class MoreBottomSheet extends StatelessWidget {
                         await StorageService.clearAll();
                         Get.offAllNamed(AppRoute.getSecondOnboardingScreen());
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFEF4444),
-                        padding: EdgeInsets.symmetric(vertical: 14.h),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                      ),
+                      style:
+                          ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFEF4444),
+                            padding: EdgeInsets.symmetric(vertical: 14.h),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ).copyWith(
+                            overlayColor: WidgetStateProperty.all(
+                              Colors.transparent,
+                            ),
+                            side: WidgetStateProperty.all(BorderSide.none),
+                          ),
                       child: Text(
                         'Yes',
                         style: getTextStyle(

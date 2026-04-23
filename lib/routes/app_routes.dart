@@ -16,6 +16,7 @@ import 'package:protiva502/features/service_provider/home/screen/recent_bookings
 import 'package:protiva502/features/service_provider/my_job_list/screen/my_job_list_screen.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/post_job_screen.dart';
 import 'package:protiva502/features/service_provider/booking/screen/booking_screen.dart';
+import 'package:protiva502/features/social_media/screen/social_media_screen.dart';
 import 'package:protiva502/features/splash_screen/controller/splash_controller.dart';
 import 'package:protiva502/features/splash_screen/screen/splash_screen.dart';
 import 'package:protiva502/features/user/all_bookings/screen/all_booking_screen.dart';
@@ -39,7 +40,6 @@ import 'package:protiva502/features/profile/screen/profile_screen.dart';
 import 'package:protiva502/features/service_provider/booking/screen/provider_booking_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/model/booking_confirmation_data.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/confirm_booking_screen.dart';
-import 'package:protiva502/features/service_provider/social_media/screen/social_media_screen.dart';
 
 class AppRoute {
   static String splashScreen = "/splashScreen";

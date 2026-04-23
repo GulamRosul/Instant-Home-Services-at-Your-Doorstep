@@ -4,13 +4,16 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/auhecntication/controller/provider_reg_controller.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_login_screen.dart';
+import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
 class ProviderRegistrationScreen01 extends StatelessWidget {
   const ProviderRegistrationScreen01({super.key});
@@ -20,6 +23,8 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
     final controller = Get.isRegistered<ProviderRegController>()
         ? Get.find<ProviderRegController>()
         : Get.put(ProviderRegController());
+
+    final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -129,8 +134,19 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
               () => _buildImageUploadContainer(
                 onTap: controller.pickNidImage,
                 imagePath: controller.nidImage.value?.path,
-                title: 'Upload your NID image',
-                subtitle: 'Front and back of your NID card',
+                title: 'Upload your NID front',
+                subtitle: 'Front of your NID card',
+              ),
+            ),
+            SizedBox(height: 16.h),
+
+            // _buildLabel('NID Back Image'),
+            Obx(
+              () => _buildImageUploadContainer(
+                onTap: controller.pickNidBackImage,
+                imagePath: controller.nidBackImage.value?.path,
+                title: 'Upload your NID back',
+                subtitle: 'Back of your NID card',
               ),
             ),
             SizedBox(height: 16.h),
@@ -213,6 +229,17 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
             SizedBox(height: 30.h),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        onPressed: () {
+          socialMediaController.launchSocialUrl(
+            socialMediaController.whatsappUrl,
+          );
+        },
+        backgroundColor: Colors.white,
+        mini: false,
+        child: SvgPicture.asset(IconPath.whatsapp),
       ),
     );
   }

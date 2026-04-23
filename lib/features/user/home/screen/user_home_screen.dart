@@ -13,6 +13,7 @@ import 'package:protiva502/core/utils/device/device_utility.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/core/utils/helpers/app_helper.dart';
+import 'package:protiva502/features/profile/screen/profile_screen.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
 import 'package:protiva502/features/user/home/controller/generic_listing_controller.dart';
 import 'package:protiva502/features/user/home/model/expert_recommendation_model.dart';
@@ -169,15 +170,20 @@ class UserHomeScreen extends StatelessWidget {
       children: [
         Row(
           children: [
-            Obx(
-              () => CircleAvatar(
-                radius: 22.r,
-                backgroundImage: _buildProfileImage(
-                  controller.profileImage.value,
+            GestureDetector(
+              onTap: () {
+                Get.to(() => const ProfileScreen());
+              },
+              child: Obx(
+                () => CircleAvatar(
+                  radius: 22.r,
+                  backgroundImage: _buildProfileImage(
+                    controller.profileImage.value,
+                  ),
+                  onBackgroundImageError: (exception, stackTrace) {
+                    // Fallback to asset image if network image fails
+                  },
                 ),
-                onBackgroundImageError: (exception, stackTrace) {
-                  // Fallback to asset image if network image fails
-                },
               ),
             ),
             SizedBox(width: 12.w),

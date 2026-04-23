@@ -79,7 +79,12 @@ class ProfileScreen extends StatelessWidget {
       barrierColor: const Color(0xFF0F172A).withValues(alpha: 0.45),
       builder: (dialogContext) => StatefulBuilder(
         builder: (dialogContext, setState) => Dialog(
-          insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+          insetPadding: EdgeInsets.only(
+            left: 24.w,
+            right: 24.w,
+            top: MediaQuery.of(dialogContext).padding.top + 24.h,
+            bottom: 24.h,
+          ),
           backgroundColor: Colors.transparent,
           child: Padding(
             padding: EdgeInsets.only(
@@ -223,7 +228,9 @@ class ProfileScreen extends StatelessWidget {
                                         'Required field',
                                         '$label cannot be empty.',
                                         snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: const Color(0xFF0F172A),
+                                        backgroundColor: const Color(
+                                          0xFF0F172A,
+                                        ),
                                         colorText: Colors.white,
                                         margin: EdgeInsets.all(16.w),
                                       );
@@ -262,7 +269,9 @@ class ProfileScreen extends StatelessWidget {
                                   overlayColor: WidgetStateProperty.all(
                                     Colors.transparent,
                                   ),
-                                  side: WidgetStateProperty.all(BorderSide.none),
+                                  side: WidgetStateProperty.all(
+                                    BorderSide.none,
+                                  ),
                                 ),
                             child: isSaving
                                 ? SizedBox(

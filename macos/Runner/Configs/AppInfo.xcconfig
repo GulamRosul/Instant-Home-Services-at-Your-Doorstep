@@ -8,7 +8,7 @@
 PRODUCT_NAME = protiva502
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.protiva502
+PRODUCT_BUNDLE_IDENTIFIER = com.kaajbd.protiva502
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 com.example. All rights reserved.

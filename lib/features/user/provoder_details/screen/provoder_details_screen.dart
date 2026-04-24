@@ -209,7 +209,8 @@ class ProviderDetailsScreen extends StatelessWidget {
 
   Widget _buildAboutSection(ProviderDetailsController controller) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 0.w),
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 20.w),
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Colors.white,

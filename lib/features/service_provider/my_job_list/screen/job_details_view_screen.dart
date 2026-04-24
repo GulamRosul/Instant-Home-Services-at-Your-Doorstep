@@ -15,7 +15,7 @@ class JobDetailsViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final JobModel job = Get.arguments;
-    final controller = Get.find<MyJobListController>();
+    final controller = Get.put(MyJobListController());
     final userRole = StorageService.getRole();
     final isProvider = userRole == 'PROVIDER';
 

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:242025959192:android:d27a749896f5573122986d",
+        "mobilesdk_app_id": "1:242025959192:android:e9bcc3dec4ea0df622986d",
         "android_client_info": {
-          "package_name": "com.example.protiva502"
+          "package_name": "com.kaajbd.protiva502"
         }
       },
       "oauth_client": [],

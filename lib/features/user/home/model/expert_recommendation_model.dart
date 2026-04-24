@@ -1,6 +1,7 @@
 class ExpertRecommendationModel {
   const ExpertRecommendationModel({
     required this.userId,
+    required this.avatar,
     required this.firstName,
     required this.lastName,
     required this.streetAddress,
@@ -12,6 +13,7 @@ class ExpertRecommendationModel {
   });
 
   final String userId;
+  final String? avatar;
   final String firstName;
   final String lastName;
   final String? streetAddress;
@@ -25,7 +27,12 @@ class ExpertRecommendationModel {
 
   factory ExpertRecommendationModel.fromJson(Map<String, dynamic> json) {
     return ExpertRecommendationModel(
-      userId: json['userId']?.toString() ?? json['_id']?.toString() ?? '',
+      userId:
+          json['userId']?.toString() ??
+          json['id']?.toString() ??
+          json['_id']?.toString() ??
+          '',
+      avatar: json['avatar']?.toString() ?? json['profileImage']?.toString(),
       firstName: json['firstName']?.toString() ?? '',
       lastName: json['lastName']?.toString() ?? '',
       streetAddress: json['streetAddress']?.toString(),

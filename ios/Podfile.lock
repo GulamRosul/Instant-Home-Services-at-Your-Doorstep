@@ -186,9 +186,6 @@ PODS:
     - Flutter
   - zego_uikit_signaling_plugin (2.8.19):
     - Flutter
-  - zego_zim (2.26.0):
-    - Flutter
-    - ZIM (= 2.28.0)
   - zego_zpns (2.6.0):
     - Flutter
     - ZPNs (= 2.6.0)
@@ -233,7 +230,6 @@ DEPENDENCIES:
   - zego_uikit (from `.symlinks/plugins/zego_uikit/ios`)
   - zego_uikit_prebuilt_call (from `.symlinks/plugins/zego_uikit_prebuilt_call/ios`)
   - zego_uikit_signaling_plugin (from `.symlinks/plugins/zego_uikit_signaling_plugin/ios`)
-  - zego_zim (from `.symlinks/plugins/zego_zim/ios`)
   - zego_zpns (from `.symlinks/plugins/zego_zpns/ios`)
 
 SPEC REPOS:
@@ -331,8 +327,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/zego_uikit_prebuilt_call/ios"
   zego_uikit_signaling_plugin:
     :path: ".symlinks/plugins/zego_uikit_signaling_plugin/ios"
-  zego_zim:
-    :path: ".symlinks/plugins/zego_zim/ios"
   zego_zpns:
     :path: ".symlinks/plugins/zego_zpns/ios"
 
@@ -389,7 +383,6 @@ SPEC CHECKSUMS:
   zego_uikit: b2bbb0b78cacdf8e20ba34adc6fe7b5eeb4e164d
   zego_uikit_prebuilt_call: 24898bc45c0a888911240b74d032029da5b1a55a
   zego_uikit_signaling_plugin: ffced40608c89b1ac0241a6194dacb9bc5af19b7
-  zego_zim: fce9bb6ba52029ef71afd902353e273d7cf31333
   zego_zpns: e2ef9b972e9b6be00b78b32b71c550c426584752
   ZegoUIKitReport: a993f7ccc5d243998a7e601a60e16fcd6c084417
   ZIM: 3912c156fae74a8beecb87e57869602fad03140f

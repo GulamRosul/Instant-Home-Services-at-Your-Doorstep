@@ -13,7 +13,7 @@ plugins {
 android {
     namespace = "com.kaajbd.protiva502"
     compileSdk = 36
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -26,7 +26,7 @@ android {
         applicationId = "com.kaajbd.protiva502"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -37,7 +37,7 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
 }
@@ -56,9 +56,9 @@ dependencies {
     implementation("im.zego:zpns-fcm:2.8.0")
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 

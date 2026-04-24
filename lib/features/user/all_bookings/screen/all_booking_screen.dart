@@ -9,6 +9,8 @@ import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/all_bookings/controller/all_booking_controller.dart';
 import 'package:protiva502/features/user/all_bookings/model/all_booking_model.dart';
 import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart';
+import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
+import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
 import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
@@ -294,11 +296,19 @@ class AllBookingScreen extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10.r),
-                child: Image.asset(
-                  ImagePath.servicecard,
-                  width: 62.w,
-                  height: 58.h,
-                  fit: BoxFit.cover,
+                child: GestureDetector(
+                  onTap: () {
+                    Get.to(
+                      () => const JobDetailsViewScreen(),
+                      arguments: _mapBookingToJobModel(booking),
+                    );
+                  },
+                  child: Image.asset(
+                    ImagePath.servicecard,
+                    width: 62.w,
+                    height: 58.h,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               SizedBox(width: 12.w),
@@ -796,5 +806,31 @@ class AllBookingScreen extends StatelessWidget {
     }
 
     return '';
+  }
+
+  JobModel _mapBookingToJobModel(UserBookingItem booking) {
+    return JobModel(
+      id: booking.id,
+      userId: booking.providerId ?? '',
+      categoryId: '',
+      subCategoryId: '',
+      title: booking.serviceName,
+      slug: '',
+      description: booking.serviceDescription ?? '',
+      basePrice: booking.serviceAmount.toStringAsFixed(0),
+      priceType: '',
+      includeService: const [],
+      thumbnail: '',
+      images: const [],
+      videos: const [],
+      status: normalizeBookingStatus(booking.status),
+      views: 0,
+      clicks: 0,
+      totalBookings: 1,
+      averageRating: 0.0,
+      isPopuler: false,
+      createdAt: booking.createdAt?.toIso8601String() ?? '',
+      updatedAt: booking.createdAt?.toIso8601String() ?? '',
+    );
   }
 }

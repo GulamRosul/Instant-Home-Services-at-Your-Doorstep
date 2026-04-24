@@ -6,13 +6,33 @@ import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/notification/controller/notification_controller.dart';
 
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(NotificationController());
+  State<NotificationScreen> createState() => _NotificationScreenState();
+}
 
+class _NotificationScreenState extends State<NotificationScreen> {
+  late final NotificationController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = Get.isRegistered<NotificationController>()
+        ? Get.find<NotificationController>()
+        : Get.put(NotificationController());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (controller.notifications.isEmpty && !controller.isLoading.value) {
+        controller.fetchNotifications();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: CustomAppBar(

@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCjd2IjfIUMuSpNKPjCX1nxw4nGPvAooS4',
-    appId: '1:242025959192:android:d27a749896f5573122986d',
+    appId: '1:242025959192:android:e9bcc3dec4ea0df622986d',
     messagingSenderId: '242025959192',
     projectId: 'kaajbd-603b3',
     storageBucket: 'kaajbd-603b3.firebasestorage.app',
@@ -60,20 +60,20 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB5e8KP_8JAgZCu0N9ryaIJu3aVSqsL4Mw',
-    appId: '1:242025959192:ios:4546b398b40e1f8622986d',
+    appId: '1:242025959192:ios:dbadb372ba7beebc22986d',
     messagingSenderId: '242025959192',
     projectId: 'kaajbd-603b3',
     storageBucket: 'kaajbd-603b3.firebasestorage.app',
-    iosBundleId: 'com.example.protiva502',
+    iosBundleId: 'com.kaajbd.protiva502',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyB5e8KP_8JAgZCu0N9ryaIJu3aVSqsL4Mw',
-    appId: '1:242025959192:ios:4546b398b40e1f8622986d',
+    appId: '1:242025959192:ios:dbadb372ba7beebc22986d',
     messagingSenderId: '242025959192',
     projectId: 'kaajbd-603b3',
     storageBucket: 'kaajbd-603b3.firebasestorage.app',
-    iosBundleId: 'com.example.protiva502',
+    iosBundleId: 'com.kaajbd.protiva502',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'kaajbd-603b3.firebasestorage.app',
     measurementId: 'G-NH71WMFFH6',
   );
+
 }

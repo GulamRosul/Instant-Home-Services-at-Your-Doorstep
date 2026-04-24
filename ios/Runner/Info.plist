@@ -44,10 +44,12 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>tel</string>
 	</array>
-	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need microphone access for voice calls.</string>
 </dict>
 </plist>

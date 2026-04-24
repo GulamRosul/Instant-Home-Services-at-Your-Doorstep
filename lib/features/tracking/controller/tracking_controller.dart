@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/services/location_tracking_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
+import 'package:protiva502/features/audio_call/screens/audio_call.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 
 class TrackProviderController extends GetxController {
@@ -347,6 +348,13 @@ class TrackProviderController extends GetxController {
   }
 
   void callPerson() {
+    Get.to(
+      () => AudioCallPage(
+        callID: bookingId.value.replaceAll('#', '').trim(),
+        userID: _currentUserId ?? 'user_123',
+        userName: personName.value,
+      ),
+    );
     print("Initiating call to ${personName.value}...");
   }
 

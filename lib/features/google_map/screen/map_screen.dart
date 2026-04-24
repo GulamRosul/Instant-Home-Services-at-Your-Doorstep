@@ -926,12 +926,14 @@ class _MapScreenState extends State<MapScreen> {
               textColor: AppColors.textSecondary,
               borderColor: AppColors.textSecondary.withOpacity(0.5),
               onPressed: () async {
-                final Uri phoneUri = Uri(
-                  scheme: 'tel',
-                  path: '+8801798036636',
-                );
-                if (await canLaunchUrl(phoneUri)) {
-                  await launchUrl(phoneUri);
+                final Uri phoneUri = Uri(scheme: 'tel', path: '+8801798036636');
+                try {
+                  await launchUrl(
+                    phoneUri,
+                    mode: LaunchMode.externalApplication,
+                  );
+                } catch (e) {
+                  debugPrint('Could not launch dialer: $e');
                 }
               },
             ),

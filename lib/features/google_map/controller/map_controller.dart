@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -10,12 +11,14 @@ import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:protiva502/features/google_map/service/map_service.dart';
 
 class MapController extends GetxController {
+  // Google Maps API Key - shared for all map operations
+  static const String _googleMapsApiKey =
+      'AIzaSyDByTL-51tHLFMJgUTyHe0nT3-qhD2i9Mc';
+
   MapController({
     MapService? mapService,
     GoogleMapsFlutterAndroid? androidMapsPlugin,
-  }) : mapService =
-           mapService ??
-           MapService(apiKey: 'AIzaSyDByTL-51tHLFMJgUTyHe0nT3-qhD2i9Mc'),
+  }) : mapService = mapService ?? MapService(apiKey: _googleMapsApiKey),
        _androidMapsPlugin = androidMapsPlugin ?? GoogleMapsFlutterAndroid();
 
   final MapService mapService;
@@ -291,18 +294,19 @@ class MapController extends GetxController {
     }
 
     try {
-      final polylinePoints = PolylinePoints(apiKey: mapService.apiKey);
-      final result = await polylinePoints.getRouteBetweenCoordinatesV2(
-        request: RoutesApiRequest(
+      final polylinePoints = PolylinePoints(apiKey: _googleMapsApiKey);
+      final result = await polylinePoints.getRouteBetweenCoordinates(
+        request: PolylineRequest(
           origin: PointLatLng(
             currentLatLng.value.latitude,
             currentLatLng.value.longitude,
           ),
           destination: PointLatLng(destination.latitude, destination.longitude),
+          mode: TravelMode.driving,
         ),
       );
 
-      final routePoints = result.primaryRoute?.polylinePoints;
+      final routePoints = result.points;
       polylines.removeWhere(
         (polyline) => polyline.polylineId.value == _routePolylineId,
       );
@@ -314,7 +318,12 @@ class MapController extends GetxController {
             points: routePoints
                 .map((point) => LatLng(point.latitude, point.longitude))
                 .toList(),
+            color: const Color(0xFF4285F4),
             width: 5,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+            jointType: JointType.round,
+            geodesic: true,
           ),
         );
       }
@@ -406,16 +415,15 @@ class MapController extends GetxController {
   }) async {
     if (!_shouldRefreshTrackingRoute(
       providerPosition: providerPosition,
-      userPosition: userPosition,
       force: force,
     )) {
       return;
     }
 
     try {
-      final polylinePoints = PolylinePoints(apiKey: mapService.apiKey);
-      final result = await polylinePoints.getRouteBetweenCoordinatesV2(
-        request: RoutesApiRequest(
+      final polylinePoints = PolylinePoints(apiKey: _googleMapsApiKey);
+      final result = await polylinePoints.getRouteBetweenCoordinates(
+        request: PolylineRequest(
           origin: PointLatLng(
             providerPosition.latitude,
             providerPosition.longitude,
@@ -424,10 +432,11 @@ class MapController extends GetxController {
             userPosition.latitude,
             userPosition.longitude,
           ),
+          mode: TravelMode.driving,
         ),
       );
 
-      final routePoints = result.primaryRoute?.polylinePoints;
+      final routePoints = result.points;
       polylines.removeWhere(
         (polyline) => polyline.polylineId.value == _trackingRoutePolylineId,
       );
@@ -439,8 +448,12 @@ class MapController extends GetxController {
             points: routePoints
                 .map((point) => LatLng(point.latitude, point.longitude))
                 .toList(),
+            color: const Color(0xFF4285F4),
+            width: 5,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+            jointType: JointType.round,
             geodesic: true,
-            width: 6,
           ),
         );
       } else {
@@ -451,6 +464,11 @@ class MapController extends GetxController {
       _lastTrackingRouteAt = DateTime.now();
       _lastTrackingProviderPosition = providerPosition;
       _lastTrackingUserPosition = userPosition;
+
+      await _fitCameraToBothMarkers(
+        providerPosition: providerPosition,
+        userPosition: userPosition,
+      );
     } catch (_) {
       // Fallback so the user still sees provider-to-user direction.
       _drawDirectTrackingRoute(providerPosition, userPosition);
@@ -459,6 +477,11 @@ class MapController extends GetxController {
       _lastTrackingRouteAt = DateTime.now();
       _lastTrackingProviderPosition = providerPosition;
       _lastTrackingUserPosition = userPosition;
+
+      await _fitCameraToBothMarkers(
+        providerPosition: providerPosition,
+        userPosition: userPosition,
+      );
     }
   }
 
@@ -485,7 +508,6 @@ class MapController extends GetxController {
 
   bool _shouldRefreshTrackingRoute({
     required LatLng providerPosition,
-    required LatLng userPosition,
     required bool force,
   }) {
     if (force || _lastTrackingRouteAt == null) {
@@ -498,26 +520,19 @@ class MapController extends GetxController {
     }
 
     final previousProvider = _lastTrackingProviderPosition;
-    final previousUser = _lastTrackingUserPosition;
-    if (previousProvider == null || previousUser == null) {
+    if (previousProvider == null) {
       return true;
     }
 
+    // Only check provider movement - refresh only when provider moves significantly
     final providerMoved = Geolocator.distanceBetween(
       previousProvider.latitude,
       previousProvider.longitude,
       providerPosition.latitude,
       providerPosition.longitude,
     );
-    final userMoved = Geolocator.distanceBetween(
-      previousUser.latitude,
-      previousUser.longitude,
-      userPosition.latitude,
-      userPosition.longitude,
-    );
 
-    return providerMoved >= _trackingMinMovementMeters ||
-        userMoved >= _trackingMinMovementMeters;
+    return providerMoved >= _trackingMinMovementMeters;
   }
 
   void _startLiveTracking() {
@@ -572,6 +587,35 @@ class MapController extends GetxController {
     }
 
     return _formatLatLng(position);
+  }
+
+  Future<void> _fitCameraToBothMarkers({
+    required LatLng providerPosition,
+    required LatLng userPosition,
+  }) async {
+    final controller = mapController;
+    if (controller == null) return;
+
+    final bounds = LatLngBounds(
+      southwest: LatLng(
+        providerPosition.latitude < userPosition.latitude
+            ? providerPosition.latitude
+            : userPosition.latitude,
+        providerPosition.longitude < userPosition.longitude
+            ? providerPosition.longitude
+            : userPosition.longitude,
+      ),
+      northeast: LatLng(
+        providerPosition.latitude > userPosition.latitude
+            ? providerPosition.latitude
+            : userPosition.latitude,
+        providerPosition.longitude > userPosition.longitude
+            ? providerPosition.longitude
+            : userPosition.longitude,
+      ),
+    );
+
+    await controller.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
   }
 
   Future<void> _moveCamera(LatLng target) async {

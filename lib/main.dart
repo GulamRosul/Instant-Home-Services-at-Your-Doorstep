@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/app.dart';
+import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/firebase_options.dart';
 import 'package:protiva502/features/notification/controller/notification_controller.dart';
@@ -13,9 +14,10 @@ import 'package:protiva502/features/notification/controller/notification_control
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageService.init();
+  CallService.instance.setNavigatorKey(Get.key);
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  await CallService.instance.initializeFromStorage();
 
   // Set up background message handler for Android
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

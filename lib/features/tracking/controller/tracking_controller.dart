@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/features/audio_call/screens/audio_call.dart';
+import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/location_tracking_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
-import 'package:protiva502/features/audio_call/screens/audio_call.dart';
+import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 
 class TrackProviderController extends GetxController {
@@ -262,7 +264,7 @@ class TrackProviderController extends GetxController {
       // Update distance and ETA from state
       if (state.containsKey('distanceMeters')) {
         double distanceM = (state['distanceMeters'] as num).toDouble();
-        distance.value = (distanceM / 1000).toStringAsFixed(1) + ' km';
+        distance.value = '${(distanceM / 1000).toStringAsFixed(1)} km';
       }
       if (state.containsKey('etaMinutes')) {
         estimatedTime.value = '${state['etaMinutes']} mins';
@@ -347,15 +349,68 @@ class TrackProviderController extends GetxController {
     socketService.requestLocationState();
   }
 
-  void callPerson() {
+  void callPerson() async {
+    if (_otherUserId == null || _otherUserId!.trim().isEmpty) {
+      Get.snackbar('Error', 'Unable to initiate call: Receiver ID not found');
+      return;
+    }
+
+    if (_otherUserId == _currentUserId) {
+      Get.snackbar('Error', 'Unable to initiate call: Invalid receiver');
+      return;
+    }
+
+    final didSendInvitation = await CallService.instance.startAudioCall(
+      targetUserId: _otherUserId!,
+      targetUserName: personName.value,
+      callID: bookingId.value.replaceAll('#', '').trim(),
+    );
+
+    final callId = bookingId.value.replaceAll('#', '').trim();
+    final currentUserId = (_currentUserId ?? StorageService.getUserId() ?? '')
+        .trim();
+    final currentUserName = StorageService.getDisplayName();
+
+    AppLoggerHelper.info(
+      'Call invitation sent: targetUserId=$_otherUserId, targetUserName=${personName.value}, callID=${bookingId.value}, success=$didSendInvitation',
+    );
+
+    if (currentUserId.isEmpty || callId.isEmpty) {
+      Get.snackbar('Call Failed', 'Missing local user/call information');
+      return;
+    }
+
+    if (!didSendInvitation) {
+      AppLoggerHelper.warning(
+        'Call invitation failed reason: ${CallService.instance.lastError ?? 'Unknown'}',
+      );
+
+      Get.snackbar(
+        'Call Invite Failed',
+        'Receiver may be offline. Opening direct call room...',
+      );
+
+      Get.to(
+        () => AudioCallPage(
+          callID: callId,
+          userID: currentUserId,
+          userName: currentUserName,
+          initialStatus: 'Connecting...',
+        ),
+      );
+      return;
+    }
+
     Get.to(
       () => AudioCallPage(
-        callID: bookingId.value.replaceAll('#', '').trim(),
-        userID: _currentUserId ?? 'user_123',
-        userName: personName.value,
+        callID: callId,
+        userID: currentUserId,
+        userName: currentUserName,
+        initialStatus: 'Ringing...',
       ),
     );
-    print("Initiating call to ${personName.value}...");
+
+    print('Call invitation sent to ${personName.value}');
   }
 
   void messagePerson() {

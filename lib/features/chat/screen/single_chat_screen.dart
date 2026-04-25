@@ -12,11 +12,6 @@ class SingleChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Create controller only if it doesn't exist
-    // final controller = Get.putIfAbsent<SingleChatController>(
-    //   () => SingleChatController(),
-    // );
-
     final controller = Get.put(SingleChatController());
 
     return Scaffold(
@@ -54,6 +49,11 @@ class SingleChatScreen extends StatelessWidget {
 
                   final chatIndex = showTopLoader ? index - 1 : index;
                   final chat = controller.messages[chatIndex];
+
+                  if ((chat['message'] as String).trim().isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
                   return _buildChatBubble(
                     chat['message'],
                     chat['isMe'],
@@ -133,6 +133,7 @@ class SingleChatScreen extends StatelessWidget {
                   children: [
                     Text(
                       controller.otherUserName.value,
+                      // StorageService.getDisplayName(),
                       style: getTextStyle(
                         color: const Color(0xFF1E293B),
                         fontSize: 15.sp,
@@ -258,7 +259,12 @@ class SingleChatScreen extends StatelessWidget {
 
   Widget _buildMessageInput(SingleChatController controller) {
     return Container(
-      padding: EdgeInsets.fromLTRB(10.w, 10.h, 20.w, 30.h),
+      padding: EdgeInsets.fromLTRB(
+        10.w,
+        10.h,
+        20.w,
+        MediaQuery.of(Get.context!).padding.bottom + 10.h,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(

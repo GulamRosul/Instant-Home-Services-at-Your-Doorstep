@@ -338,7 +338,7 @@ class SingleChatController extends GetxController {
       if (bookingId.value.isNotEmpty) {
         _printCleanConsole('📢 Joining messaging room: ${bookingId.value}\n');
         chatService.joinMessagingRoom(bookingId.value);
-        connectionStatus.value = 'Connected';
+        connectionStatus.value = 'Online';
         _printCleanConsole('✅ ROOM JOINED: ${bookingId.value}\n');
       } else {
         _printCleanConsole('❌ ERROR: BookingId is EMPTY - Cannot join room\n');

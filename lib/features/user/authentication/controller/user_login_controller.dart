@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:protiva502/core/services/api_client.dart';
+import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
@@ -63,7 +64,8 @@ class UserLoginController extends GetxController {
       // Get FCM token - initialize notification controller if not already done
       String deviceId = '21'; // Default device ID
       try {
-        final notificationController = Get.isRegistered<NotificationController>()
+        final notificationController =
+            Get.isRegistered<NotificationController>()
             ? Get.find<NotificationController>()
             : Get.put(NotificationController());
 
@@ -79,9 +81,7 @@ class UserLoginController extends GetxController {
       }
 
       // Create options with device-id header
-      final options = Options(
-        headers: {'device-id': deviceId},
-      );
+      final options = Options(headers: {'device-id': deviceId});
 
       final response = await _apiClient.post(
         ApiEndpoints.login,
@@ -151,6 +151,11 @@ class UserLoginController extends GetxController {
 
       await SecureStorageService.saveToken(token);
       debugPrint('🔐 [LOGIN] Access token saved');
+
+      await CallService.instance.initialize(
+        userID: userId ?? '',
+        userName: StorageService.getDisplayName(),
+      );
 
       final refreshToken = data?["refreshToken"]?.toString();
       debugPrint('🔄 [LOGIN] Refresh token exists: ${refreshToken != null}');

@@ -254,35 +254,6 @@ class _MapScreenState extends State<MapScreen> {
                         Material(
                           elevation: 4,
                           borderRadius: BorderRadius.circular(16),
-                          // child: TextField(
-                          //   controller: searchController,
-                          //   textInputAction: TextInputAction.search,
-                          //   onSubmitted: (_) => _submitSearch(),
-                          //   decoration: InputDecoration(
-                          //     hintText: 'Search destination',
-                          //     prefixIcon: const Icon(Icons.search),
-                          // suffixIcon: controller.isSearching.value
-                          //     ? const Padding(
-                          //         padding: EdgeInsets.all(12),
-                          //         child: SizedBox(
-                          //           width: 20,
-                          //           height: 20,
-                          //           child: CircularProgressIndicator(
-                          //             strokeWidth: 2,
-                          //           ),
-                          //         ),
-                          //       )
-                          //     : IconButton(
-                          //         onPressed: _submitSearch,
-                          //         icon: const Icon(Icons.arrow_forward),
-                          //       ),
-                          //     border: OutlineInputBorder(
-                          //       borderRadius: BorderRadius.circular(16),
-                          //       borderSide: BorderSide.none,
-                          //     ),
-                          //     filled: true,
-                          //   ),
-                          // ),
                           child: CustomTextField(
                             backgroundColor: Colors.white,
                             controller: searchController,
@@ -477,7 +448,7 @@ class _MapScreenState extends State<MapScreen> {
                     // Estimated Arrival Card
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: _buildEstimatedArrivalCard(trackingController),
+                      child: _buildEstimatedArrivalCard(),
                     ),
                     SizedBox(height: 16.h),
 
@@ -519,7 +490,7 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Widget _buildEstimatedArrivalCard(TrackProviderController controller) {
+  Widget _buildEstimatedArrivalCard() {
     return Obx(
       () => Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -546,11 +517,17 @@ class _MapScreenState extends State<MapScreen> {
               children: [
                 Text(
                   'Estimated Arrival',
-                  style: getTextStyle(fontSize: 11.sp, color: Colors.white70),
+                  style: getTextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  controller.estimatedTime.value,
+                  controller.travelDuration.value.isNotEmpty
+                      ? controller.travelDuration.value
+                      : '--',
                   style: getTextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
@@ -564,11 +541,17 @@ class _MapScreenState extends State<MapScreen> {
               children: [
                 Text(
                   'Distance',
-                  style: getTextStyle(fontSize: 11.sp, color: Colors.white70),
+                  style: getTextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  controller.distance.value,
+                  controller.travelDistance.value.isNotEmpty
+                      ? controller.travelDistance.value
+                      : '--',
                   style: getTextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
@@ -669,31 +652,31 @@ class _MapScreenState extends State<MapScreen> {
                             color: Colors.orange,
                             size: 16.sp,
                           ),
-                          const Spacer(),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: controller.isPersonOnline.value
-                                  ? Colors.green.shade50
-                                  : Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Text(
-                              controller.isPersonOnline.value
-                                  ? 'On the way'
-                                  : 'Offline',
-                              style: getTextStyle(
-                                fontSize: 10.sp,
-                                color: controller.isPersonOnline.value
-                                    ? Colors.green
-                                    : Colors.red,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
+                          // const Spacer(),
+                          // Container(
+                          //   padding: EdgeInsets.symmetric(
+                          //     horizontal: 8.w,
+                          //     vertical: 4.h,
+                          //   ),
+                          //   decoration: BoxDecoration(
+                          //     color: controller.isPersonOnline.value
+                          //         ? Colors.green.shade50
+                          //         : Colors.red.shade50,
+                          //     borderRadius: BorderRadius.circular(6.r),
+                          //   ),
+                          //   child: Text(
+                          //     controller.isPersonOnline.value
+                          //         ? 'On the way'
+                          //         : 'Offline',
+                          //     style: getTextStyle(
+                          //       fontSize: 10.sp,
+                          //       color: controller.isPersonOnline.value
+                          //           ? Colors.green
+                          //           : Colors.red,
+                          //       fontWeight: FontWeight.w600,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                       SizedBox(height: 4.h),

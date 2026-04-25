@@ -17,6 +17,7 @@ class Protiva502 extends StatelessWidget {
       splitScreenMode: true,
       builder: (_, child) {
         return GetMaterialApp(
+          navigatorKey: Get.key,
           debugShowCheckedModeBanner: false,
           initialRoute: AppRoute.getSplashScreen(),
           getPages: AppRoute.routes,

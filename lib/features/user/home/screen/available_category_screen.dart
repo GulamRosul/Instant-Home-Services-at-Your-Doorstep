@@ -22,7 +22,7 @@ class AvailableCategoryScreen extends StatelessWidget {
     if (initialCategoryIndex != null) {
       // Delay to ensure ListView is built before scrolling
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        controller.selectCategory(initialCategoryIndex!);
+        controller.selectCategoryAfterLoad(initialCategoryIndex!);
       });
     }
 
@@ -269,6 +269,8 @@ class AvailableCategoryScreen extends StatelessWidget {
       ),
     );
   }
+
+  
 
   Widget _buildCategoriesShimmerLoader() {
     return SizedBox(

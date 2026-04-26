@@ -4,9 +4,15 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
+import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
+import 'package:protiva502/features/user/authentication/widget/log_in_alert_dialogue.dart';
 import 'package:protiva502/features/user/home/controller/subcategory_service_list_controller.dart';
+import 'package:protiva502/features/user/home/model/home_job_model.dart';
+import 'package:protiva502/features/user/home/model/subcategory_service_model.dart';
 import 'package:protiva502/features/user/home/screen/category_service_details_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
@@ -100,8 +106,9 @@ class SubcategoryServiceListScreen extends StatelessWidget {
   Widget _buildServiceCard(
     SubcategoryServiceListController controller,
     int index,
+    SubcategoryServiceModel service, // ✅ correct type
   ) {
-    final service = controller.services[index];
+    // final service = controller.services[index];
 
     return Container(
       margin: EdgeInsets.all(5.w),
@@ -120,7 +127,12 @@ class SubcategoryServiceListScreen extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              Get.to(() => const CategoryServiceDetailsScreen());
+              // Get.to(() => const CategoryServiceDetailsScreen());
+              Get.to(
+                () => const JobDetailsViewScreen(),
+                arguments: _mapHomeJobToJobModel(service),
+                // arguments: _mapHomeJobToJobModel(service),
+              );
             },
             child: ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
@@ -218,6 +230,10 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                     backgroundColor: AppColors.textPurple,
                     borderRadius: 6.r,
                     onPressed: () {
+                      if (!StorageService.isLoggedIn) {
+                        showLoginAlertDialog();
+                        return;
+                      }
                       Get.to(() => const BookingDetailsScreen());
                     },
                     textColor: Colors.white,
@@ -231,8 +247,40 @@ class SubcategoryServiceListScreen extends StatelessWidget {
     );
   }
 
+  void showLoginAlertDialog() {
+    Get.dialog(const LoginAlertDialog(), barrierDismissible: true);
+  }
+
+  JobModel _mapHomeJobToJobModel(SubcategoryServiceModel service) {
+    return JobModel(
+      id: service.id,
+      userId: service.userId,
+      title: service.title,
+      description: service.description,
+      basePrice: service.basePrice,
+      thumbnail: service.thumbnail,
+      totalBookings: service.totalBookings,
+      averageRating: service.averageRating,
+      isPopuler: service.isPopuler,
+      // ... map remaining fields
+      categoryId: '',
+      subCategoryId: '',
+      slug: '',
+      priceType: '',
+      includeService: const [],
+      images: const [],
+      videos: const [],
+      status: 'ACTIVE',
+      views: 0,
+      clicks: 0,
+      createdAt: '',
+      updatedAt: '',
+    );
+  }
+
   Widget _buildServiceGrid(SubcategoryServiceListController controller) {
     return GridView.builder(
+      // itemCount: controller.services.length
       shrinkWrap: true,
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
@@ -243,7 +291,27 @@ class SubcategoryServiceListScreen extends StatelessWidget {
         crossAxisSpacing: 5.w,
         mainAxisExtent: 260.h,
       ),
-      itemBuilder: (context, index) => _buildServiceCard(controller, index),
+      itemBuilder: (context, index) => _buildServiceCard(
+        controller,
+        index,
+        controller.services[index], // ✅ RxList<SubcategoryServiceModel>
+      ),
     );
   }
+
+  // Widget _buildServiceGrid(SubcategoryServiceListController controller, List<HomeJobModel> services) {
+  //   return GridView.builder(
+  //     shrinkWrap: true,
+  //     padding: EdgeInsets.zero,
+  //     physics: const NeverScrollableScrollPhysics(),
+  //     itemCount: controller.services.length,
+  //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //       crossAxisCount: 2,
+  //       mainAxisSpacing: 5.h,
+  //       crossAxisSpacing: 5.w,
+  //       mainAxisExtent: 260.h,
+  //     ),
+  //     itemBuilder: (context, index) => _buildServiceCard(controller, index, services[index]),
+  //   );
+  // }
 }

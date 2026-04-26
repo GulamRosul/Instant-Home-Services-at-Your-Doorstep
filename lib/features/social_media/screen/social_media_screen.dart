@@ -72,7 +72,7 @@ class SocialMediaScreen extends StatelessWidget {
 
             _buildSocialCard(
               title: 'WhatsApp',
-              handle: 'Kaaj Bd',
+              handle: '+880 1798-036636',
               icon: IconPath.whatsapp2,
               iconColor: Color(0xFF25D366),
               // iconColor: Colors.black,

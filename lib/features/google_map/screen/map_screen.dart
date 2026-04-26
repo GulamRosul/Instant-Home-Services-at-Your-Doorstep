@@ -780,7 +780,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
             SizedBox(height: 16.h),
             Obx(
-              () => controller.userRole.value == "user"
+              () => controller.userRole.value == "CLIENT"
                   ? Row(
                       children: [
                         Expanded(

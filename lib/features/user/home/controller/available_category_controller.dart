@@ -11,7 +11,7 @@ class AvailableCategoryController extends GetxController {
   final ApiClient _apiClient = ApiClient();
 
   // Scroll controller for horizontal category list
-  late ScrollController categoriesScrollController;
+  final ScrollController categoriesScrollController = ScrollController();
 
   // Observable for selected category index
   var selectedIndex = 0.obs;
@@ -33,8 +33,9 @@ class AvailableCategoryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    categoriesScrollController = ScrollController();
+    // categoriesScrollController = ScrollController();
     fetchCategories();
+    // refresh();
   }
 
   @override
@@ -43,17 +44,33 @@ class AvailableCategoryController extends GetxController {
     super.onClose();
   }
 
+  void selectCategoryAfterLoad(int index) {
+    if (categories.isNotEmpty) {
+      // Categories already loaded, select immediately
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        selectCategory(index);
+      });
+      return;
+    }
+
+    // Use once() instead of ever() — fires only one time then disposes itself
+    once(isCategoriesLoading, (bool loading) {
+      if (!loading && categories.isNotEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          selectCategory(index);
+        });
+      }
+    });
+  }
+
   void _scrollToCategory(int index) {
     if (!categoriesScrollController.hasClients) return;
+    if (categoriesScrollController.positions.isEmpty) return; // ✅ extra guard
 
-    // Each category item is 80.w + 12.w margin = ~92 width units
-    const double itemWidth = 92.0; // 80w + 12w margin
-    const double horizontalPadding = 20.0; // from ListView padding
+    const double itemWidth = 92.0;
+    const double horizontalPadding = 20.0;
 
-    // Calculate the position where the item should be
     double targetOffset = (index * itemWidth) - horizontalPadding;
-
-    // Clamp to valid range [0, maxScrollExtent]
     final maxOffset = categoriesScrollController.position.maxScrollExtent;
     targetOffset = targetOffset.clamp(0.0, maxOffset);
 
@@ -78,7 +95,9 @@ class AvailableCategoryController extends GetxController {
         ),
       );
 
-      AppLoggerHelper.info('Categories response status: ${response.statusCode}');
+      AppLoggerHelper.info(
+        'Categories response status: ${response.statusCode}',
+      );
       AppLoggerHelper.info('Categories response body: ${response.data}');
 
       List<CategoryModel> fetchedCategories = [];
@@ -88,15 +107,18 @@ class AvailableCategoryController extends GetxController {
         final categoriesData = _extractCategoriesData(response.data);
 
         if (categoriesData.isNotEmpty) {
-          fetchedCategories = categoriesData
-              .map(
-                (category) => CategoryModel.fromJson(
-                  category.map((key, value) => MapEntry(key.toString(), value)),
-                ),
-              )
-              .where((category) => category.isActive)
-              .toList()
-            ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+          fetchedCategories =
+              categoriesData
+                  .map(
+                    (category) => CategoryModel.fromJson(
+                      category.map(
+                        (key, value) => MapEntry(key.toString(), value),
+                      ),
+                    ),
+                  )
+                  .where((category) => category.isActive)
+                  .toList()
+                ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
         }
       }
 
@@ -126,7 +148,9 @@ class AvailableCategoryController extends GetxController {
       }
 
       currentCategoryPage.value = page;
-      AppLoggerHelper.info('Fetched ${fetchedCategories.length} categories (page: $page)');
+      AppLoggerHelper.info(
+        'Fetched ${fetchedCategories.length} categories (page: $page)',
+      );
     } on DioException catch (error) {
       if (currentCategoryPage.value == 1) {
         categories.clear();
@@ -197,7 +221,9 @@ class AvailableCategoryController extends GetxController {
         ),
       );
 
-      AppLoggerHelper.info('Sub-categories response status: ${response.statusCode}');
+      AppLoggerHelper.info(
+        'Sub-categories response status: ${response.statusCode}',
+      );
       AppLoggerHelper.info('Sub-categories response body: ${response.data}');
 
       List<SubCategoryModel> fetchedSubCategories = [];
@@ -207,15 +233,18 @@ class AvailableCategoryController extends GetxController {
         final subCategoriesData = _extractSubCategoriesData(response.data);
 
         if (subCategoriesData.isNotEmpty) {
-          fetchedSubCategories = subCategoriesData
-              .map(
-                (subCategory) => SubCategoryModel.fromJson(
-                  subCategory.map((key, value) => MapEntry(key.toString(), value)),
-                ),
-              )
-              .where((subCategory) => subCategory.isActive)
-              .toList()
-            ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+          fetchedSubCategories =
+              subCategoriesData
+                  .map(
+                    (subCategory) => SubCategoryModel.fromJson(
+                      subCategory.map(
+                        (key, value) => MapEntry(key.toString(), value),
+                      ),
+                    ),
+                  )
+                  .where((subCategory) => subCategory.isActive)
+                  .toList()
+                ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
         }
       }
 

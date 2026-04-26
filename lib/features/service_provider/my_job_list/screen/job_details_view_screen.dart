@@ -7,6 +7,7 @@ import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/my_job_list_controller.dart';
+import 'package:protiva502/features/user/authentication/widget/log_in_alert_dialogue.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 
 class JobDetailsViewScreen extends StatelessWidget {
@@ -229,9 +230,15 @@ class JobDetailsViewScreen extends StatelessWidget {
                     _buildAnalyticsSection(job)
                   else
                     CustomButton(
-                      text: 'Booking',
-                      onPressed: () =>
-                          Get.to(() => BookingDetailsScreen(), arguments: job),
+                      text: 'Book Now',
+                      onPressed: () {
+                        if (!StorageService.isLoggedIn) {
+                          showLoginAlertDialog(context);
+                          return;
+                        }
+                        Get.to(() => BookingDetailsScreen(), arguments: job);
+                      },
+
                       backgroundColor: AppColors.textPurple,
                       textColor: Colors.white,
                     ),
@@ -243,6 +250,14 @@ class JobDetailsViewScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void showLoginAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => LoginAlertDialog(),
     );
   }
 

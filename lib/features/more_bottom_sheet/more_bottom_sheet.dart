@@ -8,6 +8,7 @@ import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/routes/app_routes.dart';
+import 'package:protiva502/features/user/authentication/widget/log_in_alert_dialogue.dart';
 
 class MoreBottomSheet extends StatelessWidget {
   const MoreBottomSheet({super.key});
@@ -52,6 +53,10 @@ class MoreBottomSheet extends StatelessWidget {
                       iconPath: IconPath.profilePic,
                       label: 'Profile',
                       onTap: () {
+                        if (!StorageService.isLoggedIn) {
+                          showLoginAlertDialog(context);
+                          return;
+                        }
                         Get.back();
                         Future.delayed(const Duration(milliseconds: 100), () {
                           Get.toNamed(AppRoute.getProfile());
@@ -72,6 +77,10 @@ class MoreBottomSheet extends StatelessWidget {
                       iconPath: IconPath.settings,
                       label: 'Settings',
                       onTap: () {
+                        if (!StorageService.isLoggedIn) {
+                          showLoginAlertDialog(context);
+                          return;
+                        }
                         Get.back();
                         Future.delayed(const Duration(milliseconds: 100), () {
                           Get.toNamed(AppRoute.getSettings());
@@ -120,6 +129,14 @@ class MoreBottomSheet extends StatelessWidget {
           SizedBox(height: 40.h),
         ],
       ),
+    );
+  }
+
+  void showLoginAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => LoginAlertDialog(),
     );
   }
 

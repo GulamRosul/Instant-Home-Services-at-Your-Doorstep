@@ -4,16 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/common/widgets/shimmer_effect.dart';
+import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/device/device_utility.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/core/utils/helpers/app_helper.dart';
 import 'package:protiva502/features/profile/screen/profile_screen.dart';
+import 'package:protiva502/features/user/authentication/widget/log_in_alert_dialogue.dart';
+import 'package:protiva502/features/user/home/controller/available_category_controller.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
 import 'package:protiva502/features/user/home/controller/generic_listing_controller.dart';
 import 'package:protiva502/features/user/home/model/expert_recommendation_model.dart';
@@ -178,6 +182,10 @@ class UserHomeScreen extends StatelessWidget {
     );
   }
 
+  void showLoginAlertDialog() {
+    Get.dialog(const LoginAlertDialog(), barrierDismissible: true);
+  }
+
   Widget _buildHeader() {
     final controller = Get.find<UserHomeController>();
 
@@ -188,6 +196,11 @@ class UserHomeScreen extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
+                if (!StorageService.isLoggedIn) {
+                  showLoginAlertDialog();
+                  return;
+                }
+
                 Get.to(() => const ProfileScreen());
               },
               child: Obx(
@@ -219,7 +232,7 @@ class UserHomeScreen extends StatelessWidget {
                   () => Text(
                     controller.profileName.value.isNotEmpty
                         ? controller.profileName.value
-                        : 'User',
+                        : 'Guest 👋',
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
@@ -483,6 +496,7 @@ class UserHomeScreen extends StatelessWidget {
         final category = controller.categories[index];
         return GestureDetector(
           onTap: () {
+            // AvailableCategoryController().selectCategory(index);
             Get.to(() => AvailableCategoryScreen(initialCategoryIndex: index));
           },
           child: Container(
@@ -718,6 +732,10 @@ class UserHomeScreen extends StatelessWidget {
                     backgroundColor: AppColors.textPurple,
                     borderRadius: 6.r,
                     onPressed: () {
+                      if (!StorageService.isLoggedIn) {
+                        showLoginAlertDialog();
+                        return;
+                      }
                       Get.to(() => BookingDetailsScreen(service: service));
                     },
                     textColor: Colors.white,

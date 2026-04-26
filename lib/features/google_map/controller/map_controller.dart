@@ -12,6 +12,7 @@ import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/google_map/service/map_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:protiva502/features/tracking/controller/tracking_controller.dart';
 
 class MapController extends GetxController {
   // Google Maps API Key - shared for all map operations
@@ -475,224 +476,44 @@ class MapController extends GetxController {
   }
 
   // Inside MapController
-  Future<void> updateTrackingRoute({
-    required LatLng providerPosition,
-    required LatLng userPosition,
-  }) async {
-    // Throttle: skip if provider hasn't moved enough and interval hasn't elapsed
-    if (!_shouldRefreshTrackingRoute(
-      providerPosition: providerPosition,
-      force: false,
-    )) {
-      return;
-    }
-
-    final routeData = await getDirectionData(providerPosition, userPosition);
-
-    if (routeData != null) {
-      // 1. Get the Encoded Polyline
-      final String encodedPoints = routeData['overview_polyline']['points'];
-      final List<PointLatLng> result = PolylinePoints.decodePolyline(
-        encodedPoints,
-      );
-
-      // 2. Convert to LatLng for GoogleMap widget
-      final List<LatLng> polylineCoordinates = result
-          .map((point) => LatLng(point.latitude, point.longitude))
-          .toList();
-
-      // 3. Update the Polyline on the Map
-      polylines.clear();
-      if (polylineCoordinates.isNotEmpty) {
-        polylines.add(
-          Polyline(
-            polylineId: const PolylineId(_trackingRoutePolylineId),
-            points: polylineCoordinates,
-            color: AppColors.textPurple,
-            width: 5,
-            jointType: JointType.round,
-            startCap: Cap.roundCap,
-            endCap: Cap.roundCap,
-            geodesic: true,
-          ),
-        );
-      } else {
-        _drawDirectTrackingRoute(providerPosition, userPosition);
-      }
-
-      // 4. Extract ETA and Distance from Directions API leg
-      final leg = routeData['legs'][0];
-      final String distanceText =
-          (leg['distance']?['text'] ?? '') as String; // e.g., "5.4 km"
-      final String durationText =
-          (leg['duration']?['text'] ?? '') as String; // e.g., "18 mins"
-
-      // Write to MapController observables so the UI card reacts
-      travelDistance.value = distanceText;
-      travelDuration.value = durationText;
-
-      _lastTrackingRouteAt = DateTime.now();
-      _lastTrackingProviderPosition = providerPosition;
-
-      // 5. Adjust camera to show both markers
-      await _fitCameraToBothMarkers(
-        providerPosition: providerPosition,
-        userPosition: userPosition,
-      );
-    } else {
-      // Fallback: draw straight line so user still sees direction
-      _drawDirectTrackingRoute(providerPosition, userPosition);
-      polylines.refresh();
-
-      _lastTrackingRouteAt = DateTime.now();
-      _lastTrackingProviderPosition = providerPosition;
-    }
-  }
-
-  // 2. Modify updateTrackingRoute in MapController
   // Future<void> updateTrackingRoute({
   //   required LatLng providerPosition,
   //   required LatLng userPosition,
-  //   bool force = false,
   // }) async {
+  //   // Throttle: skip if provider hasn't moved enough and interval hasn't elapsed
   //   if (!_shouldRefreshTrackingRoute(
   //     providerPosition: providerPosition,
-  //     force: force,
+  //     force: false,
   //   )) {
   //     return;
   //   }
 
-  //   try {
-  //     final polylinePoints = PolylinePoints(apiKey: _googleMapsApiKey);
+  //   final routeData = await getDirectionData(providerPosition, userPosition);
 
-  //     // Note: To get ETA/Distance, we often need the raw Directions API response
-  //     // or a more detailed helper. If using flutter_polyline_points:
-  //     final result = await polylinePoints.getRouteBetweenCoordinates(
-  //       request: PolylineRequest(
-  //         origin: PointLatLng(
-  //           providerPosition.latitude,
-  //           providerPosition.longitude,
-  //         ),
-  //         destination: PointLatLng(
-  //           userPosition.latitude,
-  //           userPosition.longitude,
-  //         ),
-  //         mode: TravelMode.driving,
-  //       ),
+  //   if (routeData != null) {
+  //     // 1. Get the Encoded Polyline
+  //     final String encodedPoints = routeData['overview_polyline']['points'];
+  //     final List<PointLatLng> result = PolylinePoints.decodePolyline(
+  //       encodedPoints,
   //     );
 
-  //     final distanceMeters =
-  //         result.totalDistanceValue ??
-  //         (result.distanceValues != null && result.distanceValues!.isNotEmpty
-  //             ? result.distanceValues!.first
-  //             : null);
-  //     final durationSeconds =
-  //         result.totalDurationValue ??
-  //         (result.durationValues != null && result.durationValues!.isNotEmpty
-  //             ? result.durationValues!.first
-  //             : null);
+  //     // 2. Convert to LatLng for GoogleMap widget
+  //     final List<LatLng> polylineCoordinates = result
+  //         .map((point) => LatLng(point.latitude, point.longitude))
+  //         .toList();
 
-  //     final distanceTextFromApi =
-  //         result.distanceTexts != null && result.distanceTexts!.isNotEmpty
-  //         ? result.distanceTexts!.first.trim()
-  //         : null;
-  //     final durationTextFromApi =
-  //         result.durationTexts != null && result.durationTexts!.isNotEmpty
-  //         ? result.durationTexts!.first.trim()
-  //         : null;
-
-  //     if (result.points.isNotEmpty) {
-  //       // REQUIREMENT 4: Update Polyline
-  //       _drawRoute(result.points);
-  //     } else {
-  //       _drawDirectTrackingRoute(providerPosition, userPosition);
-  //       polylines.refresh();
-  //     }
-
-  //     if (distanceMeters != null) {
-  //       travelDistance.value =
-  //           '${(distanceMeters / 1000).toStringAsFixed(1)} km';
-  //     } else if (distanceTextFromApi != null &&
-  //         distanceTextFromApi.isNotEmpty) {
-  //       travelDistance.value = distanceTextFromApi;
-  //     } else {
-  //       travelDistance.value = '--';
-  //     }
-
-  //     if (durationSeconds != null) {
-  //       travelDuration.value = _formatDurationFromSeconds(durationSeconds);
-  //     } else if (durationTextFromApi != null &&
-  //         durationTextFromApi.isNotEmpty) {
-  //       travelDuration.value = durationTextFromApi;
-  //     } else {
-  //       travelDuration.value = '--';
-  //     }
-
-  //     _lastTrackingRouteAt = DateTime.now();
-  //     _lastTrackingProviderPosition = providerPosition;
-
-  //     // REQUIREMENT 3: Adjust camera to see both
-  //     await _fitCameraToBothMarkers(
-  //       providerPosition: providerPosition,
-  //       userPosition: userPosition,
-  //     );
-  //   } catch (e) {
-  //     debugPrint("Routing error: $e");
-  //     _drawDirectTrackingRoute(providerPosition, userPosition);
-  //     polylines.refresh();
-  //     travelDistance.value = '--';
-  //     travelDuration.value = '--';
-
-  //     _lastTrackingRouteAt = DateTime.now();
-  //     _lastTrackingProviderPosition = providerPosition;
-  //   }
-  // }
-
-  // Future<void> updateTrackingRoute({
-  //   required LatLng providerPosition,
-  //   required LatLng userPosition,
-  //   bool force = false,
-  // }) async {
-  //   if (!_shouldRefreshTrackingRoute(
-  //     providerPosition: providerPosition,
-  //     force: force,
-  //   )) {
-  //     return;
-  //   }
-
-  //   try {
-  //     final polylinePoints = PolylinePoints(apiKey: _googleMapsApiKey);
-  //     final result = await polylinePoints.getRouteBetweenCoordinates(
-  //       request: PolylineRequest(
-  //         origin: PointLatLng(
-  //           providerPosition.latitude,
-  //           providerPosition.longitude,
-  //         ),
-  //         destination: PointLatLng(
-  //           userPosition.latitude,
-  //           userPosition.longitude,
-  //         ),
-  //         mode: TravelMode.driving,
-  //       ),
-  //     );
-
-  //     final routePoints = result.points;
-  //     polylines.removeWhere(
-  //       (polyline) => polyline.polylineId.value == _trackingRoutePolylineId,
-  //     );
-
-  //     if (routePoints != null && routePoints.isNotEmpty) {
+  //     // 3. Update the Polyline on the Map
+  //     polylines.clear();
+  //     if (polylineCoordinates.isNotEmpty) {
   //       polylines.add(
   //         Polyline(
   //           polylineId: const PolylineId(_trackingRoutePolylineId),
-  //           points: routePoints
-  //               .map((point) => LatLng(point.latitude, point.longitude))
-  //               .toList(),
-  //           color: const Color(0xFF4285F4),
+  //           points: polylineCoordinates,
+  //           color: AppColors.textPurple,
   //           width: 5,
+  //           jointType: JointType.round,
   //           startCap: Cap.roundCap,
   //           endCap: Cap.roundCap,
-  //           jointType: JointType.round,
   //           geodesic: true,
   //         ),
   //       );
@@ -700,30 +521,104 @@ class MapController extends GetxController {
   //       _drawDirectTrackingRoute(providerPosition, userPosition);
   //     }
 
-  //     polylines.refresh();
+  //     // 4. Extract ETA and Distance from Directions API leg
+  //     final leg = routeData['legs'][0];
+  //     final String distanceText =
+  //         (leg['distance']?['text'] ?? '') as String; // e.g., "5.4 km"
+  //     final String durationText =
+  //         (leg['duration']?['text'] ?? '') as String; // e.g., "18 mins"
+
+  //     // Write to MapController observables so the UI card reacts
+  //     travelDistance.value = distanceText;
+  //     travelDuration.value = durationText;
+
   //     _lastTrackingRouteAt = DateTime.now();
   //     _lastTrackingProviderPosition = providerPosition;
-  //     _lastTrackingUserPosition = userPosition;
 
+  //     // 5. Adjust camera to show both markers
   //     await _fitCameraToBothMarkers(
   //       providerPosition: providerPosition,
   //       userPosition: userPosition,
   //     );
-  //   } catch (_) {
-  //     // Fallback so the user still sees provider-to-user direction.
+  //   } else {
+  //     // Fallback: draw straight line so user still sees direction
   //     _drawDirectTrackingRoute(providerPosition, userPosition);
   //     polylines.refresh();
 
   //     _lastTrackingRouteAt = DateTime.now();
   //     _lastTrackingProviderPosition = providerPosition;
-  //     _lastTrackingUserPosition = userPosition;
-
-  //     await _fitCameraToBothMarkers(
-  //       providerPosition: providerPosition,
-  //       userPosition: userPosition,
-  //     );
   //   }
   // }
+
+
+  Future<void> updateTrackingRoute({
+  required LatLng providerPosition,
+  required LatLng userPosition,
+}) async {
+  const String url = "https://routes.googleapis.com/directions/v2:computeRoutes";
+
+  final response = await http.post(
+    Uri.parse(url),
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-Api-Key": _googleMapsApiKey,
+      // CRITICAL: Tells Google exactly what data to return
+      "X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
+    },
+    body: jsonEncode({
+      "origin": {
+        "location": {
+          "latLng": {"latitude": providerPosition.latitude, "longitude": providerPosition.longitude}
+        }
+      },
+      "destination": {
+        "location": {
+          "latLng": {"latitude": userPosition.latitude, "longitude": userPosition.longitude}
+        }
+      },
+      "travelMode": "DRIVE",
+      "routingPreference": "TRAFFIC_AWARE", // Gets real-time Dhaka traffic data
+      "computeAlternativeRoutes": false,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    final route = data['routes'][0];
+
+    // 1. Decode the Polyline
+    String encodedPolyline = route['polyline']['encodedPolyline'];
+    List<PointLatLng> result = PolylinePoints.decodePolyline(encodedPolyline);
+    
+    List<LatLng> coords = result.map((p) => LatLng(p.latitude, p.longitude)).toList();
+
+    // 2. Update Map Polylines
+    polylines.value = {
+      Polyline(
+        polylineId: const PolylineId("route"),
+        points: coords,
+        color: const Color(0xFF7C3AED), // Your Purple theme
+        width: 5,
+        jointType: JointType.round,
+      )
+    };
+
+    // 3. Update ETA & Distance
+    // Routes API returns distance in meters and duration in seconds (e.g., "1200s")
+    double meters = (route['distanceMeters'] as num).toDouble();
+    String durationString = route['duration']; // e.g., "950s"
+    int seconds = int.parse(durationString.replaceAll('s', ''));
+
+    final trackingController = Get.find<TrackProviderController>();
+    trackingController.distance.value = "${(meters / 1000).toStringAsFixed(1)} km";
+    trackingController.estimatedTime.value = "${(seconds / 60).round()} mins";
+    
+  } else {
+    debugPrint("Routes API Error: ${response.body}");
+  }
+}
+
+  
 
   void _drawDirectTrackingRoute(LatLng providerPosition, LatLng userPosition) {
     polylines.removeWhere(

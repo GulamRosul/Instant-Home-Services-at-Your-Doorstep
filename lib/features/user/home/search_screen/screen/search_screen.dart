@@ -26,7 +26,7 @@ class SearchScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             child: CustomTextField(
               controller: controller.searchTextController,
-              hintText: "Search Service",
+              hintText: "Search Service or Category",
               suffixIcon: Container(
                 margin: EdgeInsets.all(4.r),
                 decoration: const BoxDecoration(
@@ -51,7 +51,7 @@ class SearchScreen extends StatelessWidget {
               if (controller.searchQuery.isEmpty) {
                 return Center(
                   child: Text(
-                    'Search for services',
+                    'Search for services or categories',
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: AppColors.textSecondary,
@@ -247,30 +247,18 @@ class SearchScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              ShimmerEffect(
-                width: 100.w,
-                height: 100.h,
-              ),
+              ShimmerEffect(width: 100.w, height: 100.h),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.all(12.r),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ShimmerEffect(
-                        width: double.infinity,
-                        height: 12.h,
-                      ),
+                      ShimmerEffect(width: double.infinity, height: 12.h),
                       SizedBox(height: 8.h),
-                      ShimmerEffect(
-                        width: 100.w,
-                        height: 10.h,
-                      ),
+                      ShimmerEffect(width: 100.w, height: 10.h),
                       SizedBox(height: 8.h),
-                      ShimmerEffect(
-                        width: 150.w,
-                        height: 10.h,
-                      ),
+                      ShimmerEffect(width: 150.w, height: 10.h),
                     ],
                   ),
                 ),

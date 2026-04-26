@@ -6,12 +6,14 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
 import 'package:protiva502/features/user/all_bookings/controller/all_booking_controller.dart';
 import 'package:protiva502/features/user/all_bookings/model/all_booking_model.dart';
 import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
 import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
+import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
 
@@ -596,11 +598,11 @@ class AllBookingScreen extends StatelessWidget {
               color: AppColors.textSecondary,
             ),
             SizedBox(height: 14.h),
-            Text(
-              'Could not load bookings',
-              textAlign: TextAlign.center,
-              style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
-            ),
+            // Text(
+            //   'Could not load bookings',
+            //   textAlign: TextAlign.center,
+            //   style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+            // ),
             SizedBox(height: 8.h),
             Text(
               controller.errorMessage.value,
@@ -612,13 +614,14 @@ class AllBookingScreen extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             OutlinedButton(
-              onPressed: controller.refreshBookings,
+              // onPressed: controller.refreshBookings,
+              onPressed: () => Get.to(() => SecondOnboardingScreen()),
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: AppColors.textPurple),
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               ),
               child: Text(
-                'Try again',
+                'Sign In',
                 style: getTextStyle(
                   fontSize: 13.sp,
                   color: AppColors.textPurple,

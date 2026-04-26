@@ -10,6 +10,8 @@ import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/firebase_options.dart';
 import 'package:protiva502/features/notification/controller/notification_controller.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,12 +24,21 @@ Future<void> main() async {
   // Set up background message handler for Android
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // Initialize Android notification channel for Android 8.0+
+  ZegoUIKitPrebuiltCallInvitationService().useSystemCallingUI([
+    ZegoUIKitSignalingPlugin(),
+  ]);
+
+  CallService.instance.setNavigatorKey(Get.key);
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await CallService.instance.initializeFromStorage();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   if (Platform.isAndroid) {
     await _initializeAndroidNotificationChannel();
   }
 
-  // Initialize NotificationController as a persistent controller
   Get.put<NotificationController>(NotificationController(), permanent: true);
 
   SystemChrome.setSystemUIOverlayStyle(

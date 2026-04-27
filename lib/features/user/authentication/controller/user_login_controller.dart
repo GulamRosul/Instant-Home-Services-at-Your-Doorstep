@@ -74,7 +74,7 @@ class UserLoginController extends GetxController {
         final fcmToken = notificationController.getFcmToken();
         if (fcmToken != null && fcmToken.isNotEmpty) {
           deviceId = fcmToken;
-          debugPrint('🔐 [LOGIN] Using FCM token as device-id');
+          debugPrint('🔐 [LOGIN] Using FCM token as device-id : $deviceId');
         }
       } catch (e) {
         debugPrint('❌ [LOGIN] Failed to get FCM token, using default: $e');
@@ -88,6 +88,11 @@ class UserLoginController extends GetxController {
         data: {"email": email, "password": password},
         options: options,
       );
+
+      // Add these lines:
+      debugPrint('🌐 [LOGIN] Request URL: ${response.requestOptions.uri}');
+      debugPrint('📤 [LOGIN] Request Body: ${response.requestOptions.data}');
+      debugPrint('📥 [LOGIN] Response: ${response.data}');
 
       debugPrint('📡 [LOGIN] Response status code: ${response.statusCode}');
       debugPrint('📡 [LOGIN] Full response data: ${response.data}');

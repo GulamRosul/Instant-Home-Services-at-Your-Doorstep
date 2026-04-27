@@ -51,5 +51,15 @@
 	</array>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need microphone access for voice calls.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need camera access for video calls</string>
+
+	<!-- ✅ VoIP background mode -->
+	<key>UIBackgroundModes</key>
+	<array>
+	<string>voip</string>
+	<string>remote-notification</string>
+	<string>audio</string>
+	</array>
 </dict>
 </plist>

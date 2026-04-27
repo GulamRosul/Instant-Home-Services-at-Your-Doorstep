@@ -10,6 +10,9 @@ import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/home/search_screen/controller/search_controller.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
+import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
+import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
+import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -99,17 +102,78 @@ class SearchScreen extends StatelessWidget {
   }
 
   static Widget _buildSearchResultsList(List<HomeJobModel> results) {
-    return ListView.builder(
+    // Separate results into services and categories
+    final services = results.where((item) => item.type == 'job').toList();
+    final categories = results
+        .where((item) => item.type == 'category')
+        .toList();
+
+    return ListView(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      itemCount: results.length,
-      itemBuilder: (context, index) => _buildSearchResultCard(results[index]),
+      children: [
+        // Services Section
+        if (services.isNotEmpty) ...[
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 8.h, 0, 12.h),
+            child: Text(
+              'Service',
+              style: getTextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          ...services.map((service) => _buildServiceCard(service)),
+        ],
+        // Categories Section
+        if (categories.isNotEmpty) ...[
+          if (services.isNotEmpty) SizedBox(height: 16.h),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 8.h, 0, 12.h),
+            child: Text(
+              'Category',
+              style: getTextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          ...categories.map((category) => _buildCategoryCard(category)),
+        ],
+      ],
     );
   }
 
-  static Widget _buildSearchResultCard(HomeJobModel service) {
+  static Widget _buildServiceCard(HomeJobModel service) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => ProviderDetailsScreen(providerId: service.userId));
+        // Create a JobModel from HomeJobModel for navigation
+        final jobModel = JobModel(
+          id: service.id,
+          userId: service.userId,
+          categoryId: service.categoryId,
+          subCategoryId: '',
+          title: service.title,
+          slug: service.slug,
+          description: service.description,
+          basePrice: service.basePrice.toString(),
+          priceType: '',
+          includeService: [],
+          thumbnail: service.thumbnail,
+          images: [],
+          videos: [],
+          status: 'ACTIVE',
+          views: 0,
+          clicks: 0,
+          totalBookings: service.totalBookings,
+          isPopuler: service.isPopular,
+          createdAt: '',
+          updatedAt: '',
+          averageRating: service.averageRating,
+        );
+        Get.to(() => const JobDetailsViewScreen(), arguments: jobModel);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
@@ -227,6 +291,115 @@ class SearchScreen extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildCategoryCard(HomeJobModel category) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(
+          () => const AvailableCategoryScreen(),
+          arguments: {'categoryId': category.id},
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.all(16.r),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Category Icon/Thumbnail
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: category.thumbnail.isNotEmpty
+                  ? Image.network(
+                      category.thumbnail,
+                      width: 80.w,
+                      height: 80.h,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 80.w,
+                        height: 80.h,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Icon(
+                          Icons.category,
+                          size: 32.sp,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: 80.w,
+                      height: 80.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Icon(
+                        Icons.category,
+                        size: 32.sp,
+                        color: Colors.grey,
+                      ),
+                    ),
+            ),
+            SizedBox(width: 12.w),
+            // Category Details
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Title
+                  Text(
+                    category.title,
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 6.h),
+                  // Description
+                  Text(
+                    category.description.isNotEmpty
+                        ? category.description
+                        : 'Explore this category',
+                    style: getTextStyle(
+                      fontSize: 11.sp,
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 8.w),
+            // Arrow Icon
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16.sp,
+              color: AppColors.textBlue,
             ),
           ],
         ),

@@ -11,18 +11,40 @@ import 'package:protiva502/features/user/home/screen/subcategory_service_list_sc
 
 class AvailableCategoryScreen extends StatelessWidget {
   final int? initialCategoryIndex;
+  final String? categoryId;
 
-  const AvailableCategoryScreen({super.key, this.initialCategoryIndex});
+  const AvailableCategoryScreen({
+    super.key,
+    this.initialCategoryIndex,
+    this.categoryId,
+  });
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AvailableCategoryController());
+
+    // Get categoryId from arguments if passed from search screen
+    final args = Get.arguments;
+    String? passedCategoryId;
+    if (args is Map && args.containsKey('categoryId')) {
+      passedCategoryId = args['categoryId'] as String?;
+    }
 
     // Set initial category if provided
     if (initialCategoryIndex != null) {
       // Delay to ensure ListView is built before scrolling
       WidgetsBinding.instance.addPostFrameCallback((_) {
         controller.selectCategoryAfterLoad(initialCategoryIndex!);
+      });
+    } else if (categoryId != null && categoryId!.isNotEmpty) {
+      // Find the index of the category by ID
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.selectCategoryAfterLoadById(categoryId!);
+      });
+    } else if (passedCategoryId != null && passedCategoryId!.isNotEmpty) {
+      // Find the index of the category by ID from arguments
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.selectCategoryAfterLoadById(passedCategoryId!);
       });
     }
 
@@ -269,8 +291,6 @@ class AvailableCategoryScreen extends StatelessWidget {
       ),
     );
   }
-
-  
 
   Widget _buildCategoriesShimmerLoader() {
     return SizedBox(

@@ -10,6 +10,9 @@ class HomeJobModel {
     required this.totalBookings,
     required this.isPopular,
     this.userFirstName = '',
+    this.type = 'job',
+    this.slug = '',
+    this.categoryId = '',
   });
 
   final String id;
@@ -22,6 +25,9 @@ class HomeJobModel {
   final int totalBookings;
   final bool isPopular;
   final String userFirstName;
+  final String type;
+  final String slug;
+  final String categoryId;
 
   factory HomeJobModel.fromJson(Map<String, dynamic> json) {
     String firstName = '';
@@ -42,6 +48,9 @@ class HomeJobModel {
       totalBookings: int.tryParse(json['totalBookings']?.toString() ?? '') ?? 0,
       isPopular: json['isPopuler'] == true || json['isPopular'] == true,
       userFirstName: firstName,
+      type: json['type']?.toString() ?? 'job',
+      slug: json['slug']?.toString() ?? '',
+      categoryId: json['categoryId']?.toString() ?? '',
     );
   }
 }

@@ -63,6 +63,31 @@ class AvailableCategoryController extends GetxController {
     });
   }
 
+  void selectCategoryAfterLoadById(String categoryId) {
+    if (categories.isNotEmpty) {
+      // Categories already loaded, find and select by ID
+      final index = categories.indexWhere((c) => c.id == categoryId);
+      if (index != -1) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          selectCategory(index);
+        });
+      }
+      return;
+    }
+
+    // Wait for categories to load, then find by ID
+    once(isCategoriesLoading, (bool loading) {
+      if (!loading && categories.isNotEmpty) {
+        final index = categories.indexWhere((c) => c.id == categoryId);
+        if (index != -1) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            selectCategory(index);
+          });
+        }
+      }
+    });
+  }
+
   void _scrollToCategory(int index) {
     if (!categoriesScrollController.hasClients) return;
     if (categoriesScrollController.positions.isEmpty) return; // ✅ extra guard

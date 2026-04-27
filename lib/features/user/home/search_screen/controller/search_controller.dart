@@ -43,6 +43,10 @@ class SearchController extends GetxController {
         queryParameters: {'search': query},
       );
 
+      // Add these two lines right after the await:
+      debugPrint('REQUEST URL: ${response.requestOptions.uri}');
+      debugPrint('RESPONSE: ${response.data}');
+
       if (response.statusCode == 200 && response.data != null) {
         final data = response.data;
         if (data is Map && data['data'] is List) {

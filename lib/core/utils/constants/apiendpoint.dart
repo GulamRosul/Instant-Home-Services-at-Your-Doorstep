@@ -7,13 +7,14 @@ class ApiEndpoints {
   static const String baseUrl = 'http://13.60.247.63/api/v1';
 
   /// Socket.IO Server URL (same host as API)
-  static const String socketMessageUrl = 'http://16.171.13.66/messaging';
-  static const String socketTrackingUrl = 'http://16.171.13.66/tracking';
+  static const String socketMessageUrl = 'http://13.60.247.63/messaging';
+  static const String socketTrackingUrl = 'http://13.60.247.63/tracking';
   static const String register = '/auth/register';
   static const String login = '/auth/login';
   static const String verifyOTP = '/auth/verify-otp';
   static const String resendOTP = '/auth/resend-otp';
   static const String changePassword = '/auth/change-password';
+  static const String forgotPassword = '/auth/forgot-password';
   static const String authMe = '/auth/me';
   static const String authProfile = '/auth/profile';
   static const String updateUserProfile = '/auth/updateUserProfile';

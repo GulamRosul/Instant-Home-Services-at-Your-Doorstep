@@ -27,6 +27,10 @@ class UserOtpController extends GetxController {
   // Email (passed from previous screen)
   late String email;
 
+  // Forgot password flow flag
+  RxBool isForgotPassword = false.obs;
+  RxBool fromProvider = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -35,6 +39,14 @@ class UserOtpController extends GetxController {
 
   void setEmail(String userEmail) {
     email = userEmail;
+  }
+
+  void setForgotPasswordFlow(bool isForgot) {
+    isForgotPassword.value = isForgot;
+  }
+
+  void setFromProvider(bool isFromProvider) {
+    fromProvider.value = isFromProvider;
   }
 
   void startTimer() {
@@ -86,38 +98,58 @@ class UserOtpController extends GetxController {
         if (data is Map<String, dynamic> && data.containsKey('data')) {
           final userData = data['data'];
 
-          // Extract tokens
-          final accessToken = userData['accessToken'] ?? '';
-          final refreshToken = userData['refreshToken'] ?? '';
+          developer.log(
+            '✅ OTP Verified Successfully',
+            name: 'UserOtpController',
+          );
 
-          // Save tokens to secure storage
-          if (accessToken.isNotEmpty) {
-            await SecureStorageService.saveToken(accessToken);
-          }
-          if (refreshToken.isNotEmpty) {
-            await SecureStorageService.saveRefreshToken(refreshToken);
-          }
+          // If this is a forgot password flow, navigate to login screen
+          if (isForgotPassword.value) {
+            // Clear forgot password email from storage
+            await StorageService.clearForgotPasswordEmail();
 
-          // Save user data to storage
-          final user = userData['user'];
-          if (user is Map<String, dynamic>) {
-            await StorageService.saveUser(
-              userId: user['id'] ?? '',
-              email: user['email'] ?? '',
-              firstName: user['firstName'] ?? '',
-              lastName: user['lastName'] ?? '',
-              role: user['role'] ?? '',
+            Get.snackbar(
+              'Success',
+              'Password reset successful. Please login again.',
+              snackPosition: SnackPosition.BOTTOM,
             );
 
-            // Mark user as logged in
-            await StorageService.makeLoggedIn();
+            // Navigate to the appropriate login screen
+            if (fromProvider.value) {
+              Get.offNamedUntil('/providerLoginScreen', (route) => false);
+            } else {
+              Get.offNamedUntil('/userLoginScreen', (route) => false);
+            }
+          } else {
+            // Normal signup/login OTP verification flow
+            // Extract tokens
+            final accessToken = userData['accessToken'] ?? '';
+            final refreshToken = userData['refreshToken'] ?? '';
 
-            developer.log(
-              '✅ OTP Verified Successfully',
-              name: 'UserOtpController',
-            );
+            // Save tokens to secure storage
+            if (accessToken.isNotEmpty) {
+              await SecureStorageService.saveToken(accessToken);
+            }
+            if (refreshToken.isNotEmpty) {
+              await SecureStorageService.saveRefreshToken(refreshToken);
+            }
 
-            Get.offAll(() => const MainNavigationScreen());
+            // Save user data to storage
+            final user = userData['user'];
+            if (user is Map<String, dynamic>) {
+              await StorageService.saveUser(
+                userId: user['id'] ?? '',
+                email: user['email'] ?? '',
+                firstName: user['firstName'] ?? '',
+                lastName: user['lastName'] ?? '',
+                role: user['role'] ?? '',
+              );
+
+              // Mark user as logged in
+              await StorageService.makeLoggedIn();
+
+              Get.offAll(() => const MainNavigationScreen());
+            }
           }
         }
       } else {

@@ -10,9 +10,16 @@ import 'package:protiva502/features/user/authentication/controller/user_otp_cont
 import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
 class UserOtpScreen extends StatelessWidget {
-  const UserOtpScreen({super.key, this.email});
+  const UserOtpScreen({
+    super.key,
+    this.email,
+    this.isForgotPassword = false,
+    this.fromProvider = false,
+  });
 
   final String? email;
+  final bool isForgotPassword;
+  final bool fromProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +29,10 @@ class UserOtpScreen extends StatelessWidget {
     if (email != null) {
       controller.setEmail(email!);
     }
+
+    // Set forgot password flow flags
+    controller.setForgotPasswordFlow(isForgotPassword);
+    controller.setFromProvider(fromProvider);
 
     final socialMediaController = Get.put(SocialMediaController());
 

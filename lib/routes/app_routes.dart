@@ -10,6 +10,7 @@ import 'package:protiva502/features/service_provider/payment_system/screen/provi
 import 'package:protiva502/features/service_provider/home/screen/active_jobs_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_login_screen.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
+import 'package:protiva502/features/service_provider/auhecntication/screen/provider_forgot_password_screen.dart';
 import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 import 'package:protiva502/features/service_provider/payment_system/screen/payment_method.dart';
 import 'package:protiva502/features/service_provider/home/screen/recent_bookings_screen.dart';
@@ -24,6 +25,7 @@ import 'package:protiva502/features/user/authentication/screen/user_login_screen
 import 'package:protiva502/features/user/authentication/screen/user_otp_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_profile_pic_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
+import 'package:protiva502/features/user/authentication/screen/user_forgot_password_screen.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
 import 'package:protiva502/features/user/home/screen/category_service_details_screen.dart';
 import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
@@ -55,6 +57,7 @@ class AppRoute {
   static String userRegScreen = "/userRegScreen";
   static String userProfilePicScreen = "/userProfilePicScreen";
   static String userOtpScreen = "/userOtpScreen";
+  static String userForgotPasswordScreen = "/userForgotPasswordScreen";
   static String userHomeScreen() => "/userHomeScreen";
   static String availableCategoryScreen() => "/availableCategoryScreen";
   static String subcategoryServiceListScreen() =>
@@ -73,6 +76,7 @@ class AppRoute {
   static String providerLogoBio = "/providerLogoBio";
   static String providerPricing = "/providerPricing";
   static String providerLogin = "/providerLogin";
+  static String providerForgotPasswordScreen = "/providerForgotPasswordScreen";
   static String providerNavbar = "/providerNavbar";
   static String paymentMethod = "/paymentMethod";
   static String activeJobs = "/activeJobs";
@@ -100,6 +104,7 @@ class AppRoute {
   static String getUserRegScreen() => userRegScreen;
   static String getUserProfilePicScreen() => userProfilePicScreen;
   static String getUserOtpScreen() => userOtpScreen;
+  static String getUserForgotPasswordScreen() => userForgotPasswordScreen;
   static String getUserHomeScreen() => userHomeScreen();
   static String getAvailableCategoryScreen() => availableCategoryScreen();
   static String getSubcategoryServiceListScreen() =>
@@ -118,6 +123,8 @@ class AppRoute {
   static String getProviderLogoBio() => providerLogoBio;
   static String getProviderPricing() => providerPricing;
   static String getProviderLogin() => providerLogin;
+  static String getProviderForgotPasswordScreen() =>
+      providerForgotPasswordScreen;
   static String getProviderNavbar() => providerNavbar;
   static String getPaymentMethod() => paymentMethod;
   static String getActiveJobs() => activeJobs;
@@ -201,6 +208,15 @@ class AppRoute {
     GetPage(
       name: userOtpScreen,
       page: () => UserOtpScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: userForgotPasswordScreen,
+      page: () {
+        final fromProvider = Get.arguments?['fromProvider'] ?? false;
+        return UserForgotPasswordScreen(fromProvider: fromProvider);
+      },
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),
@@ -301,6 +317,12 @@ class AppRoute {
     GetPage(
       name: providerLogin,
       page: () => const ProviderLoginScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: providerForgotPasswordScreen,
+      page: () => const ProviderForgotPasswordScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

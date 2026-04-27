@@ -26,22 +26,30 @@ class UserProfilePicScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
-        actions: [
-          TextButton(
-            onPressed: () =>
-                controller.handleNext(registeredEmail: registeredEmail),
-            child: Text(
-              'Skip',
-              style: getTextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.black, // Matching the underlined "Skip" in image
-                decoration: TextDecoration.underline,
-              ),
-            ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black,
+            size: 24.sp,
           ),
-          SizedBox(width: 10.w),
-        ],
+          onPressed: () => Get.back(),
+        ),
+        // actions: [
+        //   TextButton(
+        //     onPressed: () =>
+        //         controller.handleNext(registeredEmail: registeredEmail),
+        //     child: Text(
+        //       'Skip',
+        //       style: getTextStyle(
+        //         fontSize: 16.sp,
+        //         fontWeight: FontWeight.w500,
+        //         color: Colors.black, // Matching the underlined "Skip" in image
+        //         decoration: TextDecoration.underline,
+        //       ),
+        //     ),
+        //   ),
+        //   SizedBox(width: 10.w),
+        // ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(left: 20.w, right: 20.w),
@@ -128,12 +136,19 @@ class UserProfilePicScreen extends StatelessWidget {
 
             SizedBox(height: 100.h), // Spacing to match "Next" button position
 
-            CustomButton(
-              text: 'Next',
-              onPressed: () =>
-                  controller.handleNext(registeredEmail: registeredEmail),
-              backgroundColor: AppColors.textPurple, // Match dark button color
-              textColor: Colors.white,
+            Obx(
+              () => CustomButton(
+                text: controller.isLoading.value ? 'Registering...' : 'Next',
+                onPressed: controller.isLoading.value
+                    ? null
+                    : () => controller.handleNext(
+                        registeredEmail: registeredEmail,
+                      ),
+                backgroundColor: controller.isLoading.value
+                    ? AppColors.textPurple.withValues(alpha: 0.7)
+                    : AppColors.textPurple,
+                textColor: Colors.white,
+              ),
             ),
 
             SizedBox(height: 20.h),
@@ -144,14 +159,14 @@ class UserProfilePicScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
         onPressed: () {
-          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+          socialMediaController.launchSocialUrl(
+            socialMediaController.whatsappUrl,
+          );
         },
         backgroundColor: Colors.white,
         mini: false,
         child: SvgPicture.asset(IconPath.whatsapp),
       ),
-
-
     );
   }
 }

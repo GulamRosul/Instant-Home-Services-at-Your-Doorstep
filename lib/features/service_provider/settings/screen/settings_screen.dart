@@ -63,7 +63,7 @@ class SettingsScreen extends StatelessWidget {
             CustomTextField(
               hintText: 'Current Password',
               isPasswordField: true,
-              // controller: controller.currentPasswordController,
+              controller: controller.currentPasswordController,
               backgroundColor: Colors.white,
             ),
             12.h.verticalSpace,
@@ -71,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
             CustomTextField(
               hintText: 'New Password',
               isPasswordField: true,
-              // controller: controller.newPasswordController,
+              controller: controller.newPasswordController,
               backgroundColor: Colors.white,
             ),
             12.h.verticalSpace,
@@ -79,18 +79,22 @@ class SettingsScreen extends StatelessWidget {
             CustomTextField(
               hintText: 'Confirm New Password',
               isPasswordField: true,
-              // controller: controller.confirmPasswordController,
+              controller: controller.confirmPasswordController,
               backgroundColor: Colors.white,
             ),
 
             14.h.verticalSpace,
-            CustomButton(
-              text: 'Update Password',
-              onPressed: () {
-                // Implement password update logic
-              },
-              backgroundColor: AppColors.textPurple,
-              textColor: Colors.white,
+            Obx(
+              () => CustomButton(
+                text: controller.isLoading.value
+                    ? 'Updating...'
+                    : 'Update Password',
+                onPressed: controller.isLoading.value
+                    ? null
+                    : () => controller.changePassword(),
+                backgroundColor: AppColors.textPurple,
+                textColor: Colors.white,
+              ),
             ),
           ],
         ),

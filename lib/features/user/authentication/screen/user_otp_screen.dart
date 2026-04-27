@@ -18,7 +18,12 @@ class UserOtpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(UserOtpController());
 
-final socialMediaController = Get.put(SocialMediaController());
+    // Set email from constructor parameter
+    if (email != null) {
+      controller.setEmail(email!);
+    }
+
+    final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -100,17 +105,20 @@ final socialMediaController = Get.put(SocialMediaController());
 
             // Resend Button
             Center(
-              child: TextButton(
-                onPressed: controller.secondsRemaining.value == 0
-                    ? controller.startTimer
-                    : null,
-                child: Text(
-                  'Resend Code',
-                  style: getTextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF3F51B5),
-                    // decoration: TextDecoration.underline,
+              child: Obx(
+                () => TextButton(
+                  onPressed:
+                      controller.secondsRemaining.value == 0 &&
+                          !controller.isLoading.value
+                      ? controller.resendOtp
+                      : null,
+                  child: Text(
+                    'Resend Code',
+                    style: getTextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF3F51B5),
+                    ),
                   ),
                 ),
               ),
@@ -119,13 +127,15 @@ final socialMediaController = Get.put(SocialMediaController());
             SizedBox(height: 10.h),
 
             // Continue Button
-            CustomButton(
-              text: 'Continue',
-              onPressed: controller.verifyOtp,
-              backgroundColor: const Color(
-                0xFF7079F0,
-              ), // Lighter purple/blue from image
-              textColor: Colors.white,
+            Obx(
+              () => CustomButton(
+                text: controller.isLoading.value ? 'Verifying...' : 'Continue',
+                onPressed: controller.isLoading.value
+                    ? null
+                    : controller.verifyOtp,
+                backgroundColor: const Color(0xFF7079F0),
+                textColor: Colors.white,
+              ),
             ),
 
             SizedBox(height: 20.h),
@@ -175,13 +185,14 @@ final socialMediaController = Get.put(SocialMediaController());
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
         onPressed: () {
-          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+          socialMediaController.launchSocialUrl(
+            socialMediaController.whatsappUrl,
+          );
         },
         backgroundColor: Colors.white,
         mini: false,
         child: SvgPicture.asset(IconPath.whatsapp),
       ),
-
     );
   }
 

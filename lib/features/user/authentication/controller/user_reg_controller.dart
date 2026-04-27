@@ -4,14 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/services/api_client.dart';
-import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/features/user/authentication/screen/user_profile_pic_screen.dart';
 
 class UserRegController extends GetxController {
-  UserRegController({ApiClient? apiClient})
-    : _apiClient = apiClient ?? ApiClient();
+  UserRegController({ApiClient? apiClient});
 
-  final ApiClient _apiClient;
 
   // Text Editing Controllers
   final firstNameController = TextEditingController();
@@ -51,58 +48,15 @@ class UserRegController extends GetxController {
       return;
     }
 
-    final fullPhone = '${selectedCountryCode.value}${phoneController.text.trim()}';
-
-    final payload = {
-      'firstName': firstNameController.text.trim(),
-      'lastName': lastNameController.text.trim(),
-      'email': emailController.text.trim(),
-      'phone': fullPhone,
-      'password': passwordController.text,
-      'role': 'CLIENT',
-    };
-
     try {
       isLoading.value = true;
-      log('Registering user with payload: $payload');
-
-      final response = await _apiClient.post<dynamic>(
-        ApiEndpoints.register,
-        data: payload,
-      );
-
-      log(
-        'Registration successful. Status code: ${response.statusCode}, response: ${response.data}',
-      );
-
-      final message =
-          _extractMessage(response.data) ??
-          'Registration successful. Please verify your email with the OTP sent.';
-
-      _showSnackBar('Success', message);
       Get.to(
         () =>
             UserProfilePicScreen(registeredEmail: emailController.text.trim()),
       );
-    } on DioException catch (error, stackTrace) {
-      log('Registration failed', error: error, stackTrace: stackTrace);
-
-      final errorMessage =
-          _extractMessage(error.response?.data) ??
-          error.message ??
-          'Registration failed. Please try again.';
-
-      _showSnackBar('Registration Failed', errorMessage);
     } catch (error, stackTrace) {
-      log(
-        'Unexpected registration error',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      _showSnackBar(
-        'Registration Failed',
-        'Something went wrong. Please try again.',
-      );
+      log('Navigation error', error: error, stackTrace: stackTrace);
+      _showSnackBar('Error', 'Something went wrong. Please try again.');
     } finally {
       isLoading.value = false;
     }

@@ -293,7 +293,7 @@ class NotificationController extends GetxController {
       'dateGroup': 'Today',
     });
 
-    // Show a dialog or toast if needed
+    // Show a snackbar notification
     Get.snackbar(
       message.notification?.title ?? 'Notification',
       message.notification?.body ?? '',
@@ -350,6 +350,17 @@ class NotificationController extends GetxController {
 
   void clearAll() {
     notifications.clear();
+  }
+
+  /// Get unread notification count
+  int get unreadCount {
+    return notifications.where((n) => n['isRead'] != true).length;
+  }
+
+  /// Get unread count display (99+ if > 99)
+  String get unreadCountDisplay {
+    final count = unreadCount;
+    return count > 99 ? '99+' : count.toString();
   }
 
   /// Refresh notifications from API

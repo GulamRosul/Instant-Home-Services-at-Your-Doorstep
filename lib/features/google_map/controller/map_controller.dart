@@ -550,75 +550,94 @@ class MapController extends GetxController {
   //   }
   // }
 
-
   Future<void> updateTrackingRoute({
-  required LatLng providerPosition,
-  required LatLng userPosition,
-}) async {
-  const String url = "https://routes.googleapis.com/directions/v2:computeRoutes";
+    required LatLng providerPosition,
+    required LatLng userPosition,
+  }) async {
+    const String url =
+        "https://routes.googleapis.com/directions/v2:computeRoutes";
 
-  final response = await http.post(
-    Uri.parse(url),
-    headers: {
-      "Content-Type": "application/json",
-      "X-Goog-Api-Key": _googleMapsApiKey,
-      // CRITICAL: Tells Google exactly what data to return
-      "X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
-    },
-    body: jsonEncode({
-      "origin": {
-        "location": {
-          "latLng": {"latitude": providerPosition.latitude, "longitude": providerPosition.longitude}
-        }
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": _googleMapsApiKey,
+        // CRITICAL: Tells Google exactly what data to return
+        "X-Goog-FieldMask":
+            "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
       },
-      "destination": {
-        "location": {
-          "latLng": {"latitude": userPosition.latitude, "longitude": userPosition.longitude}
-        }
-      },
-      "travelMode": "DRIVE",
-      "routingPreference": "TRAFFIC_AWARE", // Gets real-time Dhaka traffic data
-      "computeAlternativeRoutes": false,
-    }),
-  );
+      body: jsonEncode({
+        "origin": {
+          "location": {
+            "latLng": {
+              "latitude": providerPosition.latitude,
+              "longitude": providerPosition.longitude,
+            },
+          },
+        },
+        "destination": {
+          "location": {
+            "latLng": {
+              "latitude": userPosition.latitude,
+              "longitude": userPosition.longitude,
+            },
+          },
+        },
+        "travelMode": "DRIVE",
+        "routingPreference":
+            "TRAFFIC_AWARE", // Gets real-time Dhaka traffic data
+        "computeAlternativeRoutes": false,
+      }),
+    );
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    final route = data['routes'][0];
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final route = data['routes'][0];
 
-    // 1. Decode the Polyline
-    String encodedPolyline = route['polyline']['encodedPolyline'];
-    List<PointLatLng> result = PolylinePoints.decodePolyline(encodedPolyline);
-    
-    List<LatLng> coords = result.map((p) => LatLng(p.latitude, p.longitude)).toList();
+      // 1. Decode the Polyline
+      String encodedPolyline = route['polyline']['encodedPolyline'];
+      List<PointLatLng> result = PolylinePoints.decodePolyline(encodedPolyline);
 
-    // 2. Update Map Polylines
-    polylines.value = {
-      Polyline(
-        polylineId: const PolylineId("route"),
-        points: coords,
-        color: const Color(0xFF7C3AED), // Your Purple theme
-        width: 5,
-        jointType: JointType.round,
-      )
-    };
+      List<LatLng> coords = result
+          .map((p) => LatLng(p.latitude, p.longitude))
+          .toList();
 
-    // 3. Update ETA & Distance
-    // Routes API returns distance in meters and duration in seconds (e.g., "1200s")
-    double meters = (route['distanceMeters'] as num).toDouble();
-    String durationString = route['duration']; // e.g., "950s"
-    int seconds = int.parse(durationString.replaceAll('s', ''));
+      // 2. Update Map Polylines
+      polylines.value = {
+        Polyline(
+          polylineId: const PolylineId("route"),
+          points: coords,
+          color: const Color(0xFF7C3AED), // Your Purple theme
+          width: 5,
+          jointType: JointType.round,
+        ),
+      };
 
-    final trackingController = Get.find<TrackProviderController>();
-    trackingController.distance.value = "${(meters / 1000).toStringAsFixed(1)} km";
-    trackingController.estimatedTime.value = "${(seconds / 60).round()} mins";
-    
-  } else {
-    debugPrint("Routes API Error: ${response.body}");
+      // 3. Update ETA & Distance
+      // Routes API returns distance in meters and duration in seconds (e.g., "1200s")
+      double meters = (route['distanceMeters'] as num).toDouble();
+      String durationString = route['duration']; // e.g., "950s"
+      int seconds = int.parse(durationString.replaceAll('s', ''));
+
+      final distanceKm = "${(meters / 1000).toStringAsFixed(1)} km";
+      final durationMins = "${(seconds / 60).round()} mins";
+
+      // Update MapController properties for the UI card
+      travelDistance.value = distanceKm;
+      travelDuration.value = durationMins;
+
+      // Also update TrackProviderController if available
+      try {
+        final trackingController = Get.find<TrackProviderController>();
+        trackingController.distance.value = distanceKm;
+        trackingController.estimatedTime.value = durationMins;
+      } catch (_) {
+        // TrackProviderController may not be registered
+      }
+    } else {
+      debugPrint("Routes API Error: ${response.body}");
+    }
   }
-}
-
-  
 
   void _drawDirectTrackingRoute(LatLng providerPosition, LatLng userPosition) {
     polylines.removeWhere(

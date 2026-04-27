@@ -64,6 +64,7 @@ class ProviderForgotPasswordScreen extends StatelessWidget {
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 color: Colors.black87,
+                lineHeight: 22.sp,
               ),
             ),
             SizedBox(height: 32.h),

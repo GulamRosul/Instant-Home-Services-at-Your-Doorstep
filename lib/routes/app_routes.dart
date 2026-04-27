@@ -26,6 +26,7 @@ import 'package:protiva502/features/user/authentication/screen/user_otp_screen.d
 import 'package:protiva502/features/user/authentication/screen/user_profile_pic_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_forgot_password_screen.dart';
+import 'package:protiva502/features/user/authentication/screen/user_reset_password_screen.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
 import 'package:protiva502/features/user/home/screen/category_service_details_screen.dart';
 import 'package:protiva502/features/user/home/screen/subcategory_service_list_screen.dart';
@@ -58,6 +59,7 @@ class AppRoute {
   static String userProfilePicScreen = "/userProfilePicScreen";
   static String userOtpScreen = "/userOtpScreen";
   static String userForgotPasswordScreen = "/userForgotPasswordScreen";
+  static String userResetPasswordScreen = "/userResetPasswordScreen";
   static String userHomeScreen() => "/userHomeScreen";
   static String availableCategoryScreen() => "/availableCategoryScreen";
   static String subcategoryServiceListScreen() =>
@@ -105,6 +107,7 @@ class AppRoute {
   static String getUserProfilePicScreen() => userProfilePicScreen;
   static String getUserOtpScreen() => userOtpScreen;
   static String getUserForgotPasswordScreen() => userForgotPasswordScreen;
+  static String getUserResetPasswordScreen() => userResetPasswordScreen;
   static String getUserHomeScreen() => userHomeScreen();
   static String getAvailableCategoryScreen() => availableCategoryScreen();
   static String getSubcategoryServiceListScreen() =>
@@ -217,6 +220,12 @@ class AppRoute {
         final fromProvider = Get.arguments?['fromProvider'] ?? false;
         return UserForgotPasswordScreen(fromProvider: fromProvider);
       },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: userResetPasswordScreen,
+      page: () => const UserResetPasswordScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

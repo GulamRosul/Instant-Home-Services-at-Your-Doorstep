@@ -17,6 +17,7 @@ class StorageService {
   static const _lastNameKey = 'lastName';
   static const _roleKey = 'role';
   static const _avatarKey = 'avatar';
+  static const _forgotPasswordEmailKey = 'forgotPasswordEmail';
 
   /// 🔹 Init
   static Future<void> init() async {
@@ -102,5 +103,17 @@ class StorageService {
     await _prefs?.clear();
     await SecureStorageService.clearAll();
     isLoggedIn = false;
+  }
+
+  /// 🔹 Forgot Password Email
+  static Future<void> saveForgotPasswordEmail(String email) async {
+    await _prefs?.setString(_forgotPasswordEmailKey, email);
+  }
+
+  static String? getForgotPasswordEmail() =>
+      _prefs?.getString(_forgotPasswordEmailKey);
+
+  static Future<void> clearForgotPasswordEmail() async {
+    await _prefs?.remove(_forgotPasswordEmailKey);
   }
 }

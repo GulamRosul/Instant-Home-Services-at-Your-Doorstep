@@ -100,6 +100,30 @@ class UserLoginScreen extends StatelessWidget {
               ),
             ),
 
+            10.h.verticalSpace,
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed('/userForgotPasswordScreen');
+                  },
+                  child: Text(
+                    'Forgot your password?',
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      color: const Color(0xFF7079F0),
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.underline,
+                      decorationColor: AppColors.textPurple,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ],
+            ),
+
             SizedBox(height: 48.h),
 
             // Sign In Button

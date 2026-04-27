@@ -97,6 +97,27 @@ class ProviderLoginScreen extends StatelessWidget {
               ),
             ),
 
+            10.h.verticalSpace,
+
+            GestureDetector(
+              onTap: () {
+                Get.toNamed(
+                  '/userForgotPasswordScreen',
+                  arguments: {'fromProvider': true},
+                );
+              },
+              child: Text(
+                'Forgot your password?',
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  color: const Color(0xFF7079F0),
+                  fontWeight: FontWeight.w500,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.textPurple,
+                ),
+              ),
+            ),
+
             SizedBox(height: 48.h),
 
             // Sign In Button

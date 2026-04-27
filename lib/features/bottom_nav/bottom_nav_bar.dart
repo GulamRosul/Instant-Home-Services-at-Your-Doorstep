@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/bottom_nav/controller/bottom_nav_controller.dart';
+import 'package:protiva502/features/notification/controller/notification_controller.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -11,6 +12,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(BottomNavController());
+    final notificationController = Get.find<NotificationController>();
 
     return Container(
       height: 60.h,
@@ -47,12 +49,11 @@ class BottomNavBar extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      _getIconData(index),
-                      color: isSelected
-                          ? AppColors.textPurple
-                          : Colors.black.withValues(alpha: 0.7),
-                      size: 24.sp,
+                    _buildIconWithBadge(
+                      iconData: _getIconData(index),
+                      isSelected: isSelected,
+                      index: index,
+                      notificationController: notificationController,
                     ),
                     if (isSelected) ...[
                       SizedBox(width: 8.w),
@@ -72,6 +73,50 @@ class BottomNavBar extends StatelessWidget {
           });
         }),
       ),
+    );
+  }
+
+  Widget _buildIconWithBadge({
+    required IconData iconData,
+    required bool isSelected,
+    required int index,
+    required NotificationController notificationController,
+  }) {
+    return Stack(
+      children: [
+        Icon(
+          iconData,
+          color: isSelected
+              ? AppColors.textPurple
+              : Colors.black.withValues(alpha: 0.7),
+          size: 24.sp,
+        ),
+        if (index == 2)
+          Obx(() {
+            final unreadCount = notificationController.unreadCount;
+            if (unreadCount == 0) return const SizedBox.shrink();
+
+            return Positioned(
+              top: -3.r,
+              right: 0.r,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Text(
+                  notificationController.unreadCountDisplay,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            );
+          }),
+      ],
     );
   }
 

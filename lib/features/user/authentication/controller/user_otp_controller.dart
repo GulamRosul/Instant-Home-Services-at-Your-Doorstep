@@ -82,6 +82,25 @@ class UserOtpController extends GetxController {
     try {
       isLoading.value = true;
 
+      // If this is a forgot password flow, skip API verification and go to reset password
+      if (isForgotPassword.value) {
+        developer.log(
+          '✅ OTP verified for password reset',
+          name: 'UserOtpController',
+        );
+
+        Get.offNamed(
+          '/userResetPasswordScreen',
+          arguments: {
+            'email': email,
+            'otp': otp,
+            'fromProvider': fromProvider.value,
+          },
+        );
+        return;
+      }
+
+      // Normal signup/login OTP verification
       final response = await ApiClient().post(
         ApiEndpoints.verifyOTP,
         data: {'email': email, 'otp': otp},
@@ -98,58 +117,38 @@ class UserOtpController extends GetxController {
         if (data is Map<String, dynamic> && data.containsKey('data')) {
           final userData = data['data'];
 
-          developer.log(
-            '✅ OTP Verified Successfully',
-            name: 'UserOtpController',
-          );
+          // Extract tokens
+          final accessToken = userData['accessToken'] ?? '';
+          final refreshToken = userData['refreshToken'] ?? '';
 
-          // If this is a forgot password flow, navigate to login screen
-          if (isForgotPassword.value) {
-            // Clear forgot password email from storage
-            await StorageService.clearForgotPasswordEmail();
+          // Save tokens to secure storage
+          if (accessToken.isNotEmpty) {
+            await SecureStorageService.saveToken(accessToken);
+          }
+          if (refreshToken.isNotEmpty) {
+            await SecureStorageService.saveRefreshToken(refreshToken);
+          }
 
-            Get.snackbar(
-              'Success',
-              'Password reset successful. Please login again.',
-              snackPosition: SnackPosition.BOTTOM,
+          // Save user data to storage
+          final user = userData['user'];
+          if (user is Map<String, dynamic>) {
+            await StorageService.saveUser(
+              userId: user['id'] ?? '',
+              email: user['email'] ?? '',
+              firstName: user['firstName'] ?? '',
+              lastName: user['lastName'] ?? '',
+              role: user['role'] ?? '',
             );
 
-            // Navigate to the appropriate login screen
-            if (fromProvider.value) {
-              Get.offNamedUntil('/providerLoginScreen', (route) => false);
-            } else {
-              Get.offNamedUntil('/userLoginScreen', (route) => false);
-            }
-          } else {
-            // Normal signup/login OTP verification flow
-            // Extract tokens
-            final accessToken = userData['accessToken'] ?? '';
-            final refreshToken = userData['refreshToken'] ?? '';
+            // Mark user as logged in
+            await StorageService.makeLoggedIn();
 
-            // Save tokens to secure storage
-            if (accessToken.isNotEmpty) {
-              await SecureStorageService.saveToken(accessToken);
-            }
-            if (refreshToken.isNotEmpty) {
-              await SecureStorageService.saveRefreshToken(refreshToken);
-            }
+            developer.log(
+              '✅ OTP Verified Successfully',
+              name: 'UserOtpController',
+            );
 
-            // Save user data to storage
-            final user = userData['user'];
-            if (user is Map<String, dynamic>) {
-              await StorageService.saveUser(
-                userId: user['id'] ?? '',
-                email: user['email'] ?? '',
-                firstName: user['firstName'] ?? '',
-                lastName: user['lastName'] ?? '',
-                role: user['role'] ?? '',
-              );
-
-              // Mark user as logged in
-              await StorageService.makeLoggedIn();
-
-              Get.offAll(() => const MainNavigationScreen());
-            }
+            Get.offAll(() => const MainNavigationScreen());
           }
         }
       } else {

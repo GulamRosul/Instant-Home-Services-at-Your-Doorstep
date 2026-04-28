@@ -199,20 +199,20 @@ class SearchScreen extends StatelessWidget {
               child: service.thumbnail.isNotEmpty
                   ? Image.network(
                       service.thumbnail,
-                      width: 100.w,
-                      height: 100.h,
+                      width: 70.w,
+                      height: 70.h,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Image.asset(
                         ImagePath.servicecard,
-                        width: 100.w,
-                        height: 100.h,
+                        width: 70.w,
+                        height: 70.h,
                         fit: BoxFit.cover,
                       ),
                     )
                   : Image.asset(
                       ImagePath.servicecard,
-                      width: 100.w,
-                      height: 100.h,
+                      width: 70.w,
+                      height: 70.h,
                       fit: BoxFit.cover,
                     ),
             ),
@@ -237,57 +237,70 @@ class SearchScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     // Provider name
+                    // Text(
+                    //   service.userFirstName.isNotEmpty
+                    //       ? service.userFirstName
+                    //       : 'Service Provider',
+                    //   style: getTextStyle(
+                    //     fontSize: 11.sp,
+                    //     color: AppColors.textBlue,
+                    //     fontWeight: FontWeight.w500,
+                    //   ),
+                    //   maxLines: 1,
+                    //   overflow: TextOverflow.ellipsis,
+                    // ),
                     Text(
-                      service.userFirstName.isNotEmpty
-                          ? service.userFirstName
-                          : 'Service Provider',
+                      service.description.isNotEmpty
+                          ? service.description
+                          : 'No description available',
                       style: getTextStyle(
-                        fontSize: 11.sp,
-                        color: AppColors.textBlue,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+
                     SizedBox(height: 6.h),
                     // Rating and Price
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Rating
-                        Row(
-                          children: [
-                            ...List.generate(
-                              5,
-                              (i) => Icon(
-                                i < service.averageRating.round()
-                                    ? Icons.star
-                                    : Icons.star_border,
-                                color: Colors.orange,
-                                size: 12.sp,
-                              ),
-                            ),
-                            SizedBox(width: 4.w),
-                            Text(
-                              service.averageRating.toStringAsFixed(1),
-                              style: getTextStyle(
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Price
-                        Text(
-                          "৳${service.basePrice.toStringAsFixed(0)}",
-                          style: getTextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     // Rating
+                    //     Row(
+                    //       children: [
+                    //         ...List.generate(
+                    //           5,
+                    //           (i) => Icon(
+                    //             i < service.averageRating.round()
+                    //                 ? Icons.star
+                    //                 : Icons.star_border,
+                    //             color: Colors.orange,
+                    //             size: 12.sp,
+                    //           ),
+                    //         ),
+                    //         SizedBox(width: 4.w),
+                    //         Text(
+                    //           service.averageRating.toStringAsFixed(1),
+                    //           style: getTextStyle(
+                    //             fontSize: 10.sp,
+                    //             fontWeight: FontWeight.w500,
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     // Price
+                    //     Text(
+                    //       "৳${service.basePrice.toStringAsFixed(0)}",
+                    //       style: getTextStyle(
+                    //         fontSize: 12.sp,
+                    //         fontWeight: FontWeight.w700,
+                    //         color: Colors.black,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
@@ -328,12 +341,12 @@ class SearchScreen extends StatelessWidget {
               child: category.thumbnail.isNotEmpty
                   ? Image.network(
                       category.thumbnail,
-                      width: 80.w,
-                      height: 80.h,
+                      width: 60.w,
+                      height: 60.h,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
-                        width: 80.w,
-                        height: 80.h,
+                        width: 60.w,
+                        height: 60.h,
                         decoration: BoxDecoration(
                           color: Colors.grey.shade200,
                           borderRadius: BorderRadius.circular(8.r),
@@ -346,8 +359,8 @@ class SearchScreen extends StatelessWidget {
                       ),
                     )
                   : Container(
-                      width: 80.w,
-                      height: 80.h,
+                      width: 60.w,
+                      height: 60.h,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(8.r),

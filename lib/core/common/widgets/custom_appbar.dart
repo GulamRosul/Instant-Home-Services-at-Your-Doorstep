@@ -30,6 +30,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       surfaceTintColor: Colors.white,
+      automaticallyImplyLeading: showBackButton,
       // Only show the button if explicitly requested AND the navigator has a page to go back to
       leading: (showBackButton && canPop)
           ? IconButton(

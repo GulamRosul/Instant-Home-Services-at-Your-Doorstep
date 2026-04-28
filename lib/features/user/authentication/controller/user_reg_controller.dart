@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/services/api_client.dart';
@@ -8,7 +7,6 @@ import 'package:protiva502/features/user/authentication/screen/user_profile_pic_
 
 class UserRegController extends GetxController {
   UserRegController({ApiClient? apiClient});
-
 
   // Text Editing Controllers
   final firstNameController = TextEditingController();
@@ -83,6 +81,10 @@ class UserRegController extends GetxController {
       return 'Please enter your phone number';
     }
 
+    if (cityController.text.trim().isEmpty) {
+      return 'Please enter your city';
+    }
+
     if (passwordController.text.isEmpty) {
       return 'Please enter your password';
     }
@@ -97,43 +99,6 @@ class UserRegController extends GetxController {
 
     if (passwordController.text != confirmPasswordController.text) {
       return 'Password and confirm password do not match';
-    }
-
-    return null;
-  }
-
-  String? _extractMessage(dynamic responseData) {
-    final responseMap = _asMap(responseData);
-    if (responseMap == null) {
-      return null;
-    }
-
-    final data = _asMap(responseMap['data']);
-    final nestedMessage = data?['message'];
-    if (nestedMessage is String && nestedMessage.trim().isNotEmpty) {
-      return nestedMessage;
-    }
-
-    final message = responseMap['message'];
-    if (message is String && message.trim().isNotEmpty) {
-      return message;
-    }
-
-    final error = responseMap['error'];
-    if (error is String && error.trim().isNotEmpty) {
-      return error;
-    }
-
-    return null;
-  }
-
-  Map<String, dynamic>? _asMap(dynamic value) {
-    if (value is Map<String, dynamic>) {
-      return value;
-    }
-
-    if (value is Map) {
-      return value.map((key, item) => MapEntry(key.toString(), item));
     }
 
     return null;

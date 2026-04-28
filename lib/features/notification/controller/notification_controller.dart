@@ -26,6 +26,7 @@ class NotificationController extends GetxController {
   void onInit() {
     super.onInit();
     _initializeFirebaseMessaging();
+    fetchNotifications();
   }
 
   /// Fetch notifications from API

@@ -26,7 +26,7 @@ class AllBookingScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: const CustomAppBar(title: '  Bookings'),
+      appBar: const CustomAppBar(title: '  Bookings', showBackButton: false),
       body: Obx(() {
         final hasNoData = controller.bookings.isEmpty;
         final isInitialLoading = controller.isLoading.value && hasNoData;
@@ -608,8 +608,9 @@ class AllBookingScreen extends StatelessWidget {
               controller.errorMessage.value,
               textAlign: TextAlign.center,
               style: getTextStyle(
-                fontSize: 12.sp,
+                fontSize: 14.sp,
                 color: AppColors.textSecondary,
+                fontWeight: FontWeight.w500,
               ),
             ),
             SizedBox(height: 16.h),
@@ -742,7 +743,7 @@ class AllBookingScreen extends StatelessWidget {
     String message;
     if (normalized == 'PENDING') {
       message =
-          'Tracking will be available after the provider accepts this booking.';
+          'Details will be available after the provider accepts this booking.';
     } else if (normalized == 'REJECTED') {
       message = 'This booking was rejected by the provider.';
     } else if (normalized == 'CANCELLED') {

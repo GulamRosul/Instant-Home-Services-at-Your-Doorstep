@@ -186,7 +186,9 @@ class _MapScreenState extends State<MapScreen> {
           ? _buildTrackingModeBody()
           : Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator(
+                  color: AppColors.textPurple,
+                ));
               }
 
               return Stack(

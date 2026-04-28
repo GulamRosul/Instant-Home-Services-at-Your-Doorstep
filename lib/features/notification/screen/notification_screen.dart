@@ -5,31 +5,10 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/notification/controller/notification_controller.dart';
+import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
 
-class NotificationScreen extends StatefulWidget {
+class NotificationScreen extends GetView<NotificationController> {
   const NotificationScreen({super.key});
-
-  @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
-}
-
-class _NotificationScreenState extends State<NotificationScreen> {
-  late final NotificationController controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    controller = Get.isRegistered<NotificationController>()
-        ? Get.find<NotificationController>()
-        : Get.put(NotificationController());
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.notifications.isEmpty && !controller.isLoading.value) {
-        controller.fetchNotifications();
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +29,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
           ),
         ],
+        showBackButton: false,
       ),
       body: Obx(() {
         if (controller.isLoading.value && controller.notifications.isEmpty) {
@@ -61,15 +41,50 @@ class _NotificationScreenState extends State<NotificationScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Text(
+                //   'Error: ${controller.error.value}',
+                //   textAlign: TextAlign.center,
+                //   style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+                // ),
+                // SizedBox(height: 16.h),
+                // ElevatedButton(
+                //   onPressed: () => controller.fetchNotifications(),
+                //   child: const Text('Retry'),
+                // ),
+                Icon(
+                  Icons.notifications_outlined,
+                  size: 46.sp,
+                  color: AppColors.textSecondary,
+                ),
+                SizedBox(height: 14.h),
                 Text(
-                  'Error: ${controller.error.value}',
+                  'Please sign in to view your notifications.',
                   textAlign: TextAlign.center,
-                  style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+                  style: getTextStyle(
+                    fontSize: 14.sp,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 SizedBox(height: 16.h),
-                ElevatedButton(
-                  onPressed: () => controller.fetchNotifications(),
-                  child: const Text('Retry'),
+                OutlinedButton(
+                  // onPressed: controller.refreshBookings,
+                  onPressed: () => Get.to(() => SecondOnboardingScreen()),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: AppColors.textPurple),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 12.h,
+                    ),
+                  ),
+                  child: Text(
+                    'Sign In',
+                    style: getTextStyle(
+                      fontSize: 13.sp,
+                      color: AppColors.textPurple,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -136,9 +151,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         margin: EdgeInsets.only(bottom: 12.h),
         padding: EdgeInsets.all(12.r),
         decoration: BoxDecoration(
-          color: item['isRead']
-              ? Colors.white
-              : const Color(0xFFF3F0FF), // Light purple for unread
+          color: item['isRead'] ? Colors.white : const Color(0xFFF3F0FF),
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: item['isRead']

@@ -53,7 +53,6 @@ class UserProfilePicController extends GetxController {
         'password': regController.passwordController.text,
         'phone': fullPhone,
         'city': regController.cityController.text.trim(),
-        'role': 'CLIENT',
         if (selectedImage.value != null)
           'avatar': await dio_package.MultipartFile.fromFile(
             selectedImage.value!.path,
@@ -64,16 +63,24 @@ class UserProfilePicController extends GetxController {
       log('Registering user with avatar and city');
 
       final response = await _apiClient.post<dynamic>(
-        ApiEndpoints.register,
+        ApiEndpoints.clientRegistration,
         data: formData,
-        options: dio_package.Options(
-          contentType: 'multipart/form-data',
-        ),
+        options: dio_package.Options(contentType: 'multipart/form-data'),
       );
 
+      final statusCode = response.statusCode ?? 0;
       log(
-        'Registration successful. Status code: ${response.statusCode}, response: ${response.data}',
+        'Registration response. Status code: $statusCode, response: ${response.data}',
       );
+
+      if (statusCode < 200 || statusCode >= 300) {
+        final errorMessage =
+            _extractMessage(response.data) ??
+            'Registration failed. Please try again.';
+
+        _showSnackBar('Registration Failed', errorMessage);
+        return;
+      }
 
       final message =
           _extractMessage(response.data) ??
@@ -117,9 +124,29 @@ class UserProfilePicController extends GetxController {
       return nestedMessage;
     }
 
+    if (nestedMessage is List && nestedMessage.isNotEmpty) {
+      final joined = nestedMessage
+          .map((item) => item.toString().trim())
+          .where((item) => item.isNotEmpty)
+          .join(', ');
+      if (joined.isNotEmpty) {
+        return joined;
+      }
+    }
+
     final message = responseMap['message'];
     if (message is String && message.trim().isNotEmpty) {
       return message;
+    }
+
+    if (message is List && message.isNotEmpty) {
+      final joined = message
+          .map((item) => item.toString().trim())
+          .where((item) => item.isNotEmpty)
+          .join(', ');
+      if (joined.isNotEmpty) {
+        return joined;
+      }
     }
 
     final error = responseMap['error'];

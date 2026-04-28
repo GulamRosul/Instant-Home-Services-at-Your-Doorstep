@@ -41,7 +41,7 @@ class SingleChatScreen extends StatelessWidget {
                         child: SizedBox(
                           height: 18,
                           width: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.textPurple),
                         ),
                       ),
                     );

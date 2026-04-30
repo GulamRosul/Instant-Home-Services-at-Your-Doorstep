@@ -53,6 +53,8 @@ class UserProfilePicController extends GetxController {
         'password': regController.passwordController.text,
         'phone': fullPhone,
         'city': regController.cityController.text.trim(),
+        if (bioController.text.trim().isNotEmpty)
+          'bio': bioController.text.trim(),
         if (selectedImage.value != null)
           'avatar': await dio_package.MultipartFile.fromFile(
             selectedImage.value!.path,

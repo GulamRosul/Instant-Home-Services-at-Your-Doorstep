@@ -76,5 +76,8 @@ class ApiEndpoints {
   //search
   static const String homeSearch = '/job/home-search';
 
+  //privacy policy
+  static const String privacyPolicy = '/policy';
+
 
 }

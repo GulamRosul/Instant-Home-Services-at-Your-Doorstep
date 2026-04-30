@@ -101,7 +101,7 @@ class UserRegScreen extends StatelessWidget {
             _buildFieldLabel("City"),
             CustomTextField(
               controller: controller.cityController,
-              hintText: 'Canada',
+              hintText: 'Dhaka',
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
@@ -186,7 +186,9 @@ class UserRegScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
         onPressed: () {
-          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+          socialMediaController.launchSocialUrl(
+            socialMediaController.whatsappUrl,
+          );
         },
         backgroundColor: Colors.white,
         mini: false,

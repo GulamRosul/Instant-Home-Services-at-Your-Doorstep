@@ -369,7 +369,7 @@ class TrackProviderController extends GetxController {
     final callId = bookingId.value.replaceAll('#', '').trim();
     final currentUserId = (_currentUserId ?? StorageService.getUserId() ?? '')
         .trim();
-    final currentUserName = StorageService.getDisplayName();
+    final currentUserName = StorageService.getDisplayName() ?? 'User';
 
     AppLoggerHelper.info(
       'Call invitation sent: targetUserId=$_otherUserId, targetUserName=${personName.value}, callID=${bookingId.value}, success=$didSendInvitation',

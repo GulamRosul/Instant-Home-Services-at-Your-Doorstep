@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:protiva502/core/utils/constants/call_const.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
@@ -23,6 +24,7 @@ class AudioCallPage extends StatefulWidget {
 
 class _AudioCallPageState extends State<AudioCallPage> {
   late String _statusText;
+  bool _isDisposing = false;
 
   @override
   void initState() {
@@ -30,15 +32,20 @@ class _AudioCallPageState extends State<AudioCallPage> {
     _statusText = widget.initialStatus;
   }
 
+  @override
+  void dispose() {
+    _isDisposing = true;
+    super.dispose();
+  }
+
   void _setStatus(String text) {
-    if (!mounted) return;
+    if (!mounted || _isDisposing) return;
     setState(() => _statusText = text);
   }
 
   ZegoUIKitPrebuiltCallConfig _buildConfig() {
     final config = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
 
-    // ✅ Correct way to set background in v4.x
     config.audioVideoView.backgroundBuilder = (context, size, user, extraInfo) {
       return Container(
         width: size.width,
@@ -47,7 +54,6 @@ class _AudioCallPageState extends State<AudioCallPage> {
       );
     };
 
-    // ✅ Custom avatar
     config.avatarBuilder = (context, size, user, extraInfo) {
       final initial = (user?.name.isNotEmpty == true)
           ? user!.name[0].toUpperCase()
@@ -72,23 +78,27 @@ class _AudioCallPageState extends State<AudioCallPage> {
       );
     };
 
-    // ✅ Hide timer until connected
     config.duration.isVisible = _statusText == 'Connected';
-
-    // ✅ Hide Zego's default top bar
-    config.topMenuBar.isVisible = true;
-    config.topMenuBar.buttons.insert(
-      0,
-      ZegoCallMenuBarButtonName.minimizingButton,
-    );
-
+    config.topMenuBar.isVisible = false;
     config.bottomMenuBar.margin = const EdgeInsets.only(
       bottom: 48,
       left: 24,
       right: 24,
     );
 
+    config.hangUpConfirmDialog = ZegoCallHangUpConfirmDialogConfig(
+      // info: 'End the call?',
+    );
+
     return config;
+  }
+
+  Uint8List _convertHexToBytes(String hex) {
+    final buffer = StringBuffer();
+    for (int i = 0; i < hex.length; i += 2) {
+      buffer.write(String.fromCharCode(int.parse(hex.substring(i, i + 2), radix: 16)));
+    }
+    return Uint8List.fromList(buffer.toString().codeUnits);
   }
 
   @override
@@ -100,13 +110,30 @@ class _AudioCallPageState extends State<AudioCallPage> {
           // ── Zego Call Widget ──────────────────────────
           ZegoUIKitPrebuiltCall(
             appID: call_Constants.appID,
-            appSign: call_Constants.appSign,
+            // appSign: _convertHexToBytes(call_Constants.appSign),
+              appSign: call_Constants.appSign,
             userID: widget.userID,
             userName: widget.userName,
             callID: widget.callID,
             config: _buildConfig(),
             events: ZegoUIKitPrebuiltCallEvents(
               user: ZegoCallUserEvents(onEnter: (_) => _setStatus('Connected')),
+              onHangUpConfirmation: (event, defaultAction) async {
+                return true;
+              },
+              onCallEnd: (event, defaultAction) async {
+                if (!mounted) return;
+
+                await Future.delayed(const Duration(milliseconds: 500));
+
+                if (mounted) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted && Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
+                  });
+                }
+              },
             ),
           ),
 
@@ -117,7 +144,11 @@ class _AudioCallPageState extends State<AudioCallPage> {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () {
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      }
+                    },
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -221,88 +252,3 @@ class _PulseDotState extends State<_PulseDot>
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:protiva502/core/utils/constants/call_const.dart';
-// import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
-
-// class AudioCallPage extends StatefulWidget {
-//   final String callID; // Unique ID for the call session
-//   final String userID;
-//   final String userName;
-//   final String initialStatus;
-
-//   const AudioCallPage({
-//     super.key,
-//     required this.callID,
-//     required this.userID,
-//     required this.userName,
-//     this.initialStatus = 'Connecting...',
-//   });
-
-//   @override
-//   State<AudioCallPage> createState() => _AudioCallPageState();
-// }
-
-// class _AudioCallPageState extends State<AudioCallPage> {
-//   late String _statusText;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _statusText = widget.initialStatus;
-//   }
-
-//   void _setStatus(String text) {
-//     if (!mounted) {
-//       return;
-//     }
-
-//     setState(() {
-//       _statusText = text;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final config = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
-//       ..duration.isVisible = true;
-
-//     return Stack(
-//       children: [
-//         ZegoUIKitPrebuiltCall(
-//           appID: call_Constants.appID,
-//           appSign: call_Constants.appSign,
-//           userID: widget.userID,
-//           userName: widget.userName,
-//           callID: widget.callID,
-//           config: config,
-//           // ✅ Pass events directly to the widget, not via config
-//           events: ZegoUIKitPrebuiltCallEvents(
-//             user: ZegoCallUserEvents(onEnter: (_) => _setStatus('Connected')),
-//           ),
-//         ),
-//         SafeArea(
-//           child: Align(
-//             alignment: Alignment.topCenter,
-//             child: Container(
-//               margin: const EdgeInsets.only(top: 16),
-//               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//               decoration: BoxDecoration(
-//                 color: Colors.black54,
-//                 borderRadius: BorderRadius.circular(20),
-//               ),
-//               child: Text(
-//                 _statusText,
-//                 style: const TextStyle(
-//                   color: Colors.white,
-//                   fontWeight: FontWeight.w600,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

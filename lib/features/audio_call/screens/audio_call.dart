@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:protiva502/core/utils/constants/call_const.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
@@ -23,6 +24,7 @@ class AudioCallPage extends StatefulWidget {
 
 class _AudioCallPageState extends State<AudioCallPage> {
   late String _statusText;
+  bool _isDisposing = false;
 
   @override
   void initState() {
@@ -30,8 +32,14 @@ class _AudioCallPageState extends State<AudioCallPage> {
     _statusText = widget.initialStatus;
   }
 
+  @override
+  void dispose() {
+    _isDisposing = true;
+    super.dispose();
+  }
+
   void _setStatus(String text) {
-    if (!mounted) return;
+    if (!mounted || _isDisposing) return;
     setState(() => _statusText = text);
   }
 
@@ -79,10 +87,18 @@ class _AudioCallPageState extends State<AudioCallPage> {
     );
 
     config.hangUpConfirmDialog = ZegoCallHangUpConfirmDialogConfig(
-      info: 'End the call?',
+      // info: 'End the call?',
     );
 
     return config;
+  }
+
+  Uint8List _convertHexToBytes(String hex) {
+    final buffer = StringBuffer();
+    for (int i = 0; i < hex.length; i += 2) {
+      buffer.write(String.fromCharCode(int.parse(hex.substring(i, i + 2), radix: 16)));
+    }
+    return Uint8List.fromList(buffer.toString().codeUnits);
   }
 
   @override
@@ -94,7 +110,8 @@ class _AudioCallPageState extends State<AudioCallPage> {
           // ── Zego Call Widget ──────────────────────────
           ZegoUIKitPrebuiltCall(
             appID: call_Constants.appID,
-            appSign: call_Constants.appSign,
+            // appSign: _convertHexToBytes(call_Constants.appSign),
+              appSign: call_Constants.appSign,
             userID: widget.userID,
             userName: widget.userName,
             callID: widget.callID,
@@ -107,11 +124,14 @@ class _AudioCallPageState extends State<AudioCallPage> {
               onCallEnd: (event, defaultAction) async {
                 if (!mounted) return;
 
-                await Future.delayed(const Duration(milliseconds: 300));
+                await Future.delayed(const Duration(milliseconds: 500));
 
-                if (mounted && Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop();
-                  await Future.delayed(const Duration(milliseconds: 100));
+                if (mounted) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted && Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
+                  });
                 }
               },
             ),

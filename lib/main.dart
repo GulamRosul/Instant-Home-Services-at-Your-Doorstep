@@ -19,6 +19,7 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await CallService.instance.initializeFromStorage();
+  CallService.instance.setNavigatorKey(appNavigatorKey);
 
   // Set up background message handler for Firebase notifications
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);

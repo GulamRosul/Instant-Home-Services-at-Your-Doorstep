@@ -94,7 +94,7 @@ class UserProfilePicScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Upload Your Logo',
+              'Upload Your Logo (Optional)',
               style: getTextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
@@ -107,7 +107,7 @@ class UserProfilePicScreen extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Bio',
+                'Bio (Optional)',
                 style: getTextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,

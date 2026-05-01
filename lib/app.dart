@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/routes/app_routes.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'core/bindings/controller_binder.dart';
@@ -25,6 +26,9 @@ class Protiva502 extends StatelessWidget {
           initialRoute: AppRoute.getSplashScreen(),
           getPages: AppRoute.routes,
           initialBinding: ControllerBinder(),
+          locale: LocalizationService.currentLocale,
+          fallbackLocale: LocalizationService.fallbackLocale,
+          translations: LocalizationService(),
           themeMode: ThemeMode.light,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
@@ -36,9 +40,6 @@ class Protiva502 extends StatelessWidget {
               children: [
                 easyLoaded,
                 ZegoUIKitPrebuiltCallMiniOverlayPage(
-                  // ✅ appNavigatorKey.currentState is always the live navigator
-                  // overlay?.context is the topmost context in the nav stack
-                  // fallback to the builder context if navigator not ready yet
                   contextQuery: () =>
                       appNavigatorKey.currentState?.overlay?.context ?? context,
                 ),

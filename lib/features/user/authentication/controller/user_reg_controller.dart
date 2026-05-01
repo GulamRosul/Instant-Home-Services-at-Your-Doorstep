@@ -38,7 +38,7 @@ class UserRegController extends GetxController {
     final validationMessage = _validateInputs();
 
     if (validationMessage != null) {
-      _showSnackBar('Error', validationMessage);
+      _showSnackBar('error'.tr, validationMessage);
       return;
     }
 
@@ -54,7 +54,7 @@ class UserRegController extends GetxController {
       );
     } catch (error, stackTrace) {
       log('Navigation error', error: error, stackTrace: stackTrace);
-      _showSnackBar('Error', 'Something went wrong. Please try again.');
+      _showSnackBar('error'.tr, 'registration_error'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -62,43 +62,43 @@ class UserRegController extends GetxController {
 
   String? _validateInputs() {
     if (firstNameController.text.trim().isEmpty) {
-      return 'Please enter your first name';
+      return 'first_name_required'.tr;
     }
 
     if (lastNameController.text.trim().isEmpty) {
-      return 'Please enter your last name';
+      return 'last_name_required'.tr;
     }
 
     if (emailController.text.trim().isEmpty) {
-      return 'Please enter your email address';
+      return 'email_required'.tr;
     }
 
     if (!GetUtils.isEmail(emailController.text.trim())) {
-      return 'Please enter a valid email address';
+      return 'email_invalid'.tr;
     }
 
     if (phoneController.text.trim().isEmpty) {
-      return 'Please enter your phone number';
+      return 'phone_required'.tr;
     }
 
     if (cityController.text.trim().isEmpty) {
-      return 'Please enter your city';
+      return 'city_required'.tr;
     }
 
     if (passwordController.text.isEmpty) {
-      return 'Please enter your password';
+      return 'password_required'.tr;
     }
 
     if (passwordController.text.length < 8) {
-      return 'Password must be at least 8 characters long';
+      return 'password_min_length'.tr;
     }
 
     if (confirmPasswordController.text.isEmpty) {
-      return 'Please confirm your password';
+      return 'confirm_password_required'.tr;
     }
 
     if (passwordController.text != confirmPasswordController.text) {
-      return 'Password and confirm password do not match';
+      return 'password_mismatch'.tr;
     }
 
     return null;

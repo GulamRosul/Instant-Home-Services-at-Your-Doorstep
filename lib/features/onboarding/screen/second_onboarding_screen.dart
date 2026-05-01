@@ -53,24 +53,30 @@ class SecondOnboardingScreen extends StatelessWidget {
             SizedBox(height: 10.h),
             // Language Selector
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 20.w, right: 20.w),
-                  child: Text(
-                    'Select Role',
-                    style: getTextStyle(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.w700,
-                      lineHeight: 10.sp,
-                      color: Colors.black,
+                // Left Text (Flexible)
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20.w),
+                    child: Text(
+                      'select_role'.tr,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: getTextStyle(
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w700,
+                        lineHeight: 1.2,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => langController.toggleLanguage(),
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 20.w),
+
+                // Language Toggle Button
+                Padding(
+                  padding: EdgeInsets.only(right: 20.w),
+                  child: GestureDetector(
+                    onTap: () => langController.toggleLanguage(),
                     child: Obx(
                       () => Container(
                         padding: EdgeInsets.symmetric(
@@ -101,7 +107,6 @@ class SecondOnboardingScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 4.w),
                             Text(
-                              // Using the getter from the controller for cleaner code
                               langController.currentLanguageLabel,
                               style: getTextStyle(
                                 fontSize: 12.sp,
@@ -115,48 +120,6 @@ class SecondOnboardingScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Align(
-                //   alignment: Alignment.centerRight,
-                //   child: Padding(
-                //     padding: EdgeInsets.only(right: 20.w),
-                //     child: Container(
-                //       padding: EdgeInsets.symmetric(
-                //         horizontal: 12.w,
-                //         vertical: 6.h,
-                //       ),
-                //       decoration: BoxDecoration(
-                //         border: Border.all(
-                //           color: AppColors.textSecondary.withValues(alpha: 0.5),
-                //         ),
-                //         borderRadius: BorderRadius.circular(8.r),
-                //       ),
-                //       child: Row(
-                //         mainAxisSize: MainAxisSize.min,
-                //         children: [
-                //           Icon(
-                //             Icons.language,
-                //             size: 16.sp,
-                //             color: AppColors.textSecondary,
-                //           ),
-                //           SizedBox(width: 4.w),
-                //           Text(
-                //             'EN',
-                //             style: getTextStyle(
-                //               fontSize: 12.sp,
-                //               fontWeight: FontWeight.w500,
-                //               color: AppColors.textSecondary,
-                //             ),
-                //           ),
-                //           Icon(
-                //             Icons.keyboard_arrow_down,
-                //             size: 16.sp,
-                //             color: AppColors.textSecondary,
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
             SizedBox(height: 10.h),
@@ -166,7 +129,7 @@ class SecondOnboardingScreen extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Select your role to continue and unlock relevant features',
+                  'select_role_subtitle'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
@@ -181,7 +144,7 @@ class SecondOnboardingScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(left: 20.w, right: 20.w),
               child: CustomButton(
-                text: 'Sign Up to continue as a client',
+                text: 'sign_up_client'.tr,
                 backgroundColor: Colors.white,
                 borderColor: Colors.black,
                 textColor: Colors.black,
@@ -195,10 +158,9 @@ class SecondOnboardingScreen extends StatelessWidget {
               padding: EdgeInsets.only(left: 20.w, right: 20.w),
               child: CustomButton(
                 onPressed: () {
-                  // Get.to(() => ProviderRegistration());
                   Get.to(() => ProviderRegistrationScreen01());
                 },
-                text: 'Sign Up to continue as Service Provider',
+                text: 'sign_up_provider'.tr,
                 backgroundColor: Colors.white,
                 borderColor: Colors.black,
                 textColor: Colors.black,
@@ -212,7 +174,7 @@ class SecondOnboardingScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Continue as',
+                  'continue_as'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
@@ -225,7 +187,7 @@ class SecondOnboardingScreen extends StatelessWidget {
                     Get.offAll(() => const MainNavigationScreen());
                   },
                   child: Text(
-                    'Guest',
+                    'guest'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,

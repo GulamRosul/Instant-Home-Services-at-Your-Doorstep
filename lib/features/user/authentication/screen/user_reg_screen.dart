@@ -23,14 +23,14 @@ class UserRegScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const CustomAppBar(title: 'Client Registration'),
+      appBar: CustomAppBar(title: 'client_registration'.tr),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Get Started as a Client',
+              'get_started_client'.tr,
               style: getTextStyle(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w700,
@@ -40,43 +40,43 @@ class UserRegScreen extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
 
-            _buildFieldLabel("First name"),
+            _buildFieldLabel("first_name".tr),
             CustomTextField(
               controller: controller.firstNameController,
               hintText: 'Sarah',
-              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
 
             SizedBox(height: 16.h),
-            _buildFieldLabel("Last name"),
+            _buildFieldLabel("last_name".tr),
             CustomTextField(
               controller: controller.lastNameController,
               hintText: 'Sarah',
-              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
 
             SizedBox(height: 16.h),
-            _buildFieldLabel("E-mail address"),
+            _buildFieldLabel("email_address".tr),
             CustomTextField(
               controller: controller.emailController,
               hintText: 'sarah.johnson@email.com',
               keyboardType: TextInputType.emailAddress,
-              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
 
             SizedBox(height: 16.h),
-            _buildFieldLabel("Phone"),
+            _buildFieldLabel("phone".tr),
             CustomTextField(
               controller: controller.phoneController,
               hintText: '1XXXXXXXXX',
               keyboardType: TextInputType.phone,
-              backgroundColor: const Color(0xFFF1F5F9), // Very light grey input
+              backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
               prefixIcon: CountryCodePicker(
@@ -98,7 +98,7 @@ class UserRegScreen extends StatelessWidget {
             ),
 
             SizedBox(height: 16.h),
-            _buildFieldLabel("City"),
+            _buildFieldLabel("city".tr),
             CustomTextField(
               controller: controller.cityController,
               hintText: 'Dhaka',
@@ -108,7 +108,10 @@ class UserRegScreen extends StatelessWidget {
             ),
 
             SizedBox(height: 16.h),
-            _buildPasswordFieldLabel("Password", controller.isPasswordVisible),
+            _buildPasswordFieldLabel(
+              "password".tr,
+              controller.isPasswordVisible,
+            ),
             Obx(
               () => CustomTextField(
                 controller: controller.passwordController,
@@ -124,7 +127,7 @@ class UserRegScreen extends StatelessWidget {
 
             SizedBox(height: 16.h),
             _buildPasswordFieldLabel(
-              "Confirm password",
+              "confirm_password".tr,
               controller.isConfirmPasswordVisible,
             ),
             Obx(
@@ -143,7 +146,7 @@ class UserRegScreen extends StatelessWidget {
             SizedBox(height: 30.h),
             Obx(
               () => CustomButton(
-                text: controller.isLoading.value ? 'Registering...' : 'Next',
+                text: controller.isLoading.value ? 'registering'.tr : 'next'.tr,
                 onPressed: controller.isLoading.value
                     ? null
                     : controller.handleRegistration,
@@ -159,7 +162,7 @@ class UserRegScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Already have an account? ',
+                  'already_have_account'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     color: Colors.black,
@@ -169,10 +172,10 @@ class UserRegScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () => Get.to(() => UserLoginScreen()),
                   child: Text(
-                    'Sign In',
+                    'sign_in'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
-                      color: const Color(0xFF6366F1), // Purple color
+                      color: const Color(0xFF6366F1),
                       fontWeight: FontWeight.w600,
                     ),
                   ),

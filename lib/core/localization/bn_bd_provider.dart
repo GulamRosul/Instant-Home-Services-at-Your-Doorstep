@@ -72,6 +72,23 @@ const Map<String, String> bnBDProvider = {
   'error': 'ত্রুটি',
   'failed_pick_image': 'ছবি নির্বাচন করতে ব্যর্থ',
 
+   //home screen
+  'active_jobs': 'সক্রিয় কাজগুলো',
+  'no_active_jobs_found': 'কোন সক্রিয় কাজ পাওয়া যায়নি',
+  'provider': 'প্রদানকারী',
+  'no_recent_bookings_found': 'কোন সাম্প্রতিক বুকিং পাওয়া যায়নি',
+  'applications_this_month': 'এই মাসের আবেদনগুলো',
+  'total_bookings_served': 'মোট বুকিং পরিষেবা',
+  'average_ratings': 'গড় রেটিং',
+  'submitted_proposal': 'সাবমিটেড প্রোপোজাল',
+  'my_wallet': 'মাই ওয়ালেট',
+  'active': 'এক্টিভ',
+  'withdrawable_amount': 'উঠানোর যোগ্য পরিমাণ',
+  'pending_amount': 'মুক্তির অপেক্ষা',
+  'bookings_served': 'বুকিং পরিষেবা',
+  'recent_bookings': 'সাম্প্রতিক বুকিং',
+  'view_all' : 'সব দেখুন',
+
     //booking screen
   'view_all_bookings': 'গ্রাহকরা যে সমস্ত বুকিং করেছেন তা দেখুন',
   'booking_service': 'বুকিং সেবা',

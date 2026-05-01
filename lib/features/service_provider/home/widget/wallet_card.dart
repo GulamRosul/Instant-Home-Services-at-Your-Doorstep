@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
@@ -41,7 +42,7 @@ class WalletCard extends StatelessWidget {
                       ),
                       SizedBox(width: 12.w),
                       Text(
-                        'My Wallet',
+                        'my_wallet'.tr,
                         style: getTextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
@@ -69,8 +70,8 @@ class WalletCard extends StatelessWidget {
                         SizedBox(width: 4.w),
                         Text(
                           controller.walletErrorMessage.value.isNotEmpty
-                              ? 'Error'
-                              : 'Active',
+                              ? 'error'.tr
+                              : 'active'.tr,
                           style: getTextStyle(
                             fontSize: 12.sp,
                             color: Colors.white,
@@ -94,7 +95,7 @@ class WalletCard extends StatelessWidget {
                 )
               else ...[
                 Text(
-                  'Withdrawable Amount',
+                  'withdrawable_amount'.tr,
                   style: getTextStyle(
                     fontSize: 12.sp,
                     color: Colors.white.withValues(alpha: 0.8),
@@ -115,7 +116,7 @@ class WalletCard extends StatelessWidget {
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  'Bookings served ${controller.bookingsServed.value}',
+                  '${'bookings_served'.tr} ${controller.bookingsServed.value}',
                   style: getTextStyle(
                     fontSize: 12.sp,
                     color: Colors.white.withValues(alpha: 0.6),
@@ -125,7 +126,7 @@ class WalletCard extends StatelessWidget {
                 Divider(color: Colors.white.withValues(alpha: 0.2)),
                 SizedBox(height: 12.h),
                 Text(
-                  'Pending Amount',
+                  'pending_amount'.tr,
                   style: getTextStyle(
                     fontSize: 12.sp,
                     color: Colors.white.withValues(alpha: 0.8),

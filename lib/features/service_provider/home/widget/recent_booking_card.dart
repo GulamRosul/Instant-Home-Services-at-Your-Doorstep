@@ -94,7 +94,7 @@ class RecentBookingCard extends StatelessWidget {
 
                 /// Price + View Details
                 Text(
-                  'Starting : ৳ ${booking.serviceAmount.toStringAsFixed(0)}',
+                  '${'start_from'.tr} : ৳ ${booking.serviceAmount.toStringAsFixed(0)}',
                   style: getTextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
@@ -137,7 +137,7 @@ class RecentBookingCard extends StatelessWidget {
                         );
                       },
                       child: Text(
-                        'View Details',
+                        'view_details'.tr,
                         style: getTextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
@@ -180,7 +180,7 @@ class RecentBookingsSection extends StatelessWidget {
       if (controller.recentBookings.isEmpty) {
         return Center(
           child: Text(
-            'No recent bookings found',
+            'no_recent_bookings_found'.tr,
             textAlign: TextAlign.center,
             style: getTextStyle(fontSize: 12.sp, color: Colors.black54),
           ),

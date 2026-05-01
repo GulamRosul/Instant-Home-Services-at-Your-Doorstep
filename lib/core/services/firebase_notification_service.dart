@@ -5,7 +5,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-/// Initialize local notifications
 Future<void> initializeLocalNotifications() async {
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -27,92 +26,113 @@ Future<void> initializeLocalNotifications() async {
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse: (NotificationResponse response) {
-      debugPrint(
-        '📲 [LOCAL NOTIFICATION] Notification tapped: ${response.payload}',
-      );
+      debugPrint('📲 [LOCAL NOTIFICATION] Tapped: ${response.payload}');
     },
   );
 
   debugPrint('✅ [LOCAL NOTIFICATIONS] Initialized');
 }
 
-/// Background message handler for Firebase notifications
+/// Background handler — runs in separate isolate
+/// Must reinitialize plugin since late variable isn't available
+@pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  debugPrint('🔔 [BACKGROUND] Received message: ${message.messageId}');
-  debugPrint('🔔 [BACKGROUND] Title: ${message.notification?.title}');
-  debugPrint('🔔 [BACKGROUND] Body: ${message.notification?.body}');
+  debugPrint('🔔 [BACKGROUND] Received: ${message.messageId}');
 
-  // Display local notification for background message
-  await displayLocalNotification(message);
+  // ✅ Skip Zego call notifications — Zego handles those itself
+  final data = message.data;
+  if (data.containsKey('zego') ||
+      data.containsKey('call_id') ||
+      data.containsKey('inviter_id') ||
+      (message.notification?.title == 'Incoming call')) {
+    debugPrint('🔔 [BACKGROUND] Zego call notification — skipping local display');
+    return;
+  }
+
+  // ✅ Reinitialize plugin in background isolate
+  final plugin = FlutterLocalNotificationsPlugin();
+  await plugin.initialize(
+    const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(),
+    ),
+  );
+
+  await _showNotification(plugin, message);
 }
 
-/// Display local notification
 Future<void> displayLocalNotification(RemoteMessage message) async {
+  // ✅ Skip Zego call notifications
+  final data = message.data;
+  if (data.containsKey('zego') ||
+      data.containsKey('call_id') ||
+      data.containsKey('inviter_id') ||
+      (message.notification?.title == 'Incoming call')) {
+    debugPrint('📲 Zego call notification — skipping local display');
+    return;
+  }
+
+  await _showNotification(flutterLocalNotificationsPlugin, message);
+}
+
+Future<void> _showNotification(
+  FlutterLocalNotificationsPlugin plugin,
+  RemoteMessage message,
+) async {
   try {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
           'protiva_high_importance_channel',
           'High Importance Notifications',
-          channelDescription:
-              'This channel is used for important notifications.',
+          channelDescription: 'Used for important notifications.',
           importance: Importance.max,
           priority: Priority.high,
           enableVibration: true,
           enableLights: true,
-          sound: RawResourceAndroidNotificationSound('notification_sound'),
+          // ✅ No custom sound — avoids missing asset crash
         );
 
-    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-        DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        );
-
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics,
+    const NotificationDetails details = NotificationDetails(
+      android: androidDetails,
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
     );
 
-    await flutterLocalNotificationsPlugin.show(
+    await plugin.show(
       message.hashCode,
       message.notification?.title ?? 'Notification',
       message.notification?.body ?? '',
-      platformChannelSpecifics,
+      details,
       payload: message.data.toString(),
     );
-
-    debugPrint(
-      '✅ [LOCAL NOTIFICATION] Displayed: ${message.notification?.title}',
-    );
   } catch (e) {
-    debugPrint('❌ [LOCAL NOTIFICATION] Error displaying notification: $e');
+    debugPrint('❌ [LOCAL NOTIFICATION] Error: $e');
   }
 }
 
-/// Initialize Android notification channel
 Future<void> initializeAndroidNotificationChannel() async {
   if (!Platform.isAndroid) return;
 
   try {
+    // ✅ No custom sound reference
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'protiva_high_importance_channel',
       'High Importance Notifications',
-      description: 'This channel is used for important notifications.',
+      description: 'Used for important notifications.',
       importance: Importance.max,
       enableVibration: true,
       enableLights: true,
-      sound: RawResourceAndroidNotificationSound('notification_sound'),
     );
 
     await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
     debugPrint('✅ [ANDROID] Notification channel created');
   } catch (e) {
-    debugPrint('❌ [ANDROID] Error initializing notification channel: $e');
+    debugPrint('❌ [ANDROID] Channel error: $e');
   }
 }

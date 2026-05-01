@@ -208,6 +208,16 @@ class NotificationController extends GetxController {
 
       // Handle foreground notifications
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // ✅ Skip Zego call notifications — ZegoCloud handles these
+        final data = message.data;
+        if (data.containsKey('call_id') ||
+            data.containsKey('inviter_id') ||
+            data.containsKey('zego') ||
+            message.notification?.title == 'Incoming call') {
+          debugPrint('📬 Zego call message — skipping');
+          return;
+        }
+
         _handleForegroundNotification(message);
       });
 

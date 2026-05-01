@@ -26,7 +26,6 @@ class NotificationController extends GetxController {
   void onInit() {
     super.onInit();
     _initializeFirebaseMessaging();
-    fetchNotifications();
   }
 
   /// Fetch notifications from API
@@ -350,6 +349,14 @@ class NotificationController extends GetxController {
   /// Get FCM token from secure storage
   Future<String?> getStoredFcmToken() async {
     return await SecureStorageService.getFcmToken();
+  }
+
+  /// Load notifications only if user is authenticated
+  Future<void> loadNotifications() async {
+    final token = await SecureStorageService.getToken();
+    if (token != null && token.isNotEmpty) {
+      await fetchNotifications();
+    }
   }
 
   void markAsRead(int index) {

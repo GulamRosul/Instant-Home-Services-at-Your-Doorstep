@@ -142,9 +142,9 @@ class NotificationController extends GetxController {
     );
 
     if (notificationDate == today) {
-      return 'Today';
+      return 'today'.tr;
     } else if (notificationDate == yesterday) {
-      return 'Yesterday';
+      return 'yesterday'.tr;
     } else {
       return DateFormat('MMM d, yyyy').format(dateTime);
     }

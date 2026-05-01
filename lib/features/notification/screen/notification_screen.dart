@@ -18,12 +18,12 @@ class NotificationScreen extends GetView<NotificationController> {
         return Scaffold(
           backgroundColor: const Color(0xFFF8F9FA),
           appBar: CustomAppBar(
-            title: '  Notifications',
+            title: 'notification'.tr,
             actions: [
               TextButton(
                 onPressed: () => controller.clearAll(),
                 child: Text(
-                  "Clear All",
+                  "clear_all".tr,
                   style: getTextStyle(
                     color: AppColors.textPurple,
                     fontSize: 12.sp,
@@ -51,7 +51,7 @@ class NotificationScreen extends GetView<NotificationController> {
                     ),
                     SizedBox(height: 14.h),
                     Text(
-                      'Please sign in to view your notifications.',
+                      'please_sign_in_to_view_notifications'.tr,
                       textAlign: TextAlign.center,
                       style: getTextStyle(
                         fontSize: 14.sp,
@@ -70,7 +70,7 @@ class NotificationScreen extends GetView<NotificationController> {
                         ),
                       ),
                       child: Text(
-                        'Sign In',
+                        'sign_in'.tr,
                         style: getTextStyle(
                           fontSize: 13.sp,
                           color: AppColors.textPurple,
@@ -246,7 +246,7 @@ class NotificationScreen extends GetView<NotificationController> {
           TextButton(
             onPressed: () => Get.back(),
             child: Text(
-              'Close',
+              'close'.tr,
               style: getTextStyle(
                 color: AppColors.textPurple,
                 fontWeight: FontWeight.w600,
@@ -298,7 +298,7 @@ class NotificationScreen extends GetView<NotificationController> {
           ),
           SizedBox(height: 16.h),
           Text(
-            "No Notifications Yet",
+            "no_notifications".tr,
             style: getTextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,

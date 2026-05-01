@@ -136,4 +136,13 @@ const Map<String, String> bnBD = {
   //privacy policy screen
   'last_updated': 'শেষ আপডেট: ',
   'no_privacy_policy': 'কোন গোপনীয়তা নীতি উপলব্ধ নেই',
+
+    //notifications
+  'clear_all': 'সব মুছে ফেলুন',
+  'please_sign_in_to_view_notifications': 'নোটিফিকেশন দেখতে সাইন ইন করুন।',
+  'no_notifications': 'নোটিফিকেশন পাওয়া যায়নি',
+  'close': 'বন্ধ করুন',
+  'today': 'আজ',
+  'yesterday': 'গত',
 };
+

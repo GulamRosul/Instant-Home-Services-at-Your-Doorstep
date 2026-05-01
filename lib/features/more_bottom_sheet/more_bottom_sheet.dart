@@ -51,7 +51,7 @@ class MoreBottomSheet extends StatelessWidget {
                   children: [
                     _buildMenuItem(
                       iconPath: IconPath.profilePic,
-                      label: 'Profile',
+                      label: 'profile'.tr,
                       onTap: () {
                         if (!StorageService.isLoggedIn) {
                           showLoginAlertDialog(context);
@@ -65,7 +65,7 @@ class MoreBottomSheet extends StatelessWidget {
                     ),
                     _buildMenuItem(
                       iconPath: IconPath.language,
-                      label: 'Language',
+                      label: 'language'.tr,
                       onTap: () {
                         Get.back();
                         Future.delayed(const Duration(milliseconds: 100), () {
@@ -75,7 +75,7 @@ class MoreBottomSheet extends StatelessWidget {
                     ),
                     _buildMenuItem(
                       iconPath: IconPath.settings,
-                      label: 'Settings',
+                      label: 'settings'.tr,
                       onTap: () {
                         if (!StorageService.isLoggedIn) {
                           showLoginAlertDialog(context);
@@ -89,7 +89,7 @@ class MoreBottomSheet extends StatelessWidget {
                     ),
                     _buildMenuItem(
                       iconPath: IconPath.help,
-                      label: 'Help & Support',
+                      label: 'help_support'.tr,
                       onTap: () {
                         Get.back();
                         Future.delayed(const Duration(milliseconds: 100), () {
@@ -107,7 +107,7 @@ class MoreBottomSheet extends StatelessWidget {
                     SizedBox(width: 15.w),
                     _buildMenuItem(
                       iconPath: IconPath.privacy,
-                      label: 'Privacy & Policy',
+                      label: 'privacy_policy'.tr,
                       onTap: () {
                         Get.back();
                         // Navigate to privacy policy
@@ -117,7 +117,7 @@ class MoreBottomSheet extends StatelessWidget {
                     SizedBox(width: 20.w),
                     _buildMenuItem(
                       iconPath: IconPath.logout,
-                      label: 'Logout',
+                      label: 'logout'.tr,
                       isLogout: true,
                       onTap: () => _showLogoutDialog(context),
                     ),
@@ -178,7 +178,7 @@ class MoreBottomSheet extends StatelessWidget {
               ),
               SizedBox(height: 24.h),
               Text(
-                'Logout',
+                'logout'.tr,
                 style: getTextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w600,
@@ -187,7 +187,7 @@ class MoreBottomSheet extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               Text(
-                'Are you sure you want to log out?',
+                'logout_confirmation'.tr,
                 textAlign: TextAlign.center,
                 style: getTextStyle(
                   fontSize: 14.sp,
@@ -209,7 +209,7 @@ class MoreBottomSheet extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'No',
+                        'no'.tr,
                         style: getTextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
@@ -243,7 +243,7 @@ class MoreBottomSheet extends StatelessWidget {
                             side: WidgetStateProperty.all(BorderSide.none),
                           ),
                       child: Text(
-                        'Yes',
+                        'yes'.tr,
                         style: getTextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,

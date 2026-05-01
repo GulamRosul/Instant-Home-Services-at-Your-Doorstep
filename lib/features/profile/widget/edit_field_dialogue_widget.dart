@@ -160,7 +160,7 @@ class _EditFieldBottomSheetState extends State<EditFieldBottomSheet> {
 
               // ── Title ────────────────────────────────────────────────
               Text(
-                'Edit ${widget.label}',
+                '${'edit'.tr} ${widget.label}',
                 style: getTextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
@@ -168,15 +168,15 @@ class _EditFieldBottomSheetState extends State<EditFieldBottomSheet> {
                 ),
               ),
               SizedBox(height: 6.h),
-              Text(
-                'Update your ${widget.label} details below and save when you are ready.',
-                style: getTextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color(0xFF64748B),
-                ),
-              ),
-              SizedBox(height: 20.h),
+              // Text(
+              //   'Update your ${widget.label} details below and save when you are ready.',
+              //   style: getTextStyle(
+              //     fontSize: 13.sp,
+              //     fontWeight: FontWeight.w400,
+              //     color: const Color(0xFF64748B),
+              //   ),
+              // ),
+              // SizedBox(height: 20.h),
 
               // ── Label badge ──────────────────────────────────────────
               Container(
@@ -237,7 +237,7 @@ class _EditFieldBottomSheetState extends State<EditFieldBottomSheet> {
                         ),
                       ),
                       child: Text(
-                        'Cancel',
+                        'cancel'.tr,
                         style: getTextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
@@ -272,7 +272,7 @@ class _EditFieldBottomSheetState extends State<EditFieldBottomSheet> {
                               ),
                             )
                           : Text(
-                              'Save Changes',
+                              'save_changes'.tr,
                               style: getTextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w700,

@@ -41,10 +41,10 @@ class ProviderNavbarController extends GetxController {
 
   // Icons and Labels for the tabs
   final List<Map<String, dynamic>> navItems = [
-    {'label': 'Home'},
-    {'label': 'My Job'},
-    {'label': 'Bookings'},
-    {'label': 'Notification'},
-    {'label': 'More'},
+    {'label': 'home'.tr},
+    {'label': 'my_job'.tr},
+    {'label': 'bookings'.tr},
+    {'label': 'notification'.tr},
+    {'label': 'more'.tr},
   ];
 }

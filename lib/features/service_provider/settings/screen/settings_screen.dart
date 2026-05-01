@@ -18,7 +18,7 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-      appBar: const CustomAppBar(title: 'Settings', showBackButton: true),
+      appBar:  CustomAppBar(title: 'settings'.tr, showBackButton: true),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
         child: Column(
@@ -30,7 +30,7 @@ class SettingsScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Notification',
+                    'notification'.tr,
                     style: getTextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
@@ -51,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
 
             20.h.verticalSpace,
             Text(
-              'Change Password',
+              'change_password'.tr,
               style: getTextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
@@ -61,7 +61,7 @@ class SettingsScreen extends StatelessWidget {
             12.h.verticalSpace,
 
             CustomTextField(
-              hintText: 'Current Password',
+              hintText: 'current_password'.tr,
               isPasswordField: true,
               controller: controller.currentPasswordController,
               backgroundColor: Colors.white,
@@ -69,7 +69,7 @@ class SettingsScreen extends StatelessWidget {
             12.h.verticalSpace,
 
             CustomTextField(
-              hintText: 'New Password',
+              hintText: 'new_password'.tr,
               isPasswordField: true,
               controller: controller.newPasswordController,
               backgroundColor: Colors.white,
@@ -77,7 +77,7 @@ class SettingsScreen extends StatelessWidget {
             12.h.verticalSpace,
 
             CustomTextField(
-              hintText: 'Confirm New Password',
+              hintText: 'confirm_new_password'.tr,
               isPasswordField: true,
               controller: controller.confirmPasswordController,
               backgroundColor: Colors.white,
@@ -87,8 +87,8 @@ class SettingsScreen extends StatelessWidget {
             Obx(
               () => CustomButton(
                 text: controller.isLoading.value
-                    ? 'Updating...'
-                    : 'Update Password',
+                    ? 'updating_password'.tr
+                    : 'update_password'.tr,
                 onPressed: controller.isLoading.value
                     ? null
                     : () => controller.changePassword(),

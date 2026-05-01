@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
@@ -150,7 +151,7 @@ class AvailableCategoryController extends GetxController {
       if (fetchedCategories.isEmpty && response.statusCode != 200) {
         categories.clear();
         categoriesErrorMessage.value =
-            _extractMessage(response.data) ?? 'Failed to load categories';
+            _extractMessage(response.data) ?? 'failed_load_categories'.tr;
         AppLoggerHelper.warning(
           'Failed to fetch categories: ${categoriesErrorMessage.value}',
         );
@@ -183,13 +184,13 @@ class AvailableCategoryController extends GetxController {
       categoriesErrorMessage.value =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to load categories';
+          'failed_load_categories'.tr;
       AppLoggerHelper.error('Categories fetch failed', error);
     } catch (error) {
       if (currentCategoryPage.value == 1) {
         categories.clear();
       }
-      categoriesErrorMessage.value = 'Failed to load categories';
+      categoriesErrorMessage.value = 'failed_load_categories'.tr;
       AppLoggerHelper.error('Unexpected categories fetch error', error);
     } finally {
       isCategoriesLoading.value = false;
@@ -276,7 +277,7 @@ class AvailableCategoryController extends GetxController {
       if (fetchedSubCategories.isEmpty && response.statusCode != 200) {
         subCategories.clear();
         subCategoriesErrorMessage.value =
-            _extractMessage(response.data) ?? 'Failed to load sub-categories';
+            _extractMessage(response.data) ?? 'failed_load_sub_categories'.tr;
         AppLoggerHelper.warning(
           'Failed to fetch sub-categories: ${subCategoriesErrorMessage.value}',
         );
@@ -300,13 +301,13 @@ class AvailableCategoryController extends GetxController {
       subCategoriesErrorMessage.value =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to load sub-categories';
+          'failed_load_sub_categories'.tr;
       AppLoggerHelper.error('Sub-categories fetch failed', error);
     } catch (error) {
       if (currentSubCategoryPage.value == 1) {
         subCategories.clear();
       }
-      subCategoriesErrorMessage.value = 'Failed to load sub-categories';
+      subCategoriesErrorMessage.value = 'failed_load_sub_categories'.tr;
       AppLoggerHelper.error('Unexpected sub-categories fetch error', error);
     } finally {
       isSubCategoriesLoading.value = false;

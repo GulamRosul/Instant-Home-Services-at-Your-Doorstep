@@ -36,9 +36,9 @@ class JobDetailsViewScreen extends StatelessWidget {
         title: Text(
           'Service Details',
           style: getTextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF3F3F3F),
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
           ),
         ),
         centerTitle: false,

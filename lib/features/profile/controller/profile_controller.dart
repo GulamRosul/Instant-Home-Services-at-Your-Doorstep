@@ -58,7 +58,7 @@ class ProfileController extends GetxController {
         if (!isRefresh) {
           _clearProfile();
         }
-        errorMessage.value = 'Please sign in to view your profile.';
+        errorMessage.value = 'please_sign_in_to_view_profile'.tr;
         return;
       }
 
@@ -83,7 +83,7 @@ class ProfileController extends GetxController {
         }
 
         errorMessage.value =
-            _extractMessage(response.data) ?? 'Failed to load profile.';
+            _extractMessage(response.data) ?? 'failed_to_load_profile'.tr;
         AppLoggerHelper.warning(
           'Profile request failed: ${response.statusCode} ${response.data}',
         );
@@ -100,14 +100,14 @@ class ProfileController extends GetxController {
       errorMessage.value =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to load profile.';
+          'failed_to_load_profile'.tr;
       AppLoggerHelper.error('Profile fetch failed', error);
     } catch (error) {
       if (!isRefresh) {
         _clearProfile();
       }
 
-      errorMessage.value = 'Failed to load profile.';
+      errorMessage.value = 'failed_to_load_profile'.tr;
       AppLoggerHelper.error('Unexpected profile fetch error', error);
     } finally {
       isLoading.value = false;
@@ -136,7 +136,7 @@ class ProfileController extends GetxController {
       final token = await SecureStorageService.getToken();
 
       if (token == null || token.trim().isEmpty) {
-        final message = 'Please sign in to update your profile.';
+        final message = 'please_sign_in_to_update_profile'.tr;
         errorMessage.value = message;
         _showErrorSnackbar(message);
         return false;
@@ -162,7 +162,7 @@ class ProfileController extends GetxController {
       final message =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to update profile.';
+          'failed_to_update_profile'.tr;
       errorMessage.value = message;
       AppLoggerHelper.error('Profile update failed', error);
       _showErrorSnackbar(message);
@@ -517,18 +517,18 @@ class ProfileController extends GetxController {
   String _fieldLabel(String fieldName) {
     switch (fieldName) {
       case 'name':
-        return 'Name';
+        return 'name'.tr;
       case 'firstName':
-        return 'First name';
+        return 'first_name'.tr;
       case 'lastName':
-        return 'Last name';
+        return 'last_name'.tr;
       case 'streetAddress':
-        return 'Street address';
+        return 'street_address'.tr;
       case 'zipCode':
-        return 'Zip code';
+        return 'zip_code'.tr;
       default:
         if (fieldName.isEmpty) {
-          return 'Profile';
+          return 'Profile'.tr;
         }
 
         final words = fieldName.split(RegExp(r'(?=[A-Z])'));
@@ -544,7 +544,7 @@ class ProfileController extends GetxController {
 
   void _showSuccessSnackbar(String message) {
     Get.snackbar(
-      'Profile updated',
+      'profile_updated_successfully'.tr,
       message,
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: const Color(0xFF065F46),
@@ -555,7 +555,7 @@ class ProfileController extends GetxController {
 
   void _showErrorSnackbar(String message) {
     Get.snackbar(
-      'Update failed',
+      'update_failed'.tr,
       message,
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: const Color(0xFF7F1D1D),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
@@ -201,10 +202,10 @@ class UserHomeController extends GetxController {
       servicesErrorMessage.value =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to load services';
+          'failed_load_services'.tr;
       AppLoggerHelper.error('Home services fetch failed', error);
     } catch (error) {
-      servicesErrorMessage.value = 'Failed to load services';
+      servicesErrorMessage.value = 'failed_load_services'.tr;
       AppLoggerHelper.error('Unexpected home services fetch error', error);
     } finally {
       isServicesLoading.value = false;
@@ -256,7 +257,7 @@ class UserHomeController extends GetxController {
       if (fetchedCategories.isEmpty && response.statusCode != 200) {
         categories.clear();
         categoriesErrorMessage.value =
-            _extractMessage(response.data) ?? 'Failed to load categories';
+            _extractMessage(response.data) ?? 'failed_load_categories'.tr;
         AppLoggerHelper.warning(
           'Failed to fetch categories: ${categoriesErrorMessage.value}',
         );
@@ -271,11 +272,11 @@ class UserHomeController extends GetxController {
       categoriesErrorMessage.value =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to load categories';
+          'failed_load_categories'.tr;
       AppLoggerHelper.error('Categories fetch failed', error);
     } catch (error) {
       categories.clear();
-      categoriesErrorMessage.value = 'Failed to load categories';
+      categoriesErrorMessage.value = 'failed_load_categories'.tr;
       AppLoggerHelper.error('Unexpected categories fetch error', error);
     } finally {
       isCategoriesLoading.value = false;
@@ -302,7 +303,7 @@ class UserHomeController extends GetxController {
       if (response.statusCode != 200 || bannerList is! List) {
         banners.clear();
         bannerErrorMessage.value =
-            _extractMessage(response.data) ?? 'Failed to load banners';
+            _extractMessage(response.data) ?? 'failed_load_categories'.tr;
         AppLoggerHelper.warning(
           'Failed to fetch banners: ${bannerErrorMessage.value}',
         );
@@ -330,11 +331,11 @@ class UserHomeController extends GetxController {
       bannerErrorMessage.value =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to load banners';
+          'failed_load_categories'.tr;
       AppLoggerHelper.error('Banner fetch failed', error);
     } catch (error) {
       banners.clear();
-      bannerErrorMessage.value = 'Failed to load banners';
+      bannerErrorMessage.value = 'failed_load_categories'.tr;
       AppLoggerHelper.error('Unexpected banner fetch error', error);
     } finally {
       isBannerLoading.value = false;
@@ -377,8 +378,7 @@ class UserHomeController extends GetxController {
           recommendedExperts.clear();
         }
         expertsErrorMessage.value =
-            _extractMessage(response.data) ??
-            'Failed to load recommended experts';
+            _extractMessage(response.data) ?? 'failed_load_categories'.tr;
         AppLoggerHelper.warning(
           'Failed to fetch experts: ${expertsErrorMessage.value}',
         );
@@ -390,13 +390,13 @@ class UserHomeController extends GetxController {
       expertsErrorMessage.value =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to load recommended experts';
+          'failed_load_categories'.tr;
       AppLoggerHelper.error('Expert fetch failed', error);
     } catch (error) {
       if (currentExpertPage.value == 1) {
         recommendedExperts.clear();
       }
-      expertsErrorMessage.value = 'Failed to load recommended experts';
+      expertsErrorMessage.value = 'failed_load_categories'.tr;
       AppLoggerHelper.error('Unexpected expert fetch error', error);
     } finally {
       isExpertsLoading.value = false;

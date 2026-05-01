@@ -49,7 +49,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
           if (controller.services.isEmpty) {
             return Center(
               child: Text(
-                'No services available',
+                'no_services_available'.tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   color: AppColors.textSecondary,
@@ -83,7 +83,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Featured Provider',
+          'featured_provider'.tr,
           style: getTextStyle(
             fontSize: 18.sp,
             color: Colors.black,
@@ -92,7 +92,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
         ),
         SizedBox(height: 4.h),
         Text(
-          'Work with highly recommended experts who stand out for their quality, dedication, and proven track record.',
+          'featured_provider_description'.tr,
           style: getTextStyle(
             fontSize: 12.sp,
             fontWeight: FontWeight.w400,
@@ -184,7 +184,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                       );
                     },
                     child: Text(
-                      "View Provider",
+                      'view_provider'.tr,
                       style: getTextStyle(
                         fontSize: 10.sp,
                         color: AppColors.textBlue,
@@ -203,7 +203,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                       Icon(Icons.star_half, size: 10.sp, color: Colors.orange),
                       Flexible(
                         child: Text(
-                          " ${service.averageRating ?? 'N/A'} (${service.totalBookings} bookings)",
+                          " ${service.averageRating ?? 'N/A'} (${service.totalBookings} ${'bookings_text'.tr})",
                           style: getTextStyle(
                             fontSize: 9.sp,
                             color: AppColors.textSecondary,
@@ -216,7 +216,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    'Start From ৳${service.basePrice}',
+                    '${'start_from'.tr} ৳${service.basePrice}',
                     style: getTextStyle(
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w700,
@@ -225,7 +225,7 @@ class SubcategoryServiceListScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 2.h),
                   CustomButton(
-                    text: "Book Now",
+                    text: 'book_now'.tr,
                     height: 28.h,
                     backgroundColor: AppColors.textPurple,
                     borderRadius: 6.r,

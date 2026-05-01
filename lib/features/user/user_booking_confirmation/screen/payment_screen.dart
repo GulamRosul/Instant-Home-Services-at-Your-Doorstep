@@ -5,6 +5,7 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/payment_controller.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/booking_step_progress.dart';
@@ -18,7 +19,7 @@ class PaymentScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const CustomAppBar(title: 'Book Service'),
+      appBar: CustomAppBar(title: 'book_service'.tr),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         child: Column(
@@ -39,8 +40,8 @@ class PaymentScreen extends StatelessWidget {
             Obx(
               () => CustomButton(
                 text: controller.isPaymentProcessing.value
-                    ? "Processing..."
-                    : "Go To Checkout",
+                    ? 'processing'.tr
+                    : 'go_to_checkout'.tr,
                 onPressed: controller.isPaymentProcessing.value
                     ? null
                     : controller.makePayment,
@@ -60,7 +61,7 @@ class PaymentScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Book Service",
+          'book_service'.tr,
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w700,
@@ -70,7 +71,7 @@ class PaymentScreen extends StatelessWidget {
         ),
         SizedBox(height: 8.h),
         Text(
-          "Complete your payment to confirm the booking",
+          'complete_payment_to_confirm'.tr,
           style: getTextStyle(
             fontSize: 12.sp,
             color: AppColors.textSecondary,
@@ -97,7 +98,7 @@ class PaymentScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Booking ID:",
+                  'booking_id'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,

@@ -61,7 +61,7 @@ class GenericListingScreen<T> extends StatelessWidget {
                 SizedBox(height: 16.h),
                 ElevatedButton(
                   onPressed: controller.retry,
-                  child: Text('Retry', style: getTextStyle(fontSize: 12.sp)),
+                  child: Text('retry'.tr, style: getTextStyle(fontSize: 12.sp)),
                 ),
               ],
             ),
@@ -71,7 +71,7 @@ class GenericListingScreen<T> extends StatelessWidget {
         if (controller.items.isEmpty) {
           return Center(
             child: Text(
-              'No items found',
+              'no_items_found'.tr,
               style: getTextStyle(
                 fontSize: 14.sp,
                 color: AppColors.textSecondary,

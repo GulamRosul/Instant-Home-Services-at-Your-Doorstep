@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
@@ -27,12 +28,12 @@ class ConfirmBookingScreen extends StatelessWidget {
     ).format(bookingData.preferredDateTime);
     final totalPrice = '${service?.basePrice.toStringAsFixed(1) ?? '0.0'} ৳';
     final message = bookingData.message.isEmpty
-        ? 'No additional message'
+        ? 'no_additional_message'.tr
         : bookingData.message;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
-      appBar: const CustomAppBar(title: 'Book Service'),
+      appBar: CustomAppBar(title: 'book_service'.tr),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10.r),
         child: Padding(
@@ -42,7 +43,7 @@ class ConfirmBookingScreen extends StatelessWidget {
             children: [
               SizedBox(height: 10.h),
               Text(
-                "Book Service",
+                'book_service'.tr,
                 style: getTextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
@@ -53,7 +54,7 @@ class ConfirmBookingScreen extends StatelessWidget {
 
               SizedBox(height: 8.h),
               Text(
-                "Book Your Service in Just a Few Clicks",
+                'book_your_service_in_few_clicks'.tr,
                 style: getTextStyle(
                   fontSize: 12.sp,
                   color: AppColors.textSecondary,
@@ -92,7 +93,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 16.h),
                     Text(
-                      "Confirm Your Booking",
+                      'confirm_your_booking'.tr,
                       style: getTextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
@@ -102,7 +103,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8.h),
                     Text(
-                      "Review your booking details before confirming",
+                      'review_booking_details'.tr,
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: AppColors.textSecondary,
@@ -118,7 +119,7 @@ class ConfirmBookingScreen extends StatelessWidget {
 
                     // Service Preview
                     _buildServiceSmallCard(
-                      title: service?.title ?? 'Selected Service',
+                      title: service?.title ?? 'selected_service'.tr,
                       price: totalPrice,
                       thumbnail: service?.thumbnail ?? '',
                       subtitle: service?.description ?? '',
@@ -127,15 +128,25 @@ class ConfirmBookingScreen extends StatelessWidget {
 
                     // Detail Rows
                     _buildDetailItem(
-                      "Service Name",
-                      service?.title ?? 'Selected Service',
+                      'service_name_label'.tr,
+                      service?.title ?? 'selected_service'.tr,
                     ),
-                    _buildDetailItem("Date & Time", formattedDateTime),
-                    _buildDetailItem("Location", bookingData.locationDetails),
-                    _buildDetailItem("Phone", bookingData.phoneNumber),
-                    _buildDetailItem("Service At", bookingData.locationType),
-                    _buildDetailItem("Message", message),
-                    _buildDetailItem("Total", totalPrice, isBold: true),
+                    _buildDetailItem('date_time_label'.tr, formattedDateTime),
+                    _buildDetailItem(
+                      'location_label'.tr,
+                      bookingData.locationDetails,
+                    ),
+                    _buildDetailItem('phone_label'.tr, bookingData.phoneNumber),
+                    _buildDetailItem(
+                      'service_at_label'.tr,
+                      bookingData.locationType,
+                    ),
+                    _buildDetailItem('message_label'.tr, message),
+                    _buildDetailItem(
+                      'total_label'.tr,
+                      totalPrice,
+                      isBold: true,
+                    ),
                   ],
                 ),
               ),
@@ -145,8 +156,8 @@ class ConfirmBookingScreen extends StatelessWidget {
               Obx(
                 () => CustomButton(
                   text: controller.isSubmitting.value
-                      ? 'Confirming...'
-                      : 'Confirm Your Booking',
+                      ? 'confirming'.tr
+                      : 'confirm_your_booking'.tr,
                   onPressed: controller.isSubmitting.value
                       ? null
                       : () => controller.confirmBooking(bookingData),
@@ -258,7 +269,7 @@ class ConfirmBookingScreen extends StatelessWidget {
               SizedBox(height: 4.h),
               Text(
                 subtitle.isEmpty
-                    ? 'Service details will be confirmed next.'
+                    ? 'service_details_will_be_confirmed'.tr
                     : subtitle,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -278,7 +289,7 @@ class ConfirmBookingScreen extends StatelessWidget {
                     color: AppColors.textBlue,
                   ),
                   Text(
-                    " Ready for confirmation",
+                    ' ${'ready_for_confirmation'.tr}',
                     style: getTextStyle(
                       fontSize: 10.sp,
                       color: AppColors.textSecondary,

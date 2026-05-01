@@ -69,8 +69,8 @@ class SettingsController extends GetxController {
       if (response.statusCode == 200) {
         _clearPasswordFields();
         Get.snackbar(
-          'Success',
-          'Password changed successfully',
+          'success'.tr,
+          'password_changed_successfully'.tr,
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.green.shade600,
           colorText: Colors.white,
@@ -87,16 +87,16 @@ class SettingsController extends GetxController {
         log('✅ Password Changed Successfully', name: 'SettingsController');
       } else {
         Get.snackbar(
-          'Error',
-          'Failed to change password. Please try again.',
+          'error'.tr,
+          'password_update_failed'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
       }
     } catch (e) {
       log('❌ Change Password Error: $e', name: 'SettingsController');
       Get.snackbar(
-        'Error',
-        'An error occurred. Please try again.',
+        'error'.tr,
+        'password_update_failed'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
@@ -106,23 +106,23 @@ class SettingsController extends GetxController {
 
   String? _validatePasswords() {
     if (currentPasswordController.text.isEmpty) {
-      return 'Please enter your current password';
+      return 'current_password_required'.tr;
     }
 
     if (newPasswordController.text.isEmpty) {
-      return 'Please enter a new password';
+      return 'new_password_required'.tr;
     }
 
     if (newPasswordController.text.length < 8) {
-      return 'New password must be at least 8 characters long';
+      return 'new_password_length'.tr;
     }
 
     if (confirmPasswordController.text.isEmpty) {
-      return 'Please confirm your new password';
+      return 'confirm_new_password_required'.tr;
     }
 
     if (newPasswordController.text != confirmPasswordController.text) {
-      return 'New password and confirm password do not match';
+      return 'passwords_do_not_match'.tr;
     }
 
     return null;

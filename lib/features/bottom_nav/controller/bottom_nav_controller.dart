@@ -28,9 +28,9 @@ class BottomNavController extends GetxController {
 
   // Icons and Labels for the tabs
   final List<Map<String, dynamic>> navItems = [
-    {'icon': IconPath.home, 'label': 'Home'},
-    {'icon': IconPath.booking, 'label': 'Booking'},
-    {'icon': IconPath.notification, 'label': 'Notification'},
-    {'icon': IconPath.more, 'label': 'More'},
+    {'icon': IconPath.home, 'label': 'home'.tr},
+    {'icon': IconPath.booking, 'label': 'bookings'.tr},
+    {'icon': IconPath.notification, 'label': 'notification'.tr},
+    {'icon': IconPath.more, 'label': 'more'.tr},
   ];
 }

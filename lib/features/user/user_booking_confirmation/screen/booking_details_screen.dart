@@ -6,6 +6,7 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/google_map/model/picked_location_data.dart';
@@ -40,7 +41,7 @@ class BookingDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F7),
-      appBar: const CustomAppBar(title: 'Book Service'),
+      appBar: CustomAppBar(title: 'book_service'.tr),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10.r),
         child: Padding(
@@ -50,7 +51,7 @@ class BookingDetailsScreen extends StatelessWidget {
             children: [
               SizedBox(height: 10.h),
               Text(
-                "Book Service",
+                'book_service'.tr,
                 style: getTextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
@@ -60,7 +61,7 @@ class BookingDetailsScreen extends StatelessWidget {
               ),
               SizedBox(height: 8.h),
               Text(
-                "Book Your Service in Just a Few Clicks",
+                'book_your_service_in_few_clicks'.tr,
                 style: getTextStyle(
                   fontSize: 12.sp,
                   color: AppColors.textSecondary,
@@ -76,9 +77,9 @@ class BookingDetailsScreen extends StatelessWidget {
               _buildServiceBriefCard(service),
               SizedBox(height: 24.h),
 
-              _buildLabel("Service name"),
+              _buildLabel('service_name'.tr),
               CustomTextField(
-                hintText: service?.title ?? "Selected Service",
+                hintText: service?.title ?? 'selected_service'.tr,
                 readOnly: true,
                 backgroundColor: Colors.white,
                 // textStyle: getTextStyle(fontSize: 14.sp, color: Colors.black),
@@ -86,10 +87,10 @@ class BookingDetailsScreen extends StatelessWidget {
               ),
 
               SizedBox(height: 16.h),
-              _buildLabel("Preferable Date & Time"),
+              _buildLabel('preferable_date_time'.tr),
               CustomTextField(
                 controller: controller.preferredDateTimeController,
-                hintText: "Select date & time",
+                hintText: 'select_date_time'.tr,
                 readOnly: true,
                 onTap: () => controller.pickPreferredDateTime(context),
                 suffixIcon: IconButton(
@@ -104,7 +105,7 @@ class BookingDetailsScreen extends StatelessWidget {
               ),
 
               SizedBox(height: 16.h),
-              _buildLabel("Phone"),
+              _buildLabel('phone'.tr),
               CustomTextField(
                 controller: controller.phoneController,
                 hintText: "2505550199",
@@ -129,19 +130,19 @@ class BookingDetailsScreen extends StatelessWidget {
               ),
 
               SizedBox(height: 16.h),
-              _buildLabel("Getting Service at"),
+              _buildLabel('getting_service_at'.tr),
               Obx(
                 () => Row(
                   children: [
-                    _buildRadioButton("My Location", controller),
+                    _buildRadioButton('my_location'.tr, controller),
                     SizedBox(width: 20.w),
-                    _buildRadioButton("Provider Location", controller),
+                    _buildRadioButton('provider_location'.tr, controller),
                   ],
                 ),
               ),
 
               SizedBox(height: 16.h),
-              _buildLabel("Location details"),
+              _buildLabel('location_details'.tr),
               CustomTextField(
                 controller: controller.locationController,
                 readOnly: true,
@@ -160,10 +161,10 @@ class BookingDetailsScreen extends StatelessWidget {
               ),
 
               SizedBox(height: 16.h),
-              _buildLabel("Message"),
+              _buildLabel('message'.tr),
               CustomTextField(
                 controller: controller.messageController,
-                hintText: "Add short description..",
+                hintText: 'add_short_description'.tr,
                 maxLines: 4,
                 backgroundColor: Colors.white,
               ),
@@ -186,12 +187,9 @@ class BookingDetailsScreen extends StatelessWidget {
                           color: Colors.black87,
                         ),
                         children: [
-                          const TextSpan(
-                            text:
-                                "By clicking \"Go to checkout\", you agree to our ",
-                          ),
+                          TextSpan(text: 'terms_of_service_agreement'.tr),
                           TextSpan(
-                            text: "Terms of Service",
+                            text: 'terms_of_service'.tr,
                             style: getTextStyle(
                               fontSize: 12.sp,
                               color: Colors.blue,
@@ -207,7 +205,7 @@ class BookingDetailsScreen extends StatelessWidget {
 
               SizedBox(height: 24.h),
               CustomButton(
-                text: 'Next',
+                text: 'next'.tr,
                 onPressed: () => controller.goToNextStep(service),
                 textColor: Colors.white,
               ),
@@ -310,7 +308,7 @@ class BookingDetailsScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        service?.title ?? "Selected Service",
+                        service?.title ?? 'selected_service'.tr,
                         style: getTextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
@@ -332,7 +330,7 @@ class BookingDetailsScreen extends StatelessWidget {
                 Text(
                   service?.description.isNotEmpty == true
                       ? service!.description
-                      : "Service details",
+                      : 'service_details'.tr,
                   style: getTextStyle(fontSize: 12.sp, color: Colors.blueGrey),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -341,7 +339,7 @@ class BookingDetailsScreen extends StatelessWidget {
                   children: [
                     Icon(Icons.location_on, size: 12.sp, color: Colors.blue),
                     Text(
-                      " Remote Service",
+                      ' ${'remote_service'.tr}',
                       style: getTextStyle(
                         fontSize: 11.sp,
                         color: AppColors.textSecondary,

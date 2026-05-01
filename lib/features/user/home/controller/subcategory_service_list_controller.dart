@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
@@ -114,16 +115,16 @@ class SubcategoryServiceListController extends GetxController {
           'Fetched ${responseData.data.length} services (page: $page)',
         );
       } else {
-        errorMessage.value = 'Failed to load services';
+        errorMessage.value = 'failed_load_services'.tr;
         AppLoggerHelper.warning(
           'Failed to fetch services: ${response.statusCode}',
         );
       }
     } on DioException catch (error) {
-      errorMessage.value = error.message ?? 'Failed to load services';
+      errorMessage.value = error.message ?? 'failed_load_services'.tr;
       AppLoggerHelper.error('Services fetch failed', error);
     } catch (error) {
-      errorMessage.value = 'Failed to load services';
+      errorMessage.value = 'failed_load_services'.tr;
       AppLoggerHelper.error('Unexpected services fetch error', error);
     } finally {
       isLoading.value = false;

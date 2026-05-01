@@ -75,4 +75,98 @@ const Map<String, String> enUSUser = {
   'invalid_request': 'Invalid request. Please try again.',
   'password_reset_success': 'Password reset successfully. Please login with your new password.',
   'password_reset_failed': 'Failed to reset password. Please try again.',
+
+  // Category Screen
+  'available_service': 'Available Service',
+  'no_categories_available': 'No categories available',
+  'sub_categories': 'Sub Categories',
+  'no_sub_categories_found': 'No sub-categories found',
+  'services': 'Services',
+
+  // Listing Screen
+  'no_items_found': 'No items found',
+  'retry': 'Retry',
+
+  // Service Provider Screen
+  'featured_provider': 'Featured Provider',
+  'featured_provider_description': 'Work with highly recommended experts who stand out for their quality, dedication, and proven track record.',
+  'view_provider': 'View Provider',
+  'start_from': 'Start From',
+  'book_now': 'Book Now',
+  'no_services_available': 'No services available',
+  'bookings_text': 'bookings',
+
+  // Error Messages
+  'failed_load_categories': 'Failed to load categories',
+  'failed_load_sub_categories': 'Failed to load sub-categories',
+  'failed_load_services': 'Failed to load services',
+  'failed_load_items': 'Failed to load items. Please try again.',
+  'failed_load_more_items': 'Failed to load more items. Please try again.',
+
+  // Home Screen
+  'all_categories': 'All Categories',
+  'see_all': 'See All',
+  'popular_services': 'Popular Services',
+  'recommended_experts': 'Recommended Expert For You',
+  'all_services': 'All Services',
+  'search_service': 'Search Service',
+  'no_services_found': 'No services found',
+  'remote_service': 'Remote Service',
+  'bookings_label': 'Bookings',
+  'guest_greeting': 'Guest 👋',
+  'loading_banners': 'Loading banners...',
+  'no_banners_available': 'No banners available right now',
+
+  // Search Screen
+  'search_services': 'Search Services',
+  'search_service_or_category': 'Search Service or Category',
+  'search_for_services_or_categories': 'Search for services or categories',
+  'service': 'Service',
+  'category': 'Category',
+  'explore_this_category': 'Explore this category',
+  'no_description_available': 'No description available',
+
+  // Booking Details Screen
+  'book_service': 'Book Service',
+  'book_your_service_in_few_clicks': 'Book Your Service in Just a Few Clicks',
+  'service_name': 'Service name',
+  'preferable_date_time': 'Preferable Date & Time',
+  'select_date_time': 'Select date & time',
+  'getting_service_at': 'Getting Service at',
+  'my_location': 'My Location',
+  'provider_location': 'Provider Location',
+  'location_details': 'Location details',
+  'message': 'Message',
+  'add_short_description': 'Add short description..',
+  'terms_of_service_agreement': 'By clicking "Go to checkout", you agree to our ',
+  'selected_service': 'Selected Service',
+  'service_details': 'Service details',
+
+  // Confirm Booking Screen
+  'confirm_your_booking': 'Confirm Your Booking',
+  'review_booking_details': 'Review your booking details before confirming',
+  'service_name_label': 'Service Name',
+  'date_time_label': 'Date & Time',
+  'location_label': 'Location',
+  'phone_label': 'Phone',
+  'service_at_label': 'Service At',
+  'message_label': 'Message',
+  'total_label': 'Total',
+  'confirming': 'Confirming...',
+  'no_additional_message': 'No additional message',
+  'service_details_will_be_confirmed': 'Service details will be confirmed next.',
+  'ready_for_confirmation': 'Ready for confirmation',
+
+  // Payment Screen
+  'complete_payment_to_confirm': 'Complete your payment to confirm the booking',
+  'booking_id': 'Booking ID:',
+  'total_amount': 'Total Amount:',
+  'enter_amount': 'Enter amount',
+  'processing': 'Processing...',
+  'go_to_checkout': 'Go To Checkout',
+
+  // Success Dialog
+  'congratulations': 'Congratulations!',
+  'redirecting_to_payment': 'Redirecting to payment in 3 seconds...',
+
 };

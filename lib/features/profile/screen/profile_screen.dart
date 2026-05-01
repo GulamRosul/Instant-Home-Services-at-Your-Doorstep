@@ -17,9 +17,6 @@ class ProfileScreen extends StatelessWidget {
 
   ImageProvider<Object> _buildProfileImage(String imagePath) {
     if (imagePath.trim().isEmpty) {
-      // return const NetworkImage(
-      //   'https://as1.ftcdn.net/v2/jpg/02/43/12/34/1000_F_243123463_zTo9Qg099Lz7fL7Y8HsSZJ1PVGu9fL7x.jpg',
-      // );
       return const AssetImage(ImagePath.profile);
     }
 
@@ -72,7 +69,7 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-      appBar: const CustomAppBar(title: 'Profile', showBackButton: true),
+      appBar: CustomAppBar(title: 'profile'.tr, showBackButton: true),
       body: Obx(() {
         if (controller.isLoading.value && !controller.hasLoadedProfile.value) {
           return _buildLoadingShimmer();
@@ -114,7 +111,7 @@ class ProfileScreen extends StatelessWidget {
                           ),
                           side: WidgetStateProperty.all(BorderSide.none),
                         ),
-                    child: const Text('  Retry  '),
+                    child:  Text('retry'.tr),
                   ),
                 ],
               ),
@@ -226,7 +223,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 32.h),
                   Text(
-                    'Profile Information',
+                    'profile_information'.tr,
                     style: getTextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
@@ -237,7 +234,7 @@ class ProfileScreen extends StatelessWidget {
                   _buildInfoSection([
                     _buildInfoItem(
                       context: context,
-                      label: 'First name',
+                      label: 'first_name'.tr,
                       value: controller.firstName.value,
                       onSave: (value) => controller.updateProfileField(
                         fieldName: 'firstName',
@@ -246,7 +243,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     _buildInfoItem(
                       context: context,
-                      label: 'Last name',
+                      label: 'last_name'.tr,
                       value: controller.lastName.value,
                       onSave: (value) => controller.updateProfileField(
                         fieldName: 'lastName',
@@ -255,7 +252,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     _buildInfoItem(
                       context: context,
-                      label: 'Email',
+                      label: 'email'.tr,
                       value: controller.email.value,
                       onSave: (value) => controller.updateProfileField(
                         fieldName: 'email',
@@ -266,7 +263,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     _buildInfoItem(
                       context: context,
-                      label: 'Phone',
+                      label: 'phone'.tr,
                       value: controller.phone.value,
                       onSave: (value) => controller.updateProfileField(
                         fieldName: 'phone',
@@ -286,7 +283,7 @@ class ProfileScreen extends StatelessWidget {
                     // ),
                     _buildInfoItem(
                       context: context,
-                      label: 'Bio',
+                      label: 'bio'.tr,
                       value: controller.bio.value,
                       onSave: (value) => controller.updateProfileField(
                         fieldName: 'bio',
@@ -298,7 +295,7 @@ class ProfileScreen extends StatelessWidget {
                   ]),
                   SizedBox(height: 32.h),
                   Text(
-                    'Address Information',
+                    'address_information'.tr,
                     style: getTextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
@@ -309,7 +306,7 @@ class ProfileScreen extends StatelessWidget {
                   _buildInfoSection([
                     _buildInfoItem(
                       context: context,
-                      label: 'Street Address',
+                      label: 'street_address'.tr,
                       value: controller.streetAddress.value,
                       onSave: (value) => controller.updateProfileField(
                         fieldName: 'streetAddress',
@@ -319,7 +316,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     _buildInfoItem(
                       context: context,
-                      label: 'City',
+                      label: 'city'.tr,
                       value: controller.city.value,
                       onSave: (value) => controller.updateProfileField(
                         fieldName: 'city',
@@ -328,7 +325,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     _buildInfoItem(
                       context: context,
-                      label: 'State',
+                      label: 'state'.tr,
                       value: controller.state.value,
                       onSave: (value) => controller.updateProfileField(
                         fieldName: 'state',
@@ -337,7 +334,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     _buildInfoItem(
                       context: context,
-                      label: 'Zip Code',
+                      label: 'zip_code'.tr,
                       value: controller.zipCode.value,
                       onSave: (value) => controller.updateProfileField(
                         fieldName: 'zipCode',

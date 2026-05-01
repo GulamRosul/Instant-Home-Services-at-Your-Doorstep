@@ -3,7 +3,7 @@ import 'package:protiva502/core/localization/localization_service.dart';
 
 class LanguageController extends GetxController {
   var selectedLanguage = 'English'.obs;
-  final List<String> languages = ['English', 'Bengali'];
+  final List<String> languages = ['english'.tr, 'bengali'.tr];
 
   void updateLanguage(String language) {
     selectedLanguage.value = language;

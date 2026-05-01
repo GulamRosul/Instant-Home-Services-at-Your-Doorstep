@@ -17,8 +17,8 @@ class LanguageSettingsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-      appBar: const CustomAppBar(
-        title: 'Language Settings',
+      appBar: CustomAppBar(
+        title: 'language_settings'.tr,
         showBackButton: true,
       ),
       body: Padding(
@@ -27,7 +27,7 @@ class LanguageSettingsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Choose Language',
+              'choose_language'.tr,
               style: getTextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
@@ -85,7 +85,7 @@ class LanguageSettingsScreen extends StatelessWidget {
             ),
             SizedBox(height: 48.h),
             CustomButton(
-              text: 'Done',
+              text: 'done'.tr,
               backgroundColor: AppColors.textPurple,
               textColor: Colors.white,
               borderRadius: 8.r,

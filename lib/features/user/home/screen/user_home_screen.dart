@@ -25,7 +25,7 @@ import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/home/model/user_banner_model.dart';
 import 'package:protiva502/features/user/home/screen/available_category_screen.dart';
 import 'package:protiva502/features/user/home/screen/generic_listing_screen.dart';
-import 'package:protiva502/features/user/home/search_screen/screen/search_screen.dart';
+import 'package:protiva502/features/user/search_screen/screen/search_screen.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
@@ -99,7 +99,7 @@ class UserHomeScreen extends StatelessWidget {
               _buildPromoBanner(controller),
               SizedBox(height: 24.h),
               _buildSectionHeader(
-                "All Categories",
+                'all_categories'.tr,
                 onSeeAllTap: () {
                   Get.to(() => const AvailableCategoryScreen());
                 },
@@ -108,11 +108,11 @@ class UserHomeScreen extends StatelessWidget {
               Obx(() => _buildCategoryGrid(controller)),
               SizedBox(height: 24.h),
               _buildSectionHeader(
-                "Popular Services",
+                'popular_services'.tr,
                 onSeeAllTap: () {
                   Get.to(
                     () => GenericListingScreen<HomeJobModel>(
-                      title: "Popular Services",
+                      title: 'popular_services'.tr,
                       type: ListingType.popularServices,
                       initialItems: controller.popularServices,
                       fetchFunction: controller.fetchPopularServices,
@@ -135,11 +135,11 @@ class UserHomeScreen extends StatelessWidget {
               ),
               SizedBox(height: 24.h),
               _buildSectionHeader(
-                "Recommended Expert For You",
+                'recommended_experts'.tr,
                 onSeeAllTap: () {
                   Get.to(
                     () => GenericListingScreen<ExpertRecommendationModel>(
-                      title: "Recommended Experts",
+                      title: 'recommended_experts'.tr,
                       type: ListingType.recommendedExperts,
                       initialItems: controller.recommendedExperts,
                       fetchFunction: controller.fetchAllExperts,
@@ -152,11 +152,11 @@ class UserHomeScreen extends StatelessWidget {
               _buildExpertCard(controller),
               SizedBox(height: 24.h),
               _buildSectionHeader(
-                "All Services",
+                'all_services'.tr,
                 onSeeAllTap: () {
                   Get.to(
                     () => GenericListingScreen<HomeJobModel>(
-                      title: "All Services",
+                      title: 'all_services'.tr,
                       type: ListingType.allServices,
                       initialItems: controller.allServices,
                       fetchFunction: controller.fetchAllServices,
@@ -232,7 +232,7 @@ class UserHomeScreen extends StatelessWidget {
                   () => Text(
                     controller.profileName.value.isNotEmpty
                         ? controller.profileName.value
-                        : 'Guest 👋',
+                        : 'guest_greeting'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
@@ -261,7 +261,7 @@ class UserHomeScreen extends StatelessWidget {
       },
       child: CustomTextField(
         enabled: false,
-        hintText: "Search Service",
+        hintText: 'search_service'.tr,
         suffixIcon: Container(
           // padding: EdgeInsets.all(6.r),
           margin: EdgeInsets.all(4.r),
@@ -282,13 +282,13 @@ class UserHomeScreen extends StatelessWidget {
 
     return Obx(() {
       if (controller.isBannerLoading.value) {
-        return _buildBannerPlaceholder(message: 'Loading banners...');
+        return _buildBannerPlaceholder(message: 'loading_banners'.tr);
       }
 
       if (controller.banners.isEmpty) {
         return _buildBannerPlaceholder(
           message: controller.bannerErrorMessage.value.isEmpty
-              ? 'No banners available right now'
+              ? 'no_banners_available'.tr
               : controller.bannerErrorMessage.value,
         );
       }
@@ -463,7 +463,7 @@ class UserHomeScreen extends StatelessWidget {
         GestureDetector(
           onTap: onSeeAllTap,
           child: Text(
-            "See All",
+            'see_all'.tr,
             style: getTextStyle(
               fontSize: 12.sp,
               color: AppColors.textBlue,
@@ -572,7 +572,7 @@ class UserHomeScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 12.h),
         child: Center(
           child: Text(
-            'No services found',
+            'no_services_found'.tr,
             textAlign: TextAlign.center,
             style: getTextStyle(
               fontSize: 12.sp,
@@ -676,7 +676,7 @@ class UserHomeScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.location_on, size: 10.sp, color: Colors.blue),
                       Text(
-                        " Remote Service",
+                        ' ${'remote_service'.tr}',
                         style: getTextStyle(
                           fontSize: 10.sp,
                           color: AppColors.textSecondary,
@@ -701,7 +701,7 @@ class UserHomeScreen extends StatelessWidget {
                       ),
                       Flexible(
                         child: Text(
-                          " ${service.averageRating.toStringAsFixed(1)} (${service.totalBookings} Bookings)",
+                          " ${service.averageRating.toStringAsFixed(1)} (${service.totalBookings} ${'bookings_label'.tr})",
                           style: getTextStyle(
                             fontSize: 9.sp,
                             color: AppColors.textSecondary,
@@ -714,7 +714,7 @@ class UserHomeScreen extends StatelessWidget {
                   ),
                   // SizedBox(height: 4.h),
                   Text(
-                    "Start From ${service.basePrice.toStringAsFixed(0)} ৳",
+                    '${'start_from'.tr} ${service.basePrice.toStringAsFixed(0)} ৳',
                     style: getTextStyle(
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w700,
@@ -725,7 +725,7 @@ class UserHomeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 6.h),
                   CustomButton(
-                    text: "Book Now",
+                    text: 'book_now'.tr,
                     height: 30.h,
                     // width: double.infinity,
                     // fontSize: 10.sp,

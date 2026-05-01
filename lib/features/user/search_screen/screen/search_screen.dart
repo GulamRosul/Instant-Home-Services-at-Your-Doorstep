@@ -5,10 +5,11 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/common/widgets/shimmer_effect.dart';
+import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/home/model/home_job_model.dart';
-import 'package:protiva502/features/user/home/search_screen/controller/search_controller.dart';
+import 'package:protiva502/features/user/search_screen/controller/search_controller.dart';
 import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
@@ -22,14 +23,14 @@ class SearchScreen extends StatelessWidget {
     final controller = Get.put(SearchController());
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: const CustomAppBar(title: "Search Services", centerTitle: false),
+      appBar: CustomAppBar(title: 'search_services'.tr, centerTitle: false),
       body: Column(
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             child: CustomTextField(
               controller: controller.searchTextController,
-              hintText: "Search Service or Category",
+              hintText: 'search_service_or_category'.tr,
               suffixIcon: Container(
                 margin: EdgeInsets.all(4.r),
                 decoration: const BoxDecoration(
@@ -54,7 +55,7 @@ class SearchScreen extends StatelessWidget {
               if (controller.searchQuery.isEmpty) {
                 return Center(
                   child: Text(
-                    'Search for services or categories',
+                    'search_for_services_or_categories'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: AppColors.textSecondary,
@@ -84,7 +85,7 @@ class SearchScreen extends StatelessWidget {
               if (controller.searchResults.isEmpty) {
                 return Center(
                   child: Text(
-                    'No services found',
+                    'no_services_found'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: AppColors.textSecondary,
@@ -116,7 +117,7 @@ class SearchScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.fromLTRB(0, 8.h, 0, 12.h),
             child: Text(
-              'Service',
+              'service'.tr,
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
@@ -132,7 +133,7 @@ class SearchScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.fromLTRB(0, 8.h, 0, 12.h),
             child: Text(
-              'Category',
+              'category'.tr,
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
@@ -252,7 +253,7 @@ class SearchScreen extends StatelessWidget {
                     Text(
                       service.description.isNotEmpty
                           ? service.description
-                          : 'No description available',
+                          : 'no_description_available'.tr,
                       style: getTextStyle(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
@@ -395,7 +396,7 @@ class SearchScreen extends StatelessWidget {
                   Text(
                     category.description.isNotEmpty
                         ? category.description
-                        : 'Explore this category',
+                        : 'explore_this_category'.tr,
                     style: getTextStyle(
                       fontSize: 11.sp,
                       color: AppColors.textSecondary,

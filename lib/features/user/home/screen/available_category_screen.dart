@@ -50,7 +50,7 @@ class AvailableCategoryScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: const CustomAppBar(title: 'Available Service'),
+      appBar: CustomAppBar(title: 'available_service'.tr),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -83,7 +83,7 @@ class AvailableCategoryScreen extends StatelessWidget {
                 height: 90.h,
                 child: Center(
                   child: Text(
-                    'No categories available',
+                    'no_categories_available'.tr,
                     style: getTextStyle(
                       fontSize: 12.sp,
                       color: AppColors.textSecondary,
@@ -167,7 +167,7 @@ class AvailableCategoryScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 12.h),
             child: Text(
-              'Sub Categories',
+              'sub_categories'.tr,
               style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
             ),
           ),
@@ -194,7 +194,7 @@ class AvailableCategoryScreen extends StatelessWidget {
               if (controller.subCategories.isEmpty) {
                 return Center(
                   child: Text(
-                    'No sub-categories found',
+                    'no_sub_categories_found'.tr,
                     style: getTextStyle(
                       fontSize: 12.sp,
                       color: AppColors.textSecondary,
@@ -268,7 +268,7 @@ class AvailableCategoryScreen extends StatelessWidget {
                                   );
                                 },
                                 child: Text(
-                                  '${item.jobCount} Services',
+                                  '${item.jobCount} ${'services'.tr}',
                                   style: getTextStyle(
                                     fontSize: 12.sp,
                                     color: AppColors.textPurple,

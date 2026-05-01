@@ -63,5 +63,62 @@ const Map<String, String> enUS = {
   'info': 'Information',
   'show': 'Show',
   'hide': 'Hide',
+  'good_morning': 'Good Morning!',
+  'good_afternoon': 'Good Afternoon!',
+  'good_evening': 'Good Evening!',
+  'good_night': 'Good Night!',
+  'guest_greeting': 'Guest 👋',
+  'yes': 'Yes',
+  'no': 'No',
+
+  //nav bar
+  'home': 'Home',
+  'bookings': 'Bookings',
+  'notification': 'Notification',
+  'more': 'More',
+  'my_job': 'My Job',
+
+  //more bottom sheet
+  'settings': 'Settings',
+  'help_support': 'Help & Support',
+  'logout': 'Logout',
+  'profile': 'Profile',
+  'language': 'Language',
+  'privacy_policy': 'Privacy & Policy',
+  'logout_confirmation': 'Are you sure you want to logout?',
+
+  //Profile Screen
+  'profile_information': 'Profile Information',
+  'street_address': 'Street Address',
+  'state': 'State',
+  'zip_code': 'Zip Code',
+  'address_information': 'Address Information',
+  'bio': 'Bio',
+
+  'please_sign_in_to_view_profile': 'Please sign in to view your profile.',
+  'failed_to_load_profile': 'Failed to load profile.',
+  'please_sign_in_to_update_profile': 'Please sign in to update your profile.',
+  'failed_to_update_profile': 'Failed to update profile.',
+  'profile_updated_successfully': 'Profile updated',
+  'update_failed': 'Update failed',
+  'required_field': 'Required field',
+  'save_changes': 'Save Changes',
+
+  //settings screen
+  'change_password': 'Change Password',
+  'current_password': 'Current Password',
+  'new_password': 'New Password',
+  'confirm_new_password': 'Confirm New Password',
+  'updating_password': 'Updating password...',
+  'password_updated': 'Password updated successfully',
+  'password_update_failed': 'Failed to update password',
+  'current_password_required': 'Please enter your current password',
+  'new_password_required': 'Please enter a new password',
+  'confirm_new_password_required': 'Please confirm your new password',
+  'update_password': 'Update Password',
+  'password_changed_successfully': 'Password changed successfully',
+  'new_password_length': 'New password must be at least 8 characters long',
+  'passwords_do_not_match': 'New password and confirm password do not match',
+
 };
 

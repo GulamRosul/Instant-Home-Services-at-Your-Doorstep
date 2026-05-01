@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:protiva502/core/localization/localization_service.dart';
 
 /// Enum to specify the type of listing
 enum ListingType { popularServices, allServices, recommendedExperts }
@@ -77,7 +78,7 @@ class GenericListingController<T> extends GetxController {
 
       _isInitialized = true;
     } catch (error) {
-      errorMessage.value = 'Failed to load items. Please try again.';
+      errorMessage.value = 'failed_load_items'.tr;
       debugPrint('Error loading initial data: $error');
     } finally {
       isLoading.value = false;
@@ -121,7 +122,7 @@ class GenericListingController<T> extends GetxController {
       }
     } catch (error) {
       currentPage--; // Revert page increment on error
-      errorMessage.value = 'Failed to load more items. Please try again.';
+      errorMessage.value = 'failed_load_more_items'.tr;
       debugPrint('Error loading more items: $error');
     } finally {
       isLoadingMore.value = false;

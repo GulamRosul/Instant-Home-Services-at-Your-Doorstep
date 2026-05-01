@@ -32,7 +32,7 @@ class ProviderRegistration extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'Provider Registration',
+          'provider_registration'.tr,
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
@@ -47,7 +47,7 @@ class ProviderRegistration extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Get Started as a Provider',
+              'get_started_as_provider'.tr,
               style: getTextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
@@ -61,7 +61,7 @@ class ProviderRegistration extends StatelessWidget {
                 SvgPicture.asset(IconPath.business, width: 20.w, height: 20.h),
                 SizedBox(width: 8.w),
                 Text(
-                  'Business Information',
+                  'business_information'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
@@ -93,22 +93,22 @@ class ProviderRegistration extends StatelessWidget {
             // SizedBox(height: 16.h),
 
             // Service location
-            FieldLabel(label: 'Service location'),
+            FieldLabel(label: 'service_location'.tr),
             CustomTextField(
               borderRadius: 4.r,
               controller: controller.serviceLocationController,
-              hintText: 'Dhaka City',
+              hintText: 'dhaka_city_hint'.tr,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.3),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
             ),
             SizedBox(height: 16.h),
 
-            FieldLabel(label: 'City'),
+            FieldLabel(label: 'city'.tr),
             CustomTextField(
               borderRadius: 4.r,
               controller: controller.cityController,
-              hintText: 'Dhaka',
+              hintText: 'dhaka_hint'.tr,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.3),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
@@ -116,11 +116,11 @@ class ProviderRegistration extends StatelessWidget {
             SizedBox(height: 16.h),
 
             // Year of Experience
-            FieldLabel(label: 'Year of Experience'),
+            FieldLabel(label: 'year_of_experience'.tr),
             CustomTextField(
               borderRadius: 4.r,
               controller: controller.yearOfExperienceController,
-              hintText: 'e.g. 3 years',
+              hintText: 'experience_hint'.tr,
               keyboardType: TextInputType.text,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.3),
@@ -133,8 +133,8 @@ class ProviderRegistration extends StatelessWidget {
               () => CustomButton(
                 borderRadius: 6.r,
                 text: controller.isRegistering.value
-                    ? 'Registering...'
-                    : 'Next',
+                    ? 'registering'.tr
+                    : 'next'.tr,
                 onPressed: controller.isRegistering.value
                     ? null
                     : controller.handleNext2,
@@ -149,7 +149,7 @@ class ProviderRegistration extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Already have an account? ',
+                  'already_have_account'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     color: Color(0xFF333333),
@@ -159,7 +159,7 @@ class ProviderRegistration extends StatelessWidget {
                 GestureDetector(
                   onTap: controller.goToLogin,
                   child: Text(
-                    'Sign In',
+                    'sign_in'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: const Color(0xFF787BEB),
@@ -178,7 +178,9 @@ class ProviderRegistration extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
         onPressed: () {
-          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+          socialMediaController.launchSocialUrl(
+            socialMediaController.whatsappUrl,
+          );
         },
         backgroundColor: Colors.white,
         mini: false,

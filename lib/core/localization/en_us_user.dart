@@ -13,6 +13,9 @@ const Map<String, String> enUSUser = {
   'next': 'Next',
   'already_have_account': 'Already have an account? ',
   'sign_in': 'Sign In',
+  'sarah': 'Sarah',
+  'islam': 'Islam',
+  'dhaka': 'Dhaka',
 
   // Validation Messages
   'first_name_required': 'Please enter your first name',
@@ -26,4 +29,50 @@ const Map<String, String> enUSUser = {
   'confirm_password_required': 'Please confirm your password',
   'password_mismatch': 'Password and confirm password do not match',
   'registration_error': 'Something went wrong. Please try again.',
+
+  // OTP Screen
+  'send_otp_code': 'Send OTP Code',
+  'enter_6_digit_code': 'Enter the 6-digit code that we have sent to',
+  'resend_code': 'Resend Code',
+  'verifying': 'Verifying...',
+  'continue': 'Continue',
+  'by_signing_up': 'By signing up or logging in, i accept the apps',
+  'terms_of_service': 'Terms of Service',
+  'and': 'and',
+  'privacy_policy': 'Privacy Policy',
+
+  // Profile Picture Screen
+  'upload_logo_optional': 'Upload Your Logo (Optional)',
+  'bio_optional': 'Bio (Optional)',
+  'enter_bio': 'Enter your bio',
+
+  // Reset Password Screen
+  'create_new_password': 'Create new password',
+  'enter_new_password': 'Enter your new password below.',
+  'new_password': 'New Password',
+  'resetting': 'Resetting...',
+  'reset_password': 'Reset Password',
+  'remember_password': 'Remember your password? ',
+
+  // Error/Success Messages
+  'error': 'Error',
+  'success': 'Success',
+  'valid_6_digit_otp': 'Please enter a valid 6-digit OTP',
+  'otp_verification_failed': 'OTP verification failed. Please try again.',
+  'otp_sent_success': 'OTP sent successfully',
+  'resend_otp_failed': 'Failed to resend OTP. Please try again.',
+  'email_not_found': 'Email not found. Please go back and try again.',
+  'failed_pick_image': 'Failed to pick image',
+  'registration_failed': 'Registration failed',
+  'registration_failed_try_again': 'Registration failed. Please try again.',
+  'registration_success': 'Registration successful. Please verify your email with the OTP sent.',
+  'unexpected_error': 'Unexpected error occurred',
+  'something_went_wrong': 'Something went wrong. Please try again.',
+  'password_is_required': 'Password is required',
+  'password_must_8_chars': 'Password must be at least 8 characters',
+  'confirm_your_password': 'Please confirm your password',
+  'passwords_do_not_match': 'Passwords do not match',
+  'invalid_request': 'Invalid request. Please try again.',
+  'password_reset_success': 'Password reset successfully. Please login with your new password.',
+  'password_reset_failed': 'Failed to reset password. Please try again.',
 };

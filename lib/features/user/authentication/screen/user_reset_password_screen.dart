@@ -47,7 +47,7 @@ class UserResetPasswordScreen extends StatelessWidget {
 
             // Header Text
             Text(
-              'Create new password',
+              'create_new_password'.tr,
               style: getTextStyle(
                 fontSize: 25.sp,
                 fontWeight: FontWeight.w700,
@@ -57,7 +57,7 @@ class UserResetPasswordScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Enter your new password below.',
+              'enter_new_password'.tr,
               style: getTextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
@@ -67,7 +67,7 @@ class UserResetPasswordScreen extends StatelessWidget {
             SizedBox(height: 32.h),
 
             // New Password Field
-            _buildLabel("New Password"),
+            _buildLabel("new_password".tr),
             Obx(
               () => CustomTextField(
                 controller: controller.newPasswordController,
@@ -84,7 +84,7 @@ class UserResetPasswordScreen extends StatelessWidget {
             SizedBox(height: 20.h),
 
             // Confirm Password Field
-            _buildLabel("Confirm Password"),
+            _buildLabel("confirm_password".tr),
             Obx(
               () => CustomTextField(
                 controller: controller.confirmPasswordController,
@@ -104,8 +104,8 @@ class UserResetPasswordScreen extends StatelessWidget {
             Obx(
               () => CustomButton(
                 text: controller.isLoading.value
-                    ? 'Resetting...'
-                    : 'Reset Password',
+                    ? 'resetting'.tr
+                    : 'reset_password'.tr,
                 onPressed: controller.isLoading.value
                     ? null
                     : controller.handleResetPassword,
@@ -123,13 +123,13 @@ class UserResetPasswordScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Remember your password? ",
+                  'remember_password'.tr,
                   style: getTextStyle(fontSize: 14.sp, color: Colors.black),
                 ),
                 GestureDetector(
                   onTap: () => Get.back(),
                   child: Text(
-                    'Sign In',
+                    'sign_in'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: const Color(0xFF7079F0),

@@ -61,7 +61,7 @@ class UserOtpScreen extends StatelessWidget {
           children: [
             SizedBox(height: 20.h),
             Text(
-              'Send OTP Code',
+              'send_otp_code'.tr,
               style: getTextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.w700,
@@ -70,7 +70,7 @@ class UserOtpScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Enter the 6-digit code that we have sent to ${email ?? 'cheers@design.com'}',
+              '${'enter_6_digit_code'.tr} ${email ?? 'cheers@design.com'}',
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
@@ -124,7 +124,7 @@ class UserOtpScreen extends StatelessWidget {
                       ? controller.resendOtp
                       : null,
                   child: Text(
-                    'Resend Code',
+                    'resend_code'.tr,
                     style: getTextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
@@ -140,7 +140,9 @@ class UserOtpScreen extends StatelessWidget {
             // Continue Button
             Obx(
               () => CustomButton(
-                text: controller.isLoading.value ? 'Verifying...' : 'Continue',
+                text: controller.isLoading.value
+                    ? 'verifying'.tr
+                    : 'continue'.tr,
                 onPressed: controller.isLoading.value
                     ? null
                     : controller.verifyOtp,
@@ -156,14 +158,14 @@ class UserOtpScreen extends StatelessWidget {
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  text: 'By signing up or logging in, i accept the apps\n',
+                  text: '${'by_signing_up'.tr}\n',
                   style: getTextStyle(
                     fontSize: 12.sp,
                     color: Colors.grey.shade700,
                   ),
                   children: [
                     TextSpan(
-                      text: 'Terms of Service',
+                      text: 'terms_of_service'.tr,
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: const Color(0xFF3F51B5),
@@ -171,14 +173,14 @@ class UserOtpScreen extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                      text: ' and ',
+                      text: ' ${'and'.tr} ',
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: Colors.grey.shade700,
                       ),
                     ),
                     TextSpan(
-                      text: 'Privacy Policy',
+                      text: 'privacy_policy'.tr,
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: const Color(0xFF3F51B5),

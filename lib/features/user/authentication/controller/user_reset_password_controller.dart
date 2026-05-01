@@ -51,22 +51,22 @@ class UserResetPasswordController extends GetxController {
     final confirmPassword = confirmPasswordController.text.trim();
 
     if (newPassword.isEmpty) {
-      newPasswordError.value = 'Password is required';
+      newPasswordError.value = 'password_is_required'.tr;
       return false;
     }
 
     if (newPassword.length < 8) {
-      newPasswordError.value = 'Password must be at least 8 characters';
+      newPasswordError.value = 'password_must_8_chars'.tr;
       return false;
     }
 
     if (confirmPassword.isEmpty) {
-      confirmPasswordError.value = 'Please confirm your password';
+      confirmPasswordError.value = 'confirm_your_password'.tr;
       return false;
     }
 
     if (newPassword != confirmPassword) {
-      confirmPasswordError.value = 'Passwords do not match';
+      confirmPasswordError.value = 'passwords_do_not_match'.tr;
       return false;
     }
 
@@ -80,8 +80,8 @@ class UserResetPasswordController extends GetxController {
 
     if (email.isEmpty || otp.isEmpty) {
       Get.snackbar(
-        'Error',
-        'Invalid request. Please try again.',
+        'error'.tr,
+        'invalid_request'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
@@ -111,8 +111,8 @@ class UserResetPasswordController extends GetxController {
         );
 
         Get.snackbar(
-          'Success',
-          'Password reset successfully. Please login with your new password.',
+          'success'.tr,
+          'password_reset_success'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
 
@@ -127,8 +127,8 @@ class UserResetPasswordController extends GetxController {
         }
       } else {
         Get.snackbar(
-          'Error',
-          'Failed to reset password. Please try again.',
+          'error'.tr,
+          'password_reset_failed'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
       }
@@ -138,8 +138,8 @@ class UserResetPasswordController extends GetxController {
         name: 'UserResetPasswordController',
       );
       Get.snackbar(
-        'Error',
-        'An error occurred. Please try again.',
+        'error'.tr,
+        'something_went_wrong'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {

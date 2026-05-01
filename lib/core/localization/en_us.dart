@@ -15,6 +15,37 @@ const Map<String, String> enUS = {
   'bengali': 'Bengali',
   'done': 'Done',
 
+  // Login
+  'welcome_back': 'Welcome back!',
+  'please_sign_in': 'Please Sign in to continue.',
+  'email': 'Email',
+  'password': 'Password',
+  'forgot_password': 'Forgot your password?',
+  'signing_in': 'Signing In...',
+  'sign_in': 'Sign In',
+  'dont_have_account': "Don't have an account? ",
+  'sign_up': 'Sign Up',
+
+  // Login Validation Errors
+  'email_empty': 'Enter email',
+  'email_invalid': 'Enter valid email',
+  'password_empty': 'Enter password',
+  'password_wrong': 'Your password is wrong',
+  'email_wrong': 'Your email is wrong',
+  'fill_all_fields': 'Please fill in all fields',
+
+  // Forgot Password
+  'reset_password': 'Reset your password',
+  'enter_email_otp': 'Enter your email address to receive an OTP code.',
+  'send_otp': 'Send OTP',
+  'sending_otp': 'Sending OTP...',
+  'remember_password': 'Remember your password? ',
+  'email_required': 'Email is required',
+  'email_invalid_format': 'Please enter a valid email',
+  'otp_sent_success': 'OTP sent to your email',
+  'otp_failed': 'Failed to send OTP. Please try again.',
+  'otp_error': 'An error occurred. Please try again.',
+
   // Common
   'app_name': 'Protiva',
   'hello': 'Hello',
@@ -30,4 +61,7 @@ const Map<String, String> enUS = {
   'success': 'Success',
   'warning': 'Warning',
   'info': 'Information',
+  'show': 'Show',
+  'hide': 'Hide',
 };
+

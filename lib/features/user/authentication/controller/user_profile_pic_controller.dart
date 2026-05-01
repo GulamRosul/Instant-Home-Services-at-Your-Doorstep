@@ -29,7 +29,7 @@ class UserProfilePicController extends GetxController {
         selectedImage.value = File(pickedFile.path);
       }
     } catch (e) {
-      AppHelperFunctions.showSnackBar('Failed to pick image: ${e.toString()}');
+      _showSnackBar('error'.tr, '${'failed_pick_image'.tr}: ${e.toString()}');
     }
   }
 
@@ -78,17 +78,16 @@ class UserProfilePicController extends GetxController {
       if (statusCode < 200 || statusCode >= 300) {
         final errorMessage =
             _extractMessage(response.data) ??
-            'Registration failed. Please try again.';
+            'registration_failed_try_again'.tr;
 
-        _showSnackBar('Registration Failed', errorMessage);
+        _showSnackBar('registration_failed'.tr, errorMessage);
         return;
       }
 
       final message =
-          _extractMessage(response.data) ??
-          'Registration successful. Please verify your email with the OTP sent.';
+          _extractMessage(response.data) ?? 'registration_success'.tr;
 
-      _showSnackBar('Success', message);
+      _showSnackBar('success'.tr, message);
       Get.to(() => UserOtpScreen(email: registeredEmail));
     } on dio_package.DioException catch (error, stackTrace) {
       log('Registration failed', error: error, stackTrace: stackTrace);
@@ -96,19 +95,16 @@ class UserProfilePicController extends GetxController {
       final errorMessage =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Registration failed. Please try again.';
+          'registration_failed_try_again'.tr;
 
-      _showSnackBar('Registration Failed', errorMessage);
+      _showSnackBar('registration_failed'.tr, errorMessage);
     } catch (error, stackTrace) {
       log(
         'Unexpected registration error',
         error: error,
         stackTrace: stackTrace,
       );
-      _showSnackBar(
-        'Registration Failed',
-        'Something went wrong. Please try again.',
-      );
+      _showSnackBar('registration_failed'.tr, 'something_went_wrong'.tr);
     } finally {
       isLoading.value = false;
     }

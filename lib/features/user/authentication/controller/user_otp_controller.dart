@@ -72,8 +72,8 @@ class UserOtpController extends GetxController {
 
     if (otp.length != 6) {
       Get.snackbar(
-        'Error',
-        'Please enter a valid 6-digit OTP',
+        'error'.tr,
+        'valid_6_digit_otp'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
@@ -153,16 +153,16 @@ class UserOtpController extends GetxController {
         }
       } else {
         Get.snackbar(
-          'Error',
-          'OTP verification failed. Please try again.',
+          'error'.tr,
+          'otp_verification_failed'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
       }
     } catch (e) {
       developer.log('❌ OTP Verification Error: $e', name: 'UserOtpController');
       Get.snackbar(
-        'Error',
-        'An error occurred. Please try again.',
+        'error'.tr,
+        'something_went_wrong'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
@@ -173,8 +173,8 @@ class UserOtpController extends GetxController {
   Future<void> resendOtp() async {
     if (email.isEmpty) {
       Get.snackbar(
-        'Error',
-        'Email not found. Please go back and try again.',
+        'error'.tr,
+        'email_not_found'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
@@ -201,24 +201,24 @@ class UserOtpController extends GetxController {
         startTimer();
 
         Get.snackbar(
-          'Success',
-          'OTP sent successfully',
+          'success'.tr,
+          'otp_sent_success'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
 
         developer.log('✅ OTP Resent Successfully', name: 'UserOtpController');
       } else {
         Get.snackbar(
-          'Error',
-          'Failed to resend OTP. Please try again.',
+          'error'.tr,
+          'resend_otp_failed'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
       }
     } catch (e) {
       developer.log('❌ Resend OTP Error: $e', name: 'UserOtpController');
       Get.snackbar(
-        'Error',
-        'An error occurred. Please try again.',
+        'error'.tr,
+        'something_went_wrong'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {

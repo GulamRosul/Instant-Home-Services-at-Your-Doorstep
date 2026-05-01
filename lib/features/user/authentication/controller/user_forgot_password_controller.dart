@@ -15,7 +15,7 @@ class UserForgotPasswordController extends GetxController {
     final email = emailController.text.trim();
 
     if (email.isEmpty) {
-      emailError.value = 'Email is required';
+      emailError.value = 'email_required'.tr;
       return false;
     }
 
@@ -24,7 +24,7 @@ class UserForgotPasswordController extends GetxController {
     );
 
     if (!emailRegex.hasMatch(email)) {
-      emailError.value = 'Please enter a valid email';
+      emailError.value = 'email_invalid_format'.tr;
       return false;
     }
 
@@ -57,8 +57,8 @@ class UserForgotPasswordController extends GetxController {
         );
 
         Get.snackbar(
-          'Success',
-          'OTP sent to your email',
+          'success'.tr,
+          'otp_sent_success'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
 
@@ -78,8 +78,8 @@ class UserForgotPasswordController extends GetxController {
         );
       } else {
         Get.snackbar(
-          'Error',
-          'Failed to send OTP. Please try again.',
+          'error'.tr,
+          'otp_failed'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
       }
@@ -89,8 +89,8 @@ class UserForgotPasswordController extends GetxController {
         name: 'UserForgotPasswordController',
       );
       Get.snackbar(
-        'Error',
-        'An error occurred. Please try again.',
+        'error'.tr,
+        'otp_error'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {

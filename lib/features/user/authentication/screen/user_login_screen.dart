@@ -7,7 +7,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
-import 'package:protiva502/core/utils/constants/image_path.dart'; // Ensure illustration path is here
+import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/authentication/controller/user_login_controller.dart';
 import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
@@ -17,11 +17,10 @@ class UserLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UserLoginController());
-
     final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Subtle grey background
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -39,16 +38,13 @@ class UserLoginScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 24.w),
         child: Column(
           children: [
-            // Top Illustration
             SizedBox(
               height: 120.h,
               child: Image.asset(ImagePath.signin, fit: BoxFit.contain),
             ),
             SizedBox(height: 24.h),
-
-            // Header Text
             Text(
-              'Welcome back!',
+              "welcome_back".tr,
               style: getTextStyle(
                 fontSize: 28.sp,
                 fontWeight: FontWeight.w700,
@@ -57,7 +53,7 @@ class UserLoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Please Sign in to continue.',
+              "please_sign_in".tr,
               style: getTextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
@@ -65,25 +61,19 @@ class UserLoginScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 32.h),
-
-            // Email Field
-            _buildLabel("Email"),
+            _buildLabel("email".tr),
             Obx(
               () => CustomTextField(
                 controller: controller.emailController,
                 hintText: 'sarah@example.com',
-                backgroundColor: const Color(
-                  0xFFF1F5F9,
-                ), // Very light grey input
+                backgroundColor: const Color(0xFFF1F5F9),
                 borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
                 textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
                 errorText: controller.emailError.value,
               ),
             ),
             SizedBox(height: 20.h),
-
-            // Password Field
-            _buildPasswordFieldLabel("Password", controller),
+            _buildPasswordFieldLabel("password".tr, controller),
             Obx(
               () => CustomTextField(
                 controller: controller.passwordController,
@@ -91,17 +81,13 @@ class UserLoginScreen extends StatelessWidget {
                 isPasswordField: true,
                 isPasswordVisible: controller.isPasswordVisible.value,
                 onIconPressed: controller.togglePasswordVisibility,
-                backgroundColor: const Color(
-                  0xFFF1F5F9,
-                ), // Very light grey input
+                backgroundColor: const Color(0xFFF1F5F9),
                 borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
                 textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
                 errorText: controller.passwordError.value,
               ),
             ),
-
             10.h.verticalSpace,
-
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -110,7 +96,7 @@ class UserLoginScreen extends StatelessWidget {
                     Get.toNamed('/userForgotPasswordScreen');
                   },
                   child: Text(
-                    'Forgot your password?',
+                    "forgot_password".tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: const Color(0xFF7079F0),
@@ -123,13 +109,10 @@ class UserLoginScreen extends StatelessWidget {
                 ),
               ],
             ),
-
             SizedBox(height: 48.h),
-
-            // Sign In Button
             Obx(
               () => CustomButton(
-                text: controller.isLoading.value ? 'Signing In...' : 'Sign In',
+                text: controller.isLoading.value ? "signing_in".tr : "sign_in".tr,
                 onPressed: controller.isLoading.value
                     ? null
                     : controller.handleSignIn,
@@ -139,26 +122,22 @@ class UserLoginScreen extends StatelessWidget {
                 textColor: Colors.white,
               ),
             ),
-
             SizedBox(height: 24.h),
-
-            // Footer Sign Up Link
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Don’t have an account? ",
+                  "dont_have_account".tr,
                   style: getTextStyle(fontSize: 14.sp, color: Colors.black),
                 ),
                 GestureDetector(
                   onTap: () => Get.toNamed('/userRegScreen'),
                   child: Text(
-                    'Sign Up',
+                    "sign_up".tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: const Color(0xFF7079F0),
                       fontWeight: FontWeight.w600,
-                      // decoration: TextDecoration.underline,
                     ),
                   ),
                 ),
@@ -168,9 +147,8 @@ class UserLoginScreen extends StatelessWidget {
           ],
         ),
       ),
-
       floatingActionButton: FloatingActionButton(
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         onPressed: () {
           socialMediaController.launchSocialUrl(
             socialMediaController.whatsappUrl,

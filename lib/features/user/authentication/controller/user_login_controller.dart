@@ -40,19 +40,19 @@ class UserLoginController extends GetxController {
     passwordError.value = null;
 
     if (email.isEmpty) {
-      emailError.value = "Enter email";
+      emailError.value = "email_empty".tr;
       debugPrint('❌ [LOGIN] Empty email');
       return;
     }
 
     if (!GetUtils.isEmail(email)) {
-      emailError.value = "Enter valid email";
+      emailError.value = "email_invalid".tr;
       debugPrint('❌ [LOGIN] Invalid email format');
       return;
     }
 
     if (password.isEmpty) {
-      passwordError.value = "Enter password";
+      passwordError.value = "password_empty".tr;
       debugPrint('❌ [LOGIN] Empty password');
       return;
     }
@@ -101,10 +101,10 @@ class UserLoginController extends GetxController {
       if (response.statusCode != 200) {
         debugPrint('❌ [LOGIN] Server error: ${response.statusCode}');
         if (response.statusCode == 401) {
-          passwordError.value = "Your password is wrong";
+          passwordError.value = "password_wrong".tr;
         } else if (response.statusCode == 404 || response.statusCode == 400) {
-          emailError.value = "Your email is wrong";
-          passwordError.value = "Your password is wrong";
+          emailError.value = "email_wrong".tr;
+          passwordError.value = "password_wrong".tr;
         }
         return;
       }
@@ -194,15 +194,13 @@ class UserLoginController extends GetxController {
 
       if (e is DioException) {
         if (e.response?.statusCode == 401) {
-          passwordError.value = "Your password is wrong";
+          passwordError.value = "password_wrong".tr;
         } else if (e.response?.statusCode == 404) {
-          emailError.value = "Your email is wrong";
+          emailError.value = "email_wrong".tr;
         } else if (e.response?.statusCode == 400) {
-          // Often 400 is used for invalid credentials or validation
-          emailError.value = "Your email is wrong";
-          passwordError.value = "Your password is wrong";
+          emailError.value = "email_wrong".tr;
+          passwordError.value = "password_wrong".tr;
         } else {
-          // For other errors like network or 500, we can still use a snackbar or just log it
           debugPrint('📡 [LOGIN] Other error: ${e.message}');
         }
       } else {

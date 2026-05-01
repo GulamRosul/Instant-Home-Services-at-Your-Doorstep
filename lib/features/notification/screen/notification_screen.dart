@@ -12,114 +12,107 @@ class NotificationScreen extends GetView<NotificationController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: CustomAppBar(
-        title: '  Notifications',
-        actions: [
-          TextButton(
-            onPressed: () => controller.clearAll(),
-            child: Text(
-              "Clear All",
-              style: getTextStyle(
-                color: AppColors.textPurple,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-        showBackButton: false,
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value && controller.notifications.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (controller.error.value.isNotEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Text(
-                //   'Error: ${controller.error.value}',
-                //   textAlign: TextAlign.center,
-                //   style: getTextStyle(fontSize: 14.sp, color: Colors.red),
-                // ),
-                // SizedBox(height: 16.h),
-                // ElevatedButton(
-                //   onPressed: () => controller.fetchNotifications(),
-                //   child: const Text('Retry'),
-                // ),
-                Icon(
-                  Icons.notifications_outlined,
-                  size: 46.sp,
-                  color: AppColors.textSecondary,
-                ),
-                SizedBox(height: 14.h),
-                Text(
-                  'Please sign in to view your notifications.',
-                  textAlign: TextAlign.center,
+    return FutureBuilder<void>(
+      future: controller.loadNotifications(),
+      builder: (context, snapshot) {
+        return Scaffold(
+          backgroundColor: const Color(0xFFF8F9FA),
+          appBar: CustomAppBar(
+            title: '  Notifications',
+            actions: [
+              TextButton(
+                onPressed: () => controller.clearAll(),
+                child: Text(
+                  "Clear All",
                   style: getTextStyle(
-                    fontSize: 14.sp,
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPurple,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 16.h),
-                OutlinedButton(
-                  // onPressed: controller.refreshBookings,
-                  onPressed: () => Get.to(() => SecondOnboardingScreen()),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.textPurple),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 12.h,
-                    ),
-                  ),
-                  child: Text(
-                    'Sign In',
-                    style: getTextStyle(
-                      fontSize: 13.sp,
-                      color: AppColors.textPurple,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        if (controller.notifications.isEmpty) {
-          return _buildEmptyState();
-        }
-
-        return RefreshIndicator(
-          onRefresh: () => controller.refreshNotifications(),
-          child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-            itemCount: controller.notifications.length,
-            itemBuilder: (context, index) {
-              final item = controller.notifications[index];
-
-              // Logic to show Date Group Header (Today/Yesterday)
-              bool showHeader =
-                  index == 0 ||
-                  item['dateGroup'] !=
-                      controller.notifications[index - 1]['dateGroup'];
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (showHeader) _buildDateHeader(item['dateGroup']),
-                  _buildNotificationTile(item, index, controller),
-                ],
-              );
-            },
+              ),
+            ],
+            showBackButton: false,
           ),
+          body: Obx(() {
+            if (controller.isLoading.value && controller.notifications.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (controller.error.value.isNotEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.notifications_outlined,
+                      size: 46.sp,
+                      color: AppColors.textSecondary,
+                    ),
+                    SizedBox(height: 14.h),
+                    Text(
+                      'Please sign in to view your notifications.',
+                      textAlign: TextAlign.center,
+                      style: getTextStyle(
+                        fontSize: 14.sp,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    OutlinedButton(
+                      onPressed: () => Get.to(() => SecondOnboardingScreen()),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.textPurple),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 12.h,
+                        ),
+                      ),
+                      child: Text(
+                        'Sign In',
+                        style: getTextStyle(
+                          fontSize: 13.sp,
+                          color: AppColors.textPurple,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (controller.notifications.isEmpty) {
+              return _buildEmptyState();
+            }
+
+            return RefreshIndicator(
+              onRefresh: () => controller.refreshNotifications(),
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                itemCount: controller.notifications.length,
+                itemBuilder: (context, index) {
+                  final item = controller.notifications[index];
+
+                  bool showHeader =
+                      index == 0 ||
+                      item['dateGroup'] !=
+                          controller.notifications[index - 1]['dateGroup'];
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (showHeader) _buildDateHeader(item['dateGroup']),
+                      _buildNotificationTile(item, index, controller),
+                    ],
+                  );
+                },
+              ),
+            );
+          }),
         );
-      }),
+      },
     );
   }
 

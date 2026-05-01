@@ -38,10 +38,10 @@ class BookingController extends GetxController {
         .length;
 
     return [
-      'Pending (${pendingCount.toString().padLeft(2, '0')})',
-      'Accepted (${acceptedCount.toString().padLeft(2, '0')})',
-      'Rejected (${rejectedCount.toString().padLeft(2, '0')})',
-      'In-Progress (${inProgressCount.toString().padLeft(2, '0')})',
+      '${'pending'.tr} (${pendingCount.toString().padLeft(2, '0')})',
+      '${'accepted'.tr} (${acceptedCount.toString().padLeft(2, '0')})',
+      '${'rejected'.tr} (${rejectedCount.toString().padLeft(2, '0')})',
+      '${'in_progress'.tr} (${inProgressCount.toString().padLeft(2, '0')})',
     ];
   }
 
@@ -86,22 +86,22 @@ class BookingController extends GetxController {
     return [
       {
         'value': pendingCount.toString().padLeft(2, '0'),
-        'label': 'Request Pending',
+        'label': 'request_pending'.tr,
         'icon': 'flag',
       },
       {
         'value': acceptedCount.toString().padLeft(2, '0'),
-        'label': 'Confirm Bookings',
+        'label': 'confirm_bookings'.tr,
         'icon': 'confirmed',
       },
       {
         'value': inProgressCount.toString().padLeft(2, '0'),
-        'label': 'Completed Service',
+        'label': 'completed_service'.tr,
         'icon': 'star',
       },
       {
         'value': '${totalRevenue.toStringAsFixed(2)} ৳',
-        'label': 'Total Revenue',
+        'label': 'total_revenue'.tr,
         'icon': 'revenue',
       },
     ];
@@ -135,7 +135,7 @@ class BookingController extends GetxController {
       debugPrint('Provider booking response => ${encoder.convert(response.data)}');
 
       if (response.statusCode != 200) {
-        errorMessage.value = 'Failed to load bookings';
+        errorMessage.value = 'failed_to_load_bookings'.tr;
         bookings.clear();
         return;
       }
@@ -174,10 +174,10 @@ class BookingController extends GetxController {
         }
       }
     } on DioException catch (_) {
-      errorMessage.value = 'Failed to load bookings';
+      errorMessage.value = 'failed_to_load_bookings'.tr;
       bookings.clear();
     } catch (_) {
-      errorMessage.value = 'Failed to load bookings';
+      errorMessage.value = 'failed_to_load_bookings'.tr;
       bookings.clear();
     } finally {
       isLoading.value = false;
@@ -275,8 +275,8 @@ class BookingController extends GetxController {
       debugPrint('Booking status update data => ${response.data}');
 
       if (response.statusCode != 200) {
-        errorMessage.value = 'Failed to update booking status';
-        Get.snackbar('Error', 'Failed to update booking status');
+        errorMessage.value = 'failed_to_update_booking_status'.tr;
+        Get.snackbar('Error', 'failed_to_update_booking_status'.tr);
         return;
       }
 
@@ -372,8 +372,8 @@ class BookingController extends GetxController {
 
     if (clientId.isEmpty) {
       Get.snackbar(
-        'Error',
-        'Client information is not available for this booking',
+        'error'.tr,
+        'client_info_unavailable'.tr,
       );
       return;
     }

@@ -146,8 +146,15 @@ const Map<String, String> enUS = {
   'Reviews': 'Reviews',
   'views': 'Views',
   'Clicks': 'Clicks',
-  'Bookings': 'Bookings'
+  'Bookings': 'Bookings',
 
+  //notifications
+  'clear_all': 'Clear All',
+  'please_sign_in_to_view_notifications': 'Please sign in to view your notifications.',
+  'no_notifications': 'No Notifications Yet',
+  'close': 'Close',
+  'today': 'Today',
+  'yesterday': 'Yesterday',
   
 };
 

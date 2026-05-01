@@ -24,7 +24,7 @@ class BookingScreen extends StatelessWidget {
         title: Padding(
           padding: EdgeInsets.only(left: 10.w),
           child: Text(
-            'Bookings',
+            'bookings'.tr,
             style: getTextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -44,7 +44,7 @@ class BookingScreen extends StatelessWidget {
               StatsGrid(controller: controller),
               SizedBox(height: 24.h),
               Text(
-                'Booking service',
+                'booking_service'.tr,
                 style: getTextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
@@ -53,7 +53,7 @@ class BookingScreen extends StatelessWidget {
               ),
               SizedBox(height: 4.h),
               Text(
-                'View All Bookings customers have Done',
+                'view_all_bookings'.tr,
                 style: getTextStyle(
                   fontSize: 12.sp,
                   color: Color(0xFF334155),
@@ -95,7 +95,7 @@ class BookingScreen extends StatelessWidget {
                 if (controller.filteredBookings.isEmpty) {
                   return Center(
                     child: Text(
-                      'No bookings found',
+                      'no_bookings_found'.tr,
                       textAlign: TextAlign.center,
                       style: getTextStyle(
                         fontSize: 14.sp,

@@ -39,7 +39,7 @@ class BookingCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Booking Summary',
+                'booking_summary'.tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
@@ -94,7 +94,7 @@ class BookingCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            'Booking Date: ${_formatDate(booking.createdAt)}',
+                            '${'booking_date'.tr}: ${_formatDate(booking.createdAt)}',
                             style: getTextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
@@ -105,7 +105,7 @@ class BookingCard extends StatelessWidget {
                         ),
                         SizedBox(width: 8.w),
                         Text(
-                          'Budget: ${booking.serviceAmount.toStringAsFixed(0)} ৳',
+                          '${'budget'.tr}: ${booking.serviceAmount.toStringAsFixed(0)} ৳',
                           style: getTextStyle(
                             fontSize: 12.sp,
                             color: Colors.black,
@@ -115,7 +115,7 @@ class BookingCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      'Booking id: ${booking.id}',
+                      '${'booking_id'.tr}: ${booking.id}',
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: Colors.black,
@@ -228,7 +228,7 @@ class BookingCard extends StatelessWidget {
                     child: SizedBox(
                       height: 44.h,
                       child: CustomButton(
-                        text: 'Accept',
+                        text: 'accept'.tr,
                         onPressed: controller.isLoading.value
                             ? null
                             : () => controller.handleAccept(index),
@@ -243,7 +243,7 @@ class BookingCard extends StatelessWidget {
                     child: SizedBox(
                       height: 44.h,
                       child: CustomButton(
-                        text: 'Reject',
+                        text: 'reject'.tr,
                         onPressed: controller.isLoading.value
                             ? null
                             : () => controller.handleReject(index),
@@ -266,8 +266,8 @@ class BookingCard extends StatelessWidget {
         onTap: () {
           if (trackingBookingId.isEmpty) {
             Get.snackbar(
-              'Booking update',
-              'Booking ID is unavailable for tracking.',
+              'booking_update'.tr,
+              'booking_id_unavailable'.tr,
             );
             return;
           }

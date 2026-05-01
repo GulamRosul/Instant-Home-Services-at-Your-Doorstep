@@ -70,6 +70,7 @@ const Map<String, String> enUS = {
   'guest_greeting': 'Guest 👋',
   'yes': 'Yes',
   'no': 'No',
+  'congratulations': 'Congratulations!',
 
   //nav bar
   'home': 'Home',
@@ -120,5 +121,33 @@ const Map<String, String> enUS = {
   'new_password_length': 'New password must be at least 8 characters long',
   'passwords_do_not_match': 'New password and confirm password do not match',
 
+  //social media screen
+  'social_media': 'Social Media',
+  'facebook': 'Facebook',
+  'whatsapp': 'WhatsApp',
+  'instagram': 'Instagram',
+  'youtube': 'YouTube',
+  'connect_with_us': 'Connect With Us',
+  'stay_updated': 'Stay Updated',
+  'follow_us_on_social_media':
+      'Follow us on social media for updates, tips, and exclusive content',
+  'join_our_community': 'Join our community and never miss important updates, new features, and special announcements.',
+
+  //privacy policy screen
+  'last_updated': 'Last Updated: ',
+  'no_privacy_policy': 'No privacy policy available',
+
+  //Service Details
+  'service_details': 'Service Details',
+  'description': 'Description',
+  'what_included': 'What Included',
+  'Gallery': 'Gallery',
+  'Analytics': 'Analytics',
+  'Reviews': 'Reviews',
+  'views': 'Views',
+  'Clicks': 'Clicks',
+  'Bookings': 'Bookings'
+
+  
 };
 

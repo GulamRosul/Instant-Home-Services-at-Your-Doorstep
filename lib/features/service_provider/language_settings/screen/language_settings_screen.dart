@@ -13,14 +13,12 @@ class LanguageSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ Find existing instance, don't create new one
     final controller = Get.put(LanguageController());
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-      appBar: CustomAppBar(
-        title: 'language_settings'.tr,
-        showBackButton: true,
-      ),
+      appBar: CustomAppBar(title: 'language_settings'.tr, showBackButton: true),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
         child: Column(
@@ -35,51 +33,58 @@ class LanguageSettingsScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16.h),
-            PopupMenuButton<String>(
-              onSelected: (String newValue) {
-                controller.updateLanguage(newValue);
-              },
-              itemBuilder: (BuildContext context) {
-                return controller.languages.map((String language) {
-                  return PopupMenuItem<String>(
-                    value: language,
-                    child: Text(
-                      language,
-                      style: getTextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                      ),
-                    ),
-                  );
-                }).toList();
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Obx(
-                      () => Text(
-                        controller.selectedLanguage.value,
+            Obx(
+              () => PopupMenuButton<String>(
+                onSelected: (String newValue) {
+                  // Map translated label back to internal value
+                  if (newValue == 'english'.tr) {
+                    controller.updateLanguage('English');
+                  } else {
+                    controller.updateLanguage('Bengali');
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return controller.languages.map((String language) {
+                    return PopupMenuItem<String>(
+                      value: language,
+                      child: Text(
+                        language,
                         style: getTextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: Colors.black,
                         ),
                       ),
-                    ),
-                    Icon(
-                      Icons.keyboard_arrow_down,
-                      color: Colors.grey,
-                      size: 24.sp,
-                    ),
-                  ],
+                    );
+                  }).toList();
+                },
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        // Show translated version of current selection
+                        controller.isEnglish ? 'english'.tr : 'bengali'.tr,
+                        style: getTextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.grey,
+                        size: 24.sp,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -89,9 +94,7 @@ class LanguageSettingsScreen extends StatelessWidget {
               backgroundColor: AppColors.textPurple,
               textColor: Colors.white,
               borderRadius: 8.r,
-              onPressed: () {
-                Get.back();
-              },
+              onPressed: () => Get.back(),
             ),
           ],
         ),

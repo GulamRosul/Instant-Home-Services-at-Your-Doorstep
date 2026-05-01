@@ -246,15 +246,20 @@ class ConfirmBookingScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    title,
-                    style: getTextStyle(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                      lineHeight: 15.sp,
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: getTextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                        lineHeight: 15.sp,
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  SizedBox(width: 8.w), // spacing between title & price
                   Text(
                     price,
                     style: getTextStyle(

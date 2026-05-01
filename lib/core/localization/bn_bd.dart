@@ -70,6 +70,7 @@ const Map<String, String> bnBD = {
   'guest_greeting': 'অতিথি 👋',
   'yes': 'হ্যাঁ',
   'no': 'না',
+  'congratulations': 'অভিনন্দন!',
 
   //nav bar
   'home': 'হোম',
@@ -119,4 +120,20 @@ const Map<String, String> bnBD = {
   'password_changed_successfully': 'পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে',
   'new_password_length': 'নতুন পাসওয়ার্ড অবশ্যই 8টি অক্ষরের বেশি হতে হবে',
   'passwords_do_not_match': 'নতুন পাসওয়ার্ড এবং নিশ্চিতকরণ পাসওয়ার্ড মেলে না',
+
+   //social media screen
+  'social_media': 'সোশ্যাল মিডিয়া',
+  'facebook': 'ফেসবুক',
+  'whatsapp': 'হোয়াটসঅ্যাপ',
+  'instagram': 'ইনস্টাগ্রাম',
+  'youtube': 'ইউটিউব',
+  'connect_with_us': 'আমাদের সাথে সংযুক্ত হন',
+  'stay_updated': 'আপডেট থাকুন',
+  'follow_us_on_social_media':
+      'সোশ্যাল মিডিয়ায় আমাদের অনুসরণ করুন আপডেট, টিপস এবং এক্সক্লুসিভ কন্টেন্টের জন্য',
+  'join_our_community': 'আমাদের কমিউনিটিতে যোগ দিন এবং গুরুত্বপূর্ণ আপডেট, নতুন বৈশিষ্ট্য, এবং বিশেষ ঘোষণা হারাবেন না।',
+
+  //privacy policy screen
+  'last_updated': 'শেষ আপডেট: ',
+  'no_privacy_policy': 'কোন গোপনীয়তা নীতি উপলব্ধ নেই',
 };

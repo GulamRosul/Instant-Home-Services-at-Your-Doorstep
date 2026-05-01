@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 
@@ -15,35 +16,14 @@ class SocialMediaScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20.sp),
-          onPressed: () => Get.back(),
-        ),
-        title: Text(
-          'Social Media',
-          style: getTextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF3F3F3F),
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Divider(color: Color(0xFFCBD5E1), height: 1),
-        ),
-        centerTitle: false,
-      ),
+      appBar: CustomAppBar(title: 'social_media'.tr, showBackButton: true),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Connect With Us',
+              'connect_with_us'.tr,
               style: getTextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.w600,
@@ -52,7 +32,7 @@ class SocialMediaScreen extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             Text(
-              'Follow us on social media for updates, tips, and exclusive content',
+              'follow_us_on_social_media'.tr,
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
@@ -62,7 +42,7 @@ class SocialMediaScreen extends StatelessWidget {
             SizedBox(height: 32.h),
 
             _buildSocialCard(
-              title: 'Facebook',
+              title: 'facebook'.tr,
               handle: 'kaajbd',
               icon: IconPath.facebook,
               iconColor: Color(0xFF0C63D4),
@@ -71,7 +51,7 @@ class SocialMediaScreen extends StatelessWidget {
             SizedBox(height: 16.h),
 
             _buildSocialCard(
-              title: 'WhatsApp',
+              title: 'whatsapp'.tr,
               handle: '+880 1798-036636',
               icon: IconPath.whatsapp2,
               iconColor: Color(0xFF25D366),
@@ -81,7 +61,7 @@ class SocialMediaScreen extends StatelessWidget {
             SizedBox(height: 16.h),
 
             _buildSocialCard(
-              title: 'YouTube',
+              title: 'youtube'.tr,
               handle: '@kaajbdofficial',
               icon: IconPath.youtube,
               iconColor: Color(0xFFFF0000),
@@ -90,7 +70,7 @@ class SocialMediaScreen extends StatelessWidget {
             SizedBox(height: 16.h),
 
             _buildSocialCard(
-              title: 'Instagram',
+              title: 'instagram'.tr,
               handle: 'kaajbdofficial',
               icon: IconPath.instragram,
               iconColor: const Color(0xFFE4405F),
@@ -123,7 +103,7 @@ class SocialMediaScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Stay Updated',
+                          'stay_updated'.tr,
                           style: getTextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
@@ -132,7 +112,7 @@ class SocialMediaScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 4.h),
                         Text(
-                          'Join our community and never miss important updates, new features, and special announcements',
+                          'join_our_community'.tr,
                           style: getTextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,

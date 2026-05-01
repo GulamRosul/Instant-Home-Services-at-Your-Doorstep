@@ -29,9 +29,9 @@ class ReviewController extends GetxController {
 
   void submitReview() {
     // Logic to send rating.value, feedbackController.text, and selectedImages to API
-    print("Submitting Rating: ${rating.value}");
-    print("Feedback: ${feedbackController.text}");
-    print("Images attached: ${selectedImages.length}");
+    debugPrint("Submitting Rating: ${rating.value}");
+    debugPrint("Feedback: ${feedbackController.text}");
+    debugPrint("Images attached: ${selectedImages.length}");
     Get.back(); // Close dialog
   }
 

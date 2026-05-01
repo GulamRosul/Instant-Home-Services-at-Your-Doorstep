@@ -141,6 +141,7 @@ const Map<String, String> enUSUser = {
   'terms_of_service_agreement': 'By clicking "Go to checkout", you agree to our ',
   'selected_service': 'Selected Service',
   'service_details': 'Service details',
+  
 
   // Confirm Booking Screen
   'confirm_your_booking': 'Confirm Your Booking',
@@ -156,6 +157,9 @@ const Map<String, String> enUSUser = {
   'no_additional_message': 'No additional message',
   'service_details_will_be_confirmed': 'Service details will be confirmed next.',
   'ready_for_confirmation': 'Ready for confirmation',
+  'booking_details': 'Booking details',
+  'confirm': 'Confirm',
+  'payment': 'Payment',
 
   // Payment Screen
   'complete_payment_to_confirm': 'Complete your payment to confirm the booking',
@@ -167,6 +171,11 @@ const Map<String, String> enUSUser = {
 
   // Success Dialog
   'congratulations': 'Congratulations!',
-  'redirecting_to_payment': 'Redirecting to payment in 3 seconds...',
+  'redirecting_to_bookings': 'Redirecting to bookings in 3 seconds...',
+
+  //steps
+  '01': '01',
+  '02': '02',
+  '03': '03',
 
 };

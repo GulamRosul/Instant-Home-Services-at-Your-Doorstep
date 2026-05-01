@@ -67,7 +67,7 @@ class ProviderHomeScreen extends StatelessWidget {
 
             // Recent Bookings Section
             _buildSectionHeader(
-              "Recent Bookings",
+              "recent_bookings".tr,
               controller.handleViewAllRecentBookings,
             ),
             SizedBox(height: 12.h),
@@ -98,7 +98,7 @@ class ProviderHomeScreen extends StatelessWidget {
         GestureDetector(
           onTap: onViewAll,
           child: Text(
-            'View All',
+            'view_all'.tr,
             style: getTextStyle(
               fontSize: 12.sp,
               color: Color(0xFF1D4ED8),

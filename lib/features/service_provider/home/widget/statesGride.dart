@@ -30,7 +30,7 @@ class StatsGrid extends StatelessWidget {
           children: [
             Obx(
               () => _buildStatCard(
-                "Applications This Month",
+                "applications_this_month".tr,
                 "${controller.applicationsCount.value}/${controller.maxApplications}",
                 icon: SvgPicture.asset(IconPath.one),
                 iconBG: Color(0xFFFFF7ED),
@@ -41,7 +41,7 @@ class StatsGrid extends StatelessWidget {
             ),
             Obx(
               () => _buildStatCard(
-                "Total bookings Served",
+                "total_bookings_served".tr,
                 controller.bookingsServed.value,
                 icon: SvgPicture.asset(IconPath.two),
                 iconBG: Color(0xFFDCFCE7),
@@ -49,7 +49,7 @@ class StatsGrid extends StatelessWidget {
             ),
             Obx(
               () => _buildStatCard(
-                "Average Rating's",
+                "average_ratings".tr,
                 "${controller.averageRating.value} (${controller.reviewCount.value} reviews)",
                 icon: SvgPicture.asset(IconPath.star),
                 iconBG: Color(0xFFFEFCE8),
@@ -58,7 +58,7 @@ class StatsGrid extends StatelessWidget {
 
             Obx(
               () => _buildStatCard(
-                "Submitted Proposal",
+                "submitted_proposal".tr,
                 controller.submittedProposals.value.toString(),
                 icon: SvgPicture.asset(IconPath.three),
                 iconBG: Color(0xFFCFFAFE),
@@ -78,6 +78,7 @@ class StatsGrid extends StatelessWidget {
     double? progress,
   }) {
     return Container(
+      // height: 100.h,
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,

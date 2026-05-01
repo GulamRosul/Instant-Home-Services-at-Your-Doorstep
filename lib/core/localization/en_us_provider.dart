@@ -72,6 +72,23 @@ const Map<String, String> enUSProvider = {
   'error': 'Error',
   'failed_pick_image': 'Failed to pick image',
 
+  //home screen
+  'active_jobs': 'Active Jobs',
+  'no_active_jobs_found': 'No active jobs found',
+  'provider': 'Provider',
+  'no_recent_bookings_found': 'No recent bookings found',
+  'applications_this_month': 'Applications This Month',
+  'total_bookings_served': 'Total bookings Served',
+  'average_ratings': 'Average Rating\'s',
+  'submitted_proposal': 'Submitted Proposal',
+  'my_wallet': 'My Wallet',
+  'active': 'Active',
+  'withdrawable_amount': 'Withdrawable Amount',
+  'pending_amount': 'Pending Amount',
+  'bookings_served': 'Bookings Served',
+  'recent_bookings': 'Recent Bookings',
+  'view_all' : 'View All',
+
   //booking screen
   'view_all_bookings': 'View All Bookings customers have Done',
   'booking_service': 'Booking service',

@@ -102,7 +102,7 @@ class ActiveJobCard extends StatelessWidget {
                           child: Text(
                             job.description.isNotEmpty
                                 ? job.description
-                                : 'Remote Service',
+                                : 'remote_service'.tr,
                             style: getTextStyle(
                               fontSize: 11.sp,
                               color: Color(0xFF475569),
@@ -212,7 +212,7 @@ class ActiveJobsSection extends StatelessWidget {
       if (controller.activeJobs.isEmpty) {
         return Center(
           child: Text(
-            'No active jobs found',
+            'no_active_jobs_found'.tr,
             textAlign: TextAlign.center,
             style: getTextStyle(fontSize: 12.sp, color: Colors.black54),
           ),

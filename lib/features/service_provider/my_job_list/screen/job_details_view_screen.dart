@@ -34,7 +34,7 @@ class JobDetailsViewScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'Service Details',
+          'service_details'.tr,
           style: getTextStyle(
           fontSize: 16.sp,
           fontWeight: FontWeight.w600,
@@ -50,14 +50,14 @@ class JobDetailsViewScreen extends StatelessWidget {
                 PopupMenuItem(
                   value: 'edit',
                   child: Text(
-                    'Edit',
+                    'edit'.tr,
                     style: getTextStyle(fontSize: 14.sp, color: Colors.black87),
                   ),
                 ),
                 PopupMenuItem(
                   value: 'delete',
                   child: Text(
-                    'Delete',
+                    'delete'.tr,
                     style: getTextStyle(fontSize: 14.sp, color: Colors.red),
                   ),
                 ),
@@ -112,7 +112,7 @@ class JobDetailsViewScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Start From ${job.basePrice} ৳',
+                        '${'start_from'.tr} ${job.basePrice} ৳',
                         style: getTextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w700,
@@ -171,11 +171,11 @@ class JobDetailsViewScreen extends StatelessWidget {
                   SizedBox(height: 16.h),
 
                   // Description
-                  _buildSectionTitle('Description'),
+                  _buildSectionTitle('description'.tr),
                   SizedBox(height: 8.h),
                   Text(
                     job.description.isEmpty
-                        ? 'No description available'
+                        ? 'no_description_available'.tr
                         : job.description,
                     style: getTextStyle(
                       fontSize: 13.sp,
@@ -188,7 +188,7 @@ class JobDetailsViewScreen extends StatelessWidget {
 
                   // Service Includes
                   if (job.includeService.isNotEmpty) ...[
-                    _buildSectionTitle('What\'s Included'),
+                    _buildSectionTitle('what_included'.tr),
                     SizedBox(height: 8.h),
                     ...job.includeService.map(
                       (service) => Padding(
@@ -230,7 +230,7 @@ class JobDetailsViewScreen extends StatelessWidget {
                     _buildAnalyticsSection(job)
                   else
                     CustomButton(
-                      text: 'Book Now',
+                      text: 'book_now'.tr,
                       onPressed: () {
                         if (!StorageService.isLoggedIn) {
                           showLoginAlertDialog(context);
@@ -345,7 +345,7 @@ class JobDetailsViewScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle('Gallery'),
+        _buildSectionTitle('gallery'.tr),
         SizedBox(height: 12.h),
         SizedBox(
           height: 100.h,
@@ -396,22 +396,22 @@ class JobDetailsViewScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Analytics'),
+          _buildSectionTitle('analytics'.tr),
           SizedBox(height: 12.h),
           _buildAnalyticsItem(
-            'Views',
+            'views'.tr,
             '${job.views}',
             Icons.visibility_outlined,
           ),
           SizedBox(height: 12.h),
           _buildAnalyticsItem(
-            'Clicks',
+            'clicks'.tr,
             '${job.clicks}',
             Icons.touch_app_outlined,
           ),
           SizedBox(height: 12.h),
           _buildAnalyticsItem(
-            'Bookings',
+            'bookings'.tr,
             '${job.totalBookings}',
             Icons.calendar_month_outlined,
           ),
@@ -459,18 +459,18 @@ class JobDetailsViewScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          'Delete Service',
+          'delete_service'.tr,
           style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
         ),
         content: Text(
-          'Are you sure you want to delete this service? This action cannot be undone.',
+          'are_you_sure_you_want_to_delete_this_service'.tr,
           style: getTextStyle(fontSize: 14.sp, color: Color(0xFF475569)),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
             child: Text(
-              'Cancel',
+              'cancel'.tr,
               style: getTextStyle(fontSize: 14.sp, color: Colors.grey),
             ),
           ),
@@ -486,7 +486,7 @@ class JobDetailsViewScreen extends StatelessWidget {
               }
             },
             child: Text(
-              'Delete',
+              'delete'.tr,
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,

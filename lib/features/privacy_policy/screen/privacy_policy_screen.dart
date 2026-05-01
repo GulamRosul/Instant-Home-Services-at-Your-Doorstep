@@ -14,7 +14,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const CustomAppBar(title: 'Privacy & Policy'),
+      appBar: CustomAppBar(title: 'privacy_policy'.tr, showBackButton: true),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -44,7 +44,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         if (policy == null) {
           return Center(
             child: Text(
-              'No privacy policy available',
+              'no_privacy_policy'.tr,
               style: getTextStyle(fontSize: 14.sp),
             ),
           );
@@ -63,17 +63,17 @@ class PrivacyPolicyScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Text(
+                //   "Privacy Policy",
+                //   style: getTextStyle(
+                //     fontSize: 18.sp,
+                //     fontWeight: FontWeight.w700,
+                //     color: const Color(0xFF1E293B),
+                //   ),
+                // ),
+                // SizedBox(height: 8.h),
                 Text(
-                  "Privacy Policy",
-                  style: getTextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF1E293B),
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  "Last updated: ${policy.updatedAt.toString().split(' ')[0]}",
+                  "${'last_updated'.tr} : ${policy.updatedAt.toString().split(' ')[0]}",
                   style: getTextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w400,

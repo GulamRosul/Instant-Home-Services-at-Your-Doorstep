@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 
@@ -47,7 +48,7 @@ class BookingSuccessDialog extends StatelessWidget {
 
             // Success Header
             Text(
-              "Congratulations!",
+              'congratulations'.tr,
               style: getTextStyle(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w700,
@@ -69,7 +70,7 @@ class BookingSuccessDialog extends StatelessWidget {
             ),
             SizedBox(height: 32.h),
             Text(
-              "Redirecting to payment in 3 seconds...",
+              "redirecting_to_bookings".tr,
               textAlign: TextAlign.center,
               style: getTextStyle(
                 fontSize: 13.sp,

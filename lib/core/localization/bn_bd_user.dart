@@ -164,6 +164,9 @@ const Map<String, String> bnBDUser = {
   'no_additional_message': 'কোন অতিরিক্ত বার্তা নেই',
   'service_details_will_be_confirmed': 'সেবার বিবরণ পরবর্তীতে নিশ্চিত করা হবে।',
   'ready_for_confirmation': 'নিশ্চিতকরণের জন্য প্রস্তুত',
+    'booking_details': 'বুকিং বিবরণ',
+  'confirm': 'নিশ্চিত করুন',
+  'payment': 'পেমেন্ট',
 
   // Payment Screen
   'complete_payment_to_confirm': 'বুকিং নিশ্চিত করতে আপনার পেমেন্ট সম্পন্ন করুন',
@@ -175,6 +178,11 @@ const Map<String, String> bnBDUser = {
 
   // Success Dialog
   'congratulations': 'অভিনন্দন!',
-  'redirecting_to_payment': '৩ সেকেন্ডে পেমেন্টে পুনর্নির্দেশ করা হচ্ছে...',
+  'redirecting_to_bookings': '৩ সেকেন্ডে বুকিংয়ে পুনর্নির্দেশ করা হচ্ছে...',
+
+    //steps
+  '01': '০১',
+  '02': '০২',
+  '03': '০৩',
 
 };

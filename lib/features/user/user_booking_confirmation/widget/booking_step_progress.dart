@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 
 class BookingStepProgress extends StatelessWidget {
@@ -15,13 +16,13 @@ class BookingStepProgress extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Row(
             children: [
-              _buildStepIcon("01", const Color(0xFF8B5CF6), currentStep >= 1),
+              _buildStepIcon("01".tr, const Color(0xFF8B5CF6), currentStep >= 1),
               _buildCurveDivider(),
-              _buildStepIcon("02", const Color(0xFFF97316), currentStep >= 2),
+              _buildStepIcon("02".tr, const Color(0xFFF97316), currentStep >= 2),
               _buildCurveDivider(
                 // isUpward: false,
               ), // Alternating curve direction
-              _buildStepIcon("03", const Color(0xFF14B8A6), currentStep >= 3),
+              _buildStepIcon("03".tr, const Color(0xFF14B8A6), currentStep >= 3),
             ],
           ),
         ),
@@ -29,9 +30,9 @@ class BookingStepProgress extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildStepText("Boking details", currentStep == 1),
-            _buildStepText("Confirm", currentStep == 2),
-            _buildStepText("Payment", currentStep == 3),
+            _buildStepText('booking_details'.tr, currentStep == 1),
+            _buildStepText('confirm'.tr, currentStep == 2),
+            _buildStepText('payment'.tr, currentStep == 3),
           ],
         ),
       ],

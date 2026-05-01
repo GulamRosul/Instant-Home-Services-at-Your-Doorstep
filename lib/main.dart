@@ -15,20 +15,20 @@ import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageService.init();
-  CallService.instance.setNavigatorKey(Get.key);
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await CallService.instance.initializeFromStorage();
-  CallService.instance.setNavigatorKey(appNavigatorKey);
-
-  // Set up background message handler for Firebase notifications
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
+  // ✅ Must be FIRST before any Zego init
   ZegoUIKitPrebuiltCallInvitationService().useSystemCallingUI([
     ZegoUIKitSignalingPlugin(),
   ]);
 
-  // Initialize notifications
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // ✅ Set navigator key once using appNavigatorKey
+  CallService.instance.setNavigatorKey(appNavigatorKey);
+  await CallService.instance.initializeFromStorage();
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   await initializeLocalNotifications();
   await initializeAndroidNotificationChannel();
 

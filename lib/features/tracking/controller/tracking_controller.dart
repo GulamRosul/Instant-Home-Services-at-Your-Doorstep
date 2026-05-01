@@ -349,6 +349,70 @@ class TrackProviderController extends GetxController {
     socketService.requestLocationState();
   }
 
+  // void callPerson() async {
+  //   if (_otherUserId == null || _otherUserId!.trim().isEmpty) {
+  //     Get.snackbar('Error', 'Unable to initiate call: Receiver ID not found');
+  //     return;
+  //   }
+
+  //   if (_otherUserId == _currentUserId) {
+  //     Get.snackbar('Error', 'Unable to initiate call: Invalid receiver');
+  //     return;
+  //   }
+
+  //   final didSendInvitation = await CallService.instance.startAudioCall(
+  //     targetUserId: _otherUserId!,
+  //     targetUserName: personName.value,
+  //     callID: bookingId.value.replaceAll('#', '').trim(),
+  //   );
+
+  //   final callId = bookingId.value.replaceAll('#', '').trim();
+  //   final currentUserId = (_currentUserId ?? StorageService.getUserId() ?? '')
+  //       .trim();
+  //   final currentUserName = StorageService.getDisplayName() ?? 'User';
+
+  //   AppLoggerHelper.info(
+  //     'Call invitation sent: targetUserId=$_otherUserId, targetUserName=${personName.value}, callID=${bookingId.value}, success=$didSendInvitation',
+  //   );
+
+  //   if (currentUserId.isEmpty || callId.isEmpty) {
+  //     Get.snackbar('Call Failed', 'Missing local user/call information');
+  //     return;
+  //   }
+
+  //   if (!didSendInvitation) {
+  //     AppLoggerHelper.warning(
+  //       'Call invitation failed reason: ${CallService.instance.lastError ?? 'Unknown'}',
+  //     );
+
+  //     Get.snackbar(
+  //       'Call Invite Failed',
+  //       'Receiver may be offline. Opening direct call room...',
+  //     );
+
+  //     Get.to(
+  //       () => AudioCallPage(
+  //         callID: callId,
+  //         userID: currentUserId,
+  //         userName: currentUserName,
+  //         initialStatus: 'Connecting...',
+  //       ),
+  //     );
+  //     return;
+  //   }
+
+  //   Get.to(
+  //     () => AudioCallPage(
+  //       callID: callId,
+  //       userID: currentUserId,
+  //       userName: currentUserName,
+  //       initialStatus: 'Ringing...',
+  //     ),
+  //   );
+
+  //   print('Call invitation sent to ${personName.value}');
+  // }
+
   void callPerson() async {
     if (_otherUserId == null || _otherUserId!.trim().isEmpty) {
       Get.snackbar('Error', 'Unable to initiate call: Receiver ID not found');
@@ -360,57 +424,24 @@ class TrackProviderController extends GetxController {
       return;
     }
 
-    final didSendInvitation = await CallService.instance.startAudioCall(
+    // ✅ Just send invitation — Zego handles UI automatically
+    final didSend = await CallService.instance.startAudioCall(
       targetUserId: _otherUserId!,
       targetUserName: personName.value,
       callID: bookingId.value.replaceAll('#', '').trim(),
     );
 
-    final callId = bookingId.value.replaceAll('#', '').trim();
-    final currentUserId = (_currentUserId ?? StorageService.getUserId() ?? '')
-        .trim();
-    final currentUserName = StorageService.getDisplayName() ?? 'User';
-
-    AppLoggerHelper.info(
-      'Call invitation sent: targetUserId=$_otherUserId, targetUserName=${personName.value}, callID=${bookingId.value}, success=$didSendInvitation',
-    );
-
-    if (currentUserId.isEmpty || callId.isEmpty) {
-      Get.snackbar('Call Failed', 'Missing local user/call information');
-      return;
-    }
-
-    if (!didSendInvitation) {
+    if (!didSend) {
       AppLoggerHelper.warning(
-        'Call invitation failed reason: ${CallService.instance.lastError ?? 'Unknown'}',
+        'Call invitation failed: ${CallService.instance.lastError ?? 'Unknown'}',
       );
-
       Get.snackbar(
-        'Call Invite Failed',
-        'Receiver may be offline. Opening direct call room...',
+        'Call Failed',
+        CallService.instance.lastError ?? 'Unable to reach receiver',
       );
-
-      Get.to(
-        () => AudioCallPage(
-          callID: callId,
-          userID: currentUserId,
-          userName: currentUserName,
-          initialStatus: 'Connecting...',
-        ),
-      );
-      return;
     }
 
-    Get.to(
-      () => AudioCallPage(
-        callID: callId,
-        userID: currentUserId,
-        userName: currentUserName,
-        initialStatus: 'Ringing...',
-      ),
-    );
-
-    print('Call invitation sent to ${personName.value}');
+    // ✅ NO Get.to(AudioCallPage) — Zego handles the call screen
   }
 
   void messagePerson() {

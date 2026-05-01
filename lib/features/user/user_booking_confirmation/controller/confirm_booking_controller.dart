@@ -124,7 +124,7 @@ class ConfirmBookingController extends GetxController {
         }
 
         // Get.to(() => const AllBookingScreen());
-        Get.offAll(() => const BottomNavBar());
+        Get.offAll(() => const MainNavigationScreen());
         // Switch to bookings tab (index 1) after navigation
         WidgetsBinding.instance.addPostFrameCallback((_) {
           final navController = Get.find<BottomNavController>();

@@ -8,6 +8,7 @@ import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/common/widgets/shimmer_effect.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/profile/controller/profile_controller.dart';
 import 'package:protiva502/features/profile/widget/edit_field_dialogue_widget.dart';
 
@@ -16,9 +17,10 @@ class ProfileScreen extends StatelessWidget {
 
   ImageProvider<Object> _buildProfileImage(String imagePath) {
     if (imagePath.trim().isEmpty) {
-      return const NetworkImage(
-        'https://as1.ftcdn.net/v2/jpg/02/43/12/34/1000_F_243123463_zTo9Qg099Lz7fL7Y8HsSZJ1PVGu9fL7x.jpg',
-      );
+      // return const NetworkImage(
+      //   'https://as1.ftcdn.net/v2/jpg/02/43/12/34/1000_F_243123463_zTo9Qg099Lz7fL7Y8HsSZJ1PVGu9fL7x.jpg',
+      // );
+      return const AssetImage(ImagePath.profile);
     }
 
     if (imagePath.startsWith('http')) {

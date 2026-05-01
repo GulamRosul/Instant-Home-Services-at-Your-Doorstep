@@ -58,17 +58,50 @@ class CallService {
       invitationService.uninit();
     }
 
+    // await invitationService.init(
+    //   appID: call_Constants.appID,
+    //   appSign: call_Constants.appSign,
+    //   userID: normalizedUserId,
+    //   userName: normalizedUserName,
+    //   plugins: [ZegoUIKitSignalingPlugin()],
+    //   requireConfig: (invitationData) {
+    //     if (invitationData.type == ZegoCallInvitationType.videoCall) {
+    //       return ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall();
+    //     }
+
+    //     return ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
+    //   },
+    // );
+
     await invitationService.init(
       appID: call_Constants.appID,
       appSign: call_Constants.appSign,
       userID: normalizedUserId,
       userName: normalizedUserName,
       plugins: [ZegoUIKitSignalingPlugin()],
+
+      notificationConfig: ZegoCallInvitationNotificationConfig(
+        androidNotificationConfig: ZegoCallAndroidNotificationConfig(
+          showOnLockedScreen: true,
+          showOnFullScreen: true,
+          callChannel: ZegoCallAndroidNotificationChannelConfig(
+            channelID: 'zego_call',
+            channelName: 'Call Notifications',
+            sound: '',
+            icon: '',
+            vibrate: true,
+          ),
+        ),
+        iOSNotificationConfig: ZegoCallIOSNotificationConfig(
+          appName: 'Protiva502',
+          isSandboxEnvironment: false,
+        ),
+      ),
+
       requireConfig: (invitationData) {
         if (invitationData.type == ZegoCallInvitationType.videoCall) {
           return ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall();
         }
-
         return ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
       },
     );

@@ -51,28 +51,30 @@ class UserForgotPasswordScreen extends StatelessWidget {
 
             // Header Text
             Text(
-              'Reset your password',
+              'reset_password'.tr,
               style: getTextStyle(
                 fontSize: 25.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
                 lineHeight: 25.sp,
               ),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 12.h),
             Text(
-              'Enter your email address to receive an OTP code.',
+              'enter_email_otp'.tr,
               style: getTextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 color: Colors.black87,
                 lineHeight: 22.sp,
               ),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 32.h),
 
             // Email Field
-            _buildLabel("Email"),
+            _buildLabel('email'.tr),
             Obx(
               () => CustomTextField(
                 controller: controller.emailController,
@@ -90,8 +92,8 @@ class UserForgotPasswordScreen extends StatelessWidget {
             Obx(
               () => CustomButton(
                 text: controller.isLoading.value
-                    ? 'Sending OTP...'
-                    : 'Send OTP',
+                    ? 'sending_otp'.tr
+                    : 'send_otp'.tr,
                 onPressed: controller.isLoading.value
                     ? null
                     : () => controller.handleForgotPassword(
@@ -111,13 +113,13 @@ class UserForgotPasswordScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Remember your password? ",
+                  'remember_password'.tr,
                   style: getTextStyle(fontSize: 14.sp, color: Colors.black),
                 ),
                 GestureDetector(
                   onTap: () => Get.back(),
                   child: Text(
-                    'Sign In',
+                    'sign_in'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: const Color(0xFF7079F0),

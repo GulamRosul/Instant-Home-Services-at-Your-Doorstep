@@ -43,7 +43,7 @@ class UserRegScreen extends StatelessWidget {
             _buildFieldLabel("first_name".tr),
             CustomTextField(
               controller: controller.firstNameController,
-              hintText: 'Sarah',
+              hintText: 'sarah'.tr,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
@@ -53,7 +53,7 @@ class UserRegScreen extends StatelessWidget {
             _buildFieldLabel("last_name".tr),
             CustomTextField(
               controller: controller.lastNameController,
-              hintText: 'Sarah',
+              hintText: 'islam'.tr,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
@@ -63,7 +63,7 @@ class UserRegScreen extends StatelessWidget {
             _buildFieldLabel("email_address".tr),
             CustomTextField(
               controller: controller.emailController,
-              hintText: 'sarah.johnson@email.com',
+              hintText: 'sarah@gmail.com',
               keyboardType: TextInputType.emailAddress,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
@@ -101,7 +101,7 @@ class UserRegScreen extends StatelessWidget {
             _buildFieldLabel("city".tr),
             CustomTextField(
               controller: controller.cityController,
-              hintText: 'Dhaka',
+              hintText: 'dhaka'.tr,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
@@ -161,22 +161,33 @@ class UserRegScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'already_have_account'.tr,
-                  style: getTextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => Get.to(() => UserLoginScreen()),
+                Flexible(
                   child: Text(
-                    'sign_in'.tr,
+                    'already_have_account'.tr,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: getTextStyle(
                       fontSize: 14.sp,
-                      color: const Color(0xFF6366F1),
-                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+
+                SizedBox(width: 4.w),
+
+                Flexible(
+                  child: GestureDetector(
+                    onTap: () => Get.to(() => UserLoginScreen()),
+                    child: Text(
+                      'sign_in'.tr,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: getTextStyle(
+                        fontSize: 14.sp,
+                        color: const Color(0xFF6366F1),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),

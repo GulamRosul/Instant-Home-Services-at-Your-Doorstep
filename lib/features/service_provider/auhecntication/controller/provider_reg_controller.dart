@@ -11,8 +11,7 @@ import 'package:protiva502/features/service_provider/auhecntication/screen/provi
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 
 class ProviderRegController extends GetxController {
-  static const String _baseUrl =
-      'http://13.60.247.63/api/v1';
+  static const String _baseUrl = 'http://13.60.247.63/api/v1';
   static const String _addProviderEndpoint = '$_baseUrl/auth/add-provider';
   static const int maxBioLength = 300;
 
@@ -198,24 +197,23 @@ class ProviderRegController extends GetxController {
       final responseData = _tryDecode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         final message =
-            responseData?['message']?.toString() ??
-            'Provider registration successful';
+            responseData?['message']?.toString() ?? 'provider_reg_success'.tr;
 
-        Get.snackbar('Success', message);
+        Get.snackbar('success'.tr, message);
         _resetForm();
         Get.offAll(() => const ProviderLoginScreen());
       } else {
         AppLoggerHelper.warning(
           'Provider registration failed: ${_extractMessage(responseData)}',
         );
-        Get.snackbar('Registration failed', _extractMessage(responseData));
+        Get.snackbar('registration_failed'.tr, _extractMessage(responseData));
       }
     } catch (error, stackTrace) {
       AppLoggerHelper.error(
         'Provider register error: $error\n$stackTrace',
         error,
       );
-      Get.snackbar('Registration failed', 'Could not connect to the server');
+      Get.snackbar('registration_failed'.tr, 'server_connection_error'.tr);
     } finally {
       isRegistering.value = false;
     }
@@ -233,35 +231,32 @@ class ProviderRegController extends GetxController {
         nidNumberController.text.trim().isEmpty ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
-      Get.snackbar('Missing info', 'Please fill in all required fields');
+      Get.snackbar('missing_info'.tr, 'please_fill_all_fields'.tr);
       return false;
     }
 
     if (!GetUtils.isEmail(emailController.text.trim())) {
-      Get.snackbar('Invalid email', 'Please enter a valid email address');
+      Get.snackbar('invalid_email'.tr, 'please_valid_email'.tr);
       return false;
     }
 
     if (passwordController.text != confirmPasswordController.text) {
-      Get.snackbar(
-        'Password mismatch',
-        'Password and confirm password must match',
-      );
+      Get.snackbar('password_mismatch'.tr, 'password_mismatch_msg'.tr);
       return false;
     }
 
     if (passwordController.text.length < 8) {
-      Get.snackbar('Weak password', 'Password must be at least 8 characters');
+      Get.snackbar('weak_password'.tr, 'password_min_8'.tr);
       return false;
     }
 
     if (nidImage.value == null) {
-      Get.snackbar('Missing info', 'Please upload your NID front image');
+      Get.snackbar('missing_info'.tr, 'upload_nid_front'.tr);
       return false;
     }
 
     if (nidBackImage.value == null) {
-      Get.snackbar('Missing info', 'Please upload your NID back image');
+      Get.snackbar('missing_info'.tr, 'upload_nid_back'.tr);
       return false;
     }
 
@@ -272,7 +267,7 @@ class ProviderRegController extends GetxController {
     if (serviceLocationController.text.trim().isEmpty ||
         cityController.text.trim().isEmpty ||
         yearOfExperienceController.text.trim().isEmpty) {
-      Get.snackbar('Missing info', 'Please complete business information');
+      Get.snackbar('missing_info'.tr, 'complete_business_info'.tr);
       return false;
     }
 

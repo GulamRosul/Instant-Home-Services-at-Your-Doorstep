@@ -37,7 +37,7 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'Provider Registration',
+          'provider_registration'.tr,
           style: getTextStyle(
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
@@ -56,7 +56,7 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
                 Icon(Icons.person_outline, size: 24.sp, color: Colors.black),
                 SizedBox(width: 8.w),
                 Text(
-                  'Personal Information',
+                  'personal_information'.tr,
                   style: getTextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
@@ -67,19 +67,19 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
 
-            _buildLabel('E-mail address'),
+            _buildLabel('email_address'.tr),
             CustomTextField(
               controller: controller.emailController,
-              hintText: 'sarah.johnson@email.com',
+              hintText: 'email_hint'.tr,
               backgroundColor: const Color(0xFFF8F9FA),
               borderColor: const Color(0xFFE2E8F0),
             ),
             SizedBox(height: 16.h),
 
-            _buildLabel('Phone'),
+            _buildLabel('phone'.tr),
             CustomTextField(
               controller: controller.phoneController,
-              hintText: '1XXXXXXXXX',
+              hintText: 'phone_hint'.tr,
               backgroundColor: const Color(0xFFF8F9FA),
               borderColor: const Color(0xFFE2E8F0),
               keyboardType: TextInputType.phone,
@@ -102,40 +102,40 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
 
-            _buildLabel('First Name'),
+            _buildLabel('first_name'.tr),
             CustomTextField(
               controller: controller.firstNameController,
-              hintText: 'Enter your first name',
+              hintText: 'first_name_hint'.tr,
               backgroundColor: const Color(0xFFF8F9FA),
               borderColor: const Color(0xFFE2E8F0),
             ),
             SizedBox(height: 16.h),
 
-            _buildLabel('Last Name'),
+            _buildLabel('last_name'.tr),
             CustomTextField(
               controller: controller.lastNameController,
-              hintText: 'Enter your last name',
+              hintText: 'last_name_hint'.tr,
               backgroundColor: const Color(0xFFF8F9FA),
               borderColor: const Color(0xFFE2E8F0),
             ),
             SizedBox(height: 16.h),
 
-            _buildLabel('NID Number'),
+            _buildLabel('nid_number'.tr),
             CustomTextField(
               controller: controller.nidNumberController,
-              hintText: 'Enter your NID number',
+              hintText: 'nid_number_hint'.tr,
               backgroundColor: const Color(0xFFF8F9FA),
               borderColor: const Color(0xFFE2E8F0),
             ),
             SizedBox(height: 16.h),
 
-            _buildLabel('NID Image'),
+            _buildLabel('nid_image'.tr),
             Obx(
               () => _buildImageUploadContainer(
                 onTap: controller.pickNidImage,
                 imagePath: controller.nidImage.value?.path,
-                title: 'Upload your NID front',
-                subtitle: 'Front of your NID card',
+                title: 'upload_nid_front_title'.tr,
+                subtitle: 'front_nid_card'.tr,
               ),
             ),
             SizedBox(height: 16.h),
@@ -145,17 +145,17 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
               () => _buildImageUploadContainer(
                 onTap: controller.pickNidBackImage,
                 imagePath: controller.nidBackImage.value?.path,
-                title: 'Upload your NID back',
-                subtitle: 'Back of your NID card',
+                title: 'upload_nid_back_title'.tr,
+                subtitle: 'back_nid_card'.tr,
               ),
             ),
             SizedBox(height: 16.h),
 
-            _buildLabel('Password'),
+            _buildLabel('password'.tr),
             Obx(
               () => CustomTextField(
                 controller: controller.passwordController,
-                hintText: '**********',
+                hintText: 'password_hint'.tr,
                 backgroundColor: const Color(0xFFF8F9FA),
                 borderColor: const Color(0xFFE2E8F0),
                 isPasswordField: true,
@@ -166,11 +166,11 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
 
-            _buildLabel('Confirm password'),
+            _buildLabel('confirm_password'.tr),
             Obx(
               () => CustomTextField(
                 controller: controller.confirmPasswordController,
-                hintText: '**********',
+                hintText: 'password_hint'.tr,
                 backgroundColor: const Color(0xFFF8F9FA),
                 borderColor: const Color(0xFFE2E8F0),
                 isPasswordField: true,
@@ -193,7 +193,7 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
             SizedBox(height: 30.h),
 
             CustomButton(
-              text: 'Next',
+              text: 'next'.tr,
               onPressed: controller.handleNext,
               backgroundColor: AppColors.primary,
               textColor: Colors.white,
@@ -203,7 +203,7 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
             Center(
               child: RichText(
                 text: TextSpan(
-                  text: 'Already have an account? ',
+                  text: 'already_have_account'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
@@ -211,7 +211,7 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
                   ),
                   children: [
                     TextSpan(
-                      text: 'Sign In',
+                      text: 'sign_in'.tr,
                       style: getTextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
@@ -298,6 +298,7 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                         color: Colors.grey[600]!,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 4.h),
                     Text(
@@ -307,6 +308,7 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                         color: Colors.grey[400]!,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 
@@ -211,7 +212,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                           ),
                           SizedBox(width: 4.w),
                           Text(
-                            _obscureText ? 'Show' : 'Hide',
+                            _obscureText ? 'show'.tr : 'hide'.tr,
                             style: getTextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,

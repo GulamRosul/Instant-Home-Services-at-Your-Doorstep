@@ -41,17 +41,17 @@ class ProviderLoginController extends GetxController {
     passwordError.value = null;
 
     if (username.isEmpty) {
-      emailError.value = "Enter email";
+      emailError.value = "email_empty".tr;
       return;
     }
 
     if (!GetUtils.isEmail(username)) {
-      emailError.value = "Enter valid email";
+      emailError.value = "email_invalid".tr;
       return;
     }
 
     if (password.isEmpty) {
-      passwordError.value = "Enter password";
+      passwordError.value = "password_empty".tr;
       return;
     }
 
@@ -154,12 +154,12 @@ class ProviderLoginController extends GetxController {
           Get.offAll(() => const ProviderNavbarScreen());
         } else {
           if (response.statusCode == 401) {
-            passwordError.value = "Your password is wrong";
+            passwordError.value = "password_wrong".tr;
           } else if (response.statusCode == 404) {
-            emailError.value = "Your email is wrong";
+            emailError.value = "email_wrong".tr;
           } else if (response.statusCode == 400) {
-            emailError.value = "Your email is wrong";
-            passwordError.value = "Your password is wrong";
+            emailError.value = "email_wrong".tr;
+            passwordError.value = "password_wrong".tr;
           } else {
             debugPrint('Login failed: ${response.statusCode}');
           }
@@ -171,13 +171,12 @@ class ProviderLoginController extends GetxController {
           name: 'ProviderLogin',
           stackTrace: stackTrace,
         );
-        // Removed snackbar for common errors as requested
         debugPrint('Login failed: Could not connect to the server');
       } finally {
         isSigningIn.value = false;
       }
     } else {
-      Get.snackbar("Error", "Please fill in all fields");
+      Get.snackbar("error".tr, "fill_all_fields".tr);
     }
   }
 

@@ -94,7 +94,7 @@ class UserProfilePicScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Upload Your Logo (Optional)',
+              'upload_logo_optional'.tr,
               style: getTextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
@@ -107,7 +107,7 @@ class UserProfilePicScreen extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Bio (Optional)',
+                'bio_optional'.tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
@@ -118,7 +118,7 @@ class UserProfilePicScreen extends StatelessWidget {
             SizedBox(height: 8.h),
             CustomTextField(
               controller: controller.bioController,
-              hintText: 'Enter your bio',
+              hintText: 'enter_bio'.tr,
               maxLines: 5,
               minLines: 5,
               backgroundColor: Colors.white,
@@ -138,7 +138,7 @@ class UserProfilePicScreen extends StatelessWidget {
 
             Obx(
               () => CustomButton(
-                text: controller.isLoading.value ? 'Registering...' : 'Next',
+                text: controller.isLoading.value ? 'registering'.tr : 'next'.tr,
                 onPressed: controller.isLoading.value
                     ? null
                     : () => controller.handleNext(

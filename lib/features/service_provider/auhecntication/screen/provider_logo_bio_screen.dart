@@ -20,7 +20,7 @@ class ProviderLogoBioScreen extends StatelessWidget {
         ? Get.find<ProviderRegController>()
         : Get.put(ProviderRegController());
 
-      final socialMediaController = Get.put(SocialMediaController());
+    final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
@@ -72,7 +72,7 @@ class ProviderLogoBioScreen extends StatelessWidget {
             SizedBox(height: 16.h),
             Center(
               child: Text(
-                'Upload Your Logo',
+                'upload_your_logo'.tr,
                 style: getTextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w500,
@@ -84,7 +84,7 @@ class ProviderLogoBioScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(bottom: 8.h),
               child: Text(
-                'About Service',
+                'about_service'.tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
@@ -116,7 +116,7 @@ class ProviderLogoBioScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Enter your bio',
+                      hintText: 'bio_hint'.tr,
                       hintStyle: getTextStyle(
                         fontSize: 14.sp,
                         color: Color(0xFF3F3F3F),
@@ -159,8 +159,8 @@ class ProviderLogoBioScreen extends StatelessWidget {
               () => CustomButton(
                 borderRadius: 6.r,
                 text: controller.isRegistering.value
-                    ? 'Submitting...'
-                    : 'Complete Registration',
+                    ? 'submitting'.tr
+                    : 'complete_registration'.tr,
                 onPressed: controller.isRegistering.value
                     ? null
                     : controller.submitProviderRegistration,
@@ -175,13 +175,14 @@ class ProviderLogoBioScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
         onPressed: () {
-          socialMediaController.launchSocialUrl(socialMediaController.whatsappUrl);
+          socialMediaController.launchSocialUrl(
+            socialMediaController.whatsappUrl,
+          );
         },
         backgroundColor: Colors.white,
         mini: false,
         child: SvgPicture.asset(IconPath.whatsapp),
       ),
-
     );
   }
 }

@@ -31,8 +31,8 @@ class ProviderLogoBioController extends GetxController {
       }
     } catch (e) {
       Get.snackbar(
-        "Error",
-        "Failed to pick image: $e",
+        "error".tr,
+        "${'failed_pick_image'.tr}: $e",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.withValues(alpha: 0.1),
         colorText: Colors.red,

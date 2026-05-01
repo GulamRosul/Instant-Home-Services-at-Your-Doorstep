@@ -13,6 +13,9 @@ const Map<String, String> bnBDUser = {
   'next': 'পরবর্তী',
   'already_have_account': 'ইতিমধ্যে অ্যাকাউন্ট আছে? ',
   'sign_in': 'সাইন ইন',
+  'sarah': 'সারা',
+  'islam': 'ইসলাম',
+  'dhaka': 'ঢাকা',
 
   // Validation Messages
   'first_name_required': 'আপনার প্রথম নাম লিখুন',
@@ -26,4 +29,50 @@ const Map<String, String> bnBDUser = {
   'confirm_password_required': 'আপনার পাসওয়ার্ড নিশ্চিত করুন',
   'password_mismatch': 'পাসওয়ার্ড এবং নিশ্চিত পাসওয়ার্ড মেলে না',
   'registration_error': 'কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।',
+
+  // OTP Screen
+  'send_otp_code': 'ওটিপি কোড পাঠান',
+  'enter_6_digit_code': 'আমরা যে ৬ অঙ্কের কোড পাঠিয়েছি তা প্রবেশ করুন',
+  'resend_code': 'কোড পুনরায় পাঠান',
+  'verifying': 'যাচাই করা হচ্ছে...',
+  'continue': 'চালিয়ে যান',
+  'by_signing_up': 'সাইন আপ বা লগইন করার মাধ্যমে, আমি অ্যাপের গ্রহণ করি',
+  'terms_of_service': 'সেবার শর্তাবলী',
+  'and': 'এবং',
+  'privacy_policy': 'গোপনীয়তা নীতি',
+
+  // Profile Picture Screen
+  'upload_logo_optional': 'আপনার লোগো আপলোড করুন (ঐচ্ছিক)',
+  'bio_optional': 'বায়োগ্রাফি (ঐচ্ছিক)',
+  'enter_bio': 'আপনার বায়োগ্রাফি প্রবেশ করুন',
+
+  // Reset Password Screen
+  'create_new_password': 'নতুন পাসওয়ার্ড তৈরি করুন',
+  'enter_new_password': 'নীচে আপনার নতুন পাসওয়ার্ড প্রবেশ করুন।',
+  'new_password': 'নতুন পাসওয়ার্ড',
+  'resetting': 'পুনরায় সেট করা হচ্ছে...',
+  'reset_password': 'পাসওয়ার্ড পুনরায় সেট করুন',
+  'remember_password': 'আপনার পাসওয়ার্ড মনে আছে? ',
+
+  // Error/Success Messages
+  'error': 'ত্রুটি',
+  'success': 'সফল',
+  'valid_6_digit_otp': 'দয়া করে একটি বৈধ ৬ অঙ্কের ওটিপি প্রবেশ করুন',
+  'otp_verification_failed': 'ওটিপি যাচাইকরণ ব্যর্থ। দয়া করে আবার চেষ্টা করুন।',
+  'otp_sent_success': 'ওটিপি সফলভাবে পাঠানো হয়েছে',
+  'resend_otp_failed': 'ওটিপি পুনরায় পাঠাতে ব্যর্থ। দয়া করে আবার চেষ্টা করুন।',
+  'email_not_found': 'ইমেল পাওয়া যায়নি। দয়া করে ফিরে যান এবং আবার চেষ্টা করুন।',
+  'failed_pick_image': 'ছবি নির্বাচন করতে ব্যর্থ',
+  'registration_failed': 'নিবন্ধন ব্যর্থ',
+  'registration_failed_try_again': 'নিবন্ধন ব্যর্থ। দয়া করে আবার চেষ্টা করুন।',
+  'registration_success': 'নিবন্ধন সফল। দয়া করে পাঠানো ওটিপি দিয়ে আপনার ইমেল যাচাই করুন।',
+  'unexpected_error': 'অপ্রত্যাশিত ত্রুটি ঘটেছে',
+  'something_went_wrong': 'কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।',
+  'password_is_required': 'পাসওয়ার্ড প্রয়োজন',
+  'password_must_8_chars': 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে',
+  'confirm_your_password': 'আপনার পাসওয়ার্ড নিশ্চিত করুন',
+  'passwords_do_not_match': 'পাসওয়ার্ডগুলি মেলে না',
+  'invalid_request': 'অবৈধ অনুরোধ। দয়া করে আবার চেষ্টা করুন।',
+  'password_reset_success': 'পাসওয়ার্ড সফলভাবে পুনরায় সেট করা হয়েছে। দয়া করে আপনার নতুন পাসওয়ার্ড দিয়ে লগইন করুন।',
+  'password_reset_failed': 'পাসওয়ার্ড পুনরায় সেট করতে ব্যর্থ। দয়া করে আবার চেষ্টা করুন।',
 };

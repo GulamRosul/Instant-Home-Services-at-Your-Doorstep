@@ -1,5 +1,5 @@
 class PrivacyPolicyModel {
-  final int id;
+  final String id;
   final String content;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -13,7 +13,7 @@ class PrivacyPolicyModel {
 
   factory PrivacyPolicyModel.fromJson(Map<String, dynamic> json) {
     return PrivacyPolicyModel(
-      id: json['id'] as int? ?? 0,
+      id: json['id'] as String? ?? '',
       content: json['content'] as String? ?? '',
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)

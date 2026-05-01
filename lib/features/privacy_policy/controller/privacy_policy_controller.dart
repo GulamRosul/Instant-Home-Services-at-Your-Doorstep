@@ -31,8 +31,9 @@ class PrivacyPolicyController extends GetxController {
       if (response.statusCode == 200) {
         final data = response.data;
 
-        if (data is Map<String, dynamic>) {
-          final policy = PrivacyPolicyModel.fromJson(data);
+        if (data is Map<String, dynamic> && data.containsKey('data')) {
+          final policyData = data['data'] as Map<String, dynamic>;
+          final policy = PrivacyPolicyModel.fromJson(policyData);
           privacyPolicy.value = policy;
           debugPrint('✅ [PRIVACY POLICY] Successfully fetched privacy policy');
         } else {

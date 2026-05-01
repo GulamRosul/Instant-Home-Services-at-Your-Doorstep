@@ -53,6 +53,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         return SingleChildScrollView(
           padding: EdgeInsets.all(20.r),
           child: Container(
+            width: double.infinity,
             padding: EdgeInsets.all(20.r),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -90,7 +91,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     lineHeight: 20.sp,
                   ),
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: 10.h),
               ],
             ),
           ),

@@ -654,31 +654,6 @@ class _MapScreenState extends State<MapScreen> {
                             color: Colors.orange,
                             size: 16.sp,
                           ),
-                          // const Spacer(),
-                          // Container(
-                          //   padding: EdgeInsets.symmetric(
-                          //     horizontal: 8.w,
-                          //     vertical: 4.h,
-                          //   ),
-                          //   decoration: BoxDecoration(
-                          //     color: controller.isPersonOnline.value
-                          //         ? Colors.green.shade50
-                          //         : Colors.red.shade50,
-                          //     borderRadius: BorderRadius.circular(6.r),
-                          //   ),
-                          //   child: Text(
-                          //     controller.isPersonOnline.value
-                          //         ? 'On the way'
-                          //         : 'Offline',
-                          //     style: getTextStyle(
-                          //       fontSize: 10.sp,
-                          //       color: controller.isPersonOnline.value
-                          //           ? Colors.green
-                          //           : Colors.red,
-                          //       fontWeight: FontWeight.w600,
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                       SizedBox(height: 4.h),

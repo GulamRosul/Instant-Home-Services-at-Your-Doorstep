@@ -6,13 +6,10 @@ import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
-import 'package:protiva502/features/bottom_nav/bottom_nav_bar.dart';
 import 'package:protiva502/features/bottom_nav/controller/bottom_nav_controller.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
 import 'package:protiva502/features/user/all_bookings/controller/all_booking_controller.dart';
-import 'package:protiva502/features/user/all_bookings/screen/all_booking_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/model/booking_confirmation_data.dart';
-import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/confirm_dialogue.dart';
 
 class ConfirmBookingController extends GetxController {

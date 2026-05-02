@@ -41,7 +41,7 @@ class AvailableCategoryScreen extends StatelessWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         controller.selectCategoryAfterLoadById(categoryId!);
       });
-    } else if (passedCategoryId != null && passedCategoryId!.isNotEmpty) {
+    } else if (passedCategoryId != null && passedCategoryId.isNotEmpty) {
       // Find the index of the category by ID from arguments
       WidgetsBinding.instance.addPostFrameCallback((_) {
         controller.selectCategoryAfterLoadById(passedCategoryId!);

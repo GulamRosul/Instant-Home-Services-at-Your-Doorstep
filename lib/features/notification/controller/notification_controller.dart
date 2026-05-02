@@ -386,8 +386,4 @@ class NotificationController extends GetxController {
     await fetchNotifications();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 }

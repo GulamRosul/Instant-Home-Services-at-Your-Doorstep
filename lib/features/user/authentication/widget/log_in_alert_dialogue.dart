@@ -5,7 +5,6 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
-import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 
 // ignore: unused_element
 

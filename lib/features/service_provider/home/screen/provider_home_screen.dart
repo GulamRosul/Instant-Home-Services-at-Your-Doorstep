@@ -7,7 +7,6 @@ import 'package:protiva502/features/service_provider/home/controller/provider_ho
 import 'package:protiva502/features/service_provider/home/widget/active_job.dart';
 import 'package:protiva502/features/service_provider/home/widget/home_header_appber.dart';
 import 'package:protiva502/features/service_provider/home/widget/recent_booking_card.dart';
-import 'package:protiva502/features/service_provider/home/widget/search_ber_widget.dart';
 import 'package:protiva502/features/service_provider/home/widget/statesGride.dart';
 import 'package:protiva502/features/service_provider/home/widget/wallet_card.dart';
 

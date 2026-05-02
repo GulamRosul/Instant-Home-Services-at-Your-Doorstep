@@ -265,7 +265,7 @@ class ServiceDetailsStep extends StatelessWidget {
                     ],
                   ),
                 );
-              }).toList(),
+              }),
               SizedBox(height: 12.h),
               GestureDetector(
                 onTap: () => _showAddServiceDialog(context, controller),

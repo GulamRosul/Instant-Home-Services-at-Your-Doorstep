@@ -13,7 +13,6 @@ import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart'
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
 import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
-import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
 
@@ -785,10 +784,10 @@ class AllBookingScreen extends StatelessWidget {
 
   String _formatCurrency(double amount) {
     if (amount == amount.truncateToDouble()) {
-      return '${amount.toStringAsFixed(0)}';
+      return amount.toStringAsFixed(0);
     }
 
-    return '${amount.toStringAsFixed(2)}';
+    return amount.toStringAsFixed(2);
   }
 
   String _shortReference(String reference) {

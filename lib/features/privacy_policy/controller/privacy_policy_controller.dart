@@ -57,8 +57,4 @@ class PrivacyPolicyController extends GetxController {
     }
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 }

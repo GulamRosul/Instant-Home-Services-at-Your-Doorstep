@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -9,7 +8,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
-import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/google_map/service/map_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:protiva502/features/tracking/controller/tracking_controller.dart';

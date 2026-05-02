@@ -195,35 +195,33 @@ class ProviderDetailsController extends GetxController {
       return;
     }
 
-    if (job != null) {
-      // Convert ProviderJobModel to JobModel
-      final jobModel = JobModel(
-        id: job.id,
-        userId: providerId,
-        categoryId: '',
-        subCategoryId: '',
-        title: job.title,
-        slug: '',
-        description: job.description,
-        basePrice: job.basePrice.toString(),
-        priceType: 'FIXED',
-        includeService: job.includeService,
-        thumbnail: job.thumbnail,
-        images: const [],
-        videos: const [],
-        status: job.status,
-        views: 0,
-        clicks: 0,
-        totalBookings: job.totalBookings,
-        averageRating: job.averageRating,
-        isPopuler: false,
-        createdAt: '',
-        updatedAt: '',
-      );
+    // Convert ProviderJobModel to JobModel
+    final jobModel = JobModel(
+      id: job.id,
+      userId: providerId,
+      categoryId: '',
+      subCategoryId: '',
+      title: job.title,
+      slug: '',
+      description: job.description,
+      basePrice: job.basePrice.toString(),
+      priceType: 'FIXED',
+      includeService: job.includeService,
+      thumbnail: job.thumbnail,
+      images: const [],
+      videos: const [],
+      status: job.status,
+      views: 0,
+      clicks: 0,
+      totalBookings: job.totalBookings,
+      averageRating: job.averageRating,
+      isPopuler: false,
+      createdAt: '',
+      updatedAt: '',
+    );
 
-      Get.to(() => const JobDetailsViewScreen(), arguments: jobModel);
+    Get.to(() => const JobDetailsViewScreen(), arguments: jobModel);
     }
-  }
 
   Map<String, dynamic>? _asMap(dynamic value) {
     if (value is Map<String, dynamic>) {

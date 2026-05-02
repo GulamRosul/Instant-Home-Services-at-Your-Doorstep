@@ -43,10 +43,13 @@ class MapController extends GetxController {
   final currentLocationLabel = ''.obs;
   final isMapAvailable = true.obs;
   final mapAvailabilityMessage = ''.obs;
+  final placeSuggestions = <MapPlaceSuggestion>[].obs;
+  final isSuggestionLoading = false.obs;
   final _hasLocation = false.obs;
 
   GoogleMapController? mapController;
   StreamSubscription<Position>? positionStream;
+  Timer? _suggestionDebounce;
 
   static const String _currentMarkerId = 'current_location';
   static const String _destinationMarkerId = 'selected_destination';
@@ -119,11 +122,11 @@ class MapController extends GetxController {
       isMapAvailable.value = false;
       mapAvailabilityMessage.value = error.message?.trim().isNotEmpty == true
           ? error.message!.trim()
-          : 'Google Maps could not be initialized on this device.';
+          : 'map_initialization_error'.tr;
     } catch (_) {
       isMapAvailable.value = false;
       mapAvailabilityMessage.value =
-          'Google Maps could not be initialized on this device.';
+          'map_initialization_error'.tr;
     }
   }
 
@@ -149,7 +152,7 @@ class MapController extends GetxController {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       errorMessage.value =
-          'Location services are turned off. Please enable them and try again.';
+          'location_services_off'.tr;;
       return null;
     }
 
@@ -160,13 +163,13 @@ class MapController extends GetxController {
 
     if (permission == LocationPermission.denied) {
       errorMessage.value =
-          'Location permission is required to choose a service address.';
+          'location_permission_required'.tr;
       return null;
     }
 
     if (permission == LocationPermission.deniedForever) {
       errorMessage.value =
-          'Location permission is permanently denied. Open settings to continue.';
+          'location_permission_permanently_denied'.tr;
       return null;
     }
 
@@ -266,6 +269,7 @@ class MapController extends GetxController {
       fallback: fallbackLabel,
     );
     await _moveCamera(position);
+    clearPlaceSuggestions();
 
     if (buildRoute) {
       await createRoute();
@@ -286,6 +290,7 @@ class MapController extends GetxController {
 
     isSearching.value = true;
     searchError.value = '';
+    clearPlaceSuggestions();
 
     try {
       final place = await mapService.searchPlace(trimmedQuery);
@@ -321,6 +326,82 @@ class MapController extends GetxController {
     } finally {
       isSearching.value = false;
     }
+  }
+
+  void onSearchQueryChanged(String query) {
+    _suggestionDebounce?.cancel();
+
+    final trimmedQuery = query.trim();
+    if (trimmedQuery.isEmpty) {
+      clearPlaceSuggestions();
+      return;
+    }
+
+    _suggestionDebounce = Timer(const Duration(milliseconds: 300), () {
+      _loadPlaceSuggestions(trimmedQuery);
+    });
+  }
+
+  Future<void> _loadPlaceSuggestions(String query) async {
+    isSuggestionLoading.value = true;
+    try {
+      final suggestions = await mapService.getPlaceSuggestions(query);
+      placeSuggestions.assignAll(suggestions);
+    } catch (_) {
+      placeSuggestions.clear();
+    } finally {
+      isSuggestionLoading.value = false;
+    }
+  }
+
+  Future<bool> selectPlaceSuggestion(
+    MapPlaceSuggestion suggestion, {
+    bool buildRoute = true,
+  }) async {
+    searchError.value = '';
+    isSearching.value = true;
+    clearPlaceSuggestions();
+
+    try {
+      final details = await mapService.getPlaceDetails(suggestion.placeId);
+      if (details == null) {
+        searchError.value = 'Unable to load that location.';
+        return false;
+      }
+
+      destinationLatLng.value = details.location;
+      _debugPrintSelectedLocation(details.location);
+      _updateMarker(
+        details.location,
+        _destinationMarkerId,
+        'selected_location'.tr,
+        BitmapDescriptor.hueRed,
+      );
+      selectedAddress.value = details.displayLabel ?? suggestion.description;
+      await _moveCamera(details.location);
+
+      if (buildRoute) {
+        await createRoute();
+      } else {
+        polylines.removeWhere(
+          (polyline) => polyline.polylineId.value == _routePolylineId,
+        );
+        polylines.refresh();
+      }
+
+      return true;
+    } catch (_) {
+      searchError.value = 'Unable to load that location.';
+      return false;
+    } finally {
+      isSearching.value = false;
+    }
+  }
+
+  void clearPlaceSuggestions() {
+    _suggestionDebounce?.cancel();
+    placeSuggestions.clear();
+    isSuggestionLoading.value = false;
   }
 
   Future<void> createRoute() async {
@@ -380,6 +461,7 @@ class MapController extends GetxController {
   void clearDestination() {
     destinationLatLng.value = null;
     selectedAddress.value = '';
+    clearPlaceSuggestions();
     polylines.removeWhere(
       (polyline) => polyline.polylineId.value == _routePolylineId,
     );
@@ -403,6 +485,7 @@ class MapController extends GetxController {
 
   Future<bool> useCurrentLocationForSelection({bool buildRoute = true}) async {
     errorMessage.value = '';
+    clearPlaceSuggestions();
 
     final currentPosition = await _refreshCurrentLocation();
     if (currentPosition == null) {
@@ -434,7 +517,7 @@ class MapController extends GetxController {
     _updateMarker(
       position,
       _trackedUserMarkerId,
-      title?.trim().isNotEmpty == true ? title!.trim() : 'User location',
+      title?.trim().isNotEmpty == true ? title!.trim() : 'user_location'.tr,
       BitmapDescriptor.hueOrange,
     );
   }
@@ -601,15 +684,17 @@ class MapController extends GetxController {
           .toList();
 
       // 2. Update Map Polylines
-      polylines.value = {
-        Polyline(
-          polylineId: const PolylineId("route"),
-          points: coords,
-          color: const Color(0xFF7C3AED), // Your Purple theme
-          width: 5,
-          jointType: JointType.round,
-        ),
-      };
+      polylines
+        ..clear()
+        ..add(
+          Polyline(
+            polylineId: const PolylineId("route"),
+            points: coords,
+            color: const Color(0xFF7C3AED), // Your Purple theme
+            width: 5,
+            jointType: JointType.round,
+          ),
+        );
 
       // 3. Update ETA & Distance
       // Routes API returns distance in meters and duration in seconds (e.g., "1200s")

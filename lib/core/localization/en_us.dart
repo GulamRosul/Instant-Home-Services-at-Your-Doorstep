@@ -155,6 +155,35 @@ const Map<String, String> enUS = {
   'close': 'Close',
   'today': 'Today',
   'yesterday': 'Yesterday',
+
+  //map screen
+  'pick_location': 'Pick Location',
+  'search_destination': 'Search destination',
+  'track': 'Track',
+  'map_unavailable': 'Google Maps is unavailable right now.',
+  'search_hint': 'You can still search for a location above and it will be used for the booking.',
+  'search_hint_track': 'You can still search for a location above.',
+  'map_tap_hint': 'Tap on the map or search for a place to use that location in your booking.',
+  'route_ready': 'Route ready. Tap another point on the map or search again to change the destination.',
+  'create_route_hint': 'Tap anywhere on the map or search for a place to create a route.',
+  'estimated_arrival': 'Estimated Arrival',
+   'distance': 'Distance',
+  'service_cost': 'Service Cost',
+  'estimated_earnings': 'Estimated Earnings',
+  'call': 'Call',
+  'message': 'Message',
+  'map_initialization_error': 'Google Maps could not be initialized on this device.',
+  'location_services_off': 'Location services are turned off. Please enable them and try again.',
+  'location_permission_required': 'Location permission is required to choose a service address.',
+  'location_permission_permanently_denied': 'Location permission is permanently denied. Open settings to continue.',
+  'selected_location': 'Selected location',
+  'user_location': 'User location',
+  // '': '',
+  // '': '',
+  // '': '',
+  
+
+
   
 };
 

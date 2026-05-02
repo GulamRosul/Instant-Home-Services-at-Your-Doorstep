@@ -23,7 +23,7 @@ class ReviewWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "How would you rate your overall experience with this provider?",
+              "how_would_you_rate_your_experience".tr,
               textAlign: TextAlign.center,
               style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
             ),
@@ -63,7 +63,7 @@ class ReviewWidget extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Can you tell us more?",
+                "can_you_tell_us_more".tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
@@ -77,7 +77,7 @@ class ReviewWidget extends StatelessWidget {
               children: [
                 CustomTextField(
                   controller: controller.feedbackController,
-                  hintText: "Add feedback",
+                  hintText: "add_feedback".tr,
                   maxLines: 5,
                   backgroundColor: Colors.white,
                 ),
@@ -174,7 +174,7 @@ class ReviewWidget extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      "Cancel",
+                      "cancel".tr,
                       style: getTextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -201,7 +201,7 @@ class ReviewWidget extends StatelessWidget {
                           side: WidgetStateProperty.all(BorderSide.none),
                         ),
                     child: Text(
-                      "Submit",
+                      "submit".tr,
                       style: getTextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,

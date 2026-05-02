@@ -81,7 +81,7 @@ const Map<String, String> bnBDProvider = {
   'total_bookings_served': 'মোট বুকিং পরিষেবা',
   'average_ratings': 'গড় রেটিং',
   'submitted_proposal': 'সাবমিটেড প্রোপোজাল',
-  'my_wallet': 'মাই ওয়ালেট',
+  'my_wallet': 'আমার ওয়ালেট',
   'active': 'এক্টিভ',
   'withdrawable_amount': 'উঠানোর যোগ্য পরিমাণ',
   'pending_amount': 'মুক্তির অপেক্ষা',

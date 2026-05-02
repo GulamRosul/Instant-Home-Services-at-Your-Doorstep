@@ -734,7 +734,10 @@ class UserHomeScreen extends StatelessWidget {
                         showLoginAlertDialog();
                         return;
                       }
-                      Get.to(() => BookingDetailsScreen(service: service));
+                      Get.to(
+                        () => const BookingDetailsScreen(),
+                        arguments: service,
+                      );
                     },
                     textColor: Colors.white,
                   ),

@@ -9,25 +9,25 @@ import 'package:protiva502/features/user/all_bookings/model/all_booking_model.da
 class AllBookingController extends GetxController {
   final ApiClient _apiClient = ApiClient();
 
-  final selectedStatus = 'All status'.obs;
+  late final selectedStatus = statusOptions[0].obs;
   final isLoading = false.obs;
   final errorMessage = ''.obs;
   final bookings = <UserBookingItem>[].obs;
   final stats = const BookingSummaryStats.empty().obs;
 
-  final List<String> statusOptions = const [
-    'All status',
-    'Pending',
-    'Accepted',
-    'Rejected',
-    'Completed',
-    'Cancelled',
+  final List<String> statusOptions = [
+    'all_status'.tr,
+    'pending'.tr,
+    'accepted'.tr,
+    'rejected'.tr,
+    'completed'.tr,
+    'cancelled'.tr,
   ];
 
   List<UserBookingItem> get filteredBookings {
     final selected = selectedStatus.value;
 
-    if (selected == 'All status') {
+    if (selected == statusOptions[0]) {
       return bookings;
     }
 
@@ -56,7 +56,7 @@ class AllBookingController extends GetxController {
       if (token == null || token.trim().isEmpty) {
         bookings.clear();
         stats.value = const BookingSummaryStats.empty();
-        errorMessage.value = 'Please sign in to view your bookings.';
+        errorMessage.value = 'please_sign_in'.tr;
         return;
       }
 
@@ -70,6 +70,9 @@ class AllBookingController extends GetxController {
 
       final responseMap = _asMap(response.data) ?? <String, dynamic>{};
       final data = _asMap(responseMap['data']);
+      AppLoggerHelper.info(
+        'All bookings response: ${response.statusCode} ${response.data}',
+      );
 
       if (response.statusCode != 200 || data == null) {
         if (!isRefresh) {
@@ -78,7 +81,7 @@ class AllBookingController extends GetxController {
         }
 
         errorMessage.value =
-            _extractMessage(response.data) ?? 'Failed to load bookings.';
+            _extractMessage(response.data) ?? 'failed_to_load_bookings'.tr;
         AppLoggerHelper.warning(
           'All bookings request failed: ${response.statusCode} ${response.data}',
         );
@@ -108,7 +111,7 @@ class AllBookingController extends GetxController {
       errorMessage.value =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to load bookings.';
+          'failed_to_load_bookings'.tr;
       AppLoggerHelper.error('All bookings fetch failed', error);
     } catch (error) {
       if (!isRefresh) {
@@ -116,7 +119,7 @@ class AllBookingController extends GetxController {
         stats.value = const BookingSummaryStats.empty();
       }
 
-      errorMessage.value = 'Failed to load bookings.';
+      errorMessage.value = 'failed_to_load_bookings'.tr;
       AppLoggerHelper.error('Unexpected all bookings fetch error', error);
     } finally {
       isLoading.value = false;

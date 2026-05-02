@@ -70,7 +70,30 @@ class SingleChatController extends GetxController {
           arguments['userId'] ?? StorageService.getUserId() ?? 'user_123';
       userRole.value =
           arguments['userRole'] ?? StorageService.getRole() ?? 'user';
-      otherUserName.value = arguments['providerName'] ?? 'Provider';
+      // Determine other user's display name based on current role and available args
+      otherUserName.value = (() {
+        final role =
+            (arguments['userRole'] ?? StorageService.getRole() ?? 'user')
+                .toString();
+
+        if (role == 'provider') {
+          // Current user is provider — show the client's name when available
+          return (arguments['clientName'] ??
+                  arguments['userName'] ??
+                  arguments['clientDisplayName'] ??
+                  arguments['receiverName'] ??
+                  arguments['providerName'] ??
+                  'User')
+              .toString();
+        }
+
+        // Default: current user is client/user — show provider name when available
+        return (arguments['providerName'] ??
+                arguments['receiverName'] ??
+                arguments['providerDisplayName'] ??
+                'Provider')
+            .toString();
+      })();
 
       // Determine receiverId based on userRole
       if (userRole.value == 'provider') {

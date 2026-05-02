@@ -10,14 +10,13 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/google_map/model/picked_location_data.dart';
 import 'package:protiva502/features/google_map/screen/map_screen.dart';
+import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/user/home/model/home_job_model.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/booking_details_controller.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/booking_step_progress.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
-  const BookingDetailsScreen({super.key, this.service});
-
-  final HomeJobModel? service;
+  const BookingDetailsScreen({super.key});
 
   Future<void> _openMapPicker(BookingDetailsController controller) async {
     final selectedLocation = await Get.to<PickedLocationData>(
@@ -37,6 +36,26 @@ class BookingDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(BookingDetailsController());
+    final dynamic jobData = Get.arguments;
+
+    HomeJobModel? service;
+    if (jobData is JobModel) {
+      service = HomeJobModel(
+        id: jobData.id,
+        userId: jobData.userId,
+        categoryId: jobData.categoryId,
+        title: jobData.title,
+        slug: jobData.slug,
+        description: jobData.description,
+        basePrice: double.tryParse(jobData.basePrice) ?? 0.0,
+        thumbnail: jobData.thumbnail,
+        totalBookings: jobData.totalBookings,
+        isPopular: jobData.isPopuler,
+        averageRating: jobData.averageRating ?? 0.0,
+      );
+    } else if (jobData is HomeJobModel) {
+      service = jobData;
+    }
 
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F7),

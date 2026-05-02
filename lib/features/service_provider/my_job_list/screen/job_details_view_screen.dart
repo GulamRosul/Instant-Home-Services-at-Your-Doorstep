@@ -5,6 +5,7 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/features/service_provider/my_job_list/controller/job_details_view_controller.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/my_job_list_controller.dart';
 import 'package:protiva502/features/user/authentication/widget/log_in_alert_dialogue.dart';
@@ -15,10 +16,12 @@ class JobDetailsViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final JobModel job = Get.arguments;
-    final controller = Get.put(MyJobListController());
+    final detailsController = Get.put(JobDetailsViewController());
     final userRole = StorageService.getRole();
     final isProvider = userRole == 'PROVIDER';
+    final MyJobListController? listController = isProvider
+        ? Get.put(MyJobListController())
+        : null;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -36,216 +39,290 @@ class JobDetailsViewScreen extends StatelessWidget {
         title: Text(
           'service_details'.tr,
           style: getTextStyle(
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
           ),
         ),
         centerTitle: false,
         actions: [
-          if (isProvider)
-            PopupMenuButton(
-              icon: const Icon(Icons.more_vert, color: Color(0xFF09090B)),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'edit',
-                  child: Text(
-                    'edit'.tr,
-                    style: getTextStyle(fontSize: 14.sp, color: Colors.black87),
+          if (isProvider && listController != null)
+            Obx(() {
+              final job = detailsController.job.value;
+              if (job == null) {
+                return const SizedBox.shrink();
+              }
+
+              return PopupMenuButton(
+                icon: const Icon(Icons.more_vert, color: Color(0xFF09090B)),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Text(
+                      'edit'.tr,
+                      style: getTextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.black87,
+                      ),
+                    ),
                   ),
-                ),
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Text(
-                    'delete'.tr,
-                    style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Text(
+                      'delete'.tr,
+                      style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+                    ),
                   ),
-                ),
-              ],
-              onSelected: (value) {
-                if (value == 'edit') {
-                  // Find the index of the job in the controller's listings
-                  final index = controller.listings.indexWhere(
-                    (j) => j.id == job.id,
-                  );
-                  if (index != -1) {
-                    controller.handleEditListing(index);
+                ],
+                onSelected: (value) {
+                  if (value == 'edit') {
+                    final index = listController.listings.indexWhere(
+                      (item) => item.id == job.id,
+                    );
+                    if (index != -1) {
+                      listController.handleEditListing(index);
+                    }
+                  } else if (value == 'delete') {
+                    _showDeleteConfirmation(context, listController, job.id);
                   }
-                } else if (value == 'delete') {
-                  _showDeleteConfirmation(context, controller, job.id);
-                }
-              },
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-            ),
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              );
+            }),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Divider(color: Color(0xFFCBD5E1), height: 1),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: Obx(() {
+        final job = detailsController.job.value;
+
+        if (job == null && detailsController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (job == null) {
+          return _buildErrorState(detailsController);
+        }
+
+        return Stack(
           children: [
-            // Thumbnail Image
-            _buildThumbnailSection(job),
+            RefreshIndicator(
+              onRefresh: detailsController.refreshJob,
+              child: _buildDetailsContent(context, job, isProvider),
+            ),
+            if (detailsController.isLoading.value)
+              const Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: LinearProgressIndicator(minHeight: 2),
+              ),
+          ],
+        );
+      }),
+    );
+  }
 
-            // Service Details
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title and Price
-                  Text(
-                    job.title,
-                    style: getTextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
+  Widget _buildDetailsContent(
+    BuildContext context,
+    JobModel job,
+    bool isProvider,
+  ) {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Thumbnail Image
+          _buildThumbnailSection(job),
+
+          // Service Details
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title and Price
+                Text(
+                  job.title,
+                  style: getTextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${'start_from'.tr} ${job.basePrice} ৳',
+                      style: getTextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPurple,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${'start_from'.tr} ${job.basePrice} ৳',
-                        style: getTextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPurple,
+                    if (job.priceType.isNotEmpty)
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 4.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFE8EAFF),
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: Text(
+                          job.priceType,
+                          style: getTextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textPurple,
+                          ),
                         ),
                       ),
-                      if (job.priceType.isNotEmpty)
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 4.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFE8EAFF),
-                            borderRadius: BorderRadius.circular(6.r),
-                          ),
-                          child: Text(
-                            job.priceType,
-                            style: getTextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.textPurple,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  SizedBox(height: 12.h),
+                  ],
+                ),
+                SizedBox(height: 12.h),
 
-                  // Rating and Status
-                  Row(
-                    children: [
-                      ...List.generate(
-                        5,
-                        (i) => Icon(
-                          i < (job.averageRating?.toInt() ?? 0)
-                              ? Icons.star
-                              : Icons.star_border,
-                          color: Colors.orange,
-                          size: 14.sp,
-                        ),
+                // Rating and Status
+                Row(
+                  children: [
+                    ...List.generate(
+                      5,
+                      (i) => Icon(
+                        i < (job.averageRating?.toInt() ?? 0)
+                            ? Icons.star
+                            : Icons.star_border,
+                        color: Colors.orange,
+                        size: 14.sp,
                       ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        '${job.averageRating ?? 0.0}',
-                        style: getTextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const Spacer(),
-                      _buildStatusBadge(job.status),
-                    ],
-                  ),
-                  SizedBox(height: 16.h),
-
-                  // Description
-                  _buildSectionTitle('description'.tr),
-                  SizedBox(height: 8.h),
-                  Text(
-                    job.description.isEmpty
-                        ? 'no_description_available'.tr
-                        : job.description,
-                    style: getTextStyle(
-                      fontSize: 13.sp,
-                      color: Color(0xFF475569),
-                      lineHeight: 18.sp,
-                      fontWeight: FontWeight.w400,
                     ),
-                  ),
-                  SizedBox(height: 16.h),
+                    SizedBox(width: 8.w),
+                    Text(
+                      '${job.averageRating ?? 0.0}',
+                      style: getTextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const Spacer(),
+                    _buildStatusBadge(job.status),
+                  ],
+                ),
+                SizedBox(height: 16.h),
 
-                  // Service Includes
-                  if (job.includeService.isNotEmpty) ...[
-                    _buildSectionTitle('what_included'.tr),
-                    SizedBox(height: 8.h),
-                    ...job.includeService.map(
-                      (service) => Padding(
-                        padding: EdgeInsets.only(bottom: 8.h),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              color: AppColors.textPurple,
-                              size: 18.sp,
-                            ),
-                            SizedBox(width: 8.w),
-                            Expanded(
-                              child: Text(
-                                service,
-                                style: getTextStyle(
-                                  fontSize: 13.sp,
-                                  color: Color(0xFF475569),
-                                  fontWeight: FontWeight.w400,
-                                ),
+                // Description
+                _buildSectionTitle('description'.tr),
+                SizedBox(height: 8.h),
+                Text(
+                  job.description.isEmpty
+                      ? 'no_description_available'.tr
+                      : job.description,
+                  style: getTextStyle(
+                    fontSize: 13.sp,
+                    color: Color(0xFF475569),
+                    lineHeight: 18.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: 16.h),
+
+                // Service Includes
+                if (job.includeService.isNotEmpty) ...[
+                  _buildSectionTitle('what_included'.tr),
+                  SizedBox(height: 8.h),
+                  ...job.includeService.map(
+                    (service) => Padding(
+                      padding: EdgeInsets.only(bottom: 8.h),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: AppColors.textPurple,
+                            size: 18.sp,
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              service,
+                              style: getTextStyle(
+                                fontSize: 13.sp,
+                                color: Color(0xFF475569),
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 16.h),
-                  ],
-
-                  // Gallery
-                  if (job.images.isNotEmpty || job.videos.isNotEmpty)
-                    _buildGallerySection(job),
-
+                  ),
                   SizedBox(height: 16.h),
-
-                  // Analytics (for providers) or Booking Button (for users)
-                  if (isProvider)
-                    _buildAnalyticsSection(job)
-                  else
-                    CustomButton(
-                      text: 'book_now'.tr,
-                      onPressed: () {
-                        if (!StorageService.isLoggedIn) {
-                          showLoginAlertDialog(context);
-                          return;
-                        }
-                        Get.to(() => BookingDetailsScreen(), arguments: job);
-                      },
-
-                      backgroundColor: AppColors.textPurple,
-                      textColor: Colors.white,
-                    ),
-
-                  SizedBox(height: 20.h),
                 ],
+
+                // Gallery
+                if (job.images.isNotEmpty || job.videos.isNotEmpty)
+                  _buildGallerySection(job),
+
+                SizedBox(height: 16.h),
+
+                // Analytics (for providers) or Booking Button (for users)
+                if (isProvider)
+                  _buildAnalyticsSection(job)
+                else
+                  CustomButton(
+                    text: 'book_now'.tr,
+                    onPressed: () {
+                      if (!StorageService.isLoggedIn) {
+                        showLoginAlertDialog(context);
+                        return;
+                      }
+                      Get.to(() => BookingDetailsScreen(), arguments: job);
+                    },
+
+                    backgroundColor: AppColors.textPurple,
+                    textColor: Colors.white,
+                  ),
+
+                SizedBox(height: 20.h),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState(JobDetailsViewController controller) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              controller.errorMessage.value.isEmpty
+                  ? 'Failed to load service details'
+                  : controller.errorMessage.value,
+              textAlign: TextAlign.center,
+              style: getTextStyle(
+                fontSize: 14.sp,
+                color: AppColors.textSecondary,
               ),
+            ),
+            SizedBox(height: 16.h),
+            CustomButton(
+              text: 'retry'.tr,
+              onPressed: controller.refreshJob,
+              backgroundColor: AppColors.textPurple,
+              textColor: Colors.white,
             ),
           ],
         ),

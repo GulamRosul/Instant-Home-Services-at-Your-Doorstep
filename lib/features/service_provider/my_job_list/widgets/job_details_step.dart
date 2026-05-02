@@ -23,13 +23,13 @@ class JobDetailsStep extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabel('Job Title', isRequired: true),
+        _buildLabel('job_title'.tr, isRequired: true),
         SizedBox(height: 8.h),
         CustomTextField(
           backgroundColor: Colors.white,
           borderColor: Color(0xFF666659).withValues(alpha: 0.3),
           controller: controller.jobTitleController,
-          hintText: 'e.g. Kitchen cabinet installation',
+          hintText: 'enter_job_title'.tr,
         ),
         SizedBox(height: 20.h),
         // _buildLabel('Category', isRequired: true),
@@ -60,17 +60,17 @@ class JobDetailsStep extends StatelessWidget {
         //   ),
         // ),
         // SizedBox(height: 20.h),
-        _buildLabel('Job Description', isRequired: true),
+        _buildLabel('job_description'.tr, isRequired: true),
         SizedBox(height: 8.h),
         CustomTextField(
           backgroundColor: Colors.white,
           borderColor: Color(0xFF666659).withValues(alpha: 0.3),
           controller: controller.jobDescriptionController,
-          hintText: 'Kitchen cabinet installation',
+          // hintText: 'Kitchen cabinet installation',
           maxLines: 7,
         ),
         SizedBox(height: 20.h),
-        _buildLabel('Base Price', isRequired: true),
+        _buildLabel('base_price'.tr, isRequired: true),
         SizedBox(height: 8.h),
         CustomTextField(
           backgroundColor: Colors.white,
@@ -79,7 +79,7 @@ class JobDetailsStep extends StatelessWidget {
           hintText: ' ৳200',
         ),
         SizedBox(height: 20.h),
-        _buildLabel('Price Type', isRequired: true),
+        _buildLabel('price_type'.tr, isRequired: true),
         SizedBox(height: 8.h),
         Obx(
           () => CustomPopupMenu(

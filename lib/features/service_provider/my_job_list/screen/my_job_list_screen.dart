@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/my_job_list_controller.dart';
@@ -44,33 +45,38 @@ class MyJobListScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'My Jobs',
-                      style: getTextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF0F172A),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'my_jobs'.tr,
+                        style: getTextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF0F172A),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 10.h),
-                    Text(
-                      'View all your currently\nactive job postings',
-                      style: getTextStyle(
-                        fontSize: 12.sp,
-                        color: Color(0xFF334155),
-                        fontWeight: FontWeight.w400,
+                      SizedBox(height: 10.h),
+                      Text(
+                        'my_job_list_description'.tr,
+                        style: getTextStyle(
+                          fontSize: 12.sp,
+                          color: Color(0xFF334155),
+                          fontWeight: FontWeight.w400,
+                          lineHeight: 20.sp
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 ElevatedButton.icon(
                   onPressed: controller.handleNewListing,
                   icon: const Icon(Icons.add, color: Colors.white, size: 18),
                   label: Text(
-                    'New listing',
+                    'new_listing'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: Color(0xFFFAFAFA),
@@ -101,7 +107,9 @@ class MyJobListScreen extends StatelessWidget {
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value && controller.listings.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator(
+                    color: AppColors.textPurple,
+                  ));
                 }
 
                 if (controller.errorMessage.value.isNotEmpty &&
@@ -130,7 +138,7 @@ class MyJobListScreen extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            'Retry',
+                            'retry'.tr,
                             style: getTextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
@@ -146,7 +154,7 @@ class MyJobListScreen extends StatelessWidget {
                 if (controller.listings.isEmpty) {
                   return Center(
                     child: Text(
-                      'No jobs found',
+                      'no_jobs_found'.tr,
                       textAlign: TextAlign.center,
                       style: getTextStyle(
                         fontSize: 14.sp,
@@ -259,7 +267,7 @@ class MyJobListScreen extends StatelessWidget {
                     )
                   else
                     Text(
-                      'No rating',
+                      'no_rating'.tr,
                       style: getTextStyle(
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w400,
@@ -318,7 +326,7 @@ class MyJobListScreen extends StatelessWidget {
                               PopupMenuItem(
                                 value: 'view',
                                 child: Text(
-                                  'View details',
+                                  'view_details'.tr,
                                   style: getTextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.black87,
@@ -328,7 +336,7 @@ class MyJobListScreen extends StatelessWidget {
                               PopupMenuItem(
                                 value: 'edit',
                                 child: Text(
-                                  'Edit',
+                                  'edit'.tr,
                                   style: getTextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.black87,
@@ -338,10 +346,11 @@ class MyJobListScreen extends StatelessWidget {
                               PopupMenuItem(
                                 value: 'delete',
                                 child: Text(
-                                  'Delete',
+                                  'delete'.tr,
                                   style: getTextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.red,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
@@ -377,7 +386,7 @@ class MyJobListScreen extends StatelessWidget {
                     SizedBox(height: 4.h),
                     RichText(
                       text: TextSpan(
-                        text: 'Start From ',
+                        text: '${'starts_from'.tr} ', // 'Starts from '
                         style: getTextStyle(
                           fontSize: 10.sp,
                           color: Color(0xFF475569),
@@ -406,19 +415,19 @@ class MyJobListScreen extends StatelessWidget {
               Flexible(
                 child: _buildJobStat(
                   Icons.visibility_outlined,
-                  "${item.views} views",
+                  "${item.views} ${'views'.tr}",
                 ),
               ),
               Flexible(
                 child: _buildJobStat(
                   Icons.description_outlined,
-                  "${item.clicks} clicks",
+                  "${item.clicks} ${'clicks'.tr}",
                 ),
               ),
               Flexible(
                 child: _buildJobStat(
                   Icons.calendar_month_outlined,
-                  "${item.totalBookings} bookings",
+                  "${item.totalBookings} ${'bookings'.tr}",
                 ),
               ),
             ],

@@ -22,7 +22,7 @@ class ServiceDetailsStep extends StatelessWidget {
       children: [
         // Category Section
         Text(
-          'Category',
+          'category'.tr,
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
@@ -69,7 +69,7 @@ class ServiceDetailsStep extends StatelessWidget {
               isExpanded: true,
               underline: SizedBox(),
               hint: Text(
-                'Select a category',
+                'select_a_category'.tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   color: Colors.grey.shade600,
@@ -105,7 +105,7 @@ class ServiceDetailsStep extends StatelessWidget {
 
         // Sub-Category Section
         Text(
-          'Sub Category',
+          'sub_category'.tr,
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
@@ -123,7 +123,7 @@ class ServiceDetailsStep extends StatelessWidget {
                 border: Border.all(color: Color(0xFFCBD5E1)),
               ),
               child: Text(
-                'Please select a category first',
+                'please_select_category_first'.tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   color: Colors.grey.shade600,
@@ -172,7 +172,7 @@ class ServiceDetailsStep extends StatelessWidget {
               isExpanded: true,
               underline: SizedBox(),
               hint: Text(
-                'Select a sub category',
+                'select_a_sub_category'.tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   color: Colors.grey.shade600,
@@ -209,7 +209,7 @@ class ServiceDetailsStep extends StatelessWidget {
         SizedBox(height: 24.h),
 
         Text(
-          'What include in your service',
+          'included_services'.tr,
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
@@ -298,7 +298,7 @@ class ServiceDetailsStep extends StatelessWidget {
                       ),
                       SizedBox(width: 8.w),
                       Text(
-                        'Add Service',
+                        'add_service'.tr,
                         style: getTextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
@@ -316,7 +316,7 @@ class ServiceDetailsStep extends StatelessWidget {
         Divider(color: Color(0xFFCBD5E1)),
         SizedBox(height: 24.h),
         Text(
-          'Upload an image',
+          'upload_an_image'.tr,
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
@@ -358,7 +358,7 @@ class ServiceDetailsStep extends StatelessWidget {
                           controller.uploadedImagePath.value = '';
                         },
                         child: Text(
-                          'Change Image',
+                          'change_image'.tr,
                           style: getTextStyle(
                             fontSize: 12.sp,
                             color: const Color(0xFF7079F0),
@@ -399,7 +399,7 @@ class ServiceDetailsStep extends StatelessWidget {
                       GestureDetector(
                         onTap: () => controller.pickImage(),
                         child: Text(
-                          'Change Image',
+                          'change_image'.tr,
                           style: getTextStyle(
                             fontSize: 12.sp,
                             color: const Color(0xFF7079F0),
@@ -434,7 +434,7 @@ class ServiceDetailsStep extends StatelessWidget {
                     ),
                     SizedBox(height: 20.h),
                     Text(
-                      'Please upload square image, size less than 100KB',
+                      'please_upload_square_image'.tr,
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: Colors.black,
@@ -470,7 +470,7 @@ class ServiceDetailsStep extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                'Choose File',
+                                'upload_image'.tr,
                                 style: getTextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
@@ -510,7 +510,7 @@ class ServiceDetailsStep extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         title: Text(
-          'Add Service',
+          'add_service'.tr,
           style: getTextStyle(fontWeight: FontWeight.w700),
         ),
         content: CustomTextField(
@@ -526,7 +526,7 @@ class ServiceDetailsStep extends StatelessWidget {
               controller.addService();
               Get.back();
             },
-            child: const Text('Add'),
+            child:  Text('add'.tr),
           ),
         ],
       ),

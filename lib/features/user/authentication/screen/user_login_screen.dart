@@ -69,7 +69,7 @@ class UserLoginScreen extends StatelessWidget {
             Obx(
               () => CustomTextField(
                 controller: controller.emailController,
-                hintText: 'sarah@example.com',
+                hintText: 'example@gmail.com',
                 backgroundColor: const Color(0xFFF1F5F9),
                 borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
                 textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),

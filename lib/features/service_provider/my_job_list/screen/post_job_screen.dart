@@ -39,7 +39,7 @@ class PostJobScreen extends StatelessWidget {
           onPressed: () => controller.previousStep(),
         ),
         title: Obx(() => Text(
-          controller.isEditMode.value ? 'Edit Job' : 'Job Post',
+          controller.isEditMode.value ? 'edit_job'.tr : 'post_job'.tr,
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
@@ -60,7 +60,7 @@ class PostJobScreen extends StatelessWidget {
             children: [
               SizedBox(height: 24.h),
               Text(
-                'Post a Job in Minutes',
+                'post_job_in_minutes'.tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
@@ -69,7 +69,7 @@ class PostJobScreen extends StatelessWidget {
               ),
               SizedBox(height: 8.h),
               Text(
-                'Post a job, receive proposals, and hire the right professional with confidence.',
+                'job_post_description'.tr,
                 style: getTextStyle(
                   fontSize: 14.sp,
                   color: Color(0xFF475569),
@@ -105,9 +105,9 @@ class PostJobScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        TabItem(label: "Jobs details", index: 0, controller: controller),
-        TabItem(label: "Service details", index: 1, controller: controller),
-        TabItem(label: "Preview", index: 2, controller: controller),
+        TabItem(label: "job_details".tr, index: 0, controller: controller),
+        TabItem(label: "service_details".tr, index: 1, controller: controller),
+        TabItem(label: "preview".tr, index: 2, controller: controller),
       ],
     );
   }
@@ -137,7 +137,7 @@ class PostJobScreen extends StatelessWidget {
                 side: WidgetStateProperty.all(BorderSide.none),
               ),
           child: Text(
-            isPreview ? (isEditMode ? 'Update Job' : 'Post Job') : 'Next Step',
+            isPreview ? (isEditMode ? 'edit_job'.tr : 'post_job'.tr) : 'next_step'.tr,
             style: getTextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,

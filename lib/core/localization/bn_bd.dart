@@ -137,6 +137,16 @@ const Map<String, String> bnBD = {
   'last_updated': 'শেষ আপডেট: ',
   'no_privacy_policy': 'কোন গোপনীয়তা নীতি উপলব্ধ নেই',
 
+  //Service Details
+  'description': 'বর্ণনা',
+  'what_included': 'যা অন্তর্ভুক্ত',
+  'Gallery': 'গ্যালারি',
+  'Analytics': 'এনালিটিক্স',
+  'reviews': 'পর্যালোচনা',
+  'views': 'দেখা',
+  'clicks': 'ক্লিক',
+
+
     //notifications
   'clear_all': 'সব মুছে ফেলুন',
   'please_sign_in_to_view_notifications': 'নোটিফিকেশন দেখতে সাইন ইন করুন।',

@@ -18,11 +18,11 @@ class PreviewStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionCard(
-          title: 'Job Details',
+          title: 'job_details'.tr,
           icon: Icons.description_outlined,
           onEdit: () => controller.currentStep.value = 0,
           children: [
-            _buildLabel('Job Title'),
+            _buildLabel('job_title'.tr),
             SizedBox(height: 12.h),
             Text(
               controller.jobTitleController.text,
@@ -35,7 +35,7 @@ class PreviewStep extends StatelessWidget {
             SizedBox(height: 8.h),
             const Divider(color: Color(0xFFE2E8F0)),
             SizedBox(height: 16.h),
-            _buildLabel('Description'),
+            _buildLabel('job_description'.tr),
             SizedBox(height: 12.h),
             Text(
               controller.jobDescriptionController.text,
@@ -47,7 +47,7 @@ class PreviewStep extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16.h),
-            _buildLabel('Service Category'),
+            _buildLabel('service_category'.tr),
             SizedBox(height: 12.h),
             Row(
               children: [
@@ -90,7 +90,7 @@ class PreviewStep extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20.h),
-            _buildLabel('Budget'),
+            _buildLabel('budget'.tr),
             SizedBox(height: 12.h),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -109,7 +109,7 @@ class PreviewStep extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Maximum : ৳ ${controller.basePriceController.text}/hour',
+              '${'minimum'.tr} : ৳ ${controller.basePriceController.text}/hour',
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
@@ -122,7 +122,7 @@ class PreviewStep extends StatelessWidget {
         SizedBox(height: 20.h),
         Obx(
           () => _buildSectionCard(
-            title: 'image',
+            title: 'image'.tr,
             icon: Icons.image_outlined,
             children: [
               ClipRRect(
@@ -149,7 +149,7 @@ class PreviewStep extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Include in your service',
+                    'included_service'.tr,
                     style: getTextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w500,
@@ -270,7 +270,7 @@ class PreviewStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'What happens next?',
+            'what_happens_next'.tr,
             style: getTextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w400,
@@ -278,9 +278,9 @@ class PreviewStep extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10.h),
-          _buildInfoItem('Your job will be posted and visible to Clients'),
-          _buildInfoItem('You\'ll receive quotes and proposals'),
-          _buildInfoItem('Review provider profiles, ratings, and proposals'),
+          _buildInfoItem('your_job_will_be_posted'.tr),
+          _buildInfoItem('you_ll_receive_quotes'.tr),
+          _buildInfoItem('review_provider_profiles'.tr),
         ],
       ),
     );

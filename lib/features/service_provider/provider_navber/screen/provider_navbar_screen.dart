@@ -73,7 +73,7 @@ class ProviderBottomNavBar extends StatelessWidget {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 6.h),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppColors.textPurple.withValues(alpha: 0.1)
@@ -130,8 +130,8 @@ class ProviderBottomNavBar extends StatelessWidget {
             if (unreadCount == 0) return const SizedBox.shrink();
 
             return Positioned(
-              top: -5.r,
-              right: -5.r,
+              top: -3.r,
+              right: 0.r,
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
                 decoration: BoxDecoration(

@@ -138,15 +138,14 @@ const Map<String, String> enUS = {
   'no_privacy_policy': 'No privacy policy available',
 
   //Service Details
-  'service_details': 'Service Details',
   'description': 'Description',
   'what_included': 'What Included',
   'Gallery': 'Gallery',
   'Analytics': 'Analytics',
-  'Reviews': 'Reviews',
+  'reviews': 'Reviews',
   'views': 'Views',
-  'Clicks': 'Clicks',
-  'Bookings': 'Bookings',
+  'clicks': 'Clicks',
+
 
   //notifications
   'clear_all': 'Clear All',

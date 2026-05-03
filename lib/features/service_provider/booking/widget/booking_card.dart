@@ -156,13 +156,13 @@ class BookingCard extends StatelessWidget {
               GestureDetector(
                 onTap: () => controller.handleViewDetails(index),
                 child: Text(
-                  'View Details',
+                  'view_details'.tr,
                   style: getTextStyle(
-                    fontSize: 14.sp,
-                    color: const Color(0xFF7079F0),
-                    decoration: TextDecoration.underline,
-                    fontWeight: FontWeight.w600,
-                    decorationColor: AppColors.textPurple,
+                      fontSize: 14.sp,
+                      color: AppColors.textPurple,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w600,
+                      decorationColor: AppColors.textPurple
                   ),
                 ),
               ),
@@ -200,12 +200,13 @@ class BookingCard extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    'Track Customer',
+                    'track_customer'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
-                      color: const Color(0xFF7079F0),
+                      color: AppColors.textPurple,
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.w600,
+                      decorationColor: AppColors.textPurple
                     ),
                   ),
                 ),

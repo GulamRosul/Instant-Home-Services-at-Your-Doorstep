@@ -51,15 +51,15 @@ class ProviderLoginScreen extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 8.h),
-            Text(
-              "please_sign_in".tr,
-              style: getTextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
-            ),
+            // SizedBox(height: 8.h),
+            // Text(
+            //   "please_sign_in".tr,
+            //   style: getTextStyle(
+            //     fontSize: 16.sp,
+            //     fontWeight: FontWeight.w500,
+            //     color: Colors.black87,
+            //   ),
+            // ),
             SizedBox(height: 32.h),
             _buildLabel("email".tr),
             Obx(

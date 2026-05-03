@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
@@ -65,14 +66,14 @@ class BookingCard extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.r),
                 child: Image.asset(
                   ImagePath.servicecard,
-                  width: 50.w,
-                  height: 50.w,
+                  width: 70.w,
+                  height: 70.h,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -90,28 +91,19 @@ class BookingCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 4.h),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '${'booking_date'.tr}: ${_formatDate(booking.createdAt)}',
-                            style: getTextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          '${'budget'.tr}: ${booking.serviceAmount.toStringAsFixed(0)} ৳',
-                          style: getTextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      '${'booking_date'.tr}: ${_formatDate(booking.createdAt)}',
+                      style: getTextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      '${'budget'.tr}: ${booking.serviceAmount.toStringAsFixed(0)} ৳',
+                      style: getTextStyle(fontSize: 12.sp, color: Colors.black),
                     ),
                     SizedBox(height: 4.h),
                     Text(
@@ -170,6 +162,7 @@ class BookingCard extends StatelessWidget {
                     color: const Color(0xFF7079F0),
                     decoration: TextDecoration.underline,
                     fontWeight: FontWeight.w600,
+                    decorationColor: AppColors.textPurple,
                   ),
                 ),
               ),
@@ -265,10 +258,7 @@ class BookingCard extends StatelessWidget {
       return GestureDetector(
         onTap: () {
           if (trackingBookingId.isEmpty) {
-            Get.snackbar(
-              'booking_update'.tr,
-              'booking_id_unavailable'.tr,
-            );
+            Get.snackbar('booking_update'.tr, 'booking_id_unavailable'.tr);
             return;
           }
 

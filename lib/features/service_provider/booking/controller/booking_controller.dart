@@ -132,7 +132,9 @@ class BookingController extends GetxController {
       );
       debugPrint('Provider booking status => ${response.statusCode}');
       const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-      debugPrint('Provider booking response => ${encoder.convert(response.data)}');
+      debugPrint(
+        'Provider booking response => ${encoder.convert(response.data)}',
+      );
 
       if (response.statusCode != 200) {
         errorMessage.value = 'failed_to_load_bookings'.tr;
@@ -151,13 +153,18 @@ class BookingController extends GetxController {
 
       debugPrint('Raw items list: $items');
 
-      bookings.assignAll(
-        items.whereType<Map>().map(
-          (item) => RecentBookingModel.fromJson(
-            item.map((key, value) => MapEntry(key.toString(), value)),
-          ),
-        ),
-      );
+      final latestBookings =
+          items
+              .whereType<Map>()
+              .map(
+                (item) => RecentBookingModel.fromJson(
+                  item.map((key, value) => MapEntry(key.toString(), value)),
+                ),
+              )
+              .toList()
+            ..sort(_compareLatestFirst);
+
+      bookings.assignAll(latestBookings);
 
       debugPrint('Provider booking length => ${bookings.length}');
       for (int i = 0; i < bookings.length; i++) {
@@ -235,18 +242,25 @@ class BookingController extends GetxController {
 
   Future<void> handleAccept(int index) async {
     final booking = filteredBookings[index];
-    await _updateBookingStatus(booking, 'ACCEPTED', index);
+    await handleAcceptBooking(booking);
   }
 
   Future<void> handleReject(int index) async {
     final booking = filteredBookings[index];
-    await _updateBookingStatus(booking, 'REJECTED', index);
+    await handleRejectBooking(booking);
+  }
+
+  Future<void> handleAcceptBooking(RecentBookingModel booking) async {
+    await _updateBookingStatus(booking, 'ACCEPTED');
+  }
+
+  Future<void> handleRejectBooking(RecentBookingModel booking) async {
+    await _updateBookingStatus(booking, 'REJECTED');
   }
 
   Future<void> _updateBookingStatus(
     RecentBookingModel booking,
     String status,
-    int index,
   ) async {
     try {
       isLoading.value = true;
@@ -292,6 +306,7 @@ class BookingController extends GetxController {
           bookings[originalIndex] = bookings[originalIndex].copyWith(
             status: status,
           );
+          bookings.sort(_compareLatestFirst);
           bookings.refresh();
 
           final statusLabel = status == 'ACCEPTED' ? 'accepted' : 'rejected';
@@ -314,7 +329,7 @@ class BookingController extends GetxController {
             animationDuration: const Duration(milliseconds: 300),
             boxShadows: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.black.withValues(alpha: 0.15),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -322,14 +337,16 @@ class BookingController extends GetxController {
             isDismissible: true,
             forwardAnimationCurve: Curves.easeOutBack,
           );
+          Future.delayed(const Duration(milliseconds: 300), () {
+            Get.back();
+          });
         }
       } else {
-        errorMessage.value =
-            bookingResponse.message ?? 'Failed to update booking status';
-        Get.snackbar(
-          'Error',
-          bookingResponse.message ?? 'Failed to update booking status',
-        );
+        final message = bookingResponse.message.isEmpty
+            ? 'Failed to update booking status'
+            : bookingResponse.message;
+        errorMessage.value = message;
+        Get.snackbar('Error', message);
       }
     } on DioException catch (e) {
       errorMessage.value = 'Network error while updating booking status';
@@ -345,6 +362,12 @@ class BookingController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  int _compareLatestFirst(RecentBookingModel a, RecentBookingModel b) {
+    final aDate = a.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+    final bDate = b.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+    return bDate.compareTo(aDate);
   }
 
   void handleMessage(int index) {
@@ -371,10 +394,7 @@ class BookingController extends GetxController {
     debugPrint('Extracted Provider ID: $providerId');
 
     if (clientId.isEmpty) {
-      Get.snackbar(
-        'error'.tr,
-        'client_info_unavailable'.tr,
-      );
+      Get.snackbar('error'.tr, 'client_info_unavailable'.tr);
       return;
     }
 

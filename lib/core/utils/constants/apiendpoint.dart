@@ -36,6 +36,7 @@ class ApiEndpoints {
   static String updateJob(String jobId) => '/job/$jobId/update-jon-content';
   static String deleteJob(String jobId) => '/job/delete-jon/$jobId';
   static String updateThumbnail(String jobId) => '/job/$jobId/update/thumbnail';
+  static String getSingleJob(String jobId) => '/job/$jobId/single-job-with-review';
 
   //bookings
   static const String myAllBookings = '/bookings/my-all-booking';

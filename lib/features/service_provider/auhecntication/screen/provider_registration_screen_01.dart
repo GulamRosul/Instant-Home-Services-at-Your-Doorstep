@@ -126,6 +126,7 @@ class ProviderRegistrationScreen01 extends StatelessWidget {
               hintText: 'nid_number_hint'.tr,
               backgroundColor: const Color(0xFFF8F9FA),
               borderColor: const Color(0xFFE2E8F0),
+              keyboardType: TextInputType.number,
             ),
             SizedBox(height: 16.h),
 

@@ -37,6 +37,8 @@ class UserLoginScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 24.w),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
               height: 120.h,
@@ -58,14 +60,16 @@ class UserLoginScreen extends StatelessWidget {
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 color: Colors.black87,
+                lineHeight: 20.sp
               ),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 32.h),
             _buildLabel("email".tr),
             Obx(
               () => CustomTextField(
                 controller: controller.emailController,
-                hintText: 'sarah@example.com',
+                hintText: 'example@gmail.com',
                 backgroundColor: const Color(0xFFF1F5F9),
                 borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
                 textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
@@ -112,7 +116,9 @@ class UserLoginScreen extends StatelessWidget {
             SizedBox(height: 48.h),
             Obx(
               () => CustomButton(
-                text: controller.isLoading.value ? "signing_in".tr : "sign_in".tr,
+                text: controller.isLoading.value
+                    ? "signing_in".tr
+                    : "sign_in".tr,
                 onPressed: controller.isLoading.value
                     ? null
                     : controller.handleSignIn,

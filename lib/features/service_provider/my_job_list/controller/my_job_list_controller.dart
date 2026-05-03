@@ -239,8 +239,8 @@ class MyJobListController extends GetxController {
     Get.dialog(
       AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Delete Job'),
-        content: Text('Are you sure you want to delete "${job.title}"?'),
+        title: Text('delete_job'.tr),
+        content: Text('confirm_delete_job'.trParams({'title': job.title})),
         actions: [
           TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
@@ -255,8 +255,8 @@ class MyJobListController extends GetxController {
                 // Remove from list after successful deletion
                 listings.removeAt(index);
                 Get.snackbar(
-                  'Success',
-                  '${job.title} has been deleted',
+                  'success'.tr,
+                  'job_deleted'.trParams({'title': job.title}),
                   snackPosition: SnackPosition.BOTTOM,
                 );
               }

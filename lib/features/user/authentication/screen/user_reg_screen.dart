@@ -43,7 +43,7 @@ class UserRegScreen extends StatelessWidget {
             _buildFieldLabel("first_name".tr),
             CustomTextField(
               controller: controller.firstNameController,
-              hintText: 'sarah'.tr,
+              hintText: 'first_name_hint'.tr,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
@@ -53,7 +53,7 @@ class UserRegScreen extends StatelessWidget {
             _buildFieldLabel("last_name".tr),
             CustomTextField(
               controller: controller.lastNameController,
-              hintText: 'islam'.tr,
+              hintText: 'last_name_hint'.tr,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
@@ -101,7 +101,7 @@ class UserRegScreen extends StatelessWidget {
             _buildFieldLabel("city".tr),
             CustomTextField(
               controller: controller.cityController,
-              hintText: 'dhaka'.tr,
+              // hintText: 'dhaka'.tr,
               backgroundColor: const Color(0xFFF1F5F9),
               borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
               textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),

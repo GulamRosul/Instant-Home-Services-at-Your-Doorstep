@@ -65,7 +65,8 @@ const Map<String, String> enUSUser = {
   'failed_pick_image': 'Failed to pick image',
   'registration_failed': 'Registration failed',
   'registration_failed_try_again': 'Registration failed. Please try again.',
-  'registration_success': 'Registration successful. Please verify your email with the OTP sent.',
+  'registration_success':
+      'Registration successful. Please verify your email with the OTP sent.',
   'unexpected_error': 'Unexpected error occurred',
   'something_went_wrong': 'Something went wrong. Please try again.',
   'password_is_required': 'Password is required',
@@ -73,7 +74,8 @@ const Map<String, String> enUSUser = {
   'confirm_your_password': 'Please confirm your password',
   'passwords_do_not_match': 'Passwords do not match',
   'invalid_request': 'Invalid request. Please try again.',
-  'password_reset_success': 'Password reset successfully. Please login with your new password.',
+  'password_reset_success':
+      'Password reset successfully. Please login with your new password.',
   'password_reset_failed': 'Failed to reset password. Please try again.',
 
   // Category Screen
@@ -89,7 +91,8 @@ const Map<String, String> enUSUser = {
 
   // Service Provider Screen
   'featured_provider': 'Featured Provider',
-  'featured_provider_description': 'Work with highly recommended experts who stand out for their quality, dedication, and proven track record.',
+  'featured_provider_description':
+      'Work with highly recommended experts who stand out for their quality, dedication, and proven track record.',
   'view_provider': 'View Provider',
   'start_from': 'Start From',
   'book_now': 'Book Now',
@@ -138,10 +141,10 @@ const Map<String, String> enUSUser = {
   'location_details': 'Location details',
   'message': 'Message',
   'add_short_description': 'Add short description..',
-  'terms_of_service_agreement': 'By clicking "Go to checkout", you agree to our ',
+  'terms_of_service_agreement':
+      'By clicking "Go to checkout", you agree to our ',
   'selected_service': 'Selected Service',
   'service_details': 'Service details',
-  
 
   // Confirm Booking Screen
   'confirm_your_booking': 'Confirm Your Booking',
@@ -155,7 +158,8 @@ const Map<String, String> enUSUser = {
   'total_label': 'Total',
   'confirming': 'Confirming...',
   'no_additional_message': 'No additional message',
-  'service_details_will_be_confirmed': 'Service details will be confirmed next.',
+  'service_details_will_be_confirmed':
+      'Service details will be confirmed next.',
   'ready_for_confirmation': 'Ready for confirmation',
   'booking_details': 'Booking details',
   'confirm': 'Confirm',
@@ -178,4 +182,46 @@ const Map<String, String> enUSUser = {
   '02': '02',
   '03': '03',
 
+  // All Bookings Screen
+  'total_bookings': 'Total Bookings',
+  'bookings_accepted': 'Bookings Accepted',
+  'service_in_progress': 'Service In-Progress',
+  'completed_service': 'Completed Service',
+  'time_not_set': 'Time not set',
+  'book_again': 'Book Again',
+  'write_review': 'Write Review',
+  'make_payment': 'Make Payment',
+  'track_provider': 'Track Provider',
+  'loading_your_bookings': 'Loading your bookings...',
+  'no_bookings_yet': 'No bookings yet',
+  'try_different_filter':
+      'Try a different status filter to see your other bookings.',
+  'your_bookings_will_appear':
+      'Your bookings will appear here once you place a service order.',
+  'booking_id_unavailable': 'Booking ID is unavailable for tracking.',
+  'all_status': 'All status',
+  'pending': 'Pending',
+  'accepted': 'Accepted',
+  'rejected': 'Rejected',
+  'completed': 'Completed',
+  'cancelled': 'Cancelled',
+  'please_sign_in': 'Please sign in to view your bookings.',
+  'failed_to_load_bookings': 'Failed to load bookings.',
+  'no_bookings': 'No @status bookings yet',
+
+  //review
+  'how_would_you_rate_your_experience':
+      'How would you rate your overall experience with this provider?',
+  'share_your_thoughts':
+      'Share your thoughts to help others make the right choice.',
+  'can_you_tell_us_more': 'Can you tell us more?',
+  'add_feedback': 'Add feedback',
+  'submit': 'Submit',
+
+  //  '': '',
+  //  '': '',
+  //  '': '',
+  //  '': '',
+  //  '': '',
+  //  '': '',
 };

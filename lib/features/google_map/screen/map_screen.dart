@@ -9,6 +9,7 @@ import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/google_map/controller/map_controller.dart';
+import 'package:protiva502/features/google_map/service/map_service.dart';
 import 'package:protiva502/features/google_map/model/picked_location_data.dart';
 import 'package:protiva502/features/tracking/controller/tracking_controller.dart';
 
@@ -127,6 +128,20 @@ class _MapScreenState extends State<MapScreen> {
     Get.back<PickedLocationData>(result: _buildPickedLocationData());
   }
 
+  Future<void> _handleSuggestionTap(MapPlaceSuggestion suggestion) async {
+    FocusScope.of(context).unfocus();
+    final didSelectLocation = await controller.selectPlaceSuggestion(
+      suggestion,
+      buildRoute: !widget.isPickerMode,
+    );
+
+    if (!mounted || !widget.isPickerMode || !didSelectLocation) {
+      return;
+    }
+
+    Get.back<PickedLocationData>(result: _buildPickedLocationData());
+  }
+
   Future<void> _handleMapTap(LatLng position) async {
     await controller.setDestination(position, buildRoute: !widget.isPickerMode);
 
@@ -170,7 +185,7 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isPickerMode ? 'Pick Location' : 'Track'),
+        title: Text(widget.isPickerMode ? 'pick_location'.tr : 'track'.tr),
         centerTitle: false,
         leading: IconButton(
           icon: Icon(
@@ -186,9 +201,9 @@ class _MapScreenState extends State<MapScreen> {
           ? _buildTrackingModeBody()
           : Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator(
-                  color: AppColors.textPurple,
-                ));
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.textPurple),
+                );
               }
 
               return Stack(
@@ -231,14 +246,14 @@ class _MapScreenState extends State<MapScreen> {
                                         .value
                                         .isNotEmpty
                                     ? controller.mapAvailabilityMessage.value
-                                    : 'Google Maps is unavailable right now.',
+                                    : 'map_unavailable'.tr,
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 12),
                               Text(
                                 widget.isPickerMode
-                                    ? 'You can still search for a location above and it will be used for the booking.'
-                                    : 'You can still search for a location above.',
+                                    ? 'search_hint'.tr
+                                    : 'search_hint_track'.tr,
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
@@ -260,8 +275,11 @@ class _MapScreenState extends State<MapScreen> {
                             backgroundColor: Colors.white,
                             controller: searchController,
                             textInputAction: TextInputAction.search,
+                            onChanged: widget.isPickerMode
+                                ? controller.onSearchQueryChanged
+                                : null,
                             onSubmitted: (_) => _submitSearch(),
-                            hintText: 'Search destination',
+                            hintText: 'search_destination'.tr,
                             prefixIcon: const Icon(Icons.search),
                             suffixIcon: controller.isSearching.value
                                 ? const Padding(
@@ -280,6 +298,129 @@ class _MapScreenState extends State<MapScreen> {
                                   ),
                           ),
                         ),
+                        if (widget.isPickerMode &&
+                            (controller.isSuggestionLoading.value ||
+                                controller.placeSuggestions.isNotEmpty)) ...[
+                          const SizedBox(height: 8),
+                          Material(
+                            elevation: 6,
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              constraints: const BoxConstraints(maxHeight: 260),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child:
+                                  controller.isSuggestionLoading.value &&
+                                      controller.placeSuggestions.isEmpty
+                                  ? const Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Center(
+                                        child: SizedBox(
+                                          width: 22,
+                                          height: 22,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.5,
+                                            color: AppColors.textPurple,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : ListView.separated(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 8,
+                                      ),
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          controller.placeSuggestions.length,
+                                      separatorBuilder: (_, __) =>
+                                          const Divider(
+                                            height: 1,
+                                            thickness: 0.5,
+                                          ),
+                                      itemBuilder: (context, index) {
+                                        final suggestion =
+                                            controller.placeSuggestions[index];
+
+                                        return InkWell(
+                                          onTap: () =>
+                                              _handleSuggestionTap(suggestion),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 12,
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Padding(
+                                                  padding: EdgeInsets.only(
+                                                    top: 2,
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.location_on_outlined,
+                                                    size: 22,
+                                                    color:
+                                                        AppColors.textSecondary,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        suggestion
+                                                                .primaryText ??
+                                                            suggestion
+                                                                .description,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: getTextStyle(
+                                                          fontSize: 14.sp,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      if ((suggestion
+                                                                  .secondaryText ??
+                                                              '')
+                                                          .trim()
+                                                          .isNotEmpty) ...[
+                                                        const SizedBox(
+                                                          height: 2,
+                                                        ),
+                                                        Text(
+                                                          suggestion
+                                                              .secondaryText!,
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: getTextStyle(
+                                                            fontSize: 12.sp,
+                                                            color: AppColors
+                                                                .textSecondary,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                            ),
+                          ),
+                        ],
                         if (controller.searchError.value.isNotEmpty) ...[
                           const SizedBox(height: 12),
                           _buildMessageCard(
@@ -330,10 +471,10 @@ class _MapScreenState extends State<MapScreen> {
                               ),
                               child: Text(
                                 widget.isPickerMode
-                                    ? 'Tap on the map or search for a place to use that location in your booking.'
+                                    ? 'map_tap_hint'.tr
                                     : controller.hasDestination
-                                    ? 'Route ready. Tap another point on the map or search again to change the destination.'
-                                    : 'Tap anywhere on the map or search for a place to create a route.',
+                                    ? 'route_ready'.tr
+                                    : 'create_route_hint'.tr,
                               ),
                             ),
                           ),
@@ -518,7 +659,7 @@ class _MapScreenState extends State<MapScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Estimated Arrival',
+                  'estimated_arrival'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     color: Colors.white,
@@ -542,7 +683,7 @@ class _MapScreenState extends State<MapScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  'Distance',
+                  'distance'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     color: Colors.white,
@@ -706,8 +847,8 @@ class _MapScreenState extends State<MapScreen> {
                       Obx(
                         () => Text(
                           controller.userRole.value == "user"
-                              ? 'Service Cost'
-                              : 'Estimated Earnings',
+                              ? 'service_cost'.tr
+                              : 'estimated_earnings'.tr,
                           style: getTextStyle(
                             fontSize: 12.sp,
                             color: AppColors.textSecondary,
@@ -733,7 +874,7 @@ class _MapScreenState extends State<MapScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'Booking ID',
+                        'booking_id'.tr,
                         style: getTextStyle(
                           fontSize: 12.sp,
                           color: AppColors.textSecondary,
@@ -774,7 +915,7 @@ class _MapScreenState extends State<MapScreen> {
                                 borderRadius: BorderRadius.circular(8.r),
                                 child: Center(
                                   child: Text(
-                                    'Call',
+                                    'call'.tr,
                                     style: getTextStyle(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w600,
@@ -803,7 +944,7 @@ class _MapScreenState extends State<MapScreen> {
                                   borderRadius: BorderRadius.circular(8.r),
                                   child: Center(
                                     child: Text(
-                                      'Message',
+                                      'message'.tr,
                                       style: getTextStyle(
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w600,
@@ -834,7 +975,7 @@ class _MapScreenState extends State<MapScreen> {
                                 borderRadius: BorderRadius.circular(8.r),
                                 child: Center(
                                   child: Text(
-                                    'Call',
+                                    'call'.tr,
                                     style: getTextStyle(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w600,
@@ -863,7 +1004,7 @@ class _MapScreenState extends State<MapScreen> {
                                   borderRadius: BorderRadius.circular(8.r),
                                   child: Center(
                                     child: Text(
-                                      'Message',
+                                      'message'.tr,
                                       style: getTextStyle(
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w600,
@@ -881,12 +1022,12 @@ class _MapScreenState extends State<MapScreen> {
             ),
             SizedBox(height: 12.h),
             CustomButton(
-              text: 'Help & Support',
+              text: 'help_support'.tr,
               backgroundColor: Colors.white,
               textColor: AppColors.textSecondary,
               borderColor: AppColors.textSecondary.withOpacity(0.5),
               onPressed: () async {
-                final Uri phoneUri = Uri(scheme: 'tel', path: '+8801798036636');
+                final Uri phoneUri = Uri(scheme: 'tel', path: '+8809614502297');
                 try {
                   await launchUrl(
                     phoneUri,

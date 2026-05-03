@@ -103,7 +103,7 @@ const Map<String, String> bnBD = {
   'profile_updated_successfully': 'প্রোফাইল সফলভাবে আপডেট হয়েছে',
   'update_failed': 'আপডেট ব্যর্থ',
   'required_field': 'আবশ্যিক ক্ষেত্র',
-  'save_changes': 'পরিবর্তনগুলি সংরক্ষণ করুন',
+  'save_changes': 'সংরক্ষণ করুন',
 
  //settings screen
   'change_password': 'পাসওয়ার্ড পরিবর্তন',
@@ -137,6 +137,16 @@ const Map<String, String> bnBD = {
   'last_updated': 'শেষ আপডেট: ',
   'no_privacy_policy': 'কোন গোপনীয়তা নীতি উপলব্ধ নেই',
 
+  //Service Details
+  'description': 'বর্ণনা',
+  'what_included': 'যা অন্তর্ভুক্ত',
+  'Gallery': 'গ্যালারি',
+  'Analytics': 'এনালিটিক্স',
+  'reviews': 'পর্যালোচনা',
+  'views': 'দেখা',
+  'clicks': 'ক্লিক',
+
+
     //notifications
   'clear_all': 'সব মুছে ফেলুন',
   'please_sign_in_to_view_notifications': 'নোটিফিকেশন দেখতে সাইন ইন করুন।',
@@ -144,5 +154,28 @@ const Map<String, String> bnBD = {
   'close': 'বন্ধ করুন',
   'today': 'আজ',
   'yesterday': 'গত',
+
+    //map screen
+  'pick_location': 'স্থান নির্বাচন করুন',
+  'search_destination': 'গন্তব্য খুঁজুন',
+  'track': 'ট্র্যাক করুন',
+  'map_unavailable': 'Google Maps এখন উপলব্ধ নেই।',
+  'search_hint': 'আপনি এখনও উপরের স্থানটি খুঁজতে পারেন এবং এটি বুকিংয়ের জন্য ব্যবহার করা হবে।',
+  'search_hint_track': 'আপনি এখনও উপরের স্থানটি খুঁজতে পারেন।',
+  'map_tap_hint': 'মানচিত্রে ট্যাপ করুন বা একটি স্থান খুঁজুন যাতে আপনার বুকিংয়ের জন্য সেই অবস্থানটি ব্যবহার করা যায়।',
+  'route_ready': 'রুট প্রস্তুত। গন্তব্য পরিবর্তনের জন্য মানচিত্রের অন্যতম বিন্দুতে ট্যাপ করুন বা আবার খোঁজুন।',
+  'create_route_hint': 'রুট তৈরি করতে ম্যাপের যেকোনো জায়গায় ট্যাপ করুন অথবা কোনো জায়গা অনুসন্ধান করুন।',
+  'estimated_arrival': 'আনুমানিক আগমন',
+   'distance': 'দূরত্ব',
+  'service_cost': 'পরিষেবা খরচ',
+  'estimated_earnings': 'আনুমানিক আয়',
+  'call': 'কল',
+  'message': 'বার্তা',
+  'map_initialization_error': 'এই ডিভাইসে গুগল ম্যাপস চালু করা যায়নি।',
+  'location_services_off': 'অবস্থান পরিষেবাগুলি বন্ধ রয়েছে। অনুগ্রহ করে সেগুলি সক্ষম করুন এবং আবার চেষ্টা করুন।',
+  'location_permission_required': 'অবস্থান অনুমতি প্রয়োজন সেবা ঠিকানা নির্বাচন করতে।',
+  'location_permission_permanently_denied': 'অবস্থান অনুমতি স্থায়ভাবে অস্বীকার করা হয়েছে। চালিয়ে যেতে সেটিংস খুলুন।',
+  'selected_location': 'নির্বাচিত স্থান',
+  'user_location': 'ব্যবহারকারীর অবস্থান',
 };
 

@@ -25,7 +25,7 @@ class AllBookingScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: const CustomAppBar(title: '  Bookings', showBackButton: false),
+      appBar: CustomAppBar(title: 'bookings'.tr, showBackButton: false),
       body: Obx(() {
         final hasNoData = controller.bookings.isEmpty;
         final isInitialLoading = controller.isLoading.value && hasNoData;
@@ -50,7 +50,7 @@ class AllBookingScreen extends StatelessWidget {
               children: [
                 SizedBox(height: 10.h),
                 Text(
-                  'Booking service',
+                  'booking_service'.tr,
                   style: getTextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
@@ -59,7 +59,7 @@ class AllBookingScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 5.h),
                 Text(
-                  'Book Your Service in Just a Few Clicks',
+                  'book_your_service_in_few_clicks'.tr,
                   style: getTextStyle(
                     fontSize: 12.sp,
                     color: AppColors.textSecondary,
@@ -85,7 +85,7 @@ class AllBookingScreen extends StatelessWidget {
                 if (controller.errorMessage.value.isNotEmpty)
                   _buildInlineMessage(
                     message: controller.errorMessage.value,
-                    actionLabel: 'Retry',
+                    actionLabel: 'retry'.tr,
                     onTap: controller.refreshBookings,
                     isError: true,
                   ),
@@ -126,25 +126,25 @@ class AllBookingScreen extends StatelessWidget {
       children: [
         _buildSummaryCard(
           stats.totalBooking.toString().padLeft(2, '0'),
-          'Total Bookings',
+          'total_bookings'.tr,
           Icons.assignment_outlined,
           const Color(0xFFF59E0B),
         ),
         _buildSummaryCard(
           stats.totalAccepted.toString().padLeft(2, '0'),
-          'Bookings Accepted',
+          'bookings_accepted'.tr,
           Icons.check_circle_outline,
           const Color(0xFF22C55E),
         ),
         _buildSummaryCard(
           stats.totalInProgress.toString().padLeft(2, '0'),
-          'Service In-Progress',
+          'service_in_progress'.tr,
           Icons.build_circle_outlined,
           const Color(0xFFEAB308),
         ),
         _buildSummaryCard(
           stats.totalComplete.toString().padLeft(2, '0'),
-          'Completed Service',
+          'completed_service'.tr,
           Icons.assignment_turned_in_outlined,
           AppColors.textBlue,
         ),
@@ -214,16 +214,18 @@ class AllBookingScreen extends StatelessWidget {
 
   Widget _buildFilterHeader(AllBookingController controller) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Booking Services',
+                'booking_service'.tr,
                 style: getTextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
+                  color: Colors.black,
                 ),
               ),
               SizedBox(height: 4.h),
@@ -240,36 +242,39 @@ class AllBookingScreen extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(color: AppColors.textPurple),
-          ),
-          child: Obx(
-            () => DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                dropdownColor: Colors.white,
-                value: controller.selectedStatus.value,
-                icon: Icon(
-                  Icons.keyboard_arrow_down,
-                  color: AppColors.textPurple,
-                  size: 20.sp,
-                ),
-                items: controller.statusOptions.map((value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: getTextStyle(
-                        fontSize: 13.sp,
-                        color: AppColors.textPurple,
+        Flexible(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(color: AppColors.textPurple),
+            ),
+            child: Obx(
+              () => DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  dropdownColor: Colors.white,
+                  value: controller.selectedStatus.value,
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: AppColors.textPurple,
+                    size: 20.sp,
+                  ),
+                  items: controller.statusOptions.map((value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: getTextStyle(
+                          fontSize: 13.sp,
+                          color: AppColors.textPurple,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  );
-                }).toList(),
-                onChanged: controller.updateStatus,
+                    );
+                  }).toList(),
+                  onChanged: controller.updateStatus,
+                ),
               ),
             ),
           ),
@@ -348,7 +353,7 @@ class AllBookingScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 6.h),
                     Text(
-                      'Starting : ${_formatCurrency(booking.totalAmount)}',
+                      '${'start_from'.tr} : ${_formatCurrency(booking.totalAmount)}',
                       style: getTextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
@@ -370,7 +375,7 @@ class AllBookingScreen extends StatelessWidget {
               ),
               _buildInfoPill(
                 icon: Icons.access_time_outlined,
-                text: booking.preferredTime ?? 'Time not set',
+                text: booking.preferredTime ?? 'time_not_set'.tr,
               ),
               _buildInfoPill(
                 icon: Icons.payments_outlined,
@@ -380,7 +385,7 @@ class AllBookingScreen extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           Text(
-            'Booking ID: ${_shortReference(booking.reference)}',
+            '${'booking_id'.tr} : ${_shortReference(booking.reference)}',
             style: getTextStyle(
               fontSize: 11.sp,
               color: AppColors.textSecondary,
@@ -410,10 +415,10 @@ class AllBookingScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildActionText('View Details', () {
+                _buildActionText('view_details'.tr, () {
                   _showBookingStateMessage(booking);
                 }),
-                _buildActionText('Book Again', () {
+                _buildActionText('book_again'.tr, () {
                   Get.to(() => const BookingDetailsScreen());
                 }),
                 _buildActionText('Write Review', () {
@@ -434,12 +439,13 @@ class AllBookingScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () => _handlePayment(booking),
                     child: Text(
-                      'Make Payment',
+                      'make_payment'.tr,
                       style: getTextStyle(
                         fontSize: 14.sp,
                         color: const Color(0xFF7079F0),
                         decoration: TextDecoration.underline,
                         fontWeight: FontWeight.w600,
+                        decorationColor: AppColors.textPurple,
                       ),
                     ),
                   ),
@@ -449,11 +455,14 @@ class AllBookingScreen extends StatelessWidget {
                   child: TextButton(
                     onPressed: () => _handleBookingAction(booking),
                     child: Text(
-                      booking.canTrack ? 'Track Provider' : 'View Details',
+                      booking.canTrack
+                          ? 'track_provider'.tr
+                          : 'view_details'.tr,
                       style: getTextStyle(
-                        fontSize: 12.sp,
-                        color: AppColors.textPurple,
+                        fontSize: 14.sp,
+                        color: const Color(0xFF7079F0),
                         decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w600,
                         decorationColor: AppColors.textPurple,
                       ),
                     ),
@@ -573,7 +582,7 @@ class AllBookingScreen extends StatelessWidget {
           ),
           SizedBox(height: 14.h),
           Text(
-            'Loading your bookings...',
+            'loading_your_bookings'.tr,
             style: getTextStyle(
               fontSize: 13.sp,
               color: AppColors.textSecondary,
@@ -621,7 +630,7 @@ class AllBookingScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               ),
               child: Text(
-                'Sign In',
+                'sign_in'.tr,
                 style: getTextStyle(
                   fontSize: 13.sp,
                   color: AppColors.textPurple,
@@ -656,15 +665,17 @@ class AllBookingScreen extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           Text(
-            isFiltered ? 'No $selectedStatus bookings yet' : 'No bookings yet',
+            isFiltered
+                ? 'no_bookings'.trParams({'status': selectedStatus})
+                : 'no_bookings_yet'.tr,
             textAlign: TextAlign.center,
             style: getTextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
           ),
           SizedBox(height: 6.h),
           Text(
             isFiltered
-                ? 'Try a different status filter to see your other bookings.'
-                : 'Your bookings will appear here once you place a service order.',
+                ? 'try_different_filter'.tr
+                : 'your_bookings_will_appear'.tr,
             textAlign: TextAlign.center,
             style: getTextStyle(
               fontSize: 12.sp,
@@ -695,7 +706,7 @@ class AllBookingScreen extends StatelessWidget {
     final trackingBookingId = _resolveTrackingBookingId(booking);
 
     if (trackingBookingId.isEmpty) {
-      Get.snackbar('Booking update', 'Booking ID is unavailable for tracking.');
+      Get.snackbar('booking_update'.tr, 'booking_id_unavailable'.tr);
       return;
     }
 
@@ -751,7 +762,7 @@ class AllBookingScreen extends StatelessWidget {
       message = 'Booking status: ${booking.displayStatus}.';
     }
 
-    Get.snackbar('Booking update', message);
+    Get.snackbar('booking_update'.tr, message);
   }
 
   Color _getStatusColor(String? status) {

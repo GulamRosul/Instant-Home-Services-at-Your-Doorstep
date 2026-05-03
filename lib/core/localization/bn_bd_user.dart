@@ -185,4 +185,41 @@ const Map<String, String> bnBDUser = {
   '02': '০২',
   '03': '০৩',
 
+    // All Bookings Screen
+  'total_bookings': 'মোট বুকিং',
+  'bookings_accepted': 'বুকিং গ্রহণ করা হয়েছে',
+  'service_in_progress': 'সেবা চলমান',
+  'completed_service': 'সম্পন্ন সেবা',
+  'time_not_set': 'সময় সেট করা হয়নি',
+  'book_again': 'আবার বুক করুন',
+  'write_review': 'রিভিউ লিখুন',
+  'make_payment': 'পেমেন্ট করুন',
+  'track_provider': 'প্রদানকারী ট্র্যাক করুন',
+  'loading_your_bookings': 'আপনার বুকিংগুলি লোড হচ্ছে...',
+  'no_bookings_yet': 'এখনও কোন বুকিং নেই',
+  'try_different_filter':
+      'আপনার অন্যান্য বুকিংগুলি দেখতে একটি পৃথক স্ট্যাটাস ফিল্টার ব্যবহার করুন。',
+  'your_bookings_will_appear':
+      'আপনি একটি সেবা অর্ডার দিলেই আপনার বুকিংগুলিএখানে দেখা যাবে।',
+  'booking_id_unavailable': 'বুকিং IDটি ট্র্যাকিংয়ের জন্য পাওয়া জায়।',
+  'all_status': 'সব স্ট্যাটাস',
+  'pending': 'অপেক্ষারত',
+  'accepted': 'গৃহীত',
+  'rejected': 'প্রত্যাখ্যাত',
+  'completed': 'সম্পন্ন',
+  'cancelled': 'বাতিল',
+  'please_sign_in': 'আপনার বুকিং দেখতে সাইন ইন করুন।',
+  'failed_to_load_bookings': 'বুকিংগুলি লোড করতে ব্যর্থ।',
+  'no_bookings': '@status কোনো বুকিং এখনো নেই',
+
+
+  //review
+  'how_would_you_rate_your_experience':
+      'এই পরিষেবা প্রদানকারীর সাথে আপনার সামগ্রিক অভিজ্ঞতাকে আপনি কীভাবে মূল্যায়ন করবেন?',
+  'share_your_thoughts':
+      'অন্যদের সঠিক সিদ্ধান্ত নিতে সাহায্য করার জন্য আপনার মতামত জানান।',
+  'can_you_tell_us_more': 'আপনি কি আমাদের আরও বিস্তারিত জানাতে পারেন?',
+  'add_feedback': 'প্রতিক্রিয়া যোগ করুন',
+  'submit': 'জমা দিন',
+
 };

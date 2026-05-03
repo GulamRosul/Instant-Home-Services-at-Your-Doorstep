@@ -176,11 +176,11 @@ class CreateJobController extends GetxController {
       categoriesErrorMessage.value =
           _extractMessage(error.response?.data) ??
           error.message ??
-          'Failed to load categories';
+          'failed_load_categories'.tr;
       AppLoggerHelper.error('Categories fetch failed', error);
     } catch (error) {
       categories.clear();
-      categoriesErrorMessage.value = 'Failed to load categories';
+      categoriesErrorMessage.value = 'failed_load_categories'.tr;
       AppLoggerHelper.error('Unexpected categories fetch error', error);
     } finally {
       isCategoriesLoading.value = false;
@@ -229,7 +229,7 @@ class CreateJobController extends GetxController {
       if (fetchedSubCategories.isEmpty && response.statusCode != 200) {
         subCategories.clear();
         subCategoriesErrorMessage.value =
-            _extractMessage(response.data) ?? 'Failed to load sub-categories';
+            _extractMessage(response.data) ?? 'failed_load_sub_categories'.tr;
         AppLoggerHelper.warning(
           'Failed to fetch sub-categories: ${subCategoriesErrorMessage.value}',
         );
@@ -271,8 +271,8 @@ class CreateJobController extends GetxController {
   void selectSubCategory(String subCategoryId, String subCategoryName) {
     if (selectedCategoryId.value.isEmpty) {
       Get.snackbar(
-        'Please Select Category',
-        'Please select a category first',
+        'please_select_category'.tr,
+        'please_select_category_first'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.orangeAccent,
         colorText: Colors.white,
@@ -367,32 +367,32 @@ class CreateJobController extends GetxController {
   bool validateStep() {
     if (currentStep.value == 0) {
       if (jobTitleController.text.trim().isEmpty) {
-        EasyLoading.showError("Please enter job title");
+        EasyLoading.showError("please_enter_job_title".tr);
         return false;
       }
       if (selectedCategoryId.value.isEmpty) {
-        EasyLoading.showError("Please select a category");
+        EasyLoading.showError("please_select_category".tr);
         return false;
       }
       if (selectedSubCategoryId.value.isEmpty) {
-        EasyLoading.showError("Please select a specific service");
+        EasyLoading.showError("please_select_sub_category".tr);
         return false;
       }
       if (jobDescriptionController.text.trim().isEmpty) {
-        EasyLoading.showError("Please enter job description");
+        EasyLoading.showError("please_enter_job_description".tr);
         return false;
       }
       if (basePriceController.text.trim().isEmpty) {
-        EasyLoading.showError("Please enter base price");
+        EasyLoading.showError("please_enter_base_price".tr);
         return false;
       }
     } else if (currentStep.value == 1) {
       if (includedServices.isEmpty) {
-        EasyLoading.showError("Please add at least one included service");
+        EasyLoading.showError("please_add_included_service".tr);
         return false;
       }
       if (uploadedImagePath.value.isEmpty) {
-        EasyLoading.showError("Please upload an image");
+        EasyLoading.showError("please_upload_image".tr);
         return false;
       }
     }
@@ -459,12 +459,12 @@ class CreateJobController extends GetxController {
   Future<void> _createJob() async {
     try {
       if (uploadedImagePath.value.isEmpty) {
-        EasyLoading.showError("Please upload an image");
+        EasyLoading.showError("please_upload_image".tr);
         return;
       }
 
       isCreatingJob.value = true;
-      EasyLoading.show(status: 'Creating job...');
+      EasyLoading.show(status: 'creating_job'.tr);
 
       // Get token from secure storage
       final token = await SecureStorageService.getToken();
@@ -742,7 +742,7 @@ class CreateJobController extends GetxController {
   Future<bool> deleteJob(String jobId) async {
     try {
       isDeletingJob.value = true;
-      EasyLoading.show(status: 'Deleting job...');
+      EasyLoading.show(status: 'deleting_job'.tr);
 
       final token = await SecureStorageService.getToken();
       if (token == null || token.isEmpty) {
@@ -771,7 +771,7 @@ class CreateJobController extends GetxController {
           EasyLoading.showSuccess('Job deleted successfully');
           return true;
         } else {
-          final errorMessage = deleteResponse.message ?? 'Failed to delete job';
+          final errorMessage = deleteResponse.message;
           AppLoggerHelper.warning('Job deletion failed: $errorMessage');
           EasyLoading.showError(errorMessage);
           return false;
@@ -865,8 +865,8 @@ class CreateJobController extends GetxController {
               SizedBox(height: 24.h),
               Text(
                 isUpdate
-                    ? 'Congratulations! Your Job has been updated.'
-                    : 'Congratulations! Your Job has been published.',
+                    ? 'job_updated'.tr
+                    : 'job_published'.tr,
                 textAlign: TextAlign.center,
                 style: getTextStyle(
                   fontSize: 14.sp,

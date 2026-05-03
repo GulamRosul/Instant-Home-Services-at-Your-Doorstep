@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
@@ -17,23 +18,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
-          onPressed: () => Get.back(),
-        ),
-        title: Text(
-          'Bookings',
-          style: getTextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: false,
-      ),
+      appBar: CustomAppBar(title: 'bookings'.tr, showBackButton: true,),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.w),
         child: Column(
@@ -46,7 +31,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Booking Details',
+                        'booking_details'.tr,
                         style: getTextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
@@ -54,7 +39,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Booking # ${booking.id}',
+                        '${'booking_id'.tr} : ${booking.id}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: getTextStyle(
@@ -108,14 +93,14 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _buildInfoBlock(
-                          'Payment Method',
-                          'Amount : ${booking.serviceAmount.toStringAsFixed(0)} ৳',
+                          'payment_method'.tr,
+                          '${'amount'.tr} : ${booking.serviceAmount.toStringAsFixed(0)} ৳',
                         ),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
                         child: _buildInfoBlock(
-                          'Schedule Date :',
+                          'schedule_date'.tr,
                           _formatDate(booking.preferredDate),
                         ),
                       ),
@@ -124,7 +109,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Pay Via : ',
+                        'pay_via'.tr,
                         style: getTextStyle(
                           color: const Color(0xFF18181A),
                           fontSize: 12.sp,
@@ -142,19 +127,19 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  _buildInfoBlock('Booking Summary', ''),
+                  _buildInfoBlock('booking_summary'.tr, ''),
                   SizedBox(height: 20.h),
                   _buildServiceTable(booking),
                   SizedBox(height: 20.h),
                   const Divider(),
                   SizedBox(height: 12.h),
                   _buildSubtotalRow(
-                    'Service amount (Vat Excluded)',
+                    'service_amount_vat_excluded'.tr,
                     '${booking.serviceAmount.toStringAsFixed(2)} ৳',
                   ),
                   SizedBox(height: 24.h),
                   _buildTotalRow(
-                    'Grand Total',
+                    'gtotal_total'.tr,
                     '${booking.serviceAmount.toStringAsFixed(2)} ৳',
                   ),
                 ],
@@ -174,7 +159,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                 children: [
                   Center(
                     child: Text(
-                      'Service location',
+                      'service_location'.tr,
                       style: getTextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
@@ -191,7 +176,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
-                      'You need to go to the Customer Location to provide the service',
+                      'service_location_description'.tr,
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: const Color(0xFF18181A),
@@ -201,7 +186,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 16.h),
                   Text(
-                    'Service Location:',
+                    'service_location'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       color: const Color(0xFF18181A),
@@ -211,7 +196,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                   SizedBox(height: 4.h),
                   Text(
                     booking.locationDetails.isEmpty
-                        ? 'No location details'
+                        ? 'no_location_details'.tr
                         : booking.locationDetails,
                     style: getTextStyle(
                       fontSize: 14.sp,
@@ -236,7 +221,7 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Customer Message',
+                      'customer_message'.tr,
                       style: getTextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -260,40 +245,42 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: CustomButton(
-                      text: 'Accept',
-                      onPressed: () {
-                        final index = controller.bookings.indexWhere(
-                          (b) => b.id == booking.id,
-                        );
-                        if (index != -1) {
-                          controller.handleAccept(index);
-                          Get.back();
-                        }
-                      },
-                      backgroundColor: const Color(0xFF22C55E),
-                      textColor: Colors.white,
-                      borderRadius: 6.r,
-                      height: 48.h,
+                    child: Obx(
+                      () => CustomButton(
+                        text: 'accept'.tr,
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : () async {
+                                await controller.handleAcceptBooking(booking);
+                                if (controller.errorMessage.value.isEmpty) {
+                                  Get.back();
+                                }
+                              },
+                        backgroundColor: const Color(0xFF22C55E),
+                        textColor: Colors.white,
+                        borderRadius: 6.r,
+                        height: 48.h,
+                      ),
                     ),
                   ),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child: CustomButton(
-                      text: 'Reject',
-                      onPressed: () {
-                        final index = controller.bookings.indexWhere(
-                          (b) => b.id == booking.id,
-                        );
-                        if (index != -1) {
-                          controller.handleReject(index);
-                          Get.back();
-                        }
-                      },
-                      backgroundColor: const Color(0xFFEF4444),
-                      textColor: Colors.white,
-                      borderRadius: 6.r,
-                      height: 48.h,
+                    child: Obx(
+                      () => CustomButton(
+                        text: 'reject'.tr,
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : () async {
+                                await controller.handleRejectBooking(booking);
+                                if (controller.errorMessage.value.isEmpty) {
+                                  Get.back();
+                                }
+                              },
+                        backgroundColor: const Color(0xFFEF4444),
+                        textColor: Colors.white,
+                        borderRadius: 6.r,
+                        height: 48.h,
+                      ),
                     ),
                   ),
                 ],
@@ -348,9 +335,9 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Expanded(flex: 5, child: _buildTableHeader('Service')),
-              Expanded(flex: 3, child: _buildTableHeader('Amount')),
-              Expanded(flex: 2, child: _buildTableHeader('Total')),
+              Expanded(flex: 5, child: _buildTableHeader('service'.tr)),
+              Expanded(flex: 3, child: _buildTableHeader('amount'.tr)),
+              Expanded(flex: 2, child: _buildTableHeader('total'.tr)),
             ],
           ),
         ),

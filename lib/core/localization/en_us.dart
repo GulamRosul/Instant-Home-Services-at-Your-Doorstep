@@ -137,6 +137,7 @@ const Map<String, String> enUS = {
   //privacy policy screen
   'last_updated': 'Last Updated: ',
   'no_privacy_policy': 'No privacy policy available',
+  'no_terms_conditions': 'No terms and conditions available',
 
   //Service Details
   'description': 'Description',

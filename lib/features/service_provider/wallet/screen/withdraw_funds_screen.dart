@@ -36,7 +36,7 @@ class WithdrawFundsScreen extends StatelessWidget {
           },
         ),
         title: Text(
-          'Back',
+          'back'.tr,
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
@@ -68,7 +68,7 @@ class WithdrawFundsScreen extends StatelessWidget {
           children: [
             SizedBox(height: 10.h),
             Text(
-              'Withdraw Funds',
+              'withdraw_funds'.tr,
               style: getTextStyle(
                 fontSize: 28.sp,
                 fontWeight: FontWeight.w700,
@@ -77,7 +77,7 @@ class WithdrawFundsScreen extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             Text(
-              'Request a withdrawal from your wallet',
+              'request_withdrawal'.tr,
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
@@ -99,7 +99,7 @@ class WithdrawFundsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Available Balance',
+                    'available_balance',
                     style: getTextStyle(
                       fontSize: 12.sp,
                       color: const Color(0xFF64748B),
@@ -143,7 +143,7 @@ class WithdrawFundsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Admin Approval Required',
+                          'admin_approval_required'.tr,
                           style: getTextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
@@ -152,7 +152,7 @@ class WithdrawFundsScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 4.h),
                         Text(
-                          'Your withdrawal request will be reviewed by the admin. Processing typically takes 1-3 business days.',
+                          'withdrawal_review'.tr,
                           style: getTextStyle(
                             fontSize: 12.sp,
                             color: const Color(0xFFB45309),
@@ -168,7 +168,7 @@ class WithdrawFundsScreen extends StatelessWidget {
             SizedBox(height: 24.h),
 
             Text(
-              'Withdrawal Amount',
+              'withdrawable_amount'.tr,
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,

@@ -211,7 +211,7 @@ class WalletScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'Bookings served ${controller.bookingsServed.value}',
+                    '${'bookings_served'.tr} ${controller.bookingsServed.value}',
                     style: getTextStyle(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w400,

@@ -86,6 +86,7 @@ const Map<String, String> bnBD = {
   'profile': 'প্রোফাইল',
   'language': 'ভাষা',
   'privacy_policy': 'গোপনীয়তা ও নীতি',
+  'terms_conditions': 'শর্তাবলী',
   'logout_confirmation': 'আপনি কি নিশ্চিত যে আপনি লগ আউট করতে চান?',
 
   //Profile Screen

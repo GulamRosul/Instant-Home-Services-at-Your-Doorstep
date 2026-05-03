@@ -167,6 +167,7 @@ const Map<String, String> bnBDUser = {
     'booking_details': 'বুকিং বিবরণ',
   'confirm': 'নিশ্চিত করুন',
   'payment': 'পেমেন্ট',
+    'thank_you_message': 'ধন্যবাদ! আমরা আপনার বুকিংয়ের বিবরণ পরিষেবা প্রদানকারীর কাছে পাঠিয়ে দিয়েছি।',
 
   // Payment Screen
   'complete_payment_to_confirm': 'বুকিং নিশ্চিত করতে আপনার পেমেন্ট সম্পন্ন করুন',

@@ -20,6 +20,7 @@ import 'package:protiva502/features/service_provider/booking/screen/booking_scre
 import 'package:protiva502/features/social_media/screen/social_media_screen.dart';
 import 'package:protiva502/features/splash_screen/controller/splash_controller.dart';
 import 'package:protiva502/features/splash_screen/screen/splash_screen.dart';
+import 'package:protiva502/features/terms_condition/screen/terms_condition_screen.dart';
 import 'package:protiva502/features/user/all_bookings/screen/all_booking_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 import 'package:protiva502/features/user/authentication/screen/user_otp_screen.dart';
@@ -50,7 +51,9 @@ class AppRoute {
   static String notificationScreen = "/notificationScreen";
   static String singleChatScreen = "/singleChatScreen";
   static String privacyPolicyScreen = "/privacyPolicyScreen";
+  static String termsCondition = "/termsCondition";
   static String secondOnboardingScreen = "/secondOnboardingScreen";
+  
 
   // User sections
   static String onboardingScreen = "/onboardingScreen";
@@ -98,6 +101,7 @@ class AppRoute {
   static String getNotificationScreen() => notificationScreen;
   static String getSingleChatScreen() => singleChatScreen;
   static String getPrivacyPolicyScreen() => privacyPolicyScreen;
+  static String getTermsCondition() => termsCondition;
   static String getSecondOnboardingScreen() => secondOnboardingScreen;
 
   // User Sections
@@ -404,6 +408,12 @@ class AppRoute {
     GetPage(
       name: socialMedia,
       page: () => const SocialMediaScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+        GetPage(
+      name: termsCondition,
+      page: () => const TermsConditionScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

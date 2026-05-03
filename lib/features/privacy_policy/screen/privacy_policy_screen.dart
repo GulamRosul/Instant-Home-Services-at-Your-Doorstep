@@ -63,15 +63,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Text(
-                //   "Privacy Policy",
-                //   style: getTextStyle(
-                //     fontSize: 18.sp,
-                //     fontWeight: FontWeight.w700,
-                //     color: const Color(0xFF1E293B),
-                //   ),
-                // ),
-                // SizedBox(height: 8.h),
                 Text(
                   "${'last_updated'.tr} : ${policy.updatedAt.toString().split(' ')[0]}",
                   style: getTextStyle(

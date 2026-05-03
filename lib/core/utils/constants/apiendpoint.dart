@@ -36,7 +36,8 @@ class ApiEndpoints {
   static String updateJob(String jobId) => '/job/$jobId/update-jon-content';
   static String deleteJob(String jobId) => '/job/delete-jon/$jobId';
   static String updateThumbnail(String jobId) => '/job/$jobId/update/thumbnail';
-  static String getSingleJob(String jobId) => '/job/$jobId/single-job-with-review';
+  static String getSingleJob(String jobId) =>
+      '/job/$jobId/single-job-with-review';
 
   //bookings
   static const String myAllBookings = '/bookings/my-all-booking';
@@ -70,6 +71,10 @@ class ApiEndpoints {
 
   //notifications
   static const String getNotifications = '/notification/get-my-ntg';
+  static String markAsRead(String notificationId) =>
+      '/notification/$notificationId/read';
+  static String deleteNotification =
+      '/notification/notification-delete';
 
   //messages
   static String fetchMessage() => '/messages/history';
@@ -80,5 +85,6 @@ class ApiEndpoints {
   //privacy policy
   static const String privacyPolicy = '/policy';
 
-
+  //terms and conditions
+  static const String termsAndConditions = '/policy/terms-condition';
 }

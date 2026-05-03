@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/bottom_nav/controller/bottom_nav_controller.dart';
 import 'package:protiva502/features/notification/controller/notification_controller.dart';
 
@@ -11,8 +12,16 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(BottomNavController());
+    // final controller = Get.put(BottomNavController());
+    final controller = Get.find<BottomNavController>();
     final notificationController = Get.find<NotificationController>();
+
+    final List<Map<String, dynamic>> navItems = [
+  {'icon': IconPath.home, 'label': 'home'.tr},
+  {'icon': IconPath.booking, 'label': 'bookings'.tr},
+  {'icon': IconPath.notification, 'label': 'notification'.tr},
+  {'icon': IconPath.more, 'label': 'more'.tr},
+];
 
     return Container(
       height: 60.h,
@@ -31,7 +40,7 @@ class BottomNavBar extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(controller.navItems.length, (index) {
+        children: List.generate(navItems.length, (index) {
           return Obx(() {
             bool isSelected = controller.selectedIndex.value == index;
             return GestureDetector(
@@ -58,7 +67,7 @@ class BottomNavBar extends StatelessWidget {
                     if (isSelected) ...[
                       SizedBox(width: 8.w),
                       Text(
-                        controller.navItems[index]['label'],
+                        navItems[index]['label'],
                         style: getTextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,

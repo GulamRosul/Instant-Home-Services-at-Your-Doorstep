@@ -164,6 +164,7 @@ const Map<String, String> enUSUser = {
   'booking_details': 'Booking details',
   'confirm': 'Confirm',
   'payment': 'Payment',
+  'thank_you_message': 'Thank You! We’ve sent your booking details to Provider',
 
   // Payment Screen
   'complete_payment_to_confirm': 'Complete your payment to confirm the booking',

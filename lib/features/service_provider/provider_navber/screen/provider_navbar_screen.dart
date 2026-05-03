@@ -47,6 +47,14 @@ class ProviderBottomNavBar extends StatelessWidget {
     final controller = Get.find<ProviderNavbarController>();
     final notificationController = Get.find<NotificationController>();
 
+    final List<Map<String, dynamic>> navItems = [
+      {'label': 'home'.tr},
+      {'label': 'my_job'.tr},
+      {'label': 'bookings'.tr},
+      {'label': 'notification'.tr},
+      {'label': 'more'.tr},
+    ];
+
     return Container(
       height: 60.h,
       margin: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 40.h),
@@ -64,7 +72,7 @@ class ProviderBottomNavBar extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(controller.navItems.length, (index) {
+        children: List.generate(navItems.length, (index) {
           return Obx(() {
             bool isSelected = controller.selectedIndex.value == index;
             return GestureDetector(
@@ -91,7 +99,7 @@ class ProviderBottomNavBar extends StatelessWidget {
                     if (isSelected) ...[
                       SizedBox(width: 8.w),
                       Text(
-                        controller.navItems[index]['label'],
+                        navItems[index]['label'],
                         style: getTextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w600,

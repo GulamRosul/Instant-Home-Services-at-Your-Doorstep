@@ -21,6 +21,7 @@ class IconPath {
   static const String language = 'assets/icons/language.svg';
   static const String privacy = 'assets/icons/privacy.svg';
   static const String profilePic = 'assets/icons/profilePic.svg';
+  static const String termsCondition = 'assets/icons/termsCondition.svg';
   static const String help = 'assets/icons/help.svg';
   static const String business = 'assets/icons/business.svg';
   static const String person = 'assets/icons/person.svg';

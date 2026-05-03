@@ -114,7 +114,17 @@ class MoreBottomSheet extends StatelessWidget {
                         Get.toNamed(AppRoute.getPrivacyPolicyScreen());
                       },
                     ),
-                    SizedBox(width: 20.w),
+                    SizedBox(width: 10.w),
+                    _buildMenuItem(
+                      iconPath: IconPath.termsCondition,
+                      label: 'terms_conditions'.tr,
+                      onTap: () {
+                        Get.back();
+                        // Navigate to terms and conditions
+                        Get.toNamed(AppRoute.getTermsCondition());
+                      },
+                    ),
+                    SizedBox(width: 10.w),
                     _buildMenuItem(
                       iconPath: IconPath.logout,
                       label: 'logout'.tr,

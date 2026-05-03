@@ -86,6 +86,7 @@ const Map<String, String> enUS = {
   'profile': 'Profile',
   'language': 'Language',
   'privacy_policy': 'Privacy & Policy',
+  'terms_conditions': 'Terms & Conditions',
   'logout_confirmation': 'Are you sure you want to logout?',
 
   //Profile Screen

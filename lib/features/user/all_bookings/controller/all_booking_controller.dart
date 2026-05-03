@@ -9,32 +9,67 @@ import 'package:protiva502/features/user/all_bookings/model/all_booking_model.da
 class AllBookingController extends GetxController {
   final ApiClient _apiClient = ApiClient();
 
-  late final selectedStatus = statusOptions[0].obs;
+  // late final selectedStatus = statusOptions[0].obs;
   final isLoading = false.obs;
   final errorMessage = ''.obs;
   final bookings = <UserBookingItem>[].obs;
   final stats = const BookingSummaryStats.empty().obs;
+  final selectedStatus = 'all'.obs;
 
-  final List<String> statusOptions = [
-    'all_status'.tr,
-    'pending'.tr,
-    'accepted'.tr,
-    'rejected'.tr,
-    'completed'.tr,
-    'cancelled'.tr,
-  ];
+  // final List<String> statusOptions = [
+  //   'all_status'.tr,
+  //   'pending'.tr,
+  //   'accepted'.tr,
+  //   'rejected'.tr,
+  //   'completed'.tr,
+  //   'cancelled'.tr,
+  // ];
 
-  List<UserBookingItem> get filteredBookings {
-    final selected = selectedStatus.value;
+// List<UserBookingItem> get filteredBookings {
+//   final selected = selectedStatus.value;
 
-    if (selected == statusOptions[0]) {
-      return bookings;
-    }
+//   if (selected == 'all') {
+//     return bookings;
+//   }
 
-    return bookings
-        .where((booking) => booking.displayStatus == selected)
-        .toList();
+//   return bookings
+//       .where((booking) =>
+//           booking.status?.toLowerCase() == selected)
+//       .toList();
+// }
+
+List<UserBookingItem> get filteredBookings {
+  final selected = selectedStatus.value;
+
+  if (selected == 'all') {
+    return bookings;
   }
+
+  return bookings.where((booking) {
+    final normalized = normalizeBookingStatus(booking.status);
+
+    switch (selected) {
+      case 'pending':
+        return normalized == 'PENDING';
+
+      case 'accepted':
+        return normalized == 'ACCEPTED';
+
+      case 'rejected':
+        return normalized == 'REJECTED';
+
+      case 'completed':
+        return normalized == 'COMPLETED' ||
+            normalized == 'COMPLETE';
+
+      case 'cancelled':
+        return normalized == 'CANCELLED';
+
+      default:
+        return false;
+    }
+  }).toList();
+}
 
   @override
   void onInit() {

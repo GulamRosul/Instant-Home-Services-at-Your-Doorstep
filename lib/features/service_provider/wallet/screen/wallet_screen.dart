@@ -51,7 +51,7 @@ class WalletScreen extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10.w),
                               child: Text(
-                                'My Wallet',
+                                'my_wallet'.tr,
                                 style: getTextStyle(
                                   color: Colors.white,
                                   fontSize: 28,
@@ -85,7 +85,7 @@ class WalletScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Withdrawal History',
+                        'withdrawal_history'.tr,
                         style: getTextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w600,
@@ -101,7 +101,7 @@ class WalletScreen extends StatelessWidget {
                         if (controller.withdrawalHistory.isEmpty) {
                           return Center(
                             child: Text(
-                              'No withdrawal history found',
+                              'no_withdrawal_history'.tr,
                               textAlign: TextAlign.center,
                               style: getTextStyle(
                                 fontSize: 13.sp,
@@ -149,7 +149,7 @@ class WalletScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Back',
+                      'back'.tr,
                       style: getTextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
@@ -193,7 +193,7 @@ class WalletScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Withdrawable Amount',
+                    'withdrawable_amount'.tr,
                     style: getTextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
@@ -222,7 +222,7 @@ class WalletScreen extends StatelessWidget {
                   Divider(color: Colors.white.withValues(alpha: 0.2)),
                   SizedBox(height: 15.h),
                   Text(
-                    'Pending Amount',
+                     'pending_amount'.tr,
                     style: getTextStyle(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w400,
@@ -267,7 +267,7 @@ class WalletScreen extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
             Text(
-              'Withdraw Funds',
+              'withdraw_funds'.tr,
               style: getTextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,

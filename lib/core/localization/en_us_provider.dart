@@ -198,5 +198,10 @@ const Map<String, String> enUSProvider = {
   'service_location_description' : 'You need to go to the Customer Location to provide the service',
   'no_location_details' : 'No location details',
   'customer_message' : 'Customer Message',
+
+  //wallet screen
+  'withdraw_funds': 'Withdraw Funds',
+  'withdrawal_history': 'Withdrawal History',
+  'no_withdrawal_history': 'No withdrawal history found',
 };
  

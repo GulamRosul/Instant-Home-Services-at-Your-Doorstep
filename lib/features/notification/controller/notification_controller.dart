@@ -110,6 +110,31 @@ class NotificationController extends GetxController {
     };
   }
 
+  /// Mark a notification as read via API
+Future<void> markNotificationAsRead(String notificationId, int index) async {
+  try {
+    debugPrint('📡 [NOTIFICATION] Marking notification $notificationId as read...');
+
+    final response = await _apiClient.patch(ApiEndpoints.markAsRead(notificationId));
+
+    debugPrint('📡 [NOTIFICATION] Mark as read status: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      // Update local state only after API confirms success
+      if (index >= 0 && index < notifications.length) {
+        notifications[index]['isRead'] = true;
+        notifications.refresh();
+      }
+      debugPrint('✅ [NOTIFICATION] Notification $notificationId marked as read');
+    } else {
+      debugPrint('❌ [NOTIFICATION] Failed to mark as read: ${response.statusCode}');
+    }
+  } catch (e, stackTrace) {
+    debugPrint('❌ [NOTIFICATION] Error marking notification as read: $e');
+    debugPrint('❌ [NOTIFICATION] Stack trace: $stackTrace');
+  }
+}
+
   /// Format time to display format
   String _formatTime(DateTime dateTime) {
     final now = DateTime.now();
@@ -359,16 +384,37 @@ class NotificationController extends GetxController {
     }
   }
 
-  void markAsRead(int index) {
-    if (index >= 0 && index < notifications.length) {
-      notifications[index]['isRead'] = true;
-      notifications.refresh(); // Force UI update
+void markAsRead(int index) {
+  if (index >= 0 && index < notifications.length) {
+    final notification = notifications[index]['fullNotification'] as NotificationModel?;
+    if (notification != null) {
+      markNotificationAsRead(notification.id, index);
     }
   }
+}
 
-  void clearAll() {
-    notifications.clear();
+/// Delete all notifications via API
+Future<void> clearAll() async {
+  try {
+    debugPrint('📡 [NOTIFICATION] Deleting all notifications...');
+
+    final response = await _apiClient.delete(ApiEndpoints.deleteNotification);
+
+    debugPrint('📡 [NOTIFICATION] Delete all status: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      final count = response.data['data']['count'];
+      notifications.clear();
+      debugPrint('✅ [NOTIFICATION] Deleted $count notifications');
+    } else {
+      debugPrint('❌ [NOTIFICATION] Failed to delete notifications: ${response.statusCode} - ${response.data}');
+
+    }
+  } catch (e, stackTrace) {
+    debugPrint('❌ [NOTIFICATION] Error deleting notifications: $e');
+    debugPrint('❌ [NOTIFICATION] Stack trace: $stackTrace');
   }
+}
 
   /// Get unread notification count
   int get unreadCount {

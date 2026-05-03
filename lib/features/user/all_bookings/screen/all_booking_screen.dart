@@ -212,76 +212,96 @@ class AllBookingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterHeader(AllBookingController controller) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'booking_service'.tr,
+Widget _buildFilterHeader(AllBookingController controller) {
+  final List<Map<String, String>> statusOptions = [
+    {'value': 'all', 'label': 'all_status'.tr},
+    {'value': 'pending', 'label': 'pending'.tr},
+    {'value': 'accepted', 'label': 'accepted'.tr},
+    {'value': 'rejected', 'label': 'rejected'.tr},
+    {'value': 'completed', 'label': 'completed'.tr},
+    {'value': 'cancelled', 'label': 'cancelled'.tr},
+  ];
+
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      /// Left Side (Title + Count)
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'booking_service'.tr,
+              style: getTextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 4.h),
+
+            /// Reactive booking count
+            Obx(() {
+              final count = controller.filteredBookings.length;
+
+              return Text(
+                '$count ${count == 1 ? 'booking'.tr : 'bookings'.tr}',
                 style: getTextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
+                  fontSize: 12.sp,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w400,
                 ),
-              ),
-              SizedBox(height: 4.h),
-              Obx(
-                () => Text(
-                  '${controller.filteredBookings.length} booking${controller.filteredBookings.length == 1 ? '' : 's'}',
-                  style: getTextStyle(
-                    fontSize: 12.sp,
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ],
-          ),
+              );
+            }),
+          ],
         ),
-        Flexible(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: AppColors.textPurple),
-            ),
-            child: Obx(
-              () => DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  dropdownColor: Colors.white,
-                  value: controller.selectedStatus.value,
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: AppColors.textPurple,
-                    size: 20.sp,
-                  ),
-                  items: controller.statusOptions.map((value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: getTextStyle(
-                          fontSize: 13.sp,
-                          color: AppColors.textPurple,
-                          fontWeight: FontWeight.w600,
-                        ),
+      ),
+
+      /// Right Side (Dropdown)
+      Flexible(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(color: AppColors.textPurple),
+          ),
+          child: Obx(() {
+            return DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: controller.selectedStatus.value,
+                dropdownColor: Colors.white,
+                icon: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: AppColors.textPurple,
+                  size: 20.sp,
+                ),
+
+                /// Dropdown items
+                items: statusOptions.map((item) {
+                  return DropdownMenuItem<String>(
+                    value: item['value'], // ✅ RAW VALUE
+                    child: Text(
+                      item['label']!,     // ✅ TRANSLATED LABEL
+                      style: getTextStyle(
+                        fontSize: 13.sp,
+                        color: AppColors.textPurple,
+                        fontWeight: FontWeight.w600,
                       ),
-                    );
-                  }).toList(),
-                  onChanged: controller.updateStatus,
-                ),
+                    ),
+                  );
+                }).toList(),
+
+                /// On change
+                onChanged: controller.updateStatus,
               ),
-            ),
-          ),
+            );
+          }),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
   Widget _buildBookingCard(BuildContext context, UserBookingItem booking) {
     final statusColor = _getStatusColor(booking.status);
@@ -665,9 +685,10 @@ class AllBookingScreen extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           Text(
-            isFiltered
-                ? 'no_bookings'.trParams({'status': selectedStatus})
-                : 'no_bookings_yet'.tr,
+            // isFiltered
+            //     ? 'no_bookings'.trParams({'status': selectedStatus})
+            //     : 
+                'no_bookings_yet'.tr,
             textAlign: TextAlign.center,
             style: getTextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
           ),

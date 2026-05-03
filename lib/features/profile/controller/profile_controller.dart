@@ -7,6 +7,8 @@ import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
+import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
+import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
 
 class ProfileController extends GetxController {
   final ApiClient _apiClient = ApiClient();
@@ -253,6 +255,19 @@ class ProfileController extends GetxController {
       imagePath.value = avatarUrl;
       errorMessage.value = '';
 
+      // Propagate avatar change to other controllers so their headers update immediately
+      try {
+        if (Get.isRegistered<UserHomeController>()) {
+          Get.find<UserHomeController>().profileImage.value = avatarUrl;
+        }
+      } catch (_) {}
+
+      try {
+        if (Get.isRegistered<ProviderHomeController>()) {
+          Get.find<ProviderHomeController>().profileImage.value = avatarUrl;
+        }
+      } catch (_) {}
+
       await StorageService.ensureInitialized();
       await StorageService.saveUser(avatar: avatarUrl);
 
@@ -376,6 +391,19 @@ class ProfileController extends GetxController {
     zipCode.value = _asString(profileData['zipCode']);
     imagePath.value = _asString(profileData['avatar']);
     hasLoadedProfile.value = true;
+
+    // Propagate avatar to other controllers so headers reflect latest avatar
+    try {
+      final avatar = imagePath.value;
+      if (avatar.isNotEmpty) {
+        if (Get.isRegistered<UserHomeController>()) {
+          Get.find<UserHomeController>().profileImage.value = avatar;
+        }
+        if (Get.isRegistered<ProviderHomeController>()) {
+          Get.find<ProviderHomeController>().profileImage.value = avatar;
+        }
+      }
+    } catch (_) {}
 
     await StorageService.ensureInitialized();
     await StorageService.saveUser(

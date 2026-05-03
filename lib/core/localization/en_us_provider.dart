@@ -203,5 +203,9 @@ const Map<String, String> enUSProvider = {
   'withdraw_funds': 'Withdraw Funds',
   'withdrawal_history': 'Withdrawal History',
   'no_withdrawal_history': 'No withdrawal history found',
+  'request_withdrawal': 'Request a withdrawal from your wallet',
+  'available_balance': 'Available Balance',
+  'admin_approval_required': 'Admin Approval Required',
+  'withdrawal_review': 'Your withdrawal request will be reviewed by the admin. Processing typically takes 1-3 business days.',
 };
  

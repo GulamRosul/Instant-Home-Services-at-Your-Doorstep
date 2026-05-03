@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/localization/localization_service.dart';
+import 'package:protiva502/core/utils/theme/app_system_theme.dart';
 import 'package:protiva502/routes/app_routes.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'core/bindings/controller_binder.dart';
@@ -32,11 +34,18 @@ class Protiva502 extends StatelessWidget {
           themeMode: ThemeMode.light,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          builder: (context, child) {
-            final easyLoaded =
-                EasyLoading.init()(context, child) ?? const SizedBox.shrink();
 
-            return Stack(
+          builder: (context, child) {
+            /// ✅ Get System UI style from theme
+            final overlayStyle = Theme.of(context)
+                .extension<AppSystemTheme>()!
+                .systemOverlayStyle;
+
+            /// ✅ Keep EasyLoading
+            final easyLoaded = EasyLoading.init()(context, child);
+
+            /// ✅ Final UI stack
+            final content = Stack(
               children: [
                 easyLoaded,
                 ZegoUIKitPrebuiltCallMiniOverlayPage(
@@ -44,6 +53,12 @@ class Protiva502 extends StatelessWidget {
                       appNavigatorKey.currentState?.overlay?.context ?? context,
                 ),
               ],
+            );
+
+            /// ✅ Apply System UI globally
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: overlayStyle,
+              child: content,
             );
           },
         );

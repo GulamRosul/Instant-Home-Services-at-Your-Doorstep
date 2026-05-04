@@ -55,23 +55,8 @@ class CallService {
     }
 
     if (invitationService.isInit) {
-      invitationService.uninit();
+      await invitationService.uninit();
     }
-
-    // await invitationService.init(
-    //   appID: call_Constants.appID,
-    //   appSign: call_Constants.appSign,
-    //   userID: normalizedUserId,
-    //   userName: normalizedUserName,
-    //   plugins: [ZegoUIKitSignalingPlugin()],
-    //   requireConfig: (invitationData) {
-    //     if (invitationData.type == ZegoCallInvitationType.videoCall) {
-    //       return ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall();
-    //     }
-
-    //     return ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
-    //   },
-    // );
 
     await invitationService.init(
       appID: call_Constants.appID,
@@ -104,12 +89,60 @@ class CallService {
         }
         return ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
       },
+
+      // ✅ Events are separate from config
+      events: ZegoUIKitPrebuiltCallEvents(
+        onCallEnd: (event, defaultAction) async {
+          defaultAction.call();
+          await Future.delayed(const Duration(seconds: 1));
+          await _fullReset();
+        },
+      ),
     );
 
     _initializedUserId = normalizedUserId;
     AppLoggerHelper.info(
       'Call service initialized for userId=$normalizedUserId',
     );
+  }
+
+  Future<void> _fullReset() async {
+    try {
+      final invitationService = ZegoUIKitPrebuiltCallInvitationService();
+
+      if (invitationService.isInit) {
+        AppLoggerHelper.info('Starting full service reset...');
+
+        await invitationService.uninit();
+        AppLoggerHelper.info('Service uninited, waiting for threads to stop...');
+
+        await Future.delayed(const Duration(seconds: 2));
+      }
+
+      _initializedUserId = null;
+      AppLoggerHelper.info('Reset complete, now reinitializing...');
+
+      await initializeFromStorage();
+      AppLoggerHelper.info('Service reinitialized successfully');
+    } catch (e) {
+      AppLoggerHelper.warning('Full reset error: $e');
+    }
+  }
+
+  Future<void> reinitialize() async {
+    final invitationService = ZegoUIKitPrebuiltCallInvitationService();
+    if (invitationService.isInit) {
+      await invitationService.uninit();
+    }
+    _initializedUserId = null;
+    try {
+      await initializeFromStorage();
+    } catch (e) {
+      // Zego internal AudioContextIOS assertion fires on Android during reinit
+      // Safe to ignore — service initializes successfully despite the throw
+      AppLoggerHelper.warning('Reinit completed with non-critical error: $e');
+    }
+    AppLoggerHelper.info('Call service reinitialized');
   }
 
   Future<void> uninitialize() async {

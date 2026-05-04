@@ -96,7 +96,9 @@ class _AudioCallPageState extends State<AudioCallPage> {
   Uint8List _convertHexToBytes(String hex) {
     final buffer = StringBuffer();
     for (int i = 0; i < hex.length; i += 2) {
-      buffer.write(String.fromCharCode(int.parse(hex.substring(i, i + 2), radix: 16)));
+      buffer.write(
+        String.fromCharCode(int.parse(hex.substring(i, i + 2), radix: 16)),
+      );
     }
     return Uint8List.fromList(buffer.toString().codeUnits);
   }
@@ -111,7 +113,7 @@ class _AudioCallPageState extends State<AudioCallPage> {
           ZegoUIKitPrebuiltCall(
             appID: call_Constants.appID,
             // appSign: _convertHexToBytes(call_Constants.appSign),
-              appSign: call_Constants.appSign,
+            appSign: call_Constants.appSign,
             userID: widget.userID,
             userName: widget.userName,
             callID: widget.callID,
@@ -123,10 +125,8 @@ class _AudioCallPageState extends State<AudioCallPage> {
               },
               onCallEnd: (event, defaultAction) async {
                 if (!mounted) return;
-
                 await Future.delayed(const Duration(milliseconds: 500));
-
-                if (mounted) {
+                if (mounted && Navigator.of(context).canPop()) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     if (mounted && Navigator.of(context).canPop()) {
                       Navigator.of(context).pop();

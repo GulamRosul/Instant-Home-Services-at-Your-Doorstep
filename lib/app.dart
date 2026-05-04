@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/localization/localization_service.dart';
+import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/utils/theme/app_system_theme.dart';
 import 'package:protiva502/routes/app_routes.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
@@ -12,8 +13,24 @@ import 'core/utils/theme/theme.dart';
 
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
-class Protiva502 extends StatelessWidget {
+// class Protiva502 extends StatelessWidget {
+//   const Protiva502({super.key});
+class Protiva502 extends StatefulWidget {
   const Protiva502({super.key});
+
+  @override
+  State<Protiva502> createState() => _Protiva502State();
+}
+
+class _Protiva502State extends State<Protiva502> {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ After first frame — navigator is attached
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      CallService.instance.setNavigatorKey(appNavigatorKey);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

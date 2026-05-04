@@ -412,35 +412,75 @@ class TrackProviderController extends GetxController {
   //   print('Call invitation sent to ${personName.value}');
   // }
 
+  // void callPerson() async {
+  //   if (_otherUserId == null || _otherUserId!.trim().isEmpty) {
+  //     Get.snackbar('Error', 'Unable to initiate call: Receiver ID not found');
+  //     return;
+  //   }
+
+  //   if (_otherUserId == _currentUserId) {
+  //     Get.snackbar('Error', 'Unable to initiate call: Invalid receiver');
+  //     return;
+  //   }
+
+  //   // ✅ Just send invitation — Zego handles UI automatically
+  //   final didSend = await CallService.instance.startAudioCall(
+  //     targetUserId: _otherUserId!,
+  //     targetUserName: personName.value,
+  //     callID: bookingId.value.replaceAll('#', '').trim(),
+  //   );
+
+  //   if (!didSend) {
+  //     AppLoggerHelper.warning(
+  //       'Call invitation failed: ${CallService.instance.lastError ?? 'Unknown'}',
+  //     );
+  //     Get.snackbar(
+  //       'Call Failed',
+  //       CallService.instance.lastError ?? 'Unable to reach receiver',
+  //     );
+  //   }
+
+  //   // ✅ NO Get.to(AudioCallPage) — Zego handles the call screen
+  // }
+
+  bool _isCallInProgress = false;
+
   void callPerson() async {
-    if (_otherUserId == null || _otherUserId!.trim().isEmpty) {
-      Get.snackbar('Error', 'Unable to initiate call: Receiver ID not found');
-      return;
-    }
+    if (_isCallInProgress) return;
+    _isCallInProgress = true;
 
-    if (_otherUserId == _currentUserId) {
-      Get.snackbar('Error', 'Unable to initiate call: Invalid receiver');
-      return;
-    }
+    try {
+      if (_otherUserId == null || _otherUserId!.trim().isEmpty) {
+        Get.snackbar('Error', 'Unable to initiate call: Receiver ID not found');
+        return;
+      }
 
-    // ✅ Just send invitation — Zego handles UI automatically
-    final didSend = await CallService.instance.startAudioCall(
-      targetUserId: _otherUserId!,
-      targetUserName: personName.value,
-      callID: bookingId.value.replaceAll('#', '').trim(),
-    );
+      if (_otherUserId == _currentUserId) {
+        Get.snackbar('Error', 'Unable to initiate call: Invalid receiver');
+        return;
+      }
 
-    if (!didSend) {
-      AppLoggerHelper.warning(
-        'Call invitation failed: ${CallService.instance.lastError ?? 'Unknown'}',
+      final baseId = bookingId.value.replaceAll('#', '').trim();
+      final uniqueCallId = '${baseId}_${DateTime.now().millisecondsSinceEpoch}';
+
+      final didSend = await CallService.instance.startAudioCall(
+        targetUserId: _otherUserId!,
+        targetUserName: personName.value,
+        callID: uniqueCallId,
       );
-      Get.snackbar(
-        'Call Failed',
-        CallService.instance.lastError ?? 'Unable to reach receiver',
-      );
-    }
 
-    // ✅ NO Get.to(AudioCallPage) — Zego handles the call screen
+      if (!didSend) {
+        AppLoggerHelper.warning(
+          'Call invitation failed: ${CallService.instance.lastError ?? 'Unknown'}',
+        );
+        Get.snackbar(
+          'Call Failed',
+          CallService.instance.lastError ?? 'Unable to reach receiver',
+        );
+      }
+    } finally {
+      _isCallInProgress = false;
+    }
   }
 
   void messagePerson() {

@@ -474,72 +474,87 @@ class UserHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryGrid(UserHomeController controller) {
-    if (controller.isCategoriesLoading.value) {
-      return _buildCategoryShimmerLoader();
-    }
+Widget _buildCategoryGrid(UserHomeController controller) {
+  if (controller.isCategoriesLoading.value) {
+    return _buildCategoryShimmerLoader();
+  }
 
-    return GridView.builder(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: controller.categories.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        mainAxisSpacing: 5.h,
-        crossAxisSpacing: 6.w,
-        childAspectRatio: 0.8,
+  // ✅ Empty State
+  if (controller.categories.isEmpty) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 12.h),
+      child: Center(
+        child: Text(
+          "no_categories_found".tr,
+            textAlign: TextAlign.center,
+            style: getTextStyle(
+              fontSize: 12.sp,
+              color: AppColors.textSecondary,
+
+            ),
+        ),
       ),
-      itemBuilder: (context, index) {
-        final category = controller.categories[index];
-        return GestureDetector(
-          onTap: () {
-            // AvailableCategoryController().selectCategory(index);
-            Get.to(() => AvailableCategoryScreen(initialCategoryIndex: index));
-          },
-          child: Container(
-            padding: EdgeInsets.all(5.r),
-            decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Load category icon as network image since it's a URL from API
-                category.icon.isNotEmpty
-                    ? Image.network(
-                        category.icon,
-                        width: 24.w,
-                        height: 24.h,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.category,
-                            size: 24.sp,
-                            color: Colors.grey,
-                          );
-                        },
-                      )
-                    : Icon(Icons.category, size: 24.sp, color: Colors.grey),
-                SizedBox(height: 8.h),
-                Text(
-                  category.name,
-                  textAlign: TextAlign.center,
-                  style: getTextStyle(
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
+
+  return GridView.builder(
+    padding: EdgeInsets.zero,
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    itemCount: controller.categories.length,
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 4,
+      mainAxisSpacing: 5.h,
+      crossAxisSpacing: 6.w,
+      childAspectRatio: 0.8,
+    ),
+    itemBuilder: (context, index) {
+      final category = controller.categories[index];
+      return GestureDetector(
+        onTap: () {
+          Get.to(() => AvailableCategoryScreen(initialCategoryIndex: index));
+        },
+        child: Container(
+          padding: EdgeInsets.all(5.r),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEFF6FF),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              category.icon.isNotEmpty
+                  ? Image.network(
+                      category.icon,
+                      width: 24.w,
+                      height: 24.h,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.category,
+                          size: 24.sp,
+                          color: Colors.grey,
+                        );
+                      },
+                    )
+                  : Icon(Icons.category, size: 24.sp, color: Colors.grey),
+              SizedBox(height: 8.h),
+              Text(
+                category.name,
+                textAlign: TextAlign.center,
+                style: getTextStyle(
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
   Widget _buildSectionBody({
     required bool isLoading,

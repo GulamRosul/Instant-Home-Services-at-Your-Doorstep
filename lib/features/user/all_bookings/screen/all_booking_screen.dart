@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
+import 'package:protiva502/core/services/booking_id_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
@@ -17,7 +18,9 @@ import 'package:protiva502/features/user/user_booking_confirmation/screen/bookin
 import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
 
 class AllBookingScreen extends StatelessWidget {
-  const AllBookingScreen({super.key});
+  AllBookingScreen({super.key});
+
+  final bookingIdService = BookingIdService();
 
   @override
   Widget build(BuildContext context) {
@@ -212,96 +215,96 @@ class AllBookingScreen extends StatelessWidget {
     );
   }
 
-Widget _buildFilterHeader(AllBookingController controller) {
-  final List<Map<String, String>> statusOptions = [
-    {'value': 'all', 'label': 'all_status'.tr},
-    {'value': 'pending', 'label': 'pending'.tr},
-    {'value': 'accepted', 'label': 'accepted'.tr},
-    {'value': 'rejected', 'label': 'rejected'.tr},
-    {'value': 'completed', 'label': 'completed'.tr},
-    {'value': 'cancelled', 'label': 'cancelled'.tr},
-  ];
+  Widget _buildFilterHeader(AllBookingController controller) {
+    final List<Map<String, String>> statusOptions = [
+      {'value': 'all', 'label': 'all_status'.tr},
+      {'value': 'pending', 'label': 'pending'.tr},
+      {'value': 'accepted', 'label': 'accepted'.tr},
+      {'value': 'rejected', 'label': 'rejected'.tr},
+      {'value': 'completed', 'label': 'completed'.tr},
+      {'value': 'cancelled', 'label': 'cancelled'.tr},
+    ];
 
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      /// Left Side (Title + Count)
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'booking_service'.tr,
-              style: getTextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 4.h),
-
-            /// Reactive booking count
-            Obx(() {
-              final count = controller.filteredBookings.length;
-
-              return Text(
-                '$count ${count == 1 ? 'booking'.tr : 'bookings'.tr}',
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        /// Left Side (Title + Count)
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'booking_service'.tr,
                 style: getTextStyle(
-                  fontSize: 12.sp,
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w400,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 4.h),
+
+              /// Reactive booking count
+              Obx(() {
+                final count = controller.filteredBookings.length;
+
+                return Text(
+                  '$count ${count == 1 ? 'booking'.tr : 'bookings'.tr}',
+                  style: getTextStyle(
+                    fontSize: 12.sp,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w400,
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+
+        /// Right Side (Dropdown)
+        Flexible(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(color: AppColors.textPurple),
+            ),
+            child: Obx(() {
+              return DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: controller.selectedStatus.value,
+                  dropdownColor: Colors.white,
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: AppColors.textPurple,
+                    size: 20.sp,
+                  ),
+
+                  /// Dropdown items
+                  items: statusOptions.map((item) {
+                    return DropdownMenuItem<String>(
+                      value: item['value'], // ✅ RAW VALUE
+                      child: Text(
+                        item['label']!, // ✅ TRANSLATED LABEL
+                        style: getTextStyle(
+                          fontSize: 13.sp,
+                          color: AppColors.textPurple,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+
+                  /// On change
+                  onChanged: controller.updateStatus,
                 ),
               );
             }),
-          ],
-        ),
-      ),
-
-      /// Right Side (Dropdown)
-      Flexible(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(color: AppColors.textPurple),
           ),
-          child: Obx(() {
-            return DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: controller.selectedStatus.value,
-                dropdownColor: Colors.white,
-                icon: Icon(
-                  Icons.keyboard_arrow_down,
-                  color: AppColors.textPurple,
-                  size: 20.sp,
-                ),
-
-                /// Dropdown items
-                items: statusOptions.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item['value'], // ✅ RAW VALUE
-                    child: Text(
-                      item['label']!,     // ✅ TRANSLATED LABEL
-                      style: getTextStyle(
-                        fontSize: 13.sp,
-                        color: AppColors.textPurple,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  );
-                }).toList(),
-
-                /// On change
-                onChanged: controller.updateStatus,
-              ),
-            );
-          }),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
   Widget _buildBookingCard(BuildContext context, UserBookingItem booking) {
     final statusColor = _getStatusColor(booking.status);
@@ -404,13 +407,47 @@ Widget _buildFilterHeader(AllBookingController controller) {
             ],
           ),
           SizedBox(height: 10.h),
-          Text(
-            '${'booking_id'.tr} : ${_shortReference(booking.reference)}',
-            style: getTextStyle(
-              fontSize: 11.sp,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
+          // Text(
+          //   '${'booking_id'.tr} : ${_shortReference(booking.reference)}',
+          //   style: getTextStyle(
+          //     fontSize: 11.sp,
+          //     color: AppColors.textSecondary,
+          //     fontWeight: FontWeight.w500,
+          //   ),
+          // ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Text(
+                  '${'booking_id'.tr} : ${bookingIdService.getTrimmedBookingId(booking.reference)}',
+                  style: getTextStyle(
+                    fontSize: 12.sp,
+                    // color: AppColors.textSecondary,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+
+              SizedBox(width: 4.w),
+
+              ValueListenableBuilder<bool>(
+                valueListenable: bookingIdService.isCopied,
+                builder: (context, copied, _) {
+                  return GestureDetector(
+                    onTap: () =>
+                        bookingIdService.copyBookingId(booking.reference),
+                    child: Icon(
+                      copied ? Icons.check_circle : Icons.copy,
+                      size: 14.sp,
+                      color: copied ? Colors.green : AppColors.textSecondary,
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
           if (booking.message != null && booking.message!.isNotEmpty) ...[
             SizedBox(height: 8.h),
@@ -687,8 +724,8 @@ Widget _buildFilterHeader(AllBookingController controller) {
           Text(
             // isFiltered
             //     ? 'no_bookings'.trParams({'status': selectedStatus})
-            //     : 
-                'no_bookings_yet'.tr,
+            //     :
+            'no_bookings_yet'.tr,
             textAlign: TextAlign.center,
             style: getTextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
           ),
@@ -760,7 +797,7 @@ Widget _buildFilterHeader(AllBookingController controller) {
 
   void _handlePayment(UserBookingItem booking) {
     Get.to(
-      () => const PaymentScreen(),
+      () =>  PaymentScreen(),
       arguments: {
         'bookingId': booking.reference,
         'amount': booking.totalAmount.toInt(),

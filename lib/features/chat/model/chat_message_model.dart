@@ -49,18 +49,31 @@ class ChatMessageModel {
   Map<String, dynamic> toUiMap({required String currentUserId}) {
     final me = senderId == currentUserId;
 
+    // Extract sender's display name
+    String senderName = '';
+    if (sender is Map<String, dynamic>) {
+      final firstName = sender!['firstName']?.toString().trim() ?? '';
+      final lastName = sender!['lastName']?.toString().trim() ?? '';
+      senderName = '$firstName $lastName'.trim();
+      if (senderName.isEmpty) {
+        senderName = sender!['username']?.toString() ?? '';
+      }
+    }
+
     return {
       'message': content,
       'isMe': me,
       'time': _formatTime(createdAt),
       'messageId': id,
       'messageType': messageType,
+      'mediaUrl': mediaUrl,
       'isRead': isRead,
       'senderId': senderId,
       'status': me ? (isRead ? 'read' : 'sent') : 'received',
       'isLocal': false,
       'createdAt': createdAt,
       'sender': sender,
+      'senderName': senderName,
     };
   }
 

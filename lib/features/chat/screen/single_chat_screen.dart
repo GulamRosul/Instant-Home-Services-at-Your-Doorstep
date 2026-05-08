@@ -41,7 +41,10 @@ class SingleChatScreen extends StatelessWidget {
                         child: SizedBox(
                           height: 18,
                           width: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.textPurple),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.textPurple,
+                          ),
                         ),
                       ),
                     );
@@ -50,15 +53,27 @@ class SingleChatScreen extends StatelessWidget {
                   final chatIndex = showTopLoader ? index - 1 : index;
                   final chat = controller.messages[chatIndex];
 
-                  if ((chat['message'] as String).trim().isEmpty) {
-                    return const SizedBox.shrink();
+                  final messageType =
+                      (chat['messageType'] ?? 'TEXT').toString().toUpperCase();
+                  final message = chat['message'] ?? '';
+                  final mediaUrl = chat['mediaUrl'];
+
+                  if (messageType == 'IMAGE') {
+                    print(
+                      '📋 RENDERING IMAGE: type=$messageType, url=$mediaUrl, empty=${mediaUrl?.isEmpty}, isNull=${mediaUrl == null}',
+                    );
                   }
 
+                  if (messageType != 'IMAGE' && message.trim().isEmpty) {
+                    return const SizedBox.shrink();
+                  }
                   return _buildChatBubble(
-                    chat['message'],
+                    chat['message'] ?? '',
                     chat['isMe'],
                     chat['time'],
                     status: chat['status'] ?? 'received',
+                    messageType: messageType,
+                    mediaUrl: chat['mediaUrl'],
                   );
                 },
               );
@@ -127,13 +142,27 @@ class SingleChatScreen extends StatelessWidget {
 
             // Name and Status
             Expanded(
-              child: Obx(
-                () => Column(
+              child: Obx(() {
+                String displayName = controller.otherUserName.value;
+
+                // Try to get actual sender name from the last message
+                if (controller.messages.isNotEmpty) {
+                  for (int i = controller.messages.length - 1; i >= 0; i--) {
+                    final msg = controller.messages[i];
+                    if (msg['isMe'] == false &&
+                        msg['senderName']?.isNotEmpty == true) {
+                      displayName =
+                          msg['senderName'] ?? controller.otherUserName.value;
+                      break;
+                    }
+                  }
+                }
+
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      controller.otherUserName.value,
-                      // StorageService.getDisplayName(),
+                      displayName,
                       style: getTextStyle(
                         color: const Color(0xFF1E293B),
                         fontSize: 15.sp,
@@ -155,21 +184,21 @@ class SingleChatScreen extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
-              ),
+                );
+              }),
             ),
 
             // Info Button
-            GestureDetector(
-              onTap: () {
-                // Handle info tap
-              },
-              child: Icon(
-                Icons.info_outline_rounded,
-                color: AppColors.textBlue,
-                size: 20.sp,
-              ),
-            ),
+            // GestureDetector(
+            //   onTap: () {
+            //     // Handle info tap
+            //   },
+            //   child: Icon(
+            //     Icons.info_outline_rounded,
+            //     color: AppColors.textBlue,
+            //     size: 20.sp,
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -181,7 +210,16 @@ class SingleChatScreen extends StatelessWidget {
     bool isMe,
     String time, {
     String status = 'received',
+    String messageType = 'TEXT',
+    String? mediaUrl,
   }) {
+    final normalizedType = messageType.toUpperCase();
+    final isImage = normalizedType == 'IMAGE';
+    if (isImage) {
+      print(
+        '🖼️ IMAGE: messageType=$messageType, mediaUrl=$mediaUrl, empty=${mediaUrl?.isEmpty}',
+      );
+    }
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Column(
@@ -192,9 +230,13 @@ class SingleChatScreen extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(bottom: 4.h),
             constraints: BoxConstraints(maxWidth: Get.width * 0.70),
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            padding: isImage
+                ? EdgeInsets.zero
+                : EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             decoration: BoxDecoration(
-              color: isMe ? AppColors.textPurple : Colors.white,
+              color: isImage
+                  ? null
+                  : (isMe ? AppColors.textPurple : Colors.white),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(16.r),
                 topRight: Radius.circular(16.r),
@@ -209,14 +251,97 @@ class SingleChatScreen extends StatelessWidget {
                 ),
               ],
             ),
-            child: Text(
-              message,
-              style: getTextStyle(
-                color: isMe ? Colors.white : const Color(0xFF1E293B),
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
+            child: isImage && mediaUrl != null && mediaUrl!.isNotEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16.r),
+                      topRight: Radius.circular(16.r),
+                      bottomLeft: isMe ? Radius.circular(16.r) : Radius.zero,
+                      bottomRight: isMe ? Radius.zero : Radius.circular(16.r),
+                    ),
+                    child: mediaUrl.startsWith('http')
+                        ? Image.network(
+                            mediaUrl,
+                            width: Get.width * 0.65,
+                            height: 200.h,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                width: Get.width * 0.65,
+                                height: 200.h,
+                                color: Colors.grey.shade200,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value:
+                                        loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                  .cumulativeBytesLoaded /
+                                              loadingProgress
+                                                  .expectedTotalBytes!
+                                        : null,
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                width: Get.width * 0.65,
+                                height: 200.h,
+                                color: Colors.grey.shade200,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.broken_image),
+                                    SizedBox(height: 8.h),
+                                    Text(
+                                      'Failed to load',
+                                      style: getTextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          )
+                        : Container(
+                            width: Get.width * 0.65,
+                            height: 200.h,
+                            color: Colors.grey.shade200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.image_not_supported),
+                                SizedBox(height: 8.h),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w,
+                                  ),
+                                  child: Text(
+                                    'Unsupported URL format',
+                                    style: getTextStyle(
+                                      fontSize: 9.sp,
+                                      color: Colors.grey,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                  )
+                : Text(
+                    message,
+                    style: getTextStyle(
+                      color: isMe ? Colors.white : const Color(0xFF1E293B),
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
           ),
           Padding(
             padding: EdgeInsets.only(
@@ -237,7 +362,6 @@ class SingleChatScreen extends StatelessWidget {
                 ),
                 if (isMe) ...[
                   SizedBox(width: 4.w),
-                  // Status indicator for sent messages
                   if (status == 'sending')
                     Icon(Icons.schedule, size: 12.sp, color: Colors.grey)
                   else if (status == 'sent')
@@ -282,7 +406,7 @@ class SingleChatScreen extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => controller.pickAndSendImage(),
             icon: Icon(
               Icons.add_circle_outline,
               color: Colors.grey.shade400,

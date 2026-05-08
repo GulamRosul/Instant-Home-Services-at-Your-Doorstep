@@ -50,7 +50,7 @@ class UserOtpController extends GetxController {
   }
 
   void startTimer() {
-    secondsRemaining.value = 600;
+    secondsRemaining.value = 120;
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsRemaining.value > 0) {

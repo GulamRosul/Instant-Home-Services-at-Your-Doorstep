@@ -64,7 +64,7 @@ class ProviderLoginScreen extends StatelessWidget {
             _buildLabel("email".tr),
             Obx(
               () => CustomTextField(
-                controller: controller.usernameController,
+                controller: controller.userEmailController,
                 hintText: 'example@gmail.com',
                 backgroundColor: const Color(0xFFF1F5F9),
                 borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),

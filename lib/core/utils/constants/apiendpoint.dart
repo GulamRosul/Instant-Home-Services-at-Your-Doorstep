@@ -4,11 +4,12 @@ class ApiEndpoints {
   // static const String baseUrl =
   //     'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
   // static const String baseUrl = 'https://protiva-backend-ukw2.onrender.com/api/v1';
-  static const String baseUrl = 'http://13.60.247.63/api/v1';
+  // static const String baseUrl = 'http://13.60.247.63/api/v1';
+  static const String baseUrl = 'https://api.kaajbd.com.bd/api/v1';
 
   /// Socket.IO Server URL (same host as API)
-  static const String socketMessageUrl = 'http://13.60.247.63/messaging';
-  static const String socketTrackingUrl = 'http://13.60.247.63/tracking';
+  static const String socketMessageUrl = 'https://api.kaajbd.com.bd/messaging';
+  static const String socketTrackingUrl = 'https://api.kaajbd.com.bd/tracking';
 
   //authentication
   static const String register = '/auth/register';
@@ -78,6 +79,7 @@ class ApiEndpoints {
 
   //messages
   static String fetchMessage() => '/messages/history';
+  static const String uploadImage = '/messages/upload/image';
 
   //search
   static const String homeSearch = '/job/home-search';
@@ -87,4 +89,7 @@ class ApiEndpoints {
 
   //terms and conditions
   static const String termsAndConditions = '/policy/terms-condition';
+
+  //image upload
+
 }

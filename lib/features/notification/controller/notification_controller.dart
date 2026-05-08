@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:protiva502/core/services/api_client.dart';
+import 'package:protiva502/core/services/firebase_notification_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/features/notification/model/notification_model.dart';
@@ -111,29 +112,39 @@ class NotificationController extends GetxController {
   }
 
   /// Mark a notification as read via API
-Future<void> markNotificationAsRead(String notificationId, int index) async {
-  try {
-    debugPrint('📡 [NOTIFICATION] Marking notification $notificationId as read...');
+  Future<void> markNotificationAsRead(String notificationId, int index) async {
+    try {
+      debugPrint(
+        '📡 [NOTIFICATION] Marking notification $notificationId as read...',
+      );
 
-    final response = await _apiClient.patch(ApiEndpoints.markAsRead(notificationId));
+      final response = await _apiClient.patch(
+        ApiEndpoints.markAsRead(notificationId),
+      );
 
-    debugPrint('📡 [NOTIFICATION] Mark as read status: ${response.statusCode}');
+      debugPrint(
+        '📡 [NOTIFICATION] Mark as read status: ${response.statusCode}',
+      );
 
-    if (response.statusCode == 200) {
-      // Update local state only after API confirms success
-      if (index >= 0 && index < notifications.length) {
-        notifications[index]['isRead'] = true;
-        notifications.refresh();
+      if (response.statusCode == 200) {
+        // Update local state only after API confirms success
+        if (index >= 0 && index < notifications.length) {
+          notifications[index]['isRead'] = true;
+          notifications.refresh();
+        }
+        debugPrint(
+          '✅ [NOTIFICATION] Notification $notificationId marked as read',
+        );
+      } else {
+        debugPrint(
+          '❌ [NOTIFICATION] Failed to mark as read: ${response.statusCode}',
+        );
       }
-      debugPrint('✅ [NOTIFICATION] Notification $notificationId marked as read');
-    } else {
-      debugPrint('❌ [NOTIFICATION] Failed to mark as read: ${response.statusCode}');
+    } catch (e, stackTrace) {
+      debugPrint('❌ [NOTIFICATION] Error marking notification as read: $e');
+      debugPrint('❌ [NOTIFICATION] Stack trace: $stackTrace');
     }
-  } catch (e, stackTrace) {
-    debugPrint('❌ [NOTIFICATION] Error marking notification as read: $e');
-    debugPrint('❌ [NOTIFICATION] Stack trace: $stackTrace');
   }
-}
 
   /// Format time to display format
   String _formatTime(DateTime dateTime) {
@@ -242,6 +253,9 @@ Future<void> markNotificationAsRead(String notificationId, int index) async {
           return;
         }
 
+        // ✅ CRITICAL: Display local notification when app is in foreground
+        // Without this, notifications won't be visually shown to the user
+        displayLocalNotification(message);
         _handleForegroundNotification(message);
       });
 
@@ -354,16 +368,21 @@ Future<void> markNotificationAsRead(String notificationId, int index) async {
 
     switch (type) {
       case 'booking':
-        // Navigate to booking details
+        debugPrint('🗺️ [NAVIGATION] Navigate to booking details');
+        // Example: Get.toNamed('/booking-details', arguments: message.data);
         break;
       case 'payment':
-        // Navigate to payment details
+        debugPrint('🗺️ [NAVIGATION] Navigate to payment details');
+        // Example: Get.toNamed('/payment-details', arguments: message.data);
         break;
       case 'message':
-        // Navigate to chat
+        debugPrint('🗺️ [NAVIGATION] Navigate to chat');
+        // Example: Get.toNamed('/chat', arguments: message.data);
         break;
       default:
-        // Navigate to notification screen
+        debugPrint('🗺️ [NAVIGATION] Navigate to notification screen');
+        // Navigate to notification screen as fallback
+        // Example: Get.toNamed('/notifications');
         break;
     }
   }
@@ -384,37 +403,39 @@ Future<void> markNotificationAsRead(String notificationId, int index) async {
     }
   }
 
-void markAsRead(int index) {
-  if (index >= 0 && index < notifications.length) {
-    final notification = notifications[index]['fullNotification'] as NotificationModel?;
-    if (notification != null) {
-      markNotificationAsRead(notification.id, index);
+  void markAsRead(int index) {
+    if (index >= 0 && index < notifications.length) {
+      final notification =
+          notifications[index]['fullNotification'] as NotificationModel?;
+      if (notification != null) {
+        markNotificationAsRead(notification.id, index);
+      }
     }
   }
-}
 
-/// Delete all notifications via API
-Future<void> clearAll() async {
-  try {
-    debugPrint('📡 [NOTIFICATION] Deleting all notifications...');
+  /// Delete all notifications via API
+  Future<void> clearAll() async {
+    try {
+      debugPrint('📡 [NOTIFICATION] Deleting all notifications...');
 
-    final response = await _apiClient.delete(ApiEndpoints.deleteNotification);
+      final response = await _apiClient.delete(ApiEndpoints.deleteNotification);
 
-    debugPrint('📡 [NOTIFICATION] Delete all status: ${response.statusCode}');
+      debugPrint('📡 [NOTIFICATION] Delete all status: ${response.statusCode}');
 
-    if (response.statusCode == 200) {
-      final count = response.data['data']['count'];
-      notifications.clear();
-      debugPrint('✅ [NOTIFICATION] Deleted $count notifications');
-    } else {
-      debugPrint('❌ [NOTIFICATION] Failed to delete notifications: ${response.statusCode} - ${response.data}');
-
+      if (response.statusCode == 200) {
+        final count = response.data['data']['count'];
+        notifications.clear();
+        debugPrint('✅ [NOTIFICATION] Deleted $count notifications');
+      } else {
+        debugPrint(
+          '❌ [NOTIFICATION] Failed to delete notifications: ${response.statusCode} - ${response.data}',
+        );
+      }
+    } catch (e, stackTrace) {
+      debugPrint('❌ [NOTIFICATION] Error deleting notifications: $e');
+      debugPrint('❌ [NOTIFICATION] Stack trace: $stackTrace');
     }
-  } catch (e, stackTrace) {
-    debugPrint('❌ [NOTIFICATION] Error deleting notifications: $e');
-    debugPrint('❌ [NOTIFICATION] Stack trace: $stackTrace');
   }
-}
 
   /// Get unread notification count
   int get unreadCount {
@@ -431,5 +452,4 @@ Future<void> clearAll() async {
   Future<void> refreshNotifications() async {
     await fetchNotifications();
   }
-
 }

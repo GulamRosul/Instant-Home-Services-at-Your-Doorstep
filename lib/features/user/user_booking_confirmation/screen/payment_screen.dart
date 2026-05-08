@@ -5,13 +5,15 @@ import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
+import 'package:protiva502/core/services/booking_id_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/payment_controller.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/booking_step_progress.dart';
 
 class PaymentScreen extends StatelessWidget {
-  const PaymentScreen({super.key});
+  PaymentScreen({super.key});
 
+  final bookingIdService = BookingIdService();
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PaymentController());
@@ -33,6 +35,9 @@ class PaymentScreen extends StatelessWidget {
 
             // Payment Summary
             _buildPaymentSummary(controller),
+            SizedBox(height: 30.h),
+
+            _buildCouponSection(controller),
             SizedBox(height: 30.h),
 
             // Checkout Button
@@ -104,18 +109,43 @@ class PaymentScreen extends StatelessWidget {
                     color: Colors.grey.shade700,
                   ),
                 ),
-                Expanded(
-                  child: Text(
-                    controller.bookingId.value,
-                    textAlign: TextAlign.end,
-                    style: getTextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        bookingIdService.getTrimmedBookingId(
+                          controller.bookingId.value,
+                        ),
+                        textAlign: TextAlign.end,
+                        style: getTextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+
+                    SizedBox(width: 6.w),
+
+                    ValueListenableBuilder<bool>(
+                      valueListenable: bookingIdService.isCopied,
+                      builder: (context, copied, _) {
+                        return GestureDetector(
+                          onTap: () => bookingIdService.copyBookingId(
+                            controller.bookingId.value,
+                          ),
+                          child: Icon(
+                            copied ? Icons.check_circle : Icons.copy,
+                            size: 16.sp,
+                            color: copied ? Colors.green : Colors.grey,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -168,6 +198,58 @@ class PaymentScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCouponSection(PaymentController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'have_coupon'.tr,
+          style: getTextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        SizedBox(height: 12.h),
+
+        Row(
+          children: [
+            Flexible(
+              child: CustomTextField(
+                controller: controller.couponController,
+                hintText: 'enter_coupon_code'.tr,
+                backgroundColor: Colors.white,
+                borderColor: Colors.grey.shade300,
+                borderRadius: 8,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 10.h,
+                ),
+              ),
+            ),
+
+            SizedBox(width: 12.w),
+
+            Obx(
+              () => SizedBox(
+                width: 100.w,
+                height: 45.h,
+                child: CustomButton(
+                  text: controller.isApplyingCoupon.value ? '...' : 'apply'.tr,
+                  onPressed: controller.isApplyingCoupon.value
+                      ? null
+                      : controller.applyCoupon,
+                  backgroundColor: AppColors.primary,
+                  textColor: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

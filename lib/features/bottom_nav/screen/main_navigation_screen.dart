@@ -21,7 +21,7 @@ class MainNavigationScreen extends StatelessWidget {
     // Define the pages corresponding to your tabs
     final List<Widget> pages = [
       const Center(child: UserHomeScreen()),
-      const Center(child: AllBookingScreen()),
+       Center(child: AllBookingScreen()),
       const Center(child: NotificationScreen()),
       const Center(child: Text("More Page")),
     ];

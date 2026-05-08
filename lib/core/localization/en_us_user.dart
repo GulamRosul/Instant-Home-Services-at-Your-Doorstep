@@ -43,7 +43,7 @@ const Map<String, String> enUSUser = {
 
   // Profile Picture Screen
   'upload_logo_optional': 'Upload Your Logo (Optional)',
-  'bio_optional': 'Bio (Optional)',
+  'bio_optional': 'Bio',
   'enter_bio': 'Enter your bio',
 
   // Reset Password Screen
@@ -119,6 +119,7 @@ const Map<String, String> enUSUser = {
   'guest_greeting': 'Guest 👋',
   'loading_banners': 'Loading banners...',
   'no_banners_available': 'No banners available right now',
+  'no_categories_found': 'No categories found',
 
   // Search Screen
   'search_services': 'Search Services',
@@ -173,6 +174,13 @@ const Map<String, String> enUSUser = {
   'enter_amount': 'Enter amount',
   'processing': 'Processing...',
   'go_to_checkout': 'Go To Checkout',
+  'have_coupon': 'Have a coupon? ',
+  'apply': 'Apply',
+  'invalid_coupon': 'Invalid coupon code',
+  'applying_coupon': 'Applying coupon...',
+  'coupon_applied': 'Coupon applied successfully! New total: ',
+  'enter_coupon_code': 'Enter coupon code',
+  'payment_failed': 'Payment failed. Please try again.',
 
   // Success Dialog
   'congratulations': 'Congratulations!',

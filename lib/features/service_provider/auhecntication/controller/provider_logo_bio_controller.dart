@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 
 class ProviderLogoBioController extends GetxController {
-  static const int maxBioLength = 300;
+  static const int maxBioLength = 500;
 
   final bioController = TextEditingController();
 

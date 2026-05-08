@@ -234,7 +234,7 @@ class MoreBottomSheet extends StatelessWidget {
                       onPressed: () async {
                         Get.back(); // Close dialog
                         Get.back(); // Close bottom sheet
-                        await CallService.instance.uninitialize();
+                        // await CallService.instance.uninitialize();
                         await StorageService.clearAll();
                         Get.offAllNamed(AppRoute.getSecondOnboardingScreen());
                       },

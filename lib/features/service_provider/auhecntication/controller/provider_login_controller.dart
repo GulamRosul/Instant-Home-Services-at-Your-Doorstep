@@ -14,12 +14,12 @@ import 'package:protiva502/features/service_provider/provider_navber/screen/prov
 class ProviderLoginController extends GetxController {
   static const String _baseUrl =
       // 'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
-      'http://13.60.247.63/api/v1';
+      'https://api.kaajbd.com.bd/api/v1';
   static const String _loginEndpoint = '$_baseUrl/auth/login';
   static const String _defaultDeviceId = '21';
 
   // Text Editing Controllers
-  final usernameController = TextEditingController();
+  final userEmailController = TextEditingController();
   final passwordController = TextEditingController();
 
   // Password Visibility State
@@ -33,19 +33,19 @@ class ProviderLoginController extends GetxController {
       isPasswordVisible.value = !isPasswordVisible.value;
 
   Future<void> handleSignIn() async {
-    final username = usernameController.text.trim();
+    final email = userEmailController.text.trim();
     final password = passwordController.text;
 
     // Reset errors
     emailError.value = null;
     passwordError.value = null;
 
-    if (username.isEmpty) {
+    if (email.isEmpty) {
       emailError.value = "email_empty".tr;
       return;
     }
 
-    if (!GetUtils.isEmail(username)) {
+    if (!GetUtils.isEmail(email)) {
       emailError.value = "email_invalid".tr;
       return;
     }
@@ -55,12 +55,12 @@ class ProviderLoginController extends GetxController {
       return;
     }
 
-    if (username.isNotEmpty && password.isNotEmpty) {
+    if (email.isNotEmpty && password.isNotEmpty) {
       if (isSigningIn.value) return;
 
       isSigningIn.value = true;
       final uri = Uri.parse(_loginEndpoint);
-      final payload = jsonEncode({'email': username, 'password': password});
+      final payload = jsonEncode({'email': email, 'password': password});
 
       // Get FCM token - initialize notification controller if not already done
       String deviceId = _defaultDeviceId;
@@ -203,7 +203,7 @@ class ProviderLoginController extends GetxController {
 
   @override
   void onClose() {
-    usernameController.dispose();
+    userEmailController.dispose();
     passwordController.dispose();
     super.onClose();
   }

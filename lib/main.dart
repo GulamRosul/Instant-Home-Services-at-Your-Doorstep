@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:protiva502/app.dart';
 import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/core/services/call_service.dart';
+import 'package:protiva502/core/services/app_lifecycle_service.dart';
+import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/firebase_notification_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/firebase_options.dart';
@@ -25,16 +27,34 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // ✅ Set navigator key once using appNavigatorKey
-  CallService.instance.setNavigatorKey(appNavigatorKey);
-  await CallService.instance.initializeFromStorage();
-
+  // Ensure local notifications and FCM token are initialized before CallService
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await initializeLocalNotifications();
   await initializeAndroidNotificationChannel();
 
+  // Setup app lifecycle and background message handling for calls
+  await AppLifecycleService.instance.setupBackgroundMessageHandler();
+  await AppLifecycleService.instance.requestNotificationPermission();
+
+  // Put the NotificationController early so it can fetch and save the FCM token
   Get.put<NotificationController>(NotificationController(), permanent: true);
+
+  // Wait briefly (with retries) for the FCM token to be saved to secure storage
+  String? _fcm;
+  int _retries = 0;
+  const int _maxRetries = 15;
+  while (_retries < _maxRetries) {
+    _fcm = await SecureStorageService.getFcmToken();
+    if (_fcm != null && _fcm.isNotEmpty) break;
+    await Future.delayed(const Duration(milliseconds: 300));
+    _retries++;
+  }
+  debugPrint('🔑 [MAIN] FCM token ready: ${_fcm ?? 'not available'}');
+
+  // ✅ Set navigator key once using appNavigatorKey and initialize call service
+  CallService.instance.setNavigatorKey(appNavigatorKey);
+  await CallService.instance.initializeFromStorage();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

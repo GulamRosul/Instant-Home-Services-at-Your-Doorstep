@@ -4,49 +4,72 @@ import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/call_const.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class CallService {
   CallService._();
-
   static final CallService instance = CallService._();
 
   String? _initializedUserId;
-  String? _lastError;
-
-  String? get lastError => _lastError;
+  final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   void setNavigatorKey(GlobalKey<NavigatorState> navigatorKey) {
     ZegoUIKitPrebuiltCallInvitationService().setNavigatorKey(navigatorKey);
   }
 
-  Future<void> initializeFromStorage() async {
-    await StorageService.ensureInitialized();
+  Future<void> _initializeLocalNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    if (!StorageService.hasActiveSession()) {
-      return;
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS,
+        );
+
+    await _localNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        // Handle notification tap
+      },
+    );
+
+    try {
+      // Request permission for iOS 10+
+      await _localNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >()
+          ?.requestPermissions(alert: true, badge: true, sound: true);
+
+      // Request permission for Android 13+
+      await _localNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.requestNotificationsPermission();
+    } catch (e) {
+      AppLoggerHelper.warning('Notification permission request: $e');
     }
-
-    final userId = (StorageService.getUserId() ?? '').trim();
-    if (userId.isEmpty) {
-      return;
-    }
-
-    final userName = StorageService.getDisplayName();
-    await initialize(userID: userId, userName: userName);
   }
 
   Future<void> initialize({
     required String userID,
     required String userName,
   }) async {
-    _lastError = null;
     final normalizedUserId = userID.trim();
-    final normalizedUserName = userName.trim().isEmpty ? 'User' : userName;
+    if (normalizedUserId.isEmpty) return;
 
-    if (normalizedUserId.isEmpty) {
-      _lastError = 'Current user ID is empty';
-      return;
-    }
+    await _initializeLocalNotifications();
 
     final invitationService = ZegoUIKitPrebuiltCallInvitationService();
 
@@ -62,7 +85,7 @@ class CallService {
       appID: call_Constants.appID,
       appSign: call_Constants.appSign,
       userID: normalizedUserId,
-      userName: normalizedUserName,
+      userName: userName.trim().isEmpty ? 'User' : userName,
       plugins: [ZegoUIKitSignalingPlugin()],
 
       notificationConfig: ZegoCallInvitationNotificationConfig(
@@ -70,89 +93,77 @@ class CallService {
           showOnLockedScreen: true,
           showOnFullScreen: true,
           callChannel: ZegoCallAndroidNotificationChannelConfig(
-            channelID: 'zego_call',
-            channelName: 'Call Notifications',
-            sound: '',
-            icon: '',
+            channelID: "zego_call",
+            channelName: "Call Notifications",
             vibrate: true,
           ),
         ),
         iOSNotificationConfig: ZegoCallIOSNotificationConfig(
-          appName: 'Protiva502',
-          isSandboxEnvironment: false,
+          systemCallingIconName: "CallKitDefaultIcon",
         ),
       ),
 
       requireConfig: (invitationData) {
-        if (invitationData.type == ZegoCallInvitationType.videoCall) {
-          return ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall();
-        }
-        return ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
+        final config = invitationData.type == ZegoCallInvitationType.videoCall
+            ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+            : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
+
+        config.audioVideoView.backgroundBuilder =
+            (context, size, user, extraInfo) {
+              return Container(color: const Color(0xFF1A1A1A));
+            };
+
+        config.avatarBuilder = (context, size, user, extraInfo) {
+          final initial = (user?.name.isNotEmpty == true)
+              ? user!.name[0].toUpperCase()
+              : '?';
+          return Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white10,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              initial,
+              style: const TextStyle(color: Colors.white, fontSize: 32),
+            ),
+          );
+        };
+
+        config.topMenuBar.isVisible = false;
+        return config;
       },
 
-      // ✅ Events are separate from config
       events: ZegoUIKitPrebuiltCallEvents(
-        onCallEnd: (event, defaultAction) async {
+        user: ZegoCallUserEvents(
+          onEnter: (user) {
+            AppLoggerHelper.info('User entered call - enabling wake lock');
+            _enableWakeLock();
+          },
+          onLeave: (user) {
+            AppLoggerHelper.info(
+              'User left call - checking if disabling wake lock',
+            );
+          },
+        ),
+        onCallEnd: (event, defaultAction) {
+          AppLoggerHelper.info('Call ended - disabling wake lock');
+          _disableWakeLock();
           defaultAction.call();
-          await Future.delayed(const Duration(seconds: 1));
-          await _fullReset();
         },
       ),
     );
 
     _initializedUserId = normalizedUserId;
-    AppLoggerHelper.info(
-      'Call service initialized for userId=$normalizedUserId',
-    );
   }
 
-  Future<void> _fullReset() async {
-    try {
-      final invitationService = ZegoUIKitPrebuiltCallInvitationService();
-
-      if (invitationService.isInit) {
-        AppLoggerHelper.info('Starting full service reset...');
-
-        await invitationService.uninit();
-        AppLoggerHelper.info('Service uninited, waiting for threads to stop...');
-
-        await Future.delayed(const Duration(seconds: 2));
-      }
-
-      _initializedUserId = null;
-      AppLoggerHelper.info('Reset complete, now reinitializing...');
-
-      await initializeFromStorage();
-      AppLoggerHelper.info('Service reinitialized successfully');
-    } catch (e) {
-      AppLoggerHelper.warning('Full reset error: $e');
+  Future<void> initializeFromStorage() async {
+    await StorageService.ensureInitialized();
+    final userId = StorageService.getUserId()?.trim();
+    final userName = StorageService.getDisplayName();
+    if (userId != null && userId.isNotEmpty) {
+      await initialize(userID: userId, userName: userName ?? 'User');
     }
-  }
-
-  Future<void> reinitialize() async {
-    final invitationService = ZegoUIKitPrebuiltCallInvitationService();
-    if (invitationService.isInit) {
-      await invitationService.uninit();
-    }
-    _initializedUserId = null;
-    try {
-      await initializeFromStorage();
-    } catch (e) {
-      // Zego internal AudioContextIOS assertion fires on Android during reinit
-      // Safe to ignore — service initializes successfully despite the throw
-      AppLoggerHelper.warning('Reinit completed with non-critical error: $e');
-    }
-    AppLoggerHelper.info('Call service reinitialized');
-  }
-
-  Future<void> uninitialize() async {
-    final invitationService = ZegoUIKitPrebuiltCallInvitationService();
-
-    if (invitationService.isInit) {
-      invitationService.uninit();
-    }
-
-    _initializedUserId = null;
   }
 
   Future<bool> startAudioCall({
@@ -160,48 +171,41 @@ class CallService {
     required String targetUserName,
     String? callID,
   }) async {
-    _lastError = null;
-    final inviteeId = targetUserId.trim();
-    if (inviteeId.isEmpty) {
-      _lastError = 'Target user ID is empty';
-      return false;
-    }
-
-    if (!ZegoUIKitPrebuiltCallInvitationService().isInit) {
-      await initializeFromStorage();
-    }
-
-    if (!ZegoUIKitPrebuiltCallInvitationService().isInit) {
-      _lastError =
-          'Invitation service is not initialized. Ensure both users are logged in.';
-      return false;
-    }
-
-    final callerName = StorageService.getDisplayName();
-    final normalizedCallId = callID?.trim();
-
     try {
-      final didSend = await ZegoUIKitPrebuiltCallInvitationService().send(
-        invitees: [ZegoCallUser(inviteeId, targetUserName.trim())],
-        isVideoCall: false,
-        callID: (normalizedCallId == null || normalizedCallId.isEmpty)
-            ? null
-            : normalizedCallId,
-        notificationTitle: 'Incoming call',
-        notificationMessage: '$callerName is calling you',
-        timeoutSeconds: 60,
+      final callerName = StorageService.getDisplayName();
+
+      AppLoggerHelper.info(
+        'Initiating audio call to $targetUserId ($targetUserName) from $callerName',
       );
 
-      if (!didSend) {
-        _lastError =
-            'Call invite send failed. Receiver may be offline or not initialized in signaling.';
-      }
-
-      return didSend;
+      return await ZegoUIKitPrebuiltCallInvitationService().send(
+        invitees: [ZegoCallUser(targetUserId, targetUserName)],
+        isVideoCall: false,
+        callID: callID,
+        notificationTitle: 'Incoming call',
+        notificationMessage: '$callerName is calling you',
+      );
     } catch (e) {
-      _lastError = 'Exception while sending invite: $e';
-      AppLoggerHelper.error('Call invitation error', e);
+      AppLoggerHelper.error('Error starting audio call: $e');
       return false;
+    }
+  }
+
+  Future<void> _enableWakeLock() async {
+    try {
+      await WakelockPlus.enable();
+      AppLoggerHelper.info('Wake lock enabled');
+    } catch (e) {
+      AppLoggerHelper.error('Error enabling wake lock: $e');
+    }
+  }
+
+  Future<void> _disableWakeLock() async {
+    try {
+      await WakelockPlus.disable();
+      AppLoggerHelper.info('Wake lock disabled');
+    } catch (e) {
+      AppLoggerHelper.error('Error disabling wake lock: $e');
     }
   }
 }

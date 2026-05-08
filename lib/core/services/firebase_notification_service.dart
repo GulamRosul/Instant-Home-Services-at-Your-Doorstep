@@ -45,7 +45,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       data.containsKey('call_id') ||
       data.containsKey('inviter_id') ||
       (message.notification?.title == 'Incoming call')) {
-    debugPrint('🔔 [BACKGROUND] Zego call notification — skipping local display');
+    debugPrint(
+      '🔔 [BACKGROUND] Zego call notification — skipping local display',
+    );
     return;
   }
 
@@ -89,7 +91,6 @@ Future<void> _showNotification(
           priority: Priority.high,
           enableVibration: true,
           enableLights: true,
-          // ✅ No custom sound — avoids missing asset crash
         );
 
     const NotificationDetails details = NotificationDetails(
@@ -117,7 +118,25 @@ Future<void> initializeAndroidNotificationChannel() async {
   if (!Platform.isAndroid) return;
 
   try {
-    // ✅ No custom sound reference
+    // ✅ High importance channel for call notifications
+    const AndroidNotificationChannel callChannel = AndroidNotificationChannel(
+      'zego_call',
+      'Call Notifications',
+      description: 'Channel for incoming call notifications.',
+      importance: Importance.max,
+      enableVibration: true,
+      enableLights: true,
+      playSound: true,
+      showBadge: true,
+    );
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.createNotificationChannel(callChannel);
+
+    // ✅ Regular high importance channel for other notifications
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'protiva_high_importance_channel',
       'High Importance Notifications',
@@ -128,10 +147,12 @@ Future<void> initializeAndroidNotificationChannel() async {
     );
 
     await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
 
-    debugPrint('✅ [ANDROID] Notification channel created');
+    debugPrint('✅ [ANDROID] Notification channels created');
   } catch (e) {
     debugPrint('❌ [ANDROID] Channel error: $e');
   }

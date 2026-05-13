@@ -87,6 +87,8 @@ dev_dependencies:
 
 dependency_overrides:
   zego_zim: 2.23.0
+  flutter_sslcommerz:
+    path: packages/flutter_sslcommerz
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

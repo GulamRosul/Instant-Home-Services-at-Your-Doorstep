@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 

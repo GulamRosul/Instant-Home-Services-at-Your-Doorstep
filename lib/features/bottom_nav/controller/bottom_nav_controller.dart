@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/more_bottom_sheet/more_bottom_sheet.dart';
 
 class BottomNavController extends GetxController {

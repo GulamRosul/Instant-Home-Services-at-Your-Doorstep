@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/firebase_notification_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
+import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/features/notification/model/notification_model.dart';
 
@@ -226,6 +226,13 @@ class NotificationController extends GetxController {
         debugPrint(
           '🔔 [NOTIFICATION] iOS permission status: ${settings.authorizationStatus}',
         );
+
+        if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+          debugPrint(
+            '🔔 [NOTIFICATION] iOS permission granted, enabling notifications on backend',
+          );
+          await toggleNotification(true);
+        }
       } else if (Platform.isAndroid) {
         // For Android, we need to set up notification channel
         debugPrint('🔔 [NOTIFICATION] Setting up Android notifications...');
@@ -402,6 +409,41 @@ class NotificationController extends GetxController {
       await fetchNotifications();
     }
   }
+
+  /// Toggle notification preference via API
+  Future<bool> toggleNotification(bool enabled) async {
+    try {
+      debugPrint('📡 [NOTIFICATION] Toggling notification: $enabled');
+
+      final response = await _apiClient.patch(
+        ApiEndpoints.toggleNotification,
+        data: {'enabled': enabled},
+      );
+
+      debugPrint(
+        '📡 [NOTIFICATION] Toggle response status: ${response.statusCode}',
+      );
+
+      if (response.statusCode == 200) {
+        await StorageService.setNotificationsEnabled(enabled);
+        debugPrint('✅ [NOTIFICATION] Notification toggled to: $enabled');
+        return true;
+      } else {
+        debugPrint(
+          '❌ [NOTIFICATION] Failed to toggle: ${response.statusCode} - ${response.data}',
+        );
+        return false;
+      }
+    } catch (e, stackTrace) {
+      debugPrint('❌ [NOTIFICATION] Error toggling notification: $e');
+      debugPrint('❌ [NOTIFICATION] Stack trace: $stackTrace');
+      return false;
+    }
+  }
+
+  /// Get saved notification preference
+  bool getSavedNotificationPreference() =>
+      StorageService.getNotificationsEnabled();
 
   void markAsRead(int index) {
     if (index >= 0 && index < notifications.length) {

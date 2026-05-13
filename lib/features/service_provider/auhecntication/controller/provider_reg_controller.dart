@@ -11,7 +11,7 @@ import 'package:protiva502/features/service_provider/auhecntication/screen/provi
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 
 class ProviderRegController extends GetxController {
-  static const String _baseUrl = 'https://api.kaajbd.com.bd/api/v1';
+  static const String _baseUrl = 'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
   static const String _addProviderEndpoint = '$_baseUrl/auth/add-provider';
   static const int maxBioLength = 500;
 

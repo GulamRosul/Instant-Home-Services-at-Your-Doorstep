@@ -5,11 +5,13 @@ class ApiEndpoints {
   //     'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
   // static const String baseUrl = 'https://protiva-backend-ukw2.onrender.com/api/v1';
   // static const String baseUrl = 'http://13.60.247.63/api/v1';
-  static const String baseUrl = 'https://api.kaajbd.com.bd/api/v1';
+  // static const String baseUrl = 'https://api.kaajbd.com.bd/api/v1';
+    static const String baseUrl = 'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
+
 
   /// Socket.IO Server URL (same host as API)
-  static const String socketMessageUrl = 'https://api.kaajbd.com.bd/messaging';
-  static const String socketTrackingUrl = 'https://api.kaajbd.com.bd/tracking';
+  static const String socketMessageUrl = 'https://1z13k3v3-3000.inc1.devtunnels.ms/messaging';
+  static const String socketTrackingUrl = 'https://1z13k3v3-3000.inc1.devtunnels.ms/tracking';
 
   //authentication
   static const String register = '/auth/register';
@@ -67,15 +69,25 @@ class ApiEndpoints {
   static String subCategoryServices(String subCategoryId) =>
       '/sub-category/sub-category/$subCategoryId';
 
-  //payment
+  //payment via checkout url
   static const String makePayment = '/payment/make-payment';
+
+  //payment via sdk (in app payment)
+  static const String initialSDK = '/payment/initiate-sdk';
+  static const String paymentConfirm = '/payment/confirm';
+  static const String paymentFail = '/payment/payment-fail';
+  
+  //coupons
+  static const String getCoupon = '/cupon/all';
 
   //notifications
   static const String getNotifications = '/notification/get-my-ntg';
   static String markAsRead(String notificationId) =>
       '/notification/$notificationId/read';
   static String deleteNotification =
-      '/notification/notification-delete';
+      '/notification/notification-delete';  
+  static String toggleNotification =
+      '/notification/notification-on-off';
 
   //messages
   static String fetchMessage() => '/messages/history';

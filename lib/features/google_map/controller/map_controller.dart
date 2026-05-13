@@ -152,7 +152,7 @@ class MapController extends GetxController {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       errorMessage.value =
-          'location_services_off'.tr;;
+          'location_services_off'.tr;
       return null;
     }
 

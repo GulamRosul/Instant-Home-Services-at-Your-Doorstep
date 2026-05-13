@@ -45,7 +45,7 @@ class PaymentScreen extends StatelessWidget {
               () => CustomButton(
                 text: controller.isPaymentProcessing.value
                     ? 'processing'.tr
-                    : 'go_to_checkout'.tr,
+                    : 'proceed_to_payment'.tr,
                 onPressed: controller.isPaymentProcessing.value
                     ? null
                     : controller.makePayment,
@@ -215,6 +215,124 @@ class PaymentScreen extends StatelessWidget {
         ),
         SizedBox(height: 12.h),
 
+        // Available Coupons Display
+        Obx(() {
+          if (controller.isLoadingCoupons.value) {
+            return Container(
+              padding: EdgeInsets.all(12.r),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            );
+          }
+
+          if (controller.availableCoupons.isEmpty) {
+            return Container(
+              padding: EdgeInsets.all(12.r),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Text(
+                'No available coupons',
+                style: getTextStyle(
+                  fontSize: 12.sp,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            );
+          }
+
+          return Container(
+            padding: EdgeInsets.all(12.r),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Available Coupons:',
+                  style: getTextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                SizedBox(
+                  height: 60.h,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: controller.availableCoupons.length,
+                    itemBuilder: (context, index) {
+                      final coupon = controller.availableCoupons[index];
+                      final isSelected =
+                          controller.selectedCoupon.value?.id == coupon.id;
+                      return GestureDetector(
+                        onTap: () {
+                          controller.couponController.text = coupon.couponCode;
+                          controller.applyCoupon();
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 8.w),
+                          padding: EdgeInsets.all(8.r),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFF1E293B).withOpacity(0.1)
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(6.r),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFF1E293B)
+                                  : Colors.grey.shade300,
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                coupon.couponCode,
+                                style: getTextStyle(
+                                  fontSize: 11.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: isSelected
+                                      ? const Color(0xFF1E293B)
+                                      : Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: 2.h),
+                              Text(
+                                '${coupon.discountPercentage}% OFF',
+                                style: getTextStyle(
+                                  fontSize: 9.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+        SizedBox(height: 12.h),
+
         Row(
           children: [
             Flexible(
@@ -249,6 +367,58 @@ class PaymentScreen extends StatelessWidget {
             ),
           ],
         ),
+
+        // Show selected coupon info
+        Obx(() {
+          if (controller.selectedCoupon.value != null) {
+            final coupon = controller.selectedCoupon.value!;
+            final discount =
+                (controller.originalAmount.value * coupon.discountPercentage) /
+                100;
+            return Padding(
+              padding: EdgeInsets.only(top: 12.h),
+              child: Container(
+                padding: EdgeInsets.all(12.r),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: Colors.green.shade300),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '✓ ${coupon.couponCode} Applied',
+                          style: getTextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green.shade700,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          'Discount: ${coupon.discountPercentage}% (৳${discount.toStringAsFixed(2)})',
+                          style: getTextStyle(
+                            fontSize: 11.sp,
+                            color: Colors.green.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: controller.removeCoupon,
+                      child: Icon(Icons.close, size: 18.sp, color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        }),
       ],
     );
   }

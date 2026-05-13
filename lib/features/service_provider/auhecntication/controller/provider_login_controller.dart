@@ -14,7 +14,7 @@ import 'package:protiva502/features/service_provider/provider_navber/screen/prov
 class ProviderLoginController extends GetxController {
   static const String _baseUrl =
       // 'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
-      'https://api.kaajbd.com.bd/api/v1';
+      'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
   static const String _loginEndpoint = '$_baseUrl/auth/login';
   static const String _defaultDeviceId = '21';
 

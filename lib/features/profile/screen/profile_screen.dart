@@ -342,7 +342,9 @@ class ProfileScreen extends StatelessWidget {
                       keyboardType: TextInputType.number,
                       isLast: true,
                     ),
+                    
                   ]),
+                  100.h.verticalSpace,
                 ],
               ),
             ),

@@ -251,7 +251,7 @@ class SingleChatScreen extends StatelessWidget {
                 ),
               ],
             ),
-            child: isImage && mediaUrl != null && mediaUrl!.isNotEmpty
+            child: isImage && mediaUrl != null && mediaUrl.isNotEmpty
                 ? ClipRRect(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(16.r),

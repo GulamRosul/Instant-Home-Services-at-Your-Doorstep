@@ -181,6 +181,7 @@ const Map<String, String> enUSUser = {
   'coupon_applied': 'Coupon applied successfully! New total: ',
   'enter_coupon_code': 'Enter coupon code',
   'payment_failed': 'Payment failed. Please try again.',
+  'proceed_to_payment': 'Proceed to Payment',
 
   // Success Dialog
   'congratulations': 'Congratulations!',

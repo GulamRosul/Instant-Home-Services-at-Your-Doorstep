@@ -41,16 +41,16 @@ Future<void> main() async {
   Get.put<NotificationController>(NotificationController(), permanent: true);
 
   // Wait briefly (with retries) for the FCM token to be saved to secure storage
-  String? _fcm;
-  int _retries = 0;
-  const int _maxRetries = 15;
-  while (_retries < _maxRetries) {
-    _fcm = await SecureStorageService.getFcmToken();
-    if (_fcm != null && _fcm.isNotEmpty) break;
+  String? fcm;
+  int retries = 0;
+  const int maxRetries = 15;
+  while (retries < maxRetries) {
+    fcm = await SecureStorageService.getFcmToken();
+    if (fcm != null && fcm.isNotEmpty) break;
     await Future.delayed(const Duration(milliseconds: 300));
-    _retries++;
+    retries++;
   }
-  debugPrint('🔑 [MAIN] FCM token ready: ${_fcm ?? 'not available'}');
+  debugPrint('🔑 [MAIN] FCM token ready: ${fcm ?? 'not available'}');
 
   // ✅ Set navigator key once using appNavigatorKey and initialize call service
   CallService.instance.setNavigatorKey(appNavigatorKey);

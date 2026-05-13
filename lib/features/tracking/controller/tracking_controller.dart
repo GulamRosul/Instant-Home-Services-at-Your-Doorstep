@@ -6,7 +6,6 @@ import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/location_tracking_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
-import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 
 class TrackProviderController extends GetxController {

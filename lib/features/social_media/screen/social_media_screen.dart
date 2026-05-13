@@ -125,7 +125,7 @@ class SocialMediaScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 100.h),
           ],
         ),
       ),

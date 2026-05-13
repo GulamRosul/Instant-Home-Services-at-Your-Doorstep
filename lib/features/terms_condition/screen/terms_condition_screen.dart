@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/features/terms_condition/controller/terms_condition_controller.dart';
@@ -25,12 +23,12 @@ class TermsConditionScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Error: ${controller.error.value}',
-                  style: getTextStyle(fontSize: 14.sp, color: Colors.red),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 16.h),
+                // Text(
+                //   'Error: ${controller.error.value}',
+                //   style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+                //   textAlign: TextAlign.center,
+                // ),
+                // SizedBox(height: 16.h),
                 ElevatedButton(
                   onPressed: controller.fetchTermsAndConditions,
                   child: const Text('Retry'),
@@ -82,7 +80,7 @@ class TermsConditionScreen extends StatelessWidget {
                     lineHeight: 20.sp,
                   ),
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 100.h),
               ],
             ),
           ),

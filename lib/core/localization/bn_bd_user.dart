@@ -182,6 +182,7 @@ const Map<String, String> bnBDUser = {
   'applying_coupon': 'কুপন প্রয়োগ করা হচ্ছে...',
   'coupon_applied': 'কুপন সফলভাবে প্রয়োগ করা হয়েছে! নতুন মোট: ',
   'enter_coupon_code': 'কুপন কোড প্রবেশ করুন',
+  'proceed_to_payment': 'পেমেন্টে প্রস্তুত হন',
 
   // Success Dialog
   'congratulations': 'অভিনন্দন!',

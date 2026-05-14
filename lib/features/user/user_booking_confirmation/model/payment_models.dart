@@ -13,7 +13,7 @@ class PaymentInitiateResponse {
   final int amount;
   final String storeId;
   final String storePassword;
-  final String isSandbox;
+  final bool isSandbox;
   final String customerName;
   final String customerEmail;
   final String customerPhone;
@@ -39,7 +39,7 @@ class PaymentInitiateResponse {
       amount: json['amount'] ?? 0,
       storeId: json['storeId'] ?? '',
       storePassword: json['storePassword'] ?? '',
-      isSandbox: json['isSandbox'] ?? 'false',
+      isSandbox: json['isSandbox'] ?? false,
       customerName: json['customerName'] ?? '',
       customerEmail: json['customerEmail'] ?? '',
       customerPhone: json['customerPhone'] ?? '',
@@ -107,6 +107,56 @@ class Coupon {
     'id': id,
     'couponCode': couponCode,
     'discountPercentage': discountPercentage,
+    'isActive': isActive,
+    'createdAt': createdAt,
+    'updatedAt': updatedAt,
+  };
+}
+
+class CouponResponse {
+  final String id;
+  final String couponCode;
+  final int discountPercentage;
+  final int totalUselimit;
+  final int currentUselimit;
+  final String expireAt;
+  final bool isActive;
+  final String createdAt;
+  final String updatedAt;
+
+  CouponResponse({
+    required this.id,
+    required this.couponCode,
+    required this.discountPercentage,
+    required this.totalUselimit,
+    required this.currentUselimit,
+    required this.expireAt,
+    required this.isActive,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory CouponResponse.fromJson(Map<String, dynamic> json) {
+    return CouponResponse(
+      id: json['id'] ?? '',
+      couponCode: json['couponCode'] ?? '',
+      discountPercentage: json['discountPercentage'] ?? 0,
+      totalUselimit: json['totalUselimit'] ?? 0,
+      currentUselimit: json['currentUselimit'] ?? 0,
+      expireAt: json['expireAt'] ?? '',
+      isActive: json['isActive'] ?? false,
+      createdAt: json['createdAt'] ?? '',
+      updatedAt: json['updatedAt'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'couponCode': couponCode,
+    'discountPercentage': discountPercentage,
+    'totalUselimit': totalUselimit,
+    'currentUselimit': currentUselimit,
+    'expireAt': expireAt,
     'isActive': isActive,
     'createdAt': createdAt,
     'updatedAt': updatedAt,

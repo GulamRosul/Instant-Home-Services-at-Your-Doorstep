@@ -137,6 +137,12 @@ class ProviderDetailsController extends GetxController {
 
       final responseMap = _asMap(response.data);
       final data = _asMap(responseMap?['data']);
+      AppLoggerHelper.info(
+        '📡 [PROVIDER DETAILS API] Response received:\n'
+        '  Status: ${response.statusCode}\n'
+        '  Endpoint: ${ApiEndpoints.providerDetails(providerId)}\n'
+        '  Response: ${response.data}',
+      );
 
       if (response.statusCode != 200 || data == null) {
         provider.value = null;

@@ -8,6 +8,7 @@ import 'package:flutter_sslcommerz/model/SSLCSdkType.dart';
 import 'package:flutter_sslcommerz/model/SSLCurrencyType.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
+import 'package:protiva502/features/bottom_nav/controller/bottom_nav_controller.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/confirm_dialogue.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/model/payment_models.dart';
@@ -20,9 +21,7 @@ class PaymentController extends GetxController {
   var originalAmount = 0.0.obs;
   var isPaymentProcessing = false.obs;
   var isApplyingCoupon = false.obs;
-  var isLoadingCoupons = false.obs;
-  var availableCoupons = <Coupon>[].obs;
-  var selectedCoupon = Rxn<Coupon>();
+  var selectedCoupon = Rxn<CouponResponse>();
   var discountedAmount = 0.0.obs;
 
   // Controllers
@@ -33,7 +32,6 @@ class PaymentController extends GetxController {
   void onInit() {
     super.onInit();
     initializePayment();
-    _fetchCoupons();
   }
 
   void initializePayment() {
@@ -44,30 +42,6 @@ class PaymentController extends GetxController {
       originalAmount.value = amt;
       discountedAmount.value = amt;
       amountController.text = amt.toStringAsFixed(2);
-    }
-  }
-
-  // --- Fetch Coupons Logic ---
-  Future<void> _fetchCoupons() async {
-    isLoadingCoupons.value = true;
-    try {
-      final response = await _apiClient.get(ApiEndpoints.getCoupon);
-
-      if (response.statusCode == 200 && response.data != null) {
-        final data = response.data['data'];
-        if (data is List) {
-          final coupons = data
-              .map((coupon) => Coupon.fromJson(coupon as Map<String, dynamic>))
-              .where((coupon) => coupon.isActive)
-              .toList();
-          availableCoupons.assignAll(coupons);
-          debugPrint('✅ [COUPONS] Fetched ${coupons.length} active coupons');
-        }
-      }
-    } catch (e) {
-      debugPrint('❌ [COUPONS] Error fetching coupons: $e');
-    } finally {
-      isLoadingCoupons.value = false;
     }
   }
 
@@ -85,54 +59,46 @@ class PaymentController extends GetxController {
 
     isApplyingCoupon.value = true;
     try {
-      // Find coupon from available coupons
-      final coupon = availableCoupons.firstWhereOrNull(
-        (c) =>
-            c.couponCode.toLowerCase() ==
-            couponController.text.trim().toLowerCase(),
+      final couponCode = couponController.text.trim();
+      final response = await _apiClient.post(
+        ApiEndpoints.useCoupon(couponCode),
+        data: {},
       );
 
-      if (coupon == null) {
+      if ((response.statusCode == 200 || response.statusCode == 201) &&
+          response.data?['data']?['success'] == true) {
+        final couponData = response.data['data']['data'];
+        final coupon = CouponResponse.fromJson(couponData as Map<String, dynamic>);
+
+        // Calculate discount
+        double discountAmount =
+            (originalAmount.value * coupon.discountPercentage) / 100;
+        double newTotal = originalAmount.value - discountAmount;
+
+        selectedCoupon.value = coupon;
+        discountedAmount.value = newTotal;
+        amountController.text = newTotal.toStringAsFixed(2);
+
+        debugPrint('✅ [COUPON] Applied: ${coupon.couponCode}');
+        debugPrint('   Discount: ${coupon.discountPercentage}%');
+        debugPrint('   Original: ৳${originalAmount.value}');
+        debugPrint('   Discount Amount: ৳$discountAmount');
+        debugPrint('   New Total: ৳$newTotal');
+
+        Get.snackbar(
+          "Success",
+          response.data['data']['message'] ?? "Coupon applied successfully!",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
         Get.snackbar(
           "Error",
-          "Invalid or expired coupon",
+          response.data?['data']?['message'] ?? "Invalid or expired coupon",
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
-        return;
       }
-
-      if (!coupon.isActive) {
-        Get.snackbar(
-          "Error",
-          "This coupon is not active",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
-
-      // Calculate discount
-      double discountAmount =
-          (originalAmount.value * coupon.discountPercentage) / 100;
-      double newTotal = originalAmount.value - discountAmount;
-
-      selectedCoupon.value = coupon;
-      discountedAmount.value = newTotal;
-      amountController.text = newTotal.toStringAsFixed(2);
-
-      debugPrint('✅ [COUPON] Applied: ${coupon.couponCode}');
-      debugPrint('   Discount: ${coupon.discountPercentage}%');
-      debugPrint('   Original: ৳${originalAmount.value}');
-      debugPrint('   Discount Amount: ৳$discountAmount');
-      debugPrint('   New Total: ৳$newTotal');
-
-      Get.snackbar(
-        "Success",
-        "Coupon applied successfully!",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
     } catch (e) {
       debugPrint('❌ [COUPON] Error applying coupon: $e');
       Get.snackbar(
@@ -238,7 +204,7 @@ class PaymentController extends GetxController {
           currency: SSLCurrencyType.BDT,
           tran_id: paymentData.transactionId,
           product_category: 'service',
-          sdkType: paymentData.isSandbox == 'true'
+          sdkType: paymentData.isSandbox
               ? SSLCSdkType.TESTBOX
               : SSLCSdkType.LIVE,
         ),
@@ -313,6 +279,12 @@ class PaymentController extends GetxController {
       if (confirmResponse.statusCode == 200 ||
           confirmResponse.statusCode == 201) {
         _showSuccessDialog();
+        Get.offAll(() => const MainNavigationScreen());
+        // Switch to bookings tab (index 1) after navigation
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final navController = Get.find<BottomNavController>();
+          navController.changeTab(1);
+        });
       } else {
         throw Exception(
           confirmResponse.data?['message'] ?? 'Failed to confirm payment',

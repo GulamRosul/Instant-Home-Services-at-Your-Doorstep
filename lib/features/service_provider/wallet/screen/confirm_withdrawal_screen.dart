@@ -28,7 +28,7 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                   SizedBox(height: 48.h),
 
                   Text(
-                    'Confirm Withdrawal',
+                    'confirm_withdrawal'.tr,
                     style: getTextStyle(
                       fontSize: 28.sp,
                       fontWeight: FontWeight.w700,
@@ -37,7 +37,7 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    'Please review your withdrawal details',
+                    'please_review_withdrawal_details'.tr,
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
@@ -61,7 +61,7 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          'Withdrawal Amount',
+                          'withdrawable_amount'.tr,
                           style: getTextStyle(
                             fontSize: 14.sp,
                             color: Colors.white.withValues(alpha: 0.8),
@@ -94,7 +94,7 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.all(20.w),
                           child: Text(
-                            'Withdrawal Details',
+                            'withdrawal_details'.tr,
                             style: getTextStyle(
                               fontSize: 16.sp,
                               color: Color(0xFF0F172A),
@@ -103,29 +103,29 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                           ),
                         ),
                         _buildDetailRow(
-                          'Account Number',
+                          'account_number'.tr,
                           controller.accountNumber.value,
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: Divider(color: Color(0xFFE2E8F0)),
                         ),
-                        _buildDetailRow('Processing Time', '1-3 business days'),
+                        _buildDetailRow('processing_time'.tr, 'processing_time_details'.tr),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                          child: Divider(color: Color(0xFFE2E8F0)),
+                        ),
+                        // _buildDetailRow(
+                        //   'Transaction Fee',
+                        //   '৳ ${controller.feeAmount.toStringAsFixed(2)}',
+                        //   isGreen: true,
+                        // ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: Divider(color: Color(0xFFE2E8F0)),
                         ),
                         _buildDetailRow(
-                          'Transaction Fee',
-                          '৳ ${controller.feeAmount.toStringAsFixed(2)}',
-                          isGreen: true,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Divider(color: Color(0xFFE2E8F0)),
-                        ),
-                        _buildDetailRow(
-                          'You\'ll Receive',
+                          'you_will_receive'.tr,
                           '৳ ${controller.netAmount.toStringAsFixed(2)}',
                           isBold: true,
                         ),
@@ -180,7 +180,7 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Admin Review Required',
+                                'admin_approval_required'.tr,
                                 style: getTextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
@@ -189,7 +189,7 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 4.h),
                               Text(
-                                'This request will be sent to the admin for approval. You\'ll be notified once it\'s been reviewed.',
+                                'withdrawal_review'.tr,
                                 style: getTextStyle(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w400,
@@ -210,8 +210,8 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                           : controller.submitWithdrawalRequest,
                       textColor: Colors.white,
                       text: controller.isSubmittingWithdrawal.value
-                          ? 'Submitting...'
-                          : 'Submit Request',
+                          ? 'submitting'.tr
+                          : 'submit_request'.tr,
                       backgroundColor: Color(0xFF787BEB),
                       height: 50.h,
                     ),
@@ -224,7 +224,7 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                       );
                     },
                     textColor: Colors.black,
-                    text: 'Edit Details',
+                    text: 'edit_details'.tr,
                     backgroundColor: Colors.white,
                     height: 50.h,
                     borderColor: Color(0xFFE2E8F0),
@@ -251,10 +251,10 @@ class ConfirmWithdrawalScreen extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          const Icon(Icons.arrow_back, color: Colors.black),
+                          const Icon(Icons.arrow_back_ios_new, color: Colors.black),
                           SizedBox(width: 8.w),
                           Text(
-                            'Back',
+                            'back'.tr,
                             style: getTextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w500,

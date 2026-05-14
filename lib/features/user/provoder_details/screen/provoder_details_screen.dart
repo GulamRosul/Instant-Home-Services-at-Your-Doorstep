@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/common/widgets/custom_gallery_widget.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/user/provoder_details/controller/provoder_details_controller.dart';
@@ -50,14 +51,14 @@ class ProviderDetailsScreen extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 20.h),
-              _buildProfileHeader(controller, details),
+              _buildProfileHeader(context, controller, details),
               SizedBox(height: 24.h),
               _buildAboutSection(controller),
               SizedBox(height: 24.h),
               _buildProvideServicesSection(controller),
               SizedBox(height: 24.h),
               _buildReviewFeed(controller),
-              SizedBox(height: 40.h),
+              SizedBox(height: 100.h),
             ],
           ),
         );
@@ -66,6 +67,7 @@ class ProviderDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildProfileHeader(
+    BuildContext context,
     ProviderDetailsController controller,
     ProviderDetailsModel details,
   ) {
@@ -75,26 +77,40 @@ class ProviderDetailsScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CircleAvatar(
-                    radius: 45.r,
-                    backgroundImage: (details.avatar ?? '').trim().isNotEmpty
-                        ? NetworkImage(details.avatar!.trim())
-                        : const AssetImage(ImagePath.profile) as ImageProvider,
-                  ),
-                  if (controller.isVerified)
+              GestureDetector(
+                onTap: (details.avatar ?? '').trim().isNotEmpty
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CustomGalleryWidget(
+                              imageUrls: [details.avatar!.trim()],
+                            ),
+                          ),
+                        );
+                      }
+                    : null,
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
                     CircleAvatar(
-                      radius: 12.r,
-                      backgroundColor: Colors.amber,
-                      child: Icon(
-                        Icons.check,
-                        size: 14.sp,
-                        color: Colors.white,
-                      ),
+                      radius: 45.r,
+                      backgroundImage: (details.avatar ?? '').trim().isNotEmpty
+                          ? NetworkImage(details.avatar!.trim())
+                          : const AssetImage(ImagePath.profile) as ImageProvider,
                     ),
-                ],
+                    if (controller.isVerified)
+                      CircleAvatar(
+                        radius: 12.r,
+                        backgroundColor: Colors.amber,
+                        child: Icon(
+                          Icons.check,
+                          size: 14.sp,
+                          color: Colors.white,
+                        ),
+                      ),
+                  ],
+                ),
               ),
               SizedBox(width: 16.w),
               Expanded(
@@ -509,6 +525,7 @@ class ProviderDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildSingleReview(ProviderReviewModel review) {
+    final hasImages = review.allImages.isNotEmpty;
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(16.r),
@@ -518,6 +535,7 @@ class ProviderDetailsScreen extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -571,6 +589,77 @@ class ProviderDetailsScreen extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
+          if (hasImages) ...[
+            SizedBox(height: 12.h),
+            SizedBox(
+              height: 80.h,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: review.allImages.length,
+                itemBuilder: (context, index) {
+                  final imageUrl = review.allImages[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CustomGalleryWidget(
+                            imageUrls: review.allImages,
+                            initialIndex: index,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(right: 8.w),
+                      width: 80.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey.shade200,
+                              child: Center(
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  color: Colors.grey,
+                                  size: 24.sp,
+                                ),
+                              ),
+                            );
+                          },
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              color: Colors.grey.shade200,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  value:
+                                      loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                            (loadingProgress
+                                                    .expectedTotalBytes ??
+                                                1)
+                                      : null,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );

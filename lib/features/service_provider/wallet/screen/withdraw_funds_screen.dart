@@ -99,7 +99,7 @@ class WithdrawFundsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'available_balance',
+                    'available_balance'.tr,
                     style: getTextStyle(
                       fontSize: 12.sp,
                       color: const Color(0xFF64748B),
@@ -246,7 +246,7 @@ class WithdrawFundsScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _buildTab(
-                        title: 'Card Payment',
+                        title: 'card_payment'.tr,
                         icon: Icons.credit_card_outlined,
                         isSelected:
                             controller.selectedPaymentMethod.value ==
@@ -257,7 +257,7 @@ class WithdrawFundsScreen extends StatelessWidget {
                     ),
                     Expanded(
                       child: _buildTab(
-                        title: 'Mobile Banking',
+                        title: 'mobile_banking'.tr,
                         icon: Icons.smartphone_outlined,
                         isSelected:
                             controller.selectedPaymentMethod.value ==
@@ -283,23 +283,23 @@ class WithdrawFundsScreen extends StatelessWidget {
             SizedBox(height: 32.h),
 
             // Footer info
-            _buildInfoRow('Minimum withdrawal', '৳ 100.00'),
+            _buildInfoRow('minimum_withdrawal'.tr, '৳ 100.00'),
             SizedBox(height: 8.h),
-            _buildInfoRow('Processing time', '1-3 business days'),
+            _buildInfoRow('processing_time'.tr, 'processing_time_details'.tr),
             SizedBox(height: 8.h),
-            Obx(
-              () => _buildInfoRow(
-                'Transaction fee',
-                '৳ ${controller.feeAmount.toStringAsFixed(2)}',
-                isGreen: true,
-              ),
-            ),
+            // Obx(
+            //   () => _buildInfoRow(
+            //     'Transaction fee',
+            //     '৳ ${controller.feeAmount.toStringAsFixed(2)}',
+            //     isGreen: true,
+            //   ),
+            // ),
 
             SizedBox(height: 40.h),
 
             // Continue Button
             CustomButton(
-              text: 'Continue',
+              text: 'continue'.tr,
               onPressed: controller.handleContinueWithdrawal,
               backgroundColor: const Color(0xFF7079F0),
               textColor: Colors.white,
@@ -377,7 +377,7 @@ class WithdrawFundsScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Choose Your Mobile Banking Service:',
+          'choose_mobile_banking_service'.tr,
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
@@ -438,7 +438,7 @@ class WithdrawFundsScreen extends StatelessWidget {
         ),
         SizedBox(height: 24.h),
         Text(
-          'Payment Take Number',
+          'payment_take_number'.tr,
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
@@ -448,7 +448,7 @@ class WithdrawFundsScreen extends StatelessWidget {
         SizedBox(height: 12.h),
         CustomTextField(
           controller: controller.pinController,
-          hintText: 'Enter payment take number',
+          hintText: 'enter_payment_take_number'.tr,
           backgroundColor: Colors.white,
           borderColor: const Color(0xFFE2E8F0),
         ),
@@ -461,7 +461,7 @@ class WithdrawFundsScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Bank Account Number',
+          'bank_account_number'.tr,
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
@@ -471,14 +471,14 @@ class WithdrawFundsScreen extends StatelessWidget {
         SizedBox(height: 12.h),
         CustomTextField(
           controller: controller.accountNumberController,
-          hintText: 'Enter your account number',
+          hintText: 'bank_account_number'.tr,
           keyboardType: TextInputType.number,
           backgroundColor: Colors.white,
           borderColor: const Color(0xFFE2E8F0),
         ),
         SizedBox(height: 12.h),
         Text(
-          'Bank Name',
+          'bank_name'.tr,
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
@@ -488,14 +488,14 @@ class WithdrawFundsScreen extends StatelessWidget {
         SizedBox(height: 12.h),
         CustomTextField(
           controller: controller.bankNameController,
-          hintText: 'Enter your bank name',
+          hintText: 'enter_bank_name'.tr,
           backgroundColor: Colors.white,
           borderColor: const Color(0xFFE2E8F0),
         ),
 
         SizedBox(height: 12.h),
         Text(
-          'Branch Name',
+          'branch_name'.tr,
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
@@ -505,13 +505,13 @@ class WithdrawFundsScreen extends StatelessWidget {
         SizedBox(height: 12.h),
         CustomTextField(
           controller: controller.branchNameController,
-          hintText: 'Enter your branch name',
+          hintText: 'enter_branch_name'.tr,
           backgroundColor: Colors.white,
           borderColor: const Color(0xFFE2E8F0),
         ),
         SizedBox(height: 12.h),
         Text(
-          'Account Holder Name',
+          'account_holder_name'.tr,
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
@@ -521,13 +521,13 @@ class WithdrawFundsScreen extends StatelessWidget {
         SizedBox(height: 12.h),
         CustomTextField(
           controller: controller.accountHolderNameController,
-          hintText: 'Enter your account holder name',
+          hintText: 'enter_account_holder_name'.tr,
           backgroundColor: Colors.white,
           borderColor: const Color(0xFFE2E8F0),
         ),
         SizedBox(height: 12.h),
         Text(
-          'Phone Number',
+          'phone_number'.tr,
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,

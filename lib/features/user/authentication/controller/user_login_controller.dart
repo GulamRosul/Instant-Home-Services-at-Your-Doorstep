@@ -18,6 +18,8 @@ class UserLoginController extends GetxController {
 
   var isLoading = false.obs;
   var isPasswordVisible = false.obs;
+  var needsEmailVerification = false.obs;
+  var isOtpLoading = false.obs;
 
   var emailError = RxnString();
   var passwordError = RxnString();
@@ -101,6 +103,12 @@ class UserLoginController extends GetxController {
       if (response.statusCode != 200) {
         debugPrint('❌ [LOGIN] Server error: ${response.statusCode}');
         if (response.statusCode == 401) {
+          final message = response.data?["message"];
+          if (message == "Please verify your email first") {
+            debugPrint('📧 [LOGIN] Email verification needed');
+            needsEmailVerification.value = true;
+            return;
+          }
           passwordError.value = "password_wrong".tr;
         } else if (response.statusCode == 404 || response.statusCode == 400) {
           emailError.value = "email_wrong".tr;
@@ -209,6 +217,40 @@ class UserLoginController extends GetxController {
     } finally {
       isLoading.value = false;
       debugPrint('🏁 [LOGIN] Login process completed');
+    }
+  }
+
+  Future<void> sendOtp() async {
+    final email = emailController.text.trim();
+
+    if (email.isEmpty) {
+      Get.snackbar('Error', 'Email is required');
+      return;
+    }
+
+    try {
+      isOtpLoading.value = true;
+      debugPrint('📧 [LOGIN] Sending OTP to: $email');
+
+      final response = await _apiClient.post(
+        ApiEndpoints.resendOTP,
+        data: {"email": email},
+      );
+
+      debugPrint('📧 [LOGIN] Send OTP Response: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        debugPrint('✅ [LOGIN] OTP sent successfully');
+        Get.snackbar('Success', 'OTP sent to your email');
+        Get.toNamed('/userOtpScreen', arguments: {'email': email});
+      } else {
+        Get.snackbar('Error', 'Failed to send OTP');
+      }
+    } catch (e) {
+      debugPrint('❌ [LOGIN] Send OTP Error: $e');
+      Get.snackbar('Error', 'Failed to send OTP');
+    } finally {
+      isOtpLoading.value = false;
     }
   }
 

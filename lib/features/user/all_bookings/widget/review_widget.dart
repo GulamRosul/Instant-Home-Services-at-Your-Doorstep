@@ -8,11 +8,25 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/user/all_bookings/controller/review_controller.dart';
 
 class ReviewWidget extends StatelessWidget {
-  const ReviewWidget({super.key});
+  final String bookingId;
+  final String receiverId;
+  final String jobId;
+
+  const ReviewWidget({
+    super.key,
+    required this.bookingId,
+    required this.receiverId,
+    required this.jobId,
+  });
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ReviewController());
+    controller.initializeWithBookingData(
+      bookingId: bookingId,
+      receiverId: receiverId,
+      jobId: jobId,
+    );
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
@@ -185,28 +199,43 @@ class ReviewWidget extends StatelessWidget {
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: controller.submitReview,
-                    style:
-                        ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.textPurple,
-                          padding: EdgeInsets.symmetric(vertical: 12.h),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.r),
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: controller.isSubmitting.value
+                          ? null
+                          : controller.submitReview,
+                      style:
+                          ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.textPurple,
+                            padding: EdgeInsets.symmetric(vertical: 12.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                          ).copyWith(
+                            overlayColor: WidgetStateProperty.all(
+                              Colors.transparent,
+                            ),
+                            side: WidgetStateProperty.all(BorderSide.none),
                           ),
-                        ).copyWith(
-                          overlayColor: WidgetStateProperty.all(
-                            Colors.transparent,
-                          ),
-                          side: WidgetStateProperty.all(BorderSide.none),
-                        ),
-                    child: Text(
-                      "submit".tr,
-                      style: getTextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14.sp,
-                      ),
+                      child: controller.isSubmitting.value
+                          ? SizedBox(
+                              height: 20.h,
+                              width: 20.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              "submit".tr,
+                              style: getTextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14.sp,
+                              ),
+                            ),
                     ),
                   ),
                 ),

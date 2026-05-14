@@ -470,18 +470,22 @@ class AllBookingScreen extends StatelessWidget {
           if (booking.isCompleted) ...[
             Divider(height: 24.h),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _buildActionText('view_details'.tr, () {
-                  _showBookingStateMessage(booking);
-                }),
-                _buildActionText('book_again'.tr, () {
-                  Get.to(() => const BookingDetailsScreen());
-                }),
+                // _buildActionText('view_details'.tr, () {
+                //   _showBookingStateMessage(booking);
+                // }),
+                // _buildActionText('book_again'.tr, () {
+                //   Get.to(() => const BookingDetailsScreen());
+                // }),
                 _buildActionText('Write Review', () {
                   showDialog(
                     context: context,
-                    builder: (context) => const ReviewWidget(),
+                    builder: (context) => ReviewWidget(
+                      bookingId: booking.id,
+                      receiverId: booking.providerId ?? '',
+                      jobId: booking.jobId ?? booking.id,
+                    ),
                   );
                 }),
               ],
@@ -797,7 +801,7 @@ class AllBookingScreen extends StatelessWidget {
 
   void _handlePayment(UserBookingItem booking) {
     Get.to(
-      () =>  PaymentScreen(),
+      () => PaymentScreen(),
       arguments: {
         'bookingId': booking.reference,
         'amount': booking.totalAmount.toInt(),

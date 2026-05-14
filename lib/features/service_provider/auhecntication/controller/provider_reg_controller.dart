@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/helpers/app_helper.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_login_screen.dart';
@@ -11,7 +12,8 @@ import 'package:protiva502/features/service_provider/auhecntication/screen/provi
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 
 class ProviderRegController extends GetxController {
-  static const String _baseUrl = 'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
+  static const String _baseUrl = ApiEndpoints.baseUrl;
+  // 'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
   static const String _addProviderEndpoint = '$_baseUrl/auth/add-provider';
   static const int maxBioLength = 500;
 

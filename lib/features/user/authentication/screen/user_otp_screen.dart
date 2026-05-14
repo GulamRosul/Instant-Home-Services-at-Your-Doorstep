@@ -25,9 +25,15 @@ class UserOtpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(UserOtpController());
 
-    // Set email from constructor parameter
+    // Set email from constructor parameter or route arguments
     if (email != null) {
       controller.setEmail(email!);
+    } else if (Get.arguments != null && Get.arguments is Map) {
+      final args = Get.arguments as Map;
+      final emailFromArgs = args['email'] as String?;
+      if (emailFromArgs != null) {
+        controller.setEmail(emailFromArgs);
+      }
     }
 
     // Set forgot password flow flags

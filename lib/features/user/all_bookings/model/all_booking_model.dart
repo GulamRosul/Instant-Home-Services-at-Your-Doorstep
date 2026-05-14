@@ -54,6 +54,7 @@ class UserBookingItem {
     required this.createdAt,
     required this.clientId,
     required this.providerId,
+    required this.jobId,
   });
 
   final String id;
@@ -77,6 +78,7 @@ class UserBookingItem {
   final DateTime? createdAt;
   final String? clientId;
   final String? providerId;
+  final String? jobId;
 
   factory UserBookingItem.fromJson(Map<String, dynamic> json) {
     final serviceAmount = _parseDouble(json['serviceAmount']);
@@ -104,6 +106,7 @@ class UserBookingItem {
       createdAt: _parseDate(json['createdAt']),
       clientId: _nullableText(json['clientId']),
       providerId: _nullableText(json['providerId']),
+      jobId: _nullableText(json['jobId']),
     );
   }
 

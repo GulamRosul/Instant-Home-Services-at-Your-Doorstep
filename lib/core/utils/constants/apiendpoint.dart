@@ -5,13 +5,15 @@ class ApiEndpoints {
   //     'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
   // static const String baseUrl = 'https://protiva-backend-ukw2.onrender.com/api/v1';
   // static const String baseUrl = 'http://13.60.247.63/api/v1';
-  // static const String baseUrl = 'https://api.kaajbd.com.bd/api/v1';
-    static const String baseUrl = 'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
-
+  //   static const String baseUrl = 'https://api.kaajbd.com.bd/api/v1';
+  static const String baseUrl =
+      'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
 
   /// Socket.IO Server URL (same host as API)
-  static const String socketMessageUrl = 'https://1z13k3v3-3000.inc1.devtunnels.ms/messaging';
-  static const String socketTrackingUrl = 'https://1z13k3v3-3000.inc1.devtunnels.ms/tracking';
+  static const String socketMessageUrl =
+      'https://1z13k3v3-3000.inc1.devtunnels.ms/messaging';
+  static const String socketTrackingUrl =
+      'https://1z13k3v3-3000.inc1.devtunnels.ms/tracking';
 
   //authentication
   static const String register = '/auth/register';
@@ -76,18 +78,16 @@ class ApiEndpoints {
   static const String initialSDK = '/payment/initiate-sdk';
   static const String paymentConfirm = '/payment/confirm';
   static const String paymentFail = '/payment/payment-fail';
-  
+
   //coupons
-  static const String getCoupon = '/cupon/all';
+  static String useCoupon(String couponCode) => '/cupon/use/$couponCode';
 
   //notifications
   static const String getNotifications = '/notification/get-my-ntg';
   static String markAsRead(String notificationId) =>
       '/notification/$notificationId/read';
-  static String deleteNotification =
-      '/notification/notification-delete';  
-  static String toggleNotification =
-      '/notification/notification-on-off';
+  static String deleteNotification = '/notification/notification-delete';
+  static String toggleNotification = '/notification/notification-on-off';
 
   //messages
   static String fetchMessage() => '/messages/history';
@@ -102,6 +102,6 @@ class ApiEndpoints {
   //terms and conditions
   static const String termsAndConditions = '/policy/terms-condition';
 
-  //image upload
-
+  //reviews
+  static String postReview = '/review/give-review';
 }

@@ -34,123 +34,12 @@ class UserLoginScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 24.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 120.h,
-              child: Image.asset(ImagePath.signin, fit: BoxFit.contain),
-            ),
-            SizedBox(height: 24.h),
-            Text(
-              "welcome_back".tr,
-              style: getTextStyle(
-                fontSize: 28.sp,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 12.h),
-            Text(
-              "please_sign_in".tr,
-              style: getTextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-                lineHeight: 20.sp
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 32.h),
-            _buildLabel("email".tr),
-            Obx(
-              () => CustomTextField(
-                controller: controller.emailController,
-                hintText: 'example@gmail.com',
-                backgroundColor: const Color(0xFFF1F5F9),
-                borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
-                textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
-                errorText: controller.emailError.value,
-              ),
-            ),
-            SizedBox(height: 20.h),
-            _buildPasswordFieldLabel("password".tr, controller),
-            Obx(
-              () => CustomTextField(
-                controller: controller.passwordController,
-                hintText: '***********',
-                isPasswordField: true,
-                isPasswordVisible: controller.isPasswordVisible.value,
-                onIconPressed: controller.togglePasswordVisibility,
-                backgroundColor: const Color(0xFFF1F5F9),
-                borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
-                textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
-                errorText: controller.passwordError.value,
-              ),
-            ),
-            10.h.verticalSpace,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed('/userForgotPasswordScreen');
-                  },
-                  child: Text(
-                    "forgot_password".tr,
-                    style: getTextStyle(
-                      fontSize: 14.sp,
-                      color: const Color(0xFF7079F0),
-                      fontWeight: FontWeight.w500,
-                      decoration: TextDecoration.underline,
-                      decorationColor: AppColors.textPurple,
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 48.h),
-            Obx(
-              () => CustomButton(
-                text: controller.isLoading.value
-                    ? "signing_in".tr
-                    : "sign_in".tr,
-                onPressed: controller.isLoading.value
-                    ? null
-                    : controller.handleSignIn,
-                backgroundColor: controller.isLoading.value
-                    ? const Color(0xFF7079F0).withValues(alpha: 0.7)
-                    : const Color(0xFF7079F0),
-                textColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 24.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "dont_have_account".tr,
-                  style: getTextStyle(fontSize: 14.sp, color: Colors.black),
-                ),
-                GestureDetector(
-                  onTap: () => Get.toNamed('/userRegScreen'),
-                  child: Text(
-                    "sign_up".tr,
-                    style: getTextStyle(
-                      fontSize: 14.sp,
-                      color: const Color(0xFF7079F0),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 40.h),
-          ],
+      body: Obx(
+        () => SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          child: controller.needsEmailVerification.value
+              ? _buildEmailVerificationUI(controller)
+              : _buildLoginForm(controller),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -164,6 +53,205 @@ class UserLoginScreen extends StatelessWidget {
         mini: false,
         child: SvgPicture.asset(IconPath.whatsapp),
       ),
+    );
+  }
+
+  Widget _buildLoginForm(UserLoginController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 120.h,
+          child: Image.asset(ImagePath.signin, fit: BoxFit.contain),
+        ),
+        SizedBox(height: 24.h),
+        Text(
+          "welcome_back".tr,
+          style: getTextStyle(
+            fontSize: 28.sp,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Text(
+          "please_sign_in".tr,
+          style: getTextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.black87,
+            lineHeight: 20.sp,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 32.h),
+        _buildLabel("email".tr),
+        Obx(
+          () => CustomTextField(
+            controller: controller.emailController,
+            hintText: 'example@gmail.com',
+            backgroundColor: const Color(0xFFF1F5F9),
+            borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
+            textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
+            errorText: controller.emailError.value,
+          ),
+        ),
+        SizedBox(height: 20.h),
+        _buildPasswordFieldLabel("password".tr),
+        Obx(
+          () => CustomTextField(
+            controller: controller.passwordController,
+            hintText: '***********',
+            isPasswordField: true,
+            isPasswordVisible: controller.isPasswordVisible.value,
+            onIconPressed: controller.togglePasswordVisibility,
+            backgroundColor: const Color(0xFFF1F5F9),
+            borderColor: AppColors.defaultBorder.withValues(alpha: 0.2),
+            textStyle: getTextStyle(color: Colors.black, fontSize: 14.sp),
+            errorText: controller.passwordError.value,
+          ),
+        ),
+        10.h.verticalSpace,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Get.toNamed('/userForgotPasswordScreen');
+              },
+              child: Text(
+                "forgot_password".tr,
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  color: const Color(0xFF7079F0),
+                  fontWeight: FontWeight.w500,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.textPurple,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 48.h),
+        Obx(
+          () => CustomButton(
+            text: controller.isLoading.value ? "signing_in".tr : "sign_in".tr,
+            onPressed: controller.isLoading.value
+                ? null
+                : controller.handleSignIn,
+            backgroundColor: controller.isLoading.value
+                ? const Color(0xFF7079F0).withValues(alpha: 0.7)
+                : const Color(0xFF7079F0),
+            textColor: Colors.white,
+          ),
+        ),
+        SizedBox(height: 24.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "dont_have_account".tr,
+              style: getTextStyle(fontSize: 14.sp, color: Colors.black),
+            ),
+            GestureDetector(
+              onTap: () => Get.toNamed('/userRegScreen'),
+              child: Text(
+                "sign_up".tr,
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  color: const Color(0xFF7079F0),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 40.h),
+      ],
+    );
+  }
+
+  Widget _buildEmailVerificationUI(UserLoginController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(height: 100.h),
+        Icon(Icons.mail_outline, size: 80.sp, color: const Color(0xFF7079F0)),
+        SizedBox(height: 32.h),
+        Text(
+          "verify_email".tr,
+          style: getTextStyle(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 16.h),
+        Container(
+          padding: EdgeInsets.all(16.w),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3CD),
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: const Color(0xFFFFE69C), width: 1),
+          ),
+          child: Text(
+            "please_verify_your_email_first".tr,
+            style: getTextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF856404),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        SizedBox(height: 24.h),
+        Text(
+          "verify_email_desc".tr,
+          style: getTextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+            color: Colors.grey.shade600,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 48.h),
+        Obx(
+          () => CustomButton(
+            text: controller.isOtpLoading.value
+                ? "sending_otp".tr
+                : "send_otp".tr,
+            onPressed: controller.isOtpLoading.value
+                ? null
+                : controller.sendOtp,
+            backgroundColor: controller.isOtpLoading.value
+                ? const Color(0xFF7079F0).withValues(alpha: 0.7)
+                : const Color(0xFF7079F0),
+            textColor: Colors.white,
+          ),
+        ),
+        SizedBox(height: 16.h),
+        TextButton(
+          onPressed: () {
+            controller.needsEmailVerification.value = false;
+            controller.emailController.clear();
+            controller.passwordController.clear();
+          },
+          child: Text(
+            "back_to_login".tr,
+            style: getTextStyle(
+              fontSize: 14.sp,
+              color: const Color(0xFF7079F0),
+              fontWeight: FontWeight.w500,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+        SizedBox(height: 40.h),
+      ],
     );
   }
 
@@ -184,7 +272,7 @@ class UserLoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPasswordFieldLabel(String text, UserLoginController controller) {
+  Widget _buildPasswordFieldLabel(String text) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Row(

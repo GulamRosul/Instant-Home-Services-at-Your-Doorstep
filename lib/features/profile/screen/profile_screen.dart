@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
+import 'package:protiva502/core/common/widgets/custom_gallery_widget.dart';
 import 'package:protiva502/core/common/widgets/shimmer_effect.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
@@ -110,7 +111,7 @@ class ProfileScreen extends StatelessWidget {
                           ),
                           side: WidgetStateProperty.all(BorderSide.none),
                         ),
-                    child:  Text('retry'.tr),
+                    child: Text('retry'.tr),
                   ),
                 ],
               ),
@@ -164,17 +165,31 @@ class ProfileScreen extends StatelessWidget {
                   ],
                   Stack(
                     children: [
-                      Container(
-                        width: 120.w,
-                        height: 120.h,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 4),
-                          image: DecorationImage(
-                            image: _buildProfileImage(
-                              controller.imagePath.value,
+                      GestureDetector(
+                        onTap: controller.imagePath.value.isNotEmpty
+                            ? () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CustomGalleryWidget(
+                                      imageUrls: [controller.imagePath.value],
+                                    ),
+                                  ),
+                                );
+                              }
+                            : null,
+                        child: Container(
+                          width: 120.w,
+                          height: 120.h,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 4),
+                            image: DecorationImage(
+                              image: _buildProfileImage(
+                                controller.imagePath.value,
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
@@ -342,7 +357,6 @@ class ProfileScreen extends StatelessWidget {
                       keyboardType: TextInputType.number,
                       isLast: true,
                     ),
-                    
                   ]),
                   100.h.verticalSpace,
                 ],

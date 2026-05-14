@@ -7,14 +7,15 @@ import 'package:http/http.dart' as http;
 import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
+import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/features/notification/controller/notification_controller.dart';
 import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration.dart';
 import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 
 class ProviderLoginController extends GetxController {
-  static const String _baseUrl =
+  static const String _baseUrl = ApiEndpoints.baseUrl;
       // 'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
-      'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
+      // 'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
   static const String _loginEndpoint = '$_baseUrl/auth/login';
   static const String _defaultDeviceId = '21';
 

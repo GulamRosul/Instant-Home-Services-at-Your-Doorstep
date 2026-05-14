@@ -47,10 +47,10 @@ class WalletController extends GetxController {
       double.tryParse(withdrawalAmountController.text.trim()) ?? 0;
 
   double get feeAmount =>
-      selectedPaymentMethod.value == 'Card Payment' ? 50 : 20;
+      selectedPaymentMethod.value == 'Card Payment' ? 0 : 0;
 
   double get netAmount {
-    final value = enteredAmountValue - feeAmount;
+    final value = enteredAmountValue ;
     return value < 0 ? 0 : value;
   }
 
@@ -106,13 +106,13 @@ class WalletController extends GetxController {
       withdrawalHistory.assignAll([
         WithdrawRequestModel(
           amount: _formatAmount(withdraw['totalWithdrawAmount']),
-          dateLabel: 'Total Withdraw Request',
-          status: 'Processed',
+          dateLabel: 'total_withdraw_request'.tr,
+          status: 'processed'.tr,
         ),
         WithdrawRequestModel(
           amount: _formatAmount(withdraw['totalPendingAmount']),
-          dateLabel: 'Pending Withdraw',
-          status: 'Pending',
+          dateLabel: 'pending_withdraw'.tr,
+          status: 'pending'.tr,
         ),
       ]);
     } on DioException catch (_) {
@@ -161,47 +161,47 @@ class WalletController extends GetxController {
 
   void handleWithdrawFunds() {
     // Logic for withdrawing funds
-    Get.snackbar("Success", "Withdrawal request submitted");
+    Get.snackbar("success".tr, "withdrawal_request_submitted".tr);
   }
 
   void goToConfirmation() {
     final amount = enteredAmountValue;
     if (amount <= 0) {
-      Get.snackbar("Error", "Please enter a valid withdrawal amount");
+      Get.snackbar("Error".tr, "please_enter_valid_withdrawal_amount".tr);
       return;
     }
 
     if (selectedPaymentMethod.value == "Mobile Banking") {
       if (phoneNumberController.text.isEmpty) {
         Get.snackbar(
-          "Error",
-          "Please enter your ${selectedMobileService.value} number",
+          "Error".tr,
+          "Please enter your ${selectedMobileService.value} number".tr,
         );
         return;
       }
       if (pinController.text.isEmpty) {
-        Get.snackbar("Error", "Please enter your payment take number");
+        Get.snackbar("error".tr, "please_enter_your_payment_take_number".tr);
         return;
       }
     } else {
       if (accountNumberController.text.isEmpty) {
-        Get.snackbar("Error", "Please enter bank account number");
+        Get.snackbar("error".tr, "please_enter_bank_account_number".tr);
         return;
       }
       if (bankNameController.text.isEmpty) {
-        Get.snackbar("Error", "Please enter bank name");
+        Get.snackbar("error".tr, "please_enter_bank_name".tr);
         return;
       }
       if (branchNameController.text.isEmpty) {
-        Get.snackbar("Error", "Please enter branch name");
+        Get.snackbar("error".tr, "please_enter_branch_name".tr);
         return;
       }
       if (accountHolderNameController.text.isEmpty) {
-        Get.snackbar("Error", "Please enter account holder name");
+        Get.snackbar("error".tr, "please_enter_account_holder_name".tr);
         return;
       }
       if (phoneNumberController.text.isEmpty) {
-        Get.snackbar("Error", "Please enter phone number");
+        Get.snackbar("error".tr, "please_enter_phone_number".tr);
         return;
       }
     }
@@ -280,13 +280,13 @@ class WalletController extends GetxController {
 
       if (response.statusCode != 200 && response.statusCode != 201) {
         submitErrorMessage.value = message;
-        Get.snackbar('Error', message);
+        Get.snackbar('reminder'.tr, message);
         return;
       }
 
       requestStatus.value = 'Pending';
       requestDateLabel.value = _formatToday();
-      Get.snackbar('Success', message);
+      Get.snackbar('success'.tr, message);
       await fetchWalletOverview();
       Get.find<ProviderNavbarController>().showHomeSubPage(
         const PendingApprovalScreen(),
@@ -296,10 +296,10 @@ class WalletController extends GetxController {
           _asMap(error.response?.data)?['message']?.toString() ??
           'Withdraw request failed';
       submitErrorMessage.value = message;
-      Get.snackbar('Error', message);
+      Get.snackbar('error'.tr, message);
     } catch (_) {
       submitErrorMessage.value = 'Withdraw request failed';
-      Get.snackbar('Error', submitErrorMessage.value);
+      Get.snackbar('error'.tr, submitErrorMessage.value);
     } finally {
       isSubmittingWithdrawal.value = false;
     }

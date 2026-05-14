@@ -386,7 +386,7 @@ class MyJobListScreen extends StatelessWidget {
                     SizedBox(height: 4.h),
                     RichText(
                       text: TextSpan(
-                        text: '${'starts_from'.tr} ', // 'Starts from '
+                        text: '${'start_from'.tr} ', // 'Starts from '
                         style: getTextStyle(
                           fontSize: 10.sp,
                           color: Color(0xFF475569),

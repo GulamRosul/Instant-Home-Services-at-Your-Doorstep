@@ -6,7 +6,6 @@ import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/location_tracking_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
-import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/chat/screen/single_chat_screen.dart';
 
 class TrackProviderController extends GetxController {
@@ -445,43 +444,26 @@ class TrackProviderController extends GetxController {
 
   bool _isCallInProgress = false;
 
-  void callPerson() async {
-    if (_isCallInProgress) return;
-    _isCallInProgress = true;
+void callPerson() async {
+  if (_isCallInProgress) return;
+  _isCallInProgress = true;
 
-    try {
-      if (_otherUserId == null || _otherUserId!.trim().isEmpty) {
-        Get.snackbar('Error', 'Unable to initiate call: Receiver ID not found');
-        return;
-      }
+  try {
+    final baseId = bookingId.value.replaceAll('#', '').trim();
+    final uniqueCallId = '${baseId}_${DateTime.now().millisecondsSinceEpoch}';
 
-      if (_otherUserId == _currentUserId) {
-        Get.snackbar('Error', 'Unable to initiate call: Invalid receiver');
-        return;
-      }
-
-      final baseId = bookingId.value.replaceAll('#', '').trim();
-      final uniqueCallId = '${baseId}_${DateTime.now().millisecondsSinceEpoch}';
-
-      final didSend = await CallService.instance.startAudioCall(
-        targetUserId: _otherUserId!,
-        targetUserName: personName.value,
-        callID: uniqueCallId,
-      );
-
-      if (!didSend) {
-        AppLoggerHelper.warning(
-          'Call invitation failed: ${CallService.instance.lastError ?? 'Unknown'}',
-        );
-        Get.snackbar(
-          'Call Failed',
-          CallService.instance.lastError ?? 'Unable to reach receiver',
-        );
-      }
-    } finally {
-      _isCallInProgress = false;
-    }
+    // ইনভিটেশন পাঠান
+    await CallService.instance.startAudioCall(
+      targetUserId: _otherUserId!,
+      targetUserName: personName.value,
+      callID: uniqueCallId,
+    );
+    // নোট: এখানে Navigator.push করার প্রয়োজন নেই।
+  } finally {
+    _isCallInProgress = false;
   }
+}
+
 
   void messagePerson() {
     // Extract raw booking ID without # symbol

@@ -43,7 +43,7 @@ const Map<String, String> bnBDUser = {
 
   // Profile Picture Screen
   'upload_logo_optional': 'আপনার লোগো আপলোড করুন (ঐচ্ছিক)',
-  'bio_optional': 'বায়োগ্রাফি (ঐচ্ছিক)',
+  'bio_optional': 'বায়োগ্রাফি',
   'enter_bio': 'আপনার বায়োগ্রাফি প্রবেশ করুন',
 
   // Reset Password Screen
@@ -124,7 +124,7 @@ const Map<String, String> bnBDUser = {
   'guest_greeting': 'অতিথি 👋',
   'loading_banners': 'ব্যানার লোড করা হচ্ছে...',
   'no_banners_available': 'এখন কোন ব্যানার উপলব্ধ নেই',
-
+  'no_categories_found': 'কোন বিভাগ পাওয়া যায় না',
   // Search Screen
   'search_services': 'সেবা অনুসন্ধান করুন',
   'search_service_or_category': 'সেবা বা বিভাগ অনুসন্ধান করুন',
@@ -176,6 +176,13 @@ const Map<String, String> bnBDUser = {
   'enter_amount': 'পরিমাণ প্রবেশ করুন',
   'processing': 'প্রক্রিয়া করা হচ্ছে...',
   'go_to_checkout': 'চেকআউটে যান',
+    'have_coupon': 'আপনার কাছে কি কোনো কুপন আছে?',
+  'apply': 'প্রয়োগ করুন',
+  'invalid_coupon': 'অবৈধ কুপন কোড',
+  'applying_coupon': 'কুপন প্রয়োগ করা হচ্ছে...',
+  'coupon_applied': 'কুপন সফলভাবে প্রয়োগ করা হয়েছে! নতুন মোট: ',
+  'enter_coupon_code': 'কুপন কোড প্রবেশ করুন',
+  'proceed_to_payment': 'পেমেন্টে প্রস্তুত হন',
 
   // Success Dialog
   'congratulations': 'অভিনন্দন!',

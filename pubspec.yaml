@@ -71,6 +71,8 @@ dependencies:
   webview_flutter: ^4.7.0
   zego_uikit_prebuilt_call: ^4.16.0
   zego_uikit_signaling_plugin: ^2.8.20
+  wakelock_plus: ^1.2.4
+  flutter_sslcommerz: ^3.0.2
 
 dev_dependencies:
   flutter_test:
@@ -85,6 +87,8 @@ dev_dependencies:
 
 dependency_overrides:
   zego_zim: 2.23.0
+  flutter_sslcommerz:
+    path: packages/flutter_sslcommerz
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

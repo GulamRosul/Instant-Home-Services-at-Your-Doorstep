@@ -18,6 +18,7 @@ class StorageService {
   static const _roleKey = 'role';
   static const _avatarKey = 'avatar';
   static const _forgotPasswordEmailKey = 'forgotPasswordEmail';
+  static const _notificationsEnabledKey = 'notificationsEnabled';
 
   /// 🔹 Init
   static Future<void> init() async {
@@ -116,4 +117,12 @@ class StorageService {
   static Future<void> clearForgotPasswordEmail() async {
     await _prefs?.remove(_forgotPasswordEmailKey);
   }
+
+  /// 🔹 Notification Preference
+  static Future<void> setNotificationsEnabled(bool enabled) async {
+    await _prefs?.setBool(_notificationsEnabledKey, enabled);
+  }
+
+  static bool getNotificationsEnabled() =>
+      _prefs?.getBool(_notificationsEnabledKey) ?? true;
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:protiva502/core/services/booking_id_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
@@ -32,6 +33,8 @@ class _MapScreenState extends State<MapScreen> {
   late final bool ownsController;
   Worker? trackingWorker;
   final TextEditingController searchController = TextEditingController();
+  
+  final bookingIdService = BookingIdService();
 
   @override
   void initState() {
@@ -869,31 +872,85 @@ class _MapScreenState extends State<MapScreen> {
                     ],
                   ),
                 ),
+                // Flexible(
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.end,
+                //     children: [
+                //       Text(
+                //         'booking_id'.tr,
+                //         style: getTextStyle(
+                //           fontSize: 12.sp,
+                //           color: AppColors.textSecondary,
+                //           fontWeight: FontWeight.w600,
+                //         ),
+                //       ),
+                //       SizedBox(height: 4.h),
+                //       Text(
+                //         controller.bookingId.value,
+                //         style: getTextStyle(
+                //           fontSize: 14.sp,
+                //           fontWeight: FontWeight.w600,
+                //           color: Colors.black,
+                //         ),
+                //         overflow: TextOverflow.ellipsis,
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        'booking_id'.tr,
-                        style: getTextStyle(
-                          fontSize: 12.sp,
-                          color: AppColors.textSecondary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        controller.bookingId.value,
-                        style: getTextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.end,
+    children: [
+      Text(
+        'booking_id'.tr,
+        style: getTextStyle(
+          fontSize: 12.sp,
+          color: AppColors.textSecondary,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      SizedBox(height: 4.h),
+
+      /// Booking ID + Copy Icon
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Text(
+              bookingIdService.getTrimmedBookingId(
+                controller.bookingId.value,
+              ),
+              style: getTextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          SizedBox(width: 6.w),
+
+          ValueListenableBuilder<bool>(
+            valueListenable: bookingIdService.isCopied,
+            builder: (context, copied, _) {
+              return GestureDetector(
+                onTap: () => bookingIdService.copyBookingId(
+                  controller.bookingId.value,
                 ),
+                child: Icon(
+                  copied ? Icons.check_circle : Icons.copy,
+                  size: 16.sp,
+                  color: copied ? Colors.green : Colors.grey,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ],
+  ),
+)
               ],
             ),
             SizedBox(height: 16.h),

@@ -153,6 +153,7 @@ class AvailableCategoryScreen extends StatelessWidget {
                                     : FontWeight.w500,
                                 color: Colors.black87,
                               ),
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),

@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/services/api_client.dart';
+import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
+import 'package:protiva502/features/notification/controller/notification_controller.dart';
 
 class SettingsController extends GetxController {
   // Tab state
@@ -27,13 +29,42 @@ class SettingsController extends GetxController {
   // Loading state
   final isLoading = false.obs;
 
+  late NotificationController _notificationController;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _notificationController = Get.find<NotificationController>();
+    _loadNotificationPreference();
+  }
+
+  void _loadNotificationPreference() {
+    notificationsEnabled.value = StorageService.getNotificationsEnabled();
+  }
+
   void toggleTab(bool isPreferences) {
     isPreferencesSelected.value = isPreferences;
   }
 
   void toggleShowContactInfo(bool val) => showContactInfo.value = val;
   void togglePublicProfile(bool val) => publicProfile.value = val;
-  void toggleNotificationsEnabled(bool val) => notificationsEnabled.value = val;
+
+  Future<void> toggleNotificationsEnabled(bool val) async {
+    notificationsEnabled.value = val;
+    final success = await _notificationController.toggleNotification(val);
+
+    if (!success) {
+      notificationsEnabled.value = !val;
+      Get.snackbar(
+        'error'.tr,
+        'failed_to_update_notification'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade600,
+        colorText: Colors.white,
+      );
+    }
+  }
+
   void toggleNewBookingAlerts(bool val) => newBookingAlerts.value = val;
   void toggleEmailNotifications(bool val) => emailNotifications.value = val;
   void toggleSmsNotifications(bool val) => smsNotifications.value = val;

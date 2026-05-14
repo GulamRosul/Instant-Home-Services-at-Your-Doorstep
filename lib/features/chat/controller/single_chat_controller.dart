@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:dio/dio.dart' as dio_package;
 import 'package:protiva502/core/services/socket_io_service.dart';
 import 'package:protiva502/core/services/chat_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
@@ -9,6 +12,7 @@ import 'package:protiva502/core/services/debug_logger_service.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/features/chat/model/chat_message_model.dart';
+import 'package:protiva502/features/chat/model/image_up_model.dart';
 
 class SingleChatController extends GetxController {
   static const int _initialHistoryLimit = 20;
@@ -427,6 +431,17 @@ class SingleChatController extends GetxController {
 
         if (localMessageIndex != null) {
           // Found our local message - update it with server data
+          final senderData = data['sender'];
+          String senderName = '';
+          if (senderData is Map<String, dynamic>) {
+            final firstName = senderData['firstName']?.toString().trim() ?? '';
+            final lastName = senderData['lastName']?.toString().trim() ?? '';
+            senderName = '$firstName $lastName'.trim();
+            if (senderName.isEmpty) {
+              senderName = senderData['username']?.toString() ?? '';
+            }
+          }
+
           messages[localMessageIndex] = {
             'message': message,
             'isMe': true,
@@ -439,6 +454,8 @@ class SingleChatController extends GetxController {
             'isLocal': false, // Mark as confirmed
             'createdAt': data['createdAt'],
             'sender': data['sender'],
+            'senderName': senderName,
+            'mediaUrl': data['mediaUrl'], // Include mediaUrl for images
           };
 
           messages.refresh();
@@ -496,10 +513,10 @@ class SingleChatController extends GetxController {
       final messageIds = data['messageIds'] as List<dynamic>?;
       if (messageIds != null) {
         // Update UI to show message read status
-        for (var msg in messages) {
+        for (var i = 0; i < messages.length; i++) {
+          final msg = messages[i];
           if (messageIds.contains(msg['messageId'])) {
-            msg['isRead'] = true;
-            msg['status'] = 'read';
+            messages[i] = {...msg, 'isRead': true, 'status': 'read'};
             DebugLoggerService.chatAction(
               'Message marked as read',
               data: {'messageId': msg['messageId']},
@@ -639,6 +656,173 @@ class SingleChatController extends GetxController {
 
     // Emit typing stop after sending
     chatService.emitTypingStop();
+  }
+
+  /// Pick and send image
+  Future<void> pickAndSendImage() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+      if (image == null) return;
+
+      // Validate image type
+      if (!_isValidImageType(image.mimeType)) {
+        Get.snackbar('Error', 'Only JPEG, PNG, WebP, and GIF images are supported');
+        return;
+      }
+
+      // Add local message with loading status
+      final localMessageId = _generateMessageId();
+      messages.add({
+        'message': 'Image',
+        'isMe': true,
+        'time': _getCurrentTime(),
+        'messageId': localMessageId,
+        'messageType': 'IMAGE',
+        'isRead': false,
+        'senderId': currentUserId.value,
+        'status': 'sending',
+        'isLocal': true,
+        'createdAt': DateTime.now().toIso8601String(),
+        'mediaUrl': image.path,
+        'senderName': '',
+      });
+
+      messageController.clear();
+      scrollToBottom();
+
+      // Upload image to backend
+      _printCleanConsole('📤 UPLOADING IMAGE: "${image.name}" (${image.mimeType})');
+      final uploadedUrl = await _uploadImageToBackend(image);
+
+      _printCleanConsole('📤 UPLOAD RESULT: $uploadedUrl');
+
+      if (uploadedUrl.isEmpty) {
+        Get.snackbar('Error', 'Failed to upload image');
+        messages.removeWhere((msg) => msg['messageId'] == localMessageId);
+        messages.refresh();
+        return;
+      }
+
+      // Update local message with uploaded URL
+      for (int i = 0; i < messages.length; i++) {
+        if (messages[i]['messageId'] == localMessageId) {
+          messages[i] = {
+            ...messages[i],
+            'mediaUrl': uploadedUrl,
+          };
+          break;
+        }
+      }
+      messages.refresh();
+
+      // Send message with uploaded image URL
+      _printCleanConsole('📤 SENDING MESSAGE WITH URL: $uploadedUrl');
+      chatService.sendMessage(
+        receiverId: receiverId.value,
+        content: 'Image',
+        messageType: 'IMAGE',
+        mediaUrl: uploadedUrl,
+      );
+
+      _printCleanConsole('📤 IMAGE MESSAGE SENT: "${image.name}" -> $uploadedUrl');
+    } catch (e) {
+      _printCleanConsole('❌ IMAGE SEND FAILED: ${e.toString()}');
+      DebugLoggerService.error('SOCKET', 'Failed to send image', error: e);
+      Get.snackbar('Error', 'Failed to send image: ${e.toString()}');
+    }
+  }
+
+  /// Upload image to backend
+  Future<String> _uploadImageToBackend(XFile image) async {
+    try {
+      _printCleanConsole('⬆️ UPLOAD STEP 1: Getting token...');
+      final token = await SecureStorageService.getToken();
+      if (token == null || token.isEmpty) {
+        _printCleanConsole('❌ UPLOAD FAILED: No token');
+        DebugLoggerService.error('UPLOAD', 'No token found for image upload');
+        return '';
+      }
+      _printCleanConsole('✅ UPLOAD STEP 2: Token obtained (${token.length} chars)');
+
+      _printCleanConsole('⬆️ UPLOAD STEP 3: Checking file exists...');
+      final file = File(image.path);
+      if (!await file.exists()) {
+        _printCleanConsole('❌ UPLOAD FAILED: File not found at ${image.path}');
+        DebugLoggerService.error('UPLOAD', 'Image file not found: ${image.path}');
+        return '';
+      }
+      final fileSize = await file.length();
+      _printCleanConsole('✅ UPLOAD STEP 4: File found (${fileSize ~/ 1024} KB)');
+
+      _printCleanConsole('⬆️ UPLOAD STEP 5: Creating form data...');
+      final dioClient = dio_package.Dio();
+      final formData = dio_package.FormData.fromMap({
+        'file': await dio_package.MultipartFile.fromFile(
+          image.path,
+          filename: image.name,
+          contentType: dio_package.DioMediaType.parse(
+            image.mimeType ?? 'image/jpeg',
+          ),
+        ),
+      });
+      _printCleanConsole('✅ UPLOAD STEP 6: Form data created');
+
+      _printCleanConsole(
+        '⬆️ UPLOAD STEP 7: Uploading to ${ApiEndpoints.baseUrl}${ApiEndpoints.uploadImage}...',
+      );
+      final response = await dioClient.post(
+        '${ApiEndpoints.baseUrl}${ApiEndpoints.uploadImage}',
+        data: formData,
+        options: dio_package.Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      _printCleanConsole('✅ UPLOAD STEP 8: Response received (${response.statusCode})');
+
+      if (response.statusCode == 201 && response.data != null) {
+        final responseData = response.data;
+        _printCleanConsole('📦 RESPONSE DATA: $responseData');
+        if (responseData['data'] is Map<String, dynamic>) {
+          final imageData = ImageUploadResponse.fromJson(responseData['data']);
+          _printCleanConsole('✅ UPLOAD SUCCESS: ${imageData.url}');
+          DebugLoggerService.log(
+            'UPLOAD',
+            'Image uploaded successfully',
+            data: {'url': imageData.url},
+          );
+          return imageData.url;
+        }
+      }
+
+      _printCleanConsole(
+        '❌ UPLOAD FAILED: Status ${response.statusCode}, Data: ${response.data}',
+      );
+      DebugLoggerService.error(
+        'UPLOAD',
+        'Failed to upload image',
+        error: {'statusCode': response.statusCode, 'data': response.data},
+      );
+      return '';
+    } catch (e) {
+      _printCleanConsole('❌ UPLOAD EXCEPTION: $e');
+      DebugLoggerService.error('UPLOAD', 'Image upload exception', error: e);
+      return '';
+    }
+  }
+
+  /// Validate image MIME type
+  bool _isValidImageType(String? mimeType) {
+    if (mimeType == null) return true; // Allow if MIME type is not available
+    final validTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/gif',
+    ];
+    return validTypes.contains(mimeType);
   }
 
   /// Emit typing indicator when user starts typing

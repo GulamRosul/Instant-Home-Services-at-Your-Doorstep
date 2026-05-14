@@ -93,7 +93,7 @@ class PostJobScreen extends StatelessWidget {
               }),
               SizedBox(height: 40.h),
               _buildBottomButton(controller),
-              SizedBox(height: 40.h),
+              SizedBox(height: 100.h),
             ],
           ),
         ),

@@ -181,4 +181,26 @@ const Map<String, String> bnBDProvider = {
   'job_updated': 'অভিনন্দন! আপনার চাকরি আপডেট করা হয়েছে।',
   'job_published': 'অভিনন্দন! আপনার চাকরি প্রকাশিত হয়েছে।',
   'upload_image': 'ছবি নির্বাচন করুন',
+
+   //booking details screen
+  'payment_method': 'Payment Method',
+  'amount': 'Amount',
+  'schedule_date': 'Schedule Date :',
+  'pay_via': 'Pay Via : ',
+  'service_amount_vat_excluded': 'Service amount (Vat Excluded)',
+  'gtotal_total': 'Grand Total',
+  'service' : 'Service',
+  'total' : 'Total',
+  'service_location_description' : 'You need to go to the Customer Location to provide the service',
+  'no_location_details' : 'No location details',
+  'customer_message' : 'Customer Message',
+
+  //wallet screen
+  'withdraw_funds': 'Withdraw Funds',
+  'withdrawal_history': 'Withdrawal History',
+  'no_withdrawal_history': 'No withdrawal history found',
+  'request_withdrawal': 'Request a withdrawal from your wallet',
+  'available_balance': 'Available Balance',
+  'admin_approval_required': 'Admin Approval Required',
+  'withdrawal_review': 'Your withdrawal request will be reviewed by the admin. Processing typically takes 1-3 business days.',
 };

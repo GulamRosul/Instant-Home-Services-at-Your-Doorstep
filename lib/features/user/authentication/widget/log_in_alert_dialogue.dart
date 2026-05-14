@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
+import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
 
 // ignore: unused_element
@@ -37,11 +39,12 @@ class LoginAlertDialog extends StatelessWidget {
                 color: const Color(0xFFEEEDFE),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                Icons.person,
-                color: const Color(0xFF534AB7),
-                size: 28.sp,
-              ),
+              // child: Icon(
+              //   Icons.person,
+              //   color: const Color(0xFF534AB7),
+              //   size: 28.sp,
+              // ),
+              child: SvgPicture.asset(IconPath.profilePic),
             ),
             SizedBox(height: 16.h),
             Text(

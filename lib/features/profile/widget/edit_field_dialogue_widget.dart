@@ -283,6 +283,7 @@ class _EditFieldBottomSheetState extends State<EditFieldBottomSheet> {
                   ),
                 ],
               ),
+              30.h.verticalSpace, // Extra space to ensure content is above keyboard
             ],
           ),
         ),

@@ -25,12 +25,12 @@ class PrivacyPolicyScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Error: ${controller.error.value}',
-                  style: getTextStyle(fontSize: 14.sp, color: Colors.red),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 16.h),
+                // Text(
+                //   'Error: ${controller.error.value}',
+                //   style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+                //   textAlign: TextAlign.center,
+                // ),
+                // SizedBox(height: 16.h),
                 ElevatedButton(
                   onPressed: controller.fetchPrivacyPolicy,
                   child: const Text('Retry'),
@@ -82,7 +82,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     lineHeight: 20.sp,
                   ),
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 100.h),
               ],
             ),
           ),

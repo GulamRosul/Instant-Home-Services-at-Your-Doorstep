@@ -37,7 +37,7 @@ class PendingApprovalScreen extends StatelessWidget {
               SizedBox(height: 24.h),
               // Title & Subtitle
               Text(
-                'Pending Approval',
+                'pending_approval'.tr,
                 style: getTextStyle(
                   fontSize: 28.sp,
                   fontWeight: FontWeight.w700,
@@ -46,7 +46,7 @@ class PendingApprovalScreen extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               Text(
-                'Your withdrawal request is being reviewed\nby the admin',
+                'your_withdrawal_request_is_being_reviewed\nby_the_admin'.tr,
                 textAlign: TextAlign.center,
                 style: getTextStyle(
                   fontSize: 14.sp,
@@ -67,7 +67,7 @@ class PendingApprovalScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'Withdrawal Amount',
+                      'withdrawable_amount'.tr,
                       style: getTextStyle(
                         fontSize: 12.sp,
                         color: Colors.white,
@@ -101,7 +101,7 @@ class PendingApprovalScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.all(20.w),
                       child: Text(
-                        'Request Details',
+                        'request_details'.tr,
                         style: getTextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w700,
@@ -109,17 +109,17 @@ class PendingApprovalScreen extends StatelessWidget {
                       ),
                     ),
                     _buildDetailRow(
-                      'Status',
+                      'status'.tr,
                       controller.requestStatus.value,
                       isStatus: true,
                     ),
                     _buildDetailRow(
-                      'Request Date',
+                      'request_date'.tr,
                       controller.requestDateLabel.value.isEmpty
                           ? 'Today'
                           : controller.requestDateLabel.value,
                     ),
-                    _buildDetailRow('Expected Review', '1-3 business days'),
+                    _buildDetailRow('expected_review'.tr, 'processing_time_details'.tr),
                     SizedBox(height: 10.h),
                   ],
                 ),
@@ -138,7 +138,7 @@ class PendingApprovalScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        "💡 You'll receive a notification once the admin reviews your request. The funds will be transferred to your account within 1-2 business days after approval.",
+                        "withdrawal_notification".tr,
                         style: getTextStyle(
                           fontSize: 13.sp,
                           color: const Color(0xFF1E40AF),
@@ -170,7 +170,7 @@ class PendingApprovalScreen extends StatelessWidget {
                     Icon(Icons.home_outlined, color: Colors.black, size: 24.sp),
                     SizedBox(width: 8.w),
                     Text(
-                      'Back to Home',
+                      'back_to_home'.tr,
                       style: getTextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,

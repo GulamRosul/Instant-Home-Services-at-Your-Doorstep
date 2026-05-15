@@ -438,7 +438,7 @@ class WithdrawFundsScreen extends StatelessWidget {
         ),
         SizedBox(height: 24.h),
         Text(
-          'payment_take_number'.tr,
+          'phone_number'.tr,
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
@@ -448,7 +448,7 @@ class WithdrawFundsScreen extends StatelessWidget {
         SizedBox(height: 12.h),
         CustomTextField(
           controller: controller.pinController,
-          hintText: 'enter_payment_take_number'.tr,
+          hintText: 'enter_phone_number'.tr,
           backgroundColor: Colors.white,
           borderColor: const Color(0xFFE2E8F0),
         ),

@@ -289,7 +289,7 @@ class WalletController extends GetxController {
 
       requestStatus.value = 'Pending';
       requestDateLabel.value = _formatToday();
-      Get.snackbar('success'.tr, message);
+      // Get.snackbar('success'.tr, message);
       await fetchWalletOverview();
       Get.find<ProviderNavbarController>().showHomeSubPage(
         const PendingApprovalScreen(),

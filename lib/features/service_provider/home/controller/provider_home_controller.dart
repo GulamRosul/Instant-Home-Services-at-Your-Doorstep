@@ -41,8 +41,8 @@ class ProviderHomeController extends GetxController {
   var isRecentBookingsLoading = false.obs;
   var recentBookingsErrorMessage = ''.obs;
   final recentBookings = <RecentBookingModel>[].obs;
-  var averageRating = "4.8".obs;
-  var reviewCount = 100.obs;
+  var averageRating = "0".obs;
+  var reviewCount = 0.obs;
   var submittedProposals = 10.obs;
 
   @override

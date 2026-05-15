@@ -25,6 +25,10 @@ const Map<String, String> bnBD = {
   'sign_in': 'সাইন ইন',
   'dont_have_account': 'অ্যাকাউন্ট নেই? ',
   'sign_up': 'সাইন আপ',
+    'verify_email': 'ইমেল যাচাই করুন',
+  'please_verify_your_email_first': 'আপনার ইমেল প্রথমে যাচাই করুন।',
+  'verify_email_desc': 'আপনার ইমেল যাচাইয়ের জন্য আমরা একটি OTP পাঠাব।',
+  'back_to_login': 'লগইনে ফিরে যান',
 
   // Login Validation Errors
   'email_empty': 'ইমেল লিখুন',

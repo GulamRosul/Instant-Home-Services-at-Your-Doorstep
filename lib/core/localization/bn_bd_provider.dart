@@ -267,4 +267,14 @@ const Map<String, String> bnBDProvider = {
   'how_would_you_rate_your_experience': 'আপনার অভিজ্ঞতা কীভাবে রেট করবেন?',
   'can_you_tell_us_more': 'আপনি আমাদের আরও বলতে পারেন?',
   'add_feedback': 'এখানে আপনার মতামত যোগ করুন...',
+
+  //pending approval screen
+  'pending_approval': 'মুলতুবি অনুমোদন',
+  'your_withdrawal_request_is_being_reviewed\nby_the_admin': 'আপনার টাকা তোলার অনুরোধটি অ্যাডমিন পর্যালোচনা করছেন',
+  'request_details': 'অনুরোধের বিবরণ',
+  'status': 'স্থিতি',
+  'request_date': 'অনুরোধের তারিখ',
+  'expected_review': 'প্রত্যাশিত পর্যালোচনা',
+  'withdrawal_notification': '💡 অ্যাডমিন আপনার অনুরোধটি পর্যালোচনা করার পর আপনি একটি বিজ্ঞপ্তি পাবেন। অনুমোদনের পর ১-২ কার্যদিবসের মধ্যে আপনার অ্যাকাউন্টে অর্থ স্থানান্তর করা হবে।',
+  'back_to_home': 'হোমে ফিরে যান',
 };

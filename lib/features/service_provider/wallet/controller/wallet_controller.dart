@@ -46,11 +46,10 @@ class WalletController extends GetxController {
   double get enteredAmountValue =>
       double.tryParse(withdrawalAmountController.text.trim()) ?? 0;
 
-  double get feeAmount =>
-      selectedPaymentMethod.value == 'Card Payment' ? 0 : 0;
+  double get feeAmount => selectedPaymentMethod.value == 'Card Payment' ? 0 : 0;
 
   double get netAmount {
-    final value = enteredAmountValue ;
+    final value = enteredAmountValue;
     return value < 0 ? 0 : value;
   }
 

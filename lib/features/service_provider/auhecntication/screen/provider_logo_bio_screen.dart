@@ -155,19 +155,39 @@ class ProviderLogoBioScreen extends StatelessWidget {
             ),
             SizedBox(height: 61.h),
 
-            Obx(
-              () => CustomButton(
+            Obx(() {
+              return CustomButton(
                 borderRadius: 6.r,
                 text: controller.isRegistering.value
                     ? 'submitting'.tr
                     : 'complete_registration'.tr,
                 onPressed: controller.isRegistering.value
                     ? null
-                    : controller.submitProviderRegistration,
+                    : () {
+                        if (controller.avatarImage.value == null) {
+                          Get.snackbar(
+                            "Error",
+                            "Please select an avatar",
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          return;
+                        }
+
+                        if (controller.bioController.text.isEmpty) {
+                          Get.snackbar(
+                            "Error",
+                            "Bio cannot be empty",
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          return;
+                        }
+
+                        controller.submitProviderRegistration();
+                      },
                 backgroundColor: Color(0xFF334155),
                 textColor: Colors.white,
-              ),
-            ),
+              );
+            }),
             SizedBox(height: 40.h),
           ],
         ),

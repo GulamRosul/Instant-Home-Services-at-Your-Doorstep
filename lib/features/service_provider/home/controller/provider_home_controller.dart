@@ -165,13 +165,16 @@ class ProviderHomeController extends GetxController {
       final walletData = _asMap(data['data']) ?? <String, dynamic>{};
       final withdraw = _asMap(walletData['withdraw']) ?? <String, dynamic>{};
       final withdrawAble =
-          _asMap(withdraw['totalWithdrawaAbleAmount']) ?? <String, dynamic>{};
+          _asMap(withdraw['totalWithdraeAbleAmount']) ?? <String, dynamic>{};
       final booking = _asMap(walletData['booking']) ?? <String, dynamic>{};
+      final review = _asMap(walletData['review']) ?? <String, dynamic>{};
 
       totalEarnings.value = _formatAmount(withdrawAble['amount']);
       pendingAmount.value = _formatAmount(withdraw['totalPendingAmount']);
       bookingsServed.value =
           '${booking['totalBookingServed'] ?? 0}/${booking['totalBooking'] ?? 0}';
+      averageRating.value = (review['averageRating'] ?? 0).toString();
+      reviewCount.value = review['totalReview'] ?? 0;
     } on DioException catch (_) {
       walletErrorMessage.value = 'Failed to load wallet';
     } catch (_) {

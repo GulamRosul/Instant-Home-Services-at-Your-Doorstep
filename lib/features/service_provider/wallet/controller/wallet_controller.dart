@@ -46,11 +46,10 @@ class WalletController extends GetxController {
   double get enteredAmountValue =>
       double.tryParse(withdrawalAmountController.text.trim()) ?? 0;
 
-  double get feeAmount =>
-      selectedPaymentMethod.value == 'Card Payment' ? 0 : 0;
+  double get feeAmount => selectedPaymentMethod.value == 'Card Payment' ? 0 : 0;
 
   double get netAmount {
-    final value = enteredAmountValue ;
+    final value = enteredAmountValue;
     return value < 0 ? 0 : value;
   }
 
@@ -72,7 +71,7 @@ class WalletController extends GetxController {
       }
 
       final response = await _apiClient.get<dynamic>(
-        ApiEndpoints.cartWithdrawRequest,
+        ApiEndpoints.providerWallet,
         options: Options(
           headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
           validateStatus: (status) => status != null && status < 500,
@@ -80,7 +79,7 @@ class WalletController extends GetxController {
       );
 
       debugPrint(
-        'Wallet screen request => ${ApiEndpoints.baseUrl}${ApiEndpoints.cartWithdrawRequest}',
+        'Wallet screen request => ${ApiEndpoints.baseUrl}${ApiEndpoints.providerWallet}',
       );
       debugPrint('Wallet screen status => ${response.statusCode}');
       debugPrint('Wallet screen response => ${response.data}');
@@ -95,7 +94,11 @@ class WalletController extends GetxController {
       final walletData = _asMap(data['data']) ?? <String, dynamic>{};
       final withdraw = _asMap(walletData['withdraw']) ?? <String, dynamic>{};
       final withdrawAble =
-          _asMap(withdraw['totalWithdrawaAbleAmount']) ?? <String, dynamic>{};
+          _asMap(withdraw['totalWithdraeAbleAmount']) ??
+          _asMap(withdraw['totalWithdrawaAbleAmount']) ??
+          _asMap(withdraw['totalWithdrawAbleAmount']) ??
+          _asMap(withdraw['totalWithdrawalAbleAmount']) ??
+          <String, dynamic>{};
       final booking = _asMap(walletData['booking']) ?? <String, dynamic>{};
 
       totalEarnings.value = _formatAmount(withdrawAble['amount']);

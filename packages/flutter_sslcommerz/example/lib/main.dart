@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_sslcommerz/model/SSLCAdditionalInitializer.dart';
 import 'package:flutter_sslcommerz/model/SSLCCustomerInfoInitializer.dart';
 import 'package:flutter_sslcommerz/model/SSLCEMITransactionInitializer.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_sslcommerz/model/SSLCTransactionInfoModel.dart';
 import 'package:flutter_sslcommerz/model/SSLCommerzInitialization.dart';
 import 'package:flutter_sslcommerz/model/SSLCurrencyType.dart';
 import 'package:flutter_sslcommerz/sslcommerz.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 enum SdkType { live, testbox }
 

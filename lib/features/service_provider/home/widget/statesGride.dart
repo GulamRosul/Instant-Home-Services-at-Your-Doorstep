@@ -28,17 +28,17 @@ class StatsGrid extends StatelessWidget {
           crossAxisSpacing: 12.w,
           childAspectRatio: aspectRatio > 0 ? aspectRatio : 1.2,
           children: [
-            Obx(
-              () => _buildStatCard(
-                "applications_this_month".tr,
-                "${controller.applicationsCount.value}/${controller.maxApplications}",
-                icon: SvgPicture.asset(IconPath.one),
-                iconBG: Color(0xFFFFF7ED),
-                progress:
-                    controller.applicationsCount.value /
-                    controller.maxApplications,
-              ),
-            ),
+            // Obx(
+            //   () => _buildStatCard(
+            //     "applications_this_month".tr,
+            //     "${controller.applicationsCount.value}/${controller.maxApplications}",
+            //     icon: SvgPicture.asset(IconPath.one),
+            //     iconBG: Color(0xFFFFF7ED),
+            //     progress:
+            //         controller.applicationsCount.value /
+            //         controller.maxApplications,
+            //   ),
+            // ),
             Obx(
               () => _buildStatCard(
                 "total_bookings_served".tr,
@@ -56,14 +56,14 @@ class StatsGrid extends StatelessWidget {
               ),
             ),
 
-            Obx(
-              () => _buildStatCard(
-                "submitted_proposal".tr,
-                controller.submittedProposals.value.toString(),
-                icon: SvgPicture.asset(IconPath.three),
-                iconBG: Color(0xFFCFFAFE),
-              ),
-            ),
+            // Obx(
+            //   () => _buildStatCard(
+            //     "submitted_proposal".tr,
+            //     controller.submittedProposals.value.toString(),
+            //     icon: SvgPicture.asset(IconPath.three),
+            //     iconBG: Color(0xFFCFFAFE),
+            //   ),
+            // ),
           ],
         );
       },

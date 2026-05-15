@@ -263,4 +263,15 @@ const Map<String, String> enUSProvider = {
   'how_would_you_rate_your_experience': 'How would you rate your experience?',
   'can_you_tell_us_more': 'Can you tell us more?',
   'add_feedback': 'Add your feedback here...',
+
+
+  //pending approval screen
+  'pending_approval': 'Pending Approval',
+  'your_withdrawal_request_is_being_reviewed\nby_the_admin': 'Your withdrawal request is being reviewed\nby the admin',
+  'request_details': 'Request Details',
+  'status': 'Status',
+  'request_date': 'Request Date',
+  'expected_review': 'Expected Review',
+  'withdrawal_notification': '💡 You\'ll receive a notification once the admin reviews your request. The funds will be transferred to your account within 1-2 business days after approval.',
+  'back_to_home': 'Back to Home',
 };

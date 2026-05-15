@@ -51,10 +51,19 @@ class PaymentInitiateResponse {
 class PaymentConfirmRequest {
   final String valId;
   final String tranId;
+  final num amount;
 
-  PaymentConfirmRequest({required this.valId, required this.tranId});
+  PaymentConfirmRequest({
+    required this.valId,
+    required this.tranId,
+    required this.amount,
+  });
 
-  Map<String, dynamic> toJson() => {'val_id': valId, 'tran_id': tranId};
+  Map<String, dynamic> toJson() => {
+    'val_id': valId,
+    'tran_id': tranId,
+    'amount': amount,
+  };
 }
 
 class PaymentFailRequest {

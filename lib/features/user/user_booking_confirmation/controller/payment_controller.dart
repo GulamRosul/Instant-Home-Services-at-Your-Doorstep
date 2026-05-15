@@ -68,7 +68,9 @@ class PaymentController extends GetxController {
       if ((response.statusCode == 200 || response.statusCode == 201) &&
           response.data?['data']?['success'] == true) {
         final couponData = response.data['data']['data'];
-        final coupon = CouponResponse.fromJson(couponData as Map<String, dynamic>);
+        final coupon = CouponResponse.fromJson(
+          couponData as Map<String, dynamic>,
+        );
 
         // Calculate discount
         double discountAmount =
@@ -85,12 +87,12 @@ class PaymentController extends GetxController {
         debugPrint('   Discount Amount: ৳$discountAmount');
         debugPrint('   New Total: ৳$newTotal');
 
-        Get.snackbar(
-          "Success",
-          response.data['data']['message'] ?? "Coupon applied successfully!",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   "Success",
+        //   response.data['data']['message'] ?? "Coupon applied successfully!",
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
       } else {
         Get.snackbar(
           "Error",
@@ -265,10 +267,14 @@ class PaymentController extends GetxController {
       debugPrint('Payment Success: ${result.status}');
 
       final valId = result.valId ?? transactionId;
+      final confirmedAmount =
+          num.tryParse(result.amount ?? '') ??
+          (double.tryParse(amountController.text) ?? 0);
 
       final confirmRequest = PaymentConfirmRequest(
         valId: valId,
         tranId: transactionId,
+        amount: confirmedAmount,
       );
 
       final confirmResponse = await _apiClient.post(

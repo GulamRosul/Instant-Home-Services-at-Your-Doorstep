@@ -25,6 +25,10 @@ const Map<String, String> enUS = {
   'sign_in': 'Sign In',
   'dont_have_account': "Don't have an account? ",
   'sign_up': 'Sign Up',
+  'verify_email': 'Verify Your Email',
+  'please_verify_your_email_first': 'Please verify your email first.',
+  'verify_email_desc': 'We will send an OTP to your email for verification.',
+  'back_to_login': 'Back to Login',
 
   // Login Validation Errors
   'email_empty': 'Enter email',

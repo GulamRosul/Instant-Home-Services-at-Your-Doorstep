@@ -8,7 +8,6 @@ import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
-import 'package:protiva502/features/user/all_bookings/model/review_model.dart';
 
 class ReviewController extends GetxController {
   final TextEditingController feedbackController = TextEditingController();

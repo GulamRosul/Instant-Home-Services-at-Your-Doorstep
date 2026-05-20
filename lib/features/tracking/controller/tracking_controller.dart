@@ -452,13 +452,13 @@ void callPerson() async {
     final baseId = bookingId.value.replaceAll('#', '').trim();
     final uniqueCallId = '${baseId}_${DateTime.now().millisecondsSinceEpoch}';
 
-    // ইনভিটেশন পাঠান
+
     await CallService.instance.startAudioCall(
       targetUserId: _otherUserId!,
       targetUserName: personName.value,
       callID: uniqueCallId,
     );
-    // নোট: এখানে Navigator.push করার প্রয়োজন নেই।
+
   } finally {
     _isCallInProgress = false;
   }

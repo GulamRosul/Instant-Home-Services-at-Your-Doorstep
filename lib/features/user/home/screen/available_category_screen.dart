@@ -94,11 +94,11 @@ class AvailableCategoryScreen extends StatelessWidget {
             }
 
             return SizedBox(
-              height: 90.h,
+              height: 110.h,
               child: ListView.builder(
                 controller: controller.categoriesScrollController,
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
                 itemCount: controller.categories.length,
                 itemBuilder: (context, index) {
                   final category = controller.categories[index];
@@ -108,7 +108,7 @@ class AvailableCategoryScreen extends StatelessWidget {
                       onTap: () => controller.selectCategory(index),
                       child: Container(
                         width: 80.w,
-                        margin: EdgeInsets.only(right: 12.w),
+                        margin: EdgeInsets.only(right: 10.w),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? AppColors.textPurple.withValues(alpha: 0.1)
@@ -123,6 +123,7 @@ class AvailableCategoryScreen extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            10.h.verticalSpace,
                             // Load icons as network images since they're URLs from API
                             category.icon.isNotEmpty
                                 ? Image.network(
@@ -143,17 +144,21 @@ class AvailableCategoryScreen extends StatelessWidget {
                                     size: 24.sp,
                                     color: Colors.grey,
                                   ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              controller.categories[index].name,
-                              style: getTextStyle(
-                                fontSize: 11.sp,
-                                fontWeight: isSelected
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                                color: Colors.black87,
+                            SizedBox(height: 6.h),
+                            Expanded(
+                              child: Text(
+                                controller.categories[index].name,
+                                style: getTextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  color: Colors.black87,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),

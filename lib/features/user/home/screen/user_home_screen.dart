@@ -172,7 +172,7 @@ class UserHomeScreen extends StatelessWidget {
                   shimmerChild: _buildServiceGridShimmerLoader(),
                 ),
               ),
-              SizedBox(height: 100.h), // Space for floating nav bar
+              SizedBox(height: 110.h), // Space for floating nav bar
             ],
           ),
         ),
@@ -336,69 +336,76 @@ class UserHomeScreen extends StatelessWidget {
     final description = banner.description.trim();
     final imageUrl = banner.image.trim();
     final link = banner.link.trim();
-    final bannerImageSize = 72.r;
 
     return GestureDetector(
       onTap: link.isNotEmpty ? () => AppDeviceUtility.launchUrl(link) : null,
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.symmetric(horizontal: 2.w),
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: const Color(0xFF0085B1),
           borderRadius: BorderRadius.circular(16.r),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title.isNotEmpty ? title : 'Best Handyman Service',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: getTextStyle(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                      lineHeight: 20.sp,
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  Text(
-                    description.isNotEmpty
-                        ? description
-                        : 'Trusted & Professional provider',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: getTextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 12.w),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12.r),
-              child: imageUrl.isNotEmpty
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.r),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              imageUrl.isNotEmpty
                   ? Image.network(
                       imageUrl,
-                      width: bannerImageSize,
-                      height: bannerImageSize,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          _buildBannerImageFallback(size: bannerImageSize),
+                      errorBuilder: (_, __, ___) => _buildBannerImageFallback(),
                     )
-                  : _buildBannerImageFallback(size: bannerImageSize),
-            ),
-          ],
+                  : _buildBannerImageFallback(),
+              // Gradient for text readability
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withValues(alpha: 0.6),
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title.isNotEmpty ? '' : 'Best Handyman Service',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: getTextStyle(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        lineHeight: 20.sp,
+                      ),
+                    ),
+                    SizedBox(height: 6.h),
+                    Text(
+                      description.isNotEmpty
+                          ? ''
+                          : 'Trusted & Professional provider',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: getTextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -474,87 +481,90 @@ class UserHomeScreen extends StatelessWidget {
     );
   }
 
-Widget _buildCategoryGrid(UserHomeController controller) {
-  if (controller.isCategoriesLoading.value) {
-    return _buildCategoryShimmerLoader();
-  }
+  Widget _buildCategoryGrid(UserHomeController controller) {
+    if (controller.isCategoriesLoading.value) {
+      return _buildCategoryShimmerLoader();
+    }
 
-  // ✅ Empty State
-  if (controller.categories.isEmpty) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.h),
-      child: Center(
-        child: Text(
-          "no_categories_found".tr,
+    // ✅ Empty State
+    if (controller.categories.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        child: Center(
+          child: Text(
+            "no_categories_found".tr,
             textAlign: TextAlign.center,
             style: getTextStyle(
               fontSize: 12.sp,
               color: AppColors.textSecondary,
-
             ),
-        ),
-      ),
-    );
-  }
-
-  return GridView.builder(
-    padding: EdgeInsets.zero,
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    itemCount: controller.categories.length,
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 4,
-      mainAxisSpacing: 5.h,
-      crossAxisSpacing: 6.w,
-      childAspectRatio: 0.8,
-    ),
-    itemBuilder: (context, index) {
-      final category = controller.categories[index];
-      return GestureDetector(
-        onTap: () {
-          Get.to(() => AvailableCategoryScreen(initialCategoryIndex: index));
-        },
-        child: Container(
-          padding: EdgeInsets.all(5.r),
-          decoration: BoxDecoration(
-            color: const Color(0xFFEFF6FF),
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              category.icon.isNotEmpty
-                  ? Image.network(
-                      category.icon,
-                      width: 24.w,
-                      height: 24.h,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.category,
-                          size: 24.sp,
-                          color: Colors.grey,
-                        );
-                      },
-                    )
-                  : Icon(Icons.category, size: 24.sp, color: Colors.grey),
-              SizedBox(height: 8.h),
-              Text(
-                category.name,
-                textAlign: TextAlign.center,
-                style: getTextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                ),
-              ),
-            ],
           ),
         ),
       );
-    },
-  );
-}
+    }
+
+    return GridView.builder(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: controller.categories.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        mainAxisSpacing: 5.h,
+        crossAxisSpacing: 6.w,
+        childAspectRatio: 0.8,
+      ),
+      itemBuilder: (context, index) {
+        final category = controller.categories[index];
+        return GestureDetector(
+          onTap: () {
+            Get.to(() => AvailableCategoryScreen(initialCategoryIndex: index));
+          },
+          child: Container(
+            padding: EdgeInsets.all(5.r),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFF6FF),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                category.icon.isNotEmpty
+                    ? Image.network(
+                        category.icon,
+                        width: 40.w,
+                        height: 40.h,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.category,
+                            size: 40.sp,
+                            color: Colors.grey,
+                          );
+                        },
+                      )
+                    : Icon(Icons.category, size: 40.sp, color: Colors.grey),
+                SizedBox(height: 6.h),
+                Expanded(
+                  child: Text(
+                    category.name,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: getTextStyle(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildSectionBody({
     required bool isLoading,
@@ -608,8 +618,7 @@ Widget _buildCategoryGrid(UserHomeController controller) {
         );
       },
       child: Container(
-        width: 160.w,
-        margin: EdgeInsets.only(right: 16.w),
+        margin: EdgeInsets.only(right: 8.w),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.r),
@@ -922,9 +931,9 @@ Widget _buildCategoryGrid(UserHomeController controller) {
       itemCount: services.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: 10.h,
-        crossAxisSpacing: 0.w,
-        mainAxisExtent: 260.h,
+        mainAxisSpacing: 8.h,
+        crossAxisSpacing: 8.w,
+        mainAxisExtent: 250.h,
       ),
       itemBuilder: (context, index) => _buildServiceCard(services[index]),
     );

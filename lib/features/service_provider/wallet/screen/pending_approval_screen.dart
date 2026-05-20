@@ -119,7 +119,10 @@ class PendingApprovalScreen extends StatelessWidget {
                           ? 'Today'
                           : controller.requestDateLabel.value,
                     ),
-                    _buildDetailRow('expected_review'.tr, 'processing_time_details'.tr),
+                    _buildDetailRow(
+                      'expected_review'.tr,
+                      'processing_time_details'.tr,
+                    ),
                     SizedBox(height: 10.h),
                   ],
                 ),
@@ -154,6 +157,8 @@ class PendingApprovalScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   navIndexController.resetHomeSubPage();
+                  navIndexController.setSelectedIndex(0);
+                  Get.back();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

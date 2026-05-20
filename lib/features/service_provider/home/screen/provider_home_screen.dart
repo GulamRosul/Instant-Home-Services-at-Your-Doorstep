@@ -20,63 +20,68 @@ class ProviderHomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: const HomeHeaderAppBar(),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search Bar
-            // SearchBarWidget(),
-            SizedBox(height: 24.h),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await controller.refreshHomeData();
+        },
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Search Bar
+              // SearchBarWidget(),
+              SizedBox(height: 24.h),
 
-            // Wallet Card
-            Obx(
-              () => controller.isWalletLoading.value
-                  ? _buildWalletShimmer()
-                  : WalletCard(controller: controller),
-            ),
-            SizedBox(height: 24.h),
-            // Application Limit Warning (Obx)
-            // Obx(
-            //   () => controller.isLimitReached.value
-            //       ? LimitWarningCard(controller: controller)
-            //       : const SizedBox.shrink(),
-            // ),
-            // if (controller.isLimitReached.value) SizedBox(height: 20.h),
+              // Wallet Card
+              Obx(
+                () => controller.isWalletLoading.value
+                    ? _buildWalletShimmer()
+                    : WalletCard(controller: controller),
+              ),
+              SizedBox(height: 24.h),
+              // Application Limit Warning (Obx)
+              // Obx(
+              //   () => controller.isLimitReached.value
+              //       ? LimitWarningCard(controller: controller)
+              //       : const SizedBox.shrink(),
+              // ),
+              // if (controller.isLimitReached.value) SizedBox(height: 20.h),
 
-            // Stats Grid
-            Obx(
-              () => controller.isStatsLoading.value
-                  ? _buildStatsShimmer()
-                  : StatsGrid(controller: controller),
-            ),
-            SizedBox(height: 24.h),
-            // Active Jobs Section
-            _buildSectionHeader(
-              "Active Jobs",
-              controller.handleViewAllActiveJobs,
-            ),
-            SizedBox(height: 12.h),
-            Obx(
-              () => controller.isActiveJobsLoading.value
-                  ? _buildActiveJobsShimmer()
-                  : ActiveJobsSection(controller: controller),
-            ),
-            SizedBox(height: 24.h),
+              // Stats Grid
+              Obx(
+                () => controller.isStatsLoading.value
+                    ? _buildStatsShimmer()
+                    : StatsGrid(controller: controller),
+              ),
+              SizedBox(height: 24.h),
+              // Active Jobs Section
+              _buildSectionHeader(
+                "Active Jobs",
+                controller.handleViewAllActiveJobs,
+              ),
+              SizedBox(height: 12.h),
+              Obx(
+                () => controller.isActiveJobsLoading.value
+                    ? _buildActiveJobsShimmer()
+                    : ActiveJobsSection(controller: controller),
+              ),
+              SizedBox(height: 24.h),
 
-            // Recent Bookings Section
-            _buildSectionHeader(
-              "recent_bookings".tr,
-              controller.handleViewAllRecentBookings,
-            ),
-            SizedBox(height: 12.h),
-            Obx(
-              () => controller.isRecentBookingsLoading.value
-                  ? _buildRecentBookingsShimmer()
-                  : RecentBookingsSection(controller: controller),
-            ),
-            SizedBox(height: 80.h),
-          ],
+              // Recent Bookings Section
+              _buildSectionHeader(
+                "recent_bookings".tr,
+                controller.handleViewAllRecentBookings,
+              ),
+              SizedBox(height: 12.h),
+              Obx(
+                () => controller.isRecentBookingsLoading.value
+                    ? _buildRecentBookingsShimmer()
+                    : RecentBookingsSection(controller: controller),
+              ),
+              SizedBox(height: 80.h),
+            ],
+          ),
         ),
       ),
     );

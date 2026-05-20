@@ -33,7 +33,7 @@ class _MapScreenState extends State<MapScreen> {
   late final bool ownsController;
   Worker? trackingWorker;
   final TextEditingController searchController = TextEditingController();
-  
+
   final bookingIdService = BookingIdService();
 
   @override
@@ -816,24 +816,24 @@ class _MapScreenState extends State<MapScreen> {
                           color: AppColors.textSecondary,
                         ),
                       ),
-                      SizedBox(height: 4.h),
-                      Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.amber, size: 14.sp),
-                          Icon(Icons.star, color: Colors.amber, size: 14.sp),
-                          Icon(Icons.star, color: Colors.amber, size: 14.sp),
-                          Icon(Icons.star, color: Colors.amber, size: 14.sp),
-                          Icon(Icons.star, color: Colors.amber, size: 14.sp),
-                          SizedBox(width: 4.w),
-                          Text(
-                            controller.rating.value,
-                            style: getTextStyle(
-                              fontSize: 11.sp,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
+                      // SizedBox(height: 4.h),
+                      // Row(
+                      //   children: [
+                      //     Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                      //     Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                      //     Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                      //     Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                      //     Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                      //     SizedBox(width: 4.w),
+                      //     Text(
+                      //       controller.rating.value,
+                      //       style: getTextStyle(
+                      //         fontSize: 11.sp,
+                      //         color: AppColors.textSecondary,
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),
@@ -861,7 +861,7 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        controller.personCost.value,
+                        '৳${controller.personCost.value}',
                         style: getTextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w700,
@@ -898,59 +898,59 @@ class _MapScreenState extends State<MapScreen> {
                 //   ),
                 // ),
                 Flexible(
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.end,
-    children: [
-      Text(
-        'booking_id'.tr,
-        style: getTextStyle(
-          fontSize: 12.sp,
-          color: AppColors.textSecondary,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      SizedBox(height: 4.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'booking_id'.tr,
+                        style: getTextStyle(
+                          fontSize: 12.sp,
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
 
-      /// Booking ID + Copy Icon
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: Text(
-              bookingIdService.getTrimmedBookingId(
-                controller.bookingId.value,
-              ),
-              style: getTextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+                      /// Booking ID + Copy Icon
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              bookingIdService.getTrimmedBookingId(
+                                controller.bookingId.value,
+                              ),
+                              style: getTextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
 
-          SizedBox(width: 6.w),
+                          SizedBox(width: 6.w),
 
-          ValueListenableBuilder<bool>(
-            valueListenable: bookingIdService.isCopied,
-            builder: (context, copied, _) {
-              return GestureDetector(
-                onTap: () => bookingIdService.copyBookingId(
-                  controller.bookingId.value,
+                          ValueListenableBuilder<bool>(
+                            valueListenable: bookingIdService.isCopied,
+                            builder: (context, copied, _) {
+                              return GestureDetector(
+                                onTap: () => bookingIdService.copyBookingId(
+                                  controller.bookingId.value,
+                                ),
+                                child: Icon(
+                                  copied ? Icons.check_circle : Icons.copy,
+                                  size: 16.sp,
+                                  color: copied ? Colors.green : Colors.grey,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                child: Icon(
-                  copied ? Icons.check_circle : Icons.copy,
-                  size: 16.sp,
-                  color: copied ? Colors.green : Colors.grey,
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    ],
-  ),
-)
               ],
             ),
             SizedBox(height: 16.h),

@@ -54,6 +54,12 @@ class ProviderHomeController extends GetxController {
     fetchRecentBookings();
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    refreshHomeData();
+  }
+
   Future<void> fetchProfileData() async {
     try {
       isProfileLoading.value = true;
@@ -342,5 +348,14 @@ class ProviderHomeController extends GetxController {
 
   void handleViewWallet() {
     Get.find<ProviderNavbarController>().showHomeSubPage(const WalletScreen());
+  }
+
+  Future<void> refreshHomeData() async {
+    await Future.wait([
+      fetchProfileData(),
+      fetchProviderWallet(),
+      fetchActiveJobs(),
+      fetchRecentBookings(),
+    ]);
   }
 }

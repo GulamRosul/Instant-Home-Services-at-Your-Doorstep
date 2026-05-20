@@ -55,6 +55,7 @@ class UserBookingItem {
     required this.clientId,
     required this.providerId,
     required this.jobId,
+    required this.thumbnail,
   });
 
   final String id;
@@ -79,10 +80,13 @@ class UserBookingItem {
   final String? clientId;
   final String? providerId;
   final String? jobId;
+  final String? thumbnail;
 
   factory UserBookingItem.fromJson(Map<String, dynamic> json) {
     final serviceAmount = _parseDouble(json['serviceAmount']);
     final totalAmount = _parseDouble(json['totalAmount']);
+    final job = json['job'] is Map ? json['job'] as Map<String, dynamic> : null;
+    final thumbnail = job != null ? _nullableText(job['thumbnail']) : null;
 
     return UserBookingItem(
       id: (json['id'] ?? '').toString(),
@@ -107,6 +111,7 @@ class UserBookingItem {
       clientId: _nullableText(json['clientId']),
       providerId: _nullableText(json['providerId']),
       jobId: _nullableText(json['jobId']),
+      thumbnail: thumbnail,
     );
   }
 

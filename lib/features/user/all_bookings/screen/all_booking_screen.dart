@@ -14,7 +14,6 @@ import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart'
 import 'package:protiva502/features/service_provider/my_job_list/model/job_model.dart';
 import 'package:protiva502/features/service_provider/my_job_list/screen/job_details_view_screen.dart';
 import 'package:protiva502/features/tracking/screen/tracking_screen.dart';
-import 'package:protiva502/features/user/user_booking_confirmation/screen/booking_details_screen.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/screen/payment_screen.dart';
 
 class AllBookingScreen extends StatelessWidget {
@@ -332,12 +331,28 @@ class AllBookingScreen extends StatelessWidget {
                       arguments: _mapBookingToJobModel(booking),
                     );
                   },
-                  child: Image.asset(
-                    ImagePath.servicecard,
-                    width: 62.w,
-                    height: 58.h,
-                    fit: BoxFit.cover,
-                  ),
+                  child:
+                      booking.thumbnail != null && booking.thumbnail!.isNotEmpty
+                      ? Image.network(
+                          booking.thumbnail!,
+                          width: 62.w,
+                          height: 58.h,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              ImagePath.servicecard,
+                              width: 62.w,
+                              height: 58.h,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          ImagePath.servicecard,
+                          width: 62.w,
+                          height: 58.h,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               SizedBox(width: 12.w),
@@ -782,7 +797,7 @@ class AllBookingScreen extends StatelessWidget {
           'location': booking.locationText,
           'rating':
               '4.8 (170 Reviews)', // You may need to fetch actual rating from API
-          'cost': '\$${booking.totalAmount.toStringAsFixed(2)}',
+          'cost': booking.totalAmount.toStringAsFixed(2),
           'bookingId': trackingBookingId,
           'providerId': booking.providerId,
           'clientId': booking.clientId,
@@ -896,7 +911,7 @@ class AllBookingScreen extends StatelessWidget {
       basePrice: booking.serviceAmount.toStringAsFixed(0),
       priceType: '',
       includeService: const [],
-      thumbnail: '',
+      thumbnail: booking.thumbnail ?? '',
       images: const [],
       videos: const [],
       status: normalizeBookingStatus(booking.status),

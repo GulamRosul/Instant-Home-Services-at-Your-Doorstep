@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/common/widgets/custom_gallery_widget.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/service_provider/my_job_list/controller/job_details_view_controller.dart';
@@ -339,25 +340,28 @@ class JobDetailsViewScreen extends StatelessWidget {
   }
 
   Widget _buildThumbnailSection(JobModel job) {
-    return Container(
-      width: double.infinity,
-      height: 250.h,
-      color: Colors.grey.shade200,
-      child: job.thumbnail.trim().isNotEmpty
-          ? Image.network(
-              job.thumbnail,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Center(
-                child: Icon(
-                  Icons.image_not_supported,
-                  size: 50.sp,
-                  color: Colors.grey,
+    return GestureDetector(
+      onTap: () => _openGallery(job),
+      child: Container(
+        width: double.infinity,
+        height: 250.h,
+        color: Colors.grey.shade200,
+        child: job.thumbnail.trim().isNotEmpty
+            ? Image.network(
+                job.thumbnail,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Center(
+                  child: Icon(
+                    Icons.image_not_supported,
+                    size: 50.sp,
+                    color: Colors.grey,
+                  ),
                 ),
+              )
+            : Center(
+                child: Icon(Icons.image, size: 50.sp, color: Colors.grey),
               ),
-            )
-          : Center(
-              child: Icon(Icons.image, size: 50.sp, color: Colors.grey),
-            ),
+      ),
     );
   }
 
@@ -574,5 +578,26 @@ class JobDetailsViewScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _openGallery(JobModel job) {
+    final allImages = <String>[];
+
+    if (job.thumbnail.trim().isNotEmpty) {
+      allImages.add(job.thumbnail);
+    }
+
+    allImages.addAll(
+      job.images
+          .where((img) => img != null && img.toString().isNotEmpty)
+          .map((img) => img.toString()),
+    );
+
+    if (allImages.isEmpty) {
+      Get.snackbar('gallery'.tr, 'no_images_available'.tr);
+      return;
+    }
+
+    Get.to(() => CustomGalleryWidget(imageUrls: allImages, initialIndex: 0));
   }
 }

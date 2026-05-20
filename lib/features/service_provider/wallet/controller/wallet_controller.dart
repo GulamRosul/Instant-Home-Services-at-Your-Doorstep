@@ -164,7 +164,7 @@ class WalletController extends GetxController {
 
   void handleWithdrawFunds() {
     // Logic for withdrawing funds
-    Get.snackbar("success".tr, "withdrawal_request_submitted".tr);
+    // Get.snackbar("success".tr, "withdrawal_request_submitted".tr);
   }
 
   void goToConfirmation() {

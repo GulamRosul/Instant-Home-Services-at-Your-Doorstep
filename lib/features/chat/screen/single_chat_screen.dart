@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
+import 'package:protiva502/core/common/widgets/custom_gallery_widget.dart';
 import 'package:protiva502/core/common/widgets/custom_textfield.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
@@ -53,8 +56,9 @@ class SingleChatScreen extends StatelessWidget {
                   final chatIndex = showTopLoader ? index - 1 : index;
                   final chat = controller.messages[chatIndex];
 
-                  final messageType =
-                      (chat['messageType'] ?? 'TEXT').toString().toUpperCase();
+                  final messageType = (chat['messageType'] ?? 'TEXT')
+                      .toString()
+                      .toUpperCase();
                   final message = chat['message'] ?? '';
                   final mediaUrl = chat['mediaUrl'];
 
@@ -252,87 +256,24 @@ class SingleChatScreen extends StatelessWidget {
               ],
             ),
             child: isImage && mediaUrl != null && mediaUrl.isNotEmpty
-                ? ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16.r),
-                      topRight: Radius.circular(16.r),
-                      bottomLeft: isMe ? Radius.circular(16.r) : Radius.zero,
-                      bottomRight: isMe ? Radius.zero : Radius.circular(16.r),
+                ? GestureDetector(
+                    onTap: () {
+                      Get.to(
+                        () => CustomGalleryWidget(
+                          imageUrls: [mediaUrl],
+                          initialIndex: 0,
+                        ),
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16.r),
+                        topRight: Radius.circular(16.r),
+                        bottomLeft: isMe ? Radius.circular(16.r) : Radius.zero,
+                        bottomRight: isMe ? Radius.zero : Radius.circular(16.r),
+                      ),
+                      child: _buildImageWidget(mediaUrl),
                     ),
-                    child: mediaUrl.startsWith('http')
-                        ? Image.network(
-                            mediaUrl,
-                            width: Get.width * 0.65,
-                            height: 200.h,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                width: Get.width * 0.65,
-                                height: 200.h,
-                                color: Colors.grey.shade200,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    value:
-                                        loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                  .cumulativeBytesLoaded /
-                                              loadingProgress
-                                                  .expectedTotalBytes!
-                                        : null,
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                width: Get.width * 0.65,
-                                height: 200.h,
-                                color: Colors.grey.shade200,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.broken_image),
-                                    SizedBox(height: 8.h),
-                                    Text(
-                                      'Failed to load',
-                                      style: getTextStyle(
-                                        fontSize: 10.sp,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          )
-                        : Container(
-                            width: Get.width * 0.65,
-                            height: 200.h,
-                            color: Colors.grey.shade200,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.image_not_supported),
-                                SizedBox(height: 8.h),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w,
-                                  ),
-                                  child: Text(
-                                    'Unsupported URL format',
-                                    style: getTextStyle(
-                                      fontSize: 9.sp,
-                                      color: Colors.grey,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                   )
                 : Text(
                     message,
@@ -375,6 +316,102 @@ class SingleChatScreen extends StatelessWidget {
                 ],
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImageWidget(String mediaUrl) {
+    final isNetwork = mediaUrl.startsWith('http');
+    final isFile = mediaUrl.startsWith('/') || mediaUrl.startsWith('file://');
+
+    if (isNetwork) {
+      return Image.network(
+        mediaUrl,
+        width: Get.width * 0.65,
+        height: 200.h,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            width: Get.width * 0.65,
+            height: 200.h,
+            color: Colors.grey.shade200,
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                    : null,
+                strokeWidth: 2,
+              ),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: Get.width * 0.65,
+            height: 200.h,
+            color: Colors.grey.shade200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.broken_image),
+                SizedBox(height: 8.h),
+                Text(
+                  'Failed to load',
+                  style: getTextStyle(fontSize: 10.sp, color: Colors.grey),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    } else if (isFile) {
+      final filePath = mediaUrl.startsWith('file://')
+          ? mediaUrl.replaceFirst('file://', '')
+          : mediaUrl;
+
+      return Image.file(
+        File(filePath),
+        width: Get.width * 0.65,
+        height: 200.h,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: Get.width * 0.65,
+            height: 200.h,
+            color: Colors.grey.shade200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.broken_image),
+                SizedBox(height: 8.h),
+                Text(
+                  'Failed to load',
+                  style: getTextStyle(fontSize: 10.sp, color: Colors.grey),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
+
+    return Container(
+      width: Get.width * 0.65,
+      height: 200.h,
+      color: Colors.grey.shade200,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.image_not_supported),
+          SizedBox(height: 8.h),
+          Text(
+            'Invalid image URL',
+            style: getTextStyle(fontSize: 9.sp, color: Colors.grey),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

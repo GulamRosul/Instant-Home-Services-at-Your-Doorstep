@@ -21,28 +21,27 @@ class PrivacyPolicyScreen extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (controller.error.value.isNotEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Text(
-                //   'Error: ${controller.error.value}',
-                //   style: getTextStyle(fontSize: 14.sp, color: Colors.red),
-                //   textAlign: TextAlign.center,
-                // ),
-                // SizedBox(height: 16.h),
-                ElevatedButton(
-                  onPressed: controller.fetchPrivacyPolicy,
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
-          );
-        }
-
         final policy = controller.privacyPolicy.value;
         if (policy == null) {
+          if (controller.error.value.isNotEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Text(
+                  //   'Error: ${controller.error.value}',
+                  //   style: getTextStyle(fontSize: 14.sp, color: Colors.red),
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  // SizedBox(height: 16.h),
+                  ElevatedButton(
+                    onPressed: controller.fetchPrivacyPolicy,
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
           return Center(
             child: Text(
               'no_privacy_policy'.tr,

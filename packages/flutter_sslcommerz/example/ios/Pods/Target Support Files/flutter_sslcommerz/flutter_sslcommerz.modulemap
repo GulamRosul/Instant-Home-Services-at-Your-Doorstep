@@ -1,0 +1,6 @@
+framework module flutter_sslcommerz {
+  umbrella header "flutter_sslcommerz-umbrella.h"
+
+  export *
+  module * { export * }
+}

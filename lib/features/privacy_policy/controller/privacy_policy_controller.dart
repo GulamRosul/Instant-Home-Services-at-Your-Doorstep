@@ -32,10 +32,19 @@ class PrivacyPolicyController extends GetxController {
         final data = response.data;
 
         if (data is Map<String, dynamic> && data.containsKey('data')) {
-          final policyData = data['data'] as Map<String, dynamic>;
-          final policy = PrivacyPolicyModel.fromJson(policyData);
-          privacyPolicy.value = policy;
-          debugPrint('✅ [PRIVACY POLICY] Successfully fetched privacy policy');
+          final policyData = data['data'];
+          if (policyData != null) {
+            final policy = PrivacyPolicyModel.fromJson(
+              policyData as Map<String, dynamic>,
+            );
+            privacyPolicy.value = policy;
+            debugPrint(
+              '✅ [PRIVACY POLICY] Successfully fetched privacy policy',
+            );
+          } else {
+            privacyPolicy.value = null;
+            debugPrint('📋 [PRIVACY POLICY] No privacy policy data available');
+          }
         } else {
           error.value = 'Invalid response format';
           debugPrint(
@@ -56,5 +65,4 @@ class PrivacyPolicyController extends GetxController {
       isLoading.value = false;
     }
   }
-
 }

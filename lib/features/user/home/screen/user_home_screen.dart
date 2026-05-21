@@ -359,18 +359,18 @@ class UserHomeScreen extends StatelessWidget {
                     )
                   : _buildBannerImageFallback(),
               // Gradient for text readability
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.black.withValues(alpha: 0.6),
-                      Colors.transparent,
-                    ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                ),
-              ),
+              // Container(
+              //   decoration: BoxDecoration(
+              //     gradient: LinearGradient(
+              //       colors: [
+              //         Colors.black.withValues(alpha: 0.6),
+              //         Colors.transparent,
+              //       ],
+              //       begin: Alignment.centerLeft,
+              //       end: Alignment.centerRight,
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                 child: Column(

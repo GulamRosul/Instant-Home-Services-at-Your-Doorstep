@@ -37,15 +37,18 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
-   signingConfigs {
-       create("release") {
+    signingConfigs {
+        create("release") {
+            val storeFilePath = localProperties.getProperty("storeFile")
+            if (storeFilePath != null) {
+                storeFile = File(storeFilePath)
+            }
 
-           keyAlias = localProperties.getProperty("keyAlias")
-           keyPassword = localProperties.getProperty("keyPassword")
-           storeFile = File(localProperties.getProperty("storeFile"))
-           storePassword = localProperties.getProperty("storePassword")
-       }
-   }
+            keyAlias = localProperties.getProperty("keyAlias") ?: ""
+            keyPassword = localProperties.getProperty("keyPassword") ?: ""
+            storePassword = localProperties.getProperty("storePassword") ?: ""
+        }
+    }
 
     buildTypes {
        getByName("release") {        

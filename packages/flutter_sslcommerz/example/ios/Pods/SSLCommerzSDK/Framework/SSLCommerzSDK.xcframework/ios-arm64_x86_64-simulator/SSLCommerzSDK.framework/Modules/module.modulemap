@@ -1,0 +1,11 @@
+framework module SSLCommerzSDK {
+  umbrella header "SSLCommerzSDK.h"
+  export *
+
+  module * { export * }
+}
+
+module SSLCommerzSDK.Swift {
+  header "SSLCommerzSDK-Swift.h"
+  requires objc
+}

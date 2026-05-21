@@ -1,0 +1,669 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.2 effective-5.10 (swiftlang-6.2.0.19.9 clang-1700.3.19.1)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name SSLCommerzSDK
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.2
+import AVFoundation
+import CommonCrypto
+import CoreGraphics
+import CoreImage
+import DeveloperToolsSupport
+import Foundation
+import QuartzCore
+@_exported import SSLCommerzSDK
+import Security
+import Swift
+import SwiftUI
+import SystemConfiguration
+import UIKit
+import Vision
+import WebKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public enum SSLBorderSide {
+  case pointTop, pointBottom, pointLeft, pointRight
+  public static func == (a: SSLCommerzSDK.SSLBorderSide, b: SSLCommerzSDK.SSLBorderSide) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension UIKit.UIView {
+  @_Concurrency.MainActor @preconcurrency public func sslAddBorder(side: SSLCommerzSDK.SSLBorderSide, color: UIKit.UIColor, width: CoreFoundation.CGFloat, leftPadding: CoreFoundation.CGFloat = 0, cornerRadious: CoreFoundation.CGFloat = 0) -> UIKit.UIView
+}
+extension UIKit.UIDevice {
+  @_Concurrency.MainActor @preconcurrency public static let modelName: Swift.String
+}
+@objc public class IntegrationInformation : ObjectiveC.NSObject {
+  @objc public var storeID: Swift.String
+  @objc public var storePassword: Swift.String
+  @objc public var totalAmount: Swift.Double
+  @objc public var currency: Swift.String
+  @objc public var transactionId: Swift.String
+  @objc public var productCategory: Swift.String
+  @objc public var ipnURL: Swift.String?
+  @objc public var multiCardName: Swift.String?
+  @objc public var allowedBIN: Swift.String?
+  @objc public var billNumber: Swift.String?
+  @objc public var language: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public init(storeID: Swift.String, storePassword: Swift.String, totalAmount: Swift.Double, currency: Swift.String, transactionId: Swift.String, productCategory: Swift.String, language: Swift.String? = nil)
+  #endif
+  @objc deinit
+}
+@objc public enum EMIOptions : Swift.Int {
+  case HasEMI = 1
+  case NoEMI = 0
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.Int)
+  #endif
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public class EMIInformation : ObjectiveC.NSObject {
+  @objc public var emiOption: SSLCommerzSDK.EMIOptions
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var emiMaximumInstallmentOption: Foundation.NSNumber? {
+    @objc get
+    @objc set(newNumber)
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var emiSelectedInstallmentOption: Foundation.NSNumber? {
+    @objc get
+    @objc set(newNumber)
+  }
+  #endif
+  @objc public init(emiOption: SSLCommerzSDK.EMIOptions)
+  @objc deinit
+}
+@objc public class CustomerInformation : ObjectiveC.NSObject {
+  @objc public var customerName: Swift.String
+  @objc public var customerEmail: Swift.String
+  @objc public var customerAddressOne: Swift.String
+  @objc public var customerAddressTwo: Swift.String?
+  @objc public var customerCity: Swift.String
+  @objc public var customerState: Swift.String?
+  @objc public var customerPostCode: Swift.String
+  @objc public var customerCountry: Swift.String
+  @objc public var customerPhone: Swift.String
+  @objc public var customerFax: Swift.String?
+  @objc public var userRefer: Swift.String?
+  @objc public init(customerName: Swift.String, customerEmail: Swift.String, customerAddressOne: Swift.String, customerCity: Swift.String, customerPostCode: Swift.String, customerCountry: Swift.String, customerPhone: Swift.String)
+  @objc deinit
+}
+public enum ShipmentOptions {
+  case NotRequired(shippingMethod: Swift.String, numberOfItem: Swift.Int)
+  case Required(numberOfItem: Swift.Int, shippingName: Swift.String, shippingAddressOne: Swift.String, shippingAddressTwo: Swift.String, shippingCity: Swift.String, shippingPostCode: Swift.String, shippingCountry: Swift.String)
+  public var info: SSLCommerzSDK.ShipmentInformation {
+    get
+  }
+}
+@objc public class ShipmentInformation : ObjectiveC.NSObject {
+  @objc public var shippingMethod: Swift.String
+  @objc public var numberOfItem: Swift.Int
+  @objc public var shippingName: Swift.String?
+  @objc public var shippingAddressOne: Swift.String?
+  @objc public var shippingAddressTwo: Swift.String?
+  @objc public var shippingCity: Swift.String?
+  @objc public var shippingState: Swift.String?
+  @objc public var shippingPostCode: Swift.String?
+  @objc public var shippingCountry: Swift.String?
+  @objc public init(shippingMethod: Swift.String, numberOfItem: Swift.Int)
+  @objc public init(shippingMethod: Swift.String, numberOfItem: Swift.Int, shippingName: Swift.String, shippingAddressOne: Swift.String, shippingAddressTwo: Swift.String, shippingCity: Swift.String, shippingPostCode: Swift.String, shippingCountry: Swift.String)
+  @objc deinit
+}
+public enum ProductProfileOptions {
+  case General
+  case PhysicalGoods
+  case NonPhysicalGoods
+  case AirlineTickets(hoursTillDeparture: Swift.String, flightType: Swift.String, pnr: Swift.String, journeyFromTo: Swift.String, thirdPartyBooking: Swift.Bool)
+  case TravelVertical(hotelName: Swift.String, lengthOfStay: Swift.String, checkInTime: Swift.String, hotelCity: Swift.String)
+  case TelecomVertical(productType: Swift.String, topupNumber: Swift.String, countryTopup: Swift.String)
+  public var profile: SSLCommerzSDK.ProductProfile {
+    get
+  }
+}
+@objc public class ProductProfile : ObjectiveC.NSObject {
+  @objc public var productProfile: Swift.String {
+    get
+  }
+  @objc public var hoursTillDeparture: Swift.String? {
+    get
+  }
+  @objc public var flightType: Swift.String? {
+    get
+  }
+  @objc public var pnr: Swift.String? {
+    get
+  }
+  @objc public var journeyFromTo: Swift.String? {
+    get
+  }
+  @objc public var thirdPartyBooking: Swift.String? {
+    get
+  }
+  @objc public var hotelName: Swift.String? {
+    get
+  }
+  @objc public var lengthOfStay: Swift.String? {
+    get
+  }
+  @objc public var checkInTime: Swift.String? {
+    get
+  }
+  @objc public var hotelCity: Swift.String? {
+    get
+  }
+  @objc public var productType: Swift.String? {
+    get
+  }
+  @objc public var topupNumber: Swift.String? {
+    get
+  }
+  @objc public var countryTopup: Swift.String? {
+    get
+  }
+  @objc public init(productProfile: Swift.String)
+  @objc public init(productProfile: Swift.String, hoursTillDeparture: Swift.String, flightType: Swift.String, pnr: Swift.String, journeyFromTo: Swift.String, thirdPartyBooking: Swift.String)
+  @objc public init(productProfile: Swift.String, hotelName: Swift.String, lengthOfStay: Swift.String, checkInTime: Swift.String, hotelCity: Swift.String)
+  @objc public init(productProfile: Swift.String, productType: Swift.String, topupNumber: Swift.String, countryTopup: Swift.String)
+  @objc deinit
+}
+@objc public class CartItem : ObjectiveC.NSObject, Swift.Encodable {
+  @objc public var product: Swift.String
+  @objc public var quantity: Swift.String
+  @objc public var amount: Swift.String
+  @objc public init(product: Swift.String, quantity: Swift.String, amount: Swift.String)
+  @objc deinit
+  public func encode(to encoder: any Swift.Encoder) throws
+}
+@objc public class ProductInformation : ObjectiveC.NSObject {
+  @objc public var productName: Swift.String?
+  @objc public var productCategory: Swift.String?
+  @objc public var productProfile: SSLCommerzSDK.ProductProfile?
+  @objc public var cart: [SSLCommerzSDK.CartItem]?
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var productAmount: Foundation.NSNumber? {
+    @objc get
+    @objc set(newNumber)
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var vat: Foundation.NSNumber? {
+    @objc get
+    @objc set(newNumber)
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var discountAmount: Foundation.NSNumber? {
+    @objc get
+    @objc set(newNumber)
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var convenienceFee: Foundation.NSNumber? {
+    @objc get
+    @objc set(newNumber)
+  }
+  #endif
+  @objc public init(productName: Swift.String, productCategory: Swift.String, productProfile: SSLCommerzSDK.ProductProfile)
+  @objc public init(discountAmount: Swift.Double)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class AdditionalInformation : ObjectiveC.NSObject {
+  @objc public var paramA: Swift.String?
+  @objc public var paramB: Swift.String?
+  @objc public var paramC: Swift.String?
+  @objc public var paramD: Swift.String?
+  @objc public var campaignCode: Swift.String?
+  @objc public var invoiceId: Swift.String?
+  @objc public var noOffer: SSLCommerzSDK.OfferOptions
+  public var extras: [(key: Swift.String, value: Swift.String)]?
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc public enum OfferOptions : Swift.Int {
+  case withDiscountOffer = 0
+  case NoDiscountOffer = 1
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.Int)
+  #endif
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public protocol SSLCommerzDelegate {
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc func transactionCompleted(withTransactionData transactionData: SSLCommerzSDK.TransactionDetails?)
+  #endif
+  @objc func sdkClosed(reason: Swift.String)
+}
+@objc public class SSLCommerz : ObjectiveC.NSObject {
+  @objc public var integrationInformation: SSLCommerzSDK.IntegrationInformation {
+    @objc get
+    @objc set(integration)
+  }
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var emiInformation: SSLCommerzSDK.EMIInformation? {
+    @objc get
+    @objc set(emi)
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var customerInformation: SSLCommerzSDK.CustomerInformation? {
+    @objc get
+    @objc set(customer)
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var shipmentInformation: SSLCommerzSDK.ShipmentInformation? {
+    @objc get
+    @objc set(shipment)
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var productInformation: SSLCommerzSDK.ProductInformation? {
+    @objc get
+    @objc set(product)
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var additionalInformation: SSLCommerzSDK.AdditionalInformation? {
+    @objc get
+    @objc set(additional)
+  }
+  #endif
+  @objc public var delegate: (any SSLCommerzSDK.SSLCommerzDelegate)? {
+    @objc get
+    @objc set
+  }
+  @objc public init(integrationInformation: SSLCommerzSDK.IntegrationInformation)
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public init(integrationInformation: SSLCommerzSDK.IntegrationInformation, emiInformation: SSLCommerzSDK.EMIInformation?, customerInformation: SSLCommerzSDK.CustomerInformation?, shipmentInformation: SSLCommerzSDK.ShipmentInformation?, productInformation: SSLCommerzSDK.ProductInformation?, additionalInformation: SSLCommerzSDK.AdditionalInformation?)
+  #endif
+  @objc public func start(in viewController: UIKit.UIViewController, shouldRunInTestMode isTestMode: Swift.Bool)
+  @objc deinit
+}
+extension UIKit.UIViewController {
+  @_Concurrency.MainActor @preconcurrency public func showToast(message: Swift.String)
+  @_Concurrency.MainActor @preconcurrency public func showToastError(message: Swift.String)
+}
+@objc @_hasMissingDesignatedInitializers @available(iOS 13.0, *)
+@_Concurrency.MainActor @preconcurrency public class CardScanner : UIKit.UIViewController {
+  @_Concurrency.MainActor @preconcurrency public var labelHintBottom: UIKit.UILabel?
+  @_Concurrency.MainActor @preconcurrency public var labelHintTop: UIKit.UILabel?
+  @_Concurrency.MainActor @preconcurrency public var buttonComplete: UIKit.UIButton?
+  @_Concurrency.MainActor @preconcurrency public var hintTopText: Swift.String
+  @_Concurrency.MainActor @preconcurrency public var hintBottomText: Swift.String
+  @_Concurrency.MainActor @preconcurrency public var buttonConfirmTitle: Swift.String
+  @_Concurrency.MainActor @preconcurrency public var buttonConfirmBackgroundColor: UIKit.UIColor
+  @_Concurrency.MainActor @preconcurrency public var viewTitle: Swift.String
+  #if compiler(>=5.3) && $NonescapableTypes
+  @_Concurrency.MainActor @preconcurrency public class func getScanner(resultsHandler: @escaping (_ name: Swift.String?, _ number: Swift.String?, _ date: Swift.String?, _ cvv: Swift.String?) -> Swift.Void) -> UIKit.UINavigationController
+  #endif
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func loadView()
+  @objc deinit
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func viewDidLoad()
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func viewDidAppear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func viewDidLayoutSubviews()
+}
+extension SSLCommerzSDK.CardScanner : AVFoundation.AVCaptureVideoDataOutputSampleBufferDelegate {
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func captureOutput(_ output: AVFoundation.AVCaptureOutput, didOutput sampleBuffer: CoreMedia.CMSampleBuffer, from connection: AVFoundation.AVCaptureConnection)
+}
+public enum SDKLanguage {
+  case English
+  case Bangla
+  public static func == (a: SSLCommerzSDK.SDKLanguage, b: SSLCommerzSDK.SDKLanguage) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public class ClearMessage : SSLCommerzSDK.Message {
+  final public let data: Foundation.Data
+  required public init(data: Foundation.Data)
+  convenience public init(string: Swift.String, using encoding: Swift.String.Encoding) throws
+  public func string(encoding: Swift.String.Encoding) throws -> Swift.String
+  public func encrypted(with key: SSLCommerzSDK.PublicKey, padding: SSLCommerzSDK.Padding) throws -> SSLCommerzSDK.EncryptedMessage
+  public func signed(with key: SSLCommerzSDK.PrivateKey, digestType: SSLCommerzSDK.Signature.DigestType) throws -> SSLCommerzSDK.Signature
+  public func verify(with key: SSLCommerzSDK.PublicKey, signature: SSLCommerzSDK.Signature, digestType: SSLCommerzSDK.Signature.DigestType) throws -> Swift.Bool
+  @objc deinit
+}
+public protocol Key : AnyObject {
+  var reference: Security.SecKey { get }
+  #if compiler(>=5.3) && $NonescapableTypes
+  var originalData: Foundation.Data? { get }
+  #endif
+  init(data: Foundation.Data) throws
+  init(reference: Security.SecKey) throws
+  init(base64Encoded base64String: Swift.String) throws
+  init(pemEncoded pemString: Swift.String) throws
+  init(pemNamed pemName: Swift.String, in bundle: Foundation.Bundle) throws
+  init(derNamed derName: Swift.String, in bundle: Foundation.Bundle) throws
+  func pemString() throws -> Swift.String
+  func data() throws -> Foundation.Data
+  func base64String() throws -> Swift.String
+}
+extension SSLCommerzSDK.Key {
+  public func base64String() throws -> Swift.String
+  public func data() throws -> Foundation.Data
+  public init(base64Encoded base64String: Swift.String) throws
+  public init(pemEncoded pemString: Swift.String) throws
+  public init(pemNamed pemName: Swift.String, in bundle: Foundation.Bundle = Bundle.main) throws
+  public init(derNamed derName: Swift.String, in bundle: Foundation.Bundle = Bundle.main) throws
+}
+public class PrivateKey : SSLCommerzSDK.Key {
+  final public let reference: Security.SecKey
+  final public let originalData: Foundation.Data?
+  public func pemString() throws -> Swift.String
+  required public init(reference: Security.SecKey) throws
+  required public init(data: Foundation.Data) throws
+  @objc deinit
+}
+public enum SwiftyRSAError : Swift.Error {
+  case pemDoesNotContainKey
+  case keyRepresentationFailed(error: CoreFoundation.CFError?)
+  case keyGenerationFailed(error: CoreFoundation.CFError?)
+  case keyCreateFailed(error: CoreFoundation.CFError?)
+  case keyAddFailed(status: Darwin.OSStatus)
+  case keyCopyFailed(status: Darwin.OSStatus)
+  case tagEncodingFailed
+  case asn1ParsingFailed
+  case invalidAsn1RootNode
+  case invalidAsn1Structure
+  case invalidBase64String
+  case chunkDecryptFailed(index: Swift.Int)
+  case chunkEncryptFailed(index: Swift.Int)
+  case stringToDataConversionFailed
+  case dataToStringConversionFailed
+  case invalidDigestSize(digestSize: Swift.Int, maxChunkSize: Swift.Int)
+  case signatureCreateFailed(status: Darwin.OSStatus)
+  case signatureVerifyFailed(status: Darwin.OSStatus)
+  case pemFileNotFound(name: Swift.String)
+  case derFileNotFound(name: Swift.String)
+  case notAPublicKey
+  case notAPrivateKey
+  case x509CertificateFailed
+}
+extension SSLCommerzSDK.SwiftyRSAError : Foundation.LocalizedError {
+  #if compiler(>=5.3) && $NonescapableTypes
+  public var errorDescription: Swift.String? {
+    get
+  }
+  #endif
+}
+public class PublicKey : SSLCommerzSDK.Key {
+  final public let reference: Security.SecKey
+  final public let originalData: Foundation.Data?
+  public func pemString() throws -> Swift.String
+  required public init(reference: Security.SecKey) throws
+  required public init(data: Foundation.Data) throws
+  public static func publicKeys(pemEncoded pemString: Swift.String) -> [SSLCommerzSDK.PublicKey]
+  @objc deinit
+}
+public class Signature {
+  public enum DigestType {
+    case sha1
+    case sha224
+    case sha256
+    case sha384
+    case sha512
+    public static func == (a: SSLCommerzSDK.Signature.DigestType, b: SSLCommerzSDK.Signature.DigestType) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  final public let data: Foundation.Data
+  public init(data: Foundation.Data)
+  convenience public init(base64Encoded base64String: Swift.String) throws
+  public var base64String: Swift.String {
+    get
+  }
+  @objc deinit
+}
+public typealias Padding = Security.SecPadding
+public enum SwiftyRSA {
+  @available(iOS 10.0, watchOS 3.0, tvOS 10.0, *)
+  public static func generateRSAKeyPair(sizeInBits size: Swift.Int) throws -> (privateKey: SSLCommerzSDK.PrivateKey, publicKey: SSLCommerzSDK.PublicKey)
+}
+@_hasMissingDesignatedInitializers @objc(KeyPair) public class _objc_KeyPair : ObjectiveC.NSObject {
+  @objc final public let privateKey: SSLCommerzSDK._objc_PrivateKey
+  @objc final public let publicKey: SSLCommerzSDK._objc_PublicKey
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc(SwiftyRSA) public class _objc_SwiftyRSA : ObjectiveC.NSObject {
+  @available(iOS 10.0, watchOS 3.0, tvOS 10.0, *)
+  @objc public class func generateRSAKeyPair(sizeInBits size: Swift.Int) throws -> SSLCommerzSDK._objc_KeyPair
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(PublicKey) public class _objc_PublicKey : ObjectiveC.NSObject, SSLCommerzSDK.Key {
+  @objc public var reference: Security.SecKey {
+    @objc get
+  }
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var originalData: Foundation.Data? {
+    @objc get
+  }
+  #endif
+  @objc public func pemString() throws -> Swift.String
+  @objc public func data() throws -> Foundation.Data
+  @objc public func base64String() throws -> Swift.String
+  required public init(swiftValue: SSLCommerzSDK.PublicKey)
+  @objc required public init(data: Foundation.Data) throws
+  @objc required public init(reference: Security.SecKey) throws
+  @objc required public init(base64Encoded base64String: Swift.String) throws
+  @objc required public init(pemEncoded pemString: Swift.String) throws
+  @objc required public init(pemNamed pemName: Swift.String, in bundle: Foundation.Bundle) throws
+  @objc required public init(derNamed derName: Swift.String, in bundle: Foundation.Bundle) throws
+  @objc public static func publicKeys(pemEncoded pemString: Swift.String) -> [SSLCommerzSDK._objc_PublicKey]
+  @objc deinit
+}
+@objc(PrivateKey) public class _objc_PrivateKey : ObjectiveC.NSObject, SSLCommerzSDK.Key {
+  @objc public var reference: Security.SecKey {
+    @objc get
+  }
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var originalData: Foundation.Data? {
+    @objc get
+  }
+  #endif
+  @objc public func pemString() throws -> Swift.String
+  @objc public func data() throws -> Foundation.Data
+  @objc public func base64String() throws -> Swift.String
+  required public init(swiftValue: SSLCommerzSDK.PrivateKey)
+  @objc required public init(data: Foundation.Data) throws
+  @objc required public init(reference: Security.SecKey) throws
+  @objc required public init(base64Encoded base64String: Swift.String) throws
+  @objc required public init(pemEncoded pemString: Swift.String) throws
+  @objc required public init(pemNamed pemName: Swift.String, in bundle: Foundation.Bundle) throws
+  @objc required public init(derNamed derName: Swift.String, in bundle: Foundation.Bundle) throws
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc(VerificationResult) public class _objc_VerificationResult : ObjectiveC.NSObject {
+  @objc final public let isSuccessful: Swift.Bool
+  @objc deinit
+}
+@objc(ClearMessage) public class _objc_ClearMessage : ObjectiveC.NSObject, SSLCommerzSDK.Message {
+  @objc public var base64String: Swift.String {
+    @objc get
+  }
+  @objc public var data: Foundation.Data {
+    @objc get
+  }
+  required public init(swiftValue: SSLCommerzSDK.ClearMessage)
+  @objc required public init(data: Foundation.Data)
+  @objc required public init(string: Swift.String, using rawEncoding: Swift.UInt) throws
+  @objc required public init(base64Encoded base64String: Swift.String) throws
+  @objc public func string(encoding rawEncoding: Swift.UInt) throws -> Swift.String
+  @objc public func encrypted(with key: SSLCommerzSDK._objc_PublicKey, padding: SSLCommerzSDK.Padding) throws -> SSLCommerzSDK._objc_EncryptedMessage
+  @objc public func signed(with key: SSLCommerzSDK._objc_PrivateKey, digestType: SSLCommerzSDK._objc_Signature.DigestType) throws -> SSLCommerzSDK._objc_Signature
+  @objc public func verify(with key: SSLCommerzSDK._objc_PublicKey, signature: SSLCommerzSDK._objc_Signature, digestType: SSLCommerzSDK._objc_Signature.DigestType) throws -> SSLCommerzSDK._objc_VerificationResult
+  @objc deinit
+}
+@objc(EncryptedMessage) public class _objc_EncryptedMessage : ObjectiveC.NSObject, SSLCommerzSDK.Message {
+  @objc public var base64String: Swift.String {
+    @objc get
+  }
+  @objc public var data: Foundation.Data {
+    @objc get
+  }
+  required public init(swiftValue: SSLCommerzSDK.EncryptedMessage)
+  @objc required public init(data: Foundation.Data)
+  @objc required public init(base64Encoded base64String: Swift.String) throws
+  @objc public func decrypted(with key: SSLCommerzSDK._objc_PrivateKey, padding: SSLCommerzSDK.Padding) throws -> SSLCommerzSDK._objc_ClearMessage
+  @objc deinit
+}
+@objc(Signature) public class _objc_Signature : ObjectiveC.NSObject {
+  @objc public enum DigestType : Swift.Int {
+    case sha1
+    case sha224
+    case sha256
+    case sha384
+    case sha512
+    #if compiler(>=5.3) && $NonescapableTypes
+    public init?(rawValue: Swift.Int)
+    #endif
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public var base64String: Swift.String {
+    @objc get
+  }
+  @objc public var data: Foundation.Data {
+    @objc get
+  }
+  required public init(swiftValue: SSLCommerzSDK.Signature)
+  @objc public init(data: Foundation.Data)
+  @objc required public init(base64Encoded base64String: Swift.String) throws
+  @objc deinit
+}
+public class EncryptedMessage : SSLCommerzSDK.Message {
+  final public let data: Foundation.Data
+  required public init(data: Foundation.Data)
+  public func decrypted(with key: SSLCommerzSDK.PrivateKey, padding: SSLCommerzSDK.Padding) throws -> SSLCommerzSDK.ClearMessage
+  @objc deinit
+}
+public protocol Message {
+  var data: Foundation.Data { get }
+  var base64String: Swift.String { get }
+  init(data: Foundation.Data)
+  init(base64Encoded base64String: Swift.String) throws
+}
+extension SSLCommerzSDK.Message {
+  public var base64String: Swift.String {
+    get
+  }
+  public init(base64Encoded base64String: Swift.String) throws
+}
+extension Foundation.Data {
+  public func prependx509Header() -> Foundation.Data
+  public func hasX509Header() throws -> Swift.Bool
+  public func isAnHeaderlessKey() throws -> Swift.Bool
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class TransactionDetails : ObjectiveC.NSObject {
+  @objc public var status: Swift.String? {
+    get
+  }
+  @objc public var sessionkey: Swift.String? {
+    get
+  }
+  @objc public var tran_date: Swift.String? {
+    get
+  }
+  @objc public var tran_id: Swift.String? {
+    get
+  }
+  @objc public var val_id: Swift.String? {
+    get
+  }
+  @objc public var amount: Swift.String? {
+    get
+  }
+  @objc public var store_amount: Swift.String? {
+    get
+  }
+  @objc public var bank_tran_id: Swift.String? {
+    get
+  }
+  @objc public var card_type: Swift.String? {
+    get
+  }
+  @objc public var card_no: Swift.String? {
+    get
+  }
+  @objc public var card_issuer: Swift.String? {
+    get
+  }
+  @objc public var card_brand: Swift.String? {
+    get
+  }
+  @objc public var card_issuer_country: Swift.String? {
+    get
+  }
+  @objc public var card_issuer_country_code: Swift.String? {
+    get
+  }
+  @objc public var currency_type: Swift.String? {
+    get
+  }
+  @objc public var currency_amount: Swift.String? {
+    get
+  }
+  @objc public var currency_rate: Swift.String? {
+    get
+  }
+  @objc public var base_fair: Swift.String? {
+    get
+  }
+  @objc public var value_a: Swift.String? {
+    get
+  }
+  @objc public var value_b: Swift.String? {
+    get
+  }
+  @objc public var value_c: Swift.String? {
+    get
+  }
+  @objc public var value_d: Swift.String? {
+    get
+  }
+  @objc public var risk_title: Swift.String? {
+    get
+  }
+  @objc public var risk_level: Swift.String? {
+    get
+  }
+  @objc public var apiConnect: Swift.String? {
+    get
+  }
+  @objc public var validated_on: Swift.String? {
+    get
+  }
+  @objc public var gw_version: Swift.String? {
+    get
+  }
+  @objc deinit
+}
+extension SSLCommerzSDK.SSLBorderSide : Swift.Equatable {}
+extension SSLCommerzSDK.SSLBorderSide : Swift.Hashable {}
+extension SSLCommerzSDK.EMIOptions : Swift.Equatable {}
+extension SSLCommerzSDK.EMIOptions : Swift.Hashable {}
+extension SSLCommerzSDK.EMIOptions : Swift.RawRepresentable {}
+extension SSLCommerzSDK.OfferOptions : Swift.Equatable {}
+extension SSLCommerzSDK.OfferOptions : Swift.Hashable {}
+extension SSLCommerzSDK.OfferOptions : Swift.RawRepresentable {}
+extension SSLCommerzSDK.SDKLanguage : Swift.Equatable {}
+extension SSLCommerzSDK.SDKLanguage : Swift.Hashable {}
+extension SSLCommerzSDK.Signature.DigestType : Swift.Equatable {}
+extension SSLCommerzSDK.Signature.DigestType : Swift.Hashable {}
+extension SSLCommerzSDK._objc_Signature.DigestType : Swift.Equatable {}
+extension SSLCommerzSDK._objc_Signature.DigestType : Swift.Hashable {}
+extension SSLCommerzSDK._objc_Signature.DigestType : Swift.RawRepresentable {}

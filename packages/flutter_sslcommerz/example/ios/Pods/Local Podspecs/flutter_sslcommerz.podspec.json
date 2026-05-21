@@ -1,0 +1,30 @@
+{
+  "name": "flutter_sslcommerz",
+  "version": "3.0.0",
+  "summary": "SSLCommerz is the largest payment gateway of Bangladesh.",
+  "description": "This is the official SSLCommerz flutter plugin for Flutter application integration.",
+  "homepage": "http://example.com",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "SSL Wireless": "abu.sayed@sslwireless.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "dependencies": {
+    "Flutter": [],
+    "SSLCommerzSDK": []
+  },
+  "platforms": {
+    "ios": "13.0"
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES",
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "i386"
+  },
+  "swift_versions": "5.0",
+  "swift_version": "5.0"
+}

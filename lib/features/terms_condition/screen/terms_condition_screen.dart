@@ -131,6 +131,12 @@ class TermsConditionScreen extends StatelessWidget {
                           margin: Margins(bottom: Margin(4.h)),
                         ),
                         "br": Style(display: Display.none),
+                        "hr": Style(
+                          margin: Margins(
+                            top: Margin(16.h),
+                            bottom: Margin(16.h),
+                          ),
+                        ),
                       },
                     ),
                   ],

@@ -36,7 +36,7 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
             android:supportsPictureInPicture="true"
-            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
             android:turnScreenOn="true">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user

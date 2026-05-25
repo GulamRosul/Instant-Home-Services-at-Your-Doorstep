@@ -570,6 +570,16 @@ class UserHomeController extends GetxController {
     }
   }
 
+  Future<void> refreshAllData() async {
+    await Future.wait([
+      fetchProfileData(),
+      fetchBanners(),
+      fetchHomeServices(),
+      fetchCategories(),
+      fetchRecommendedExperts(),
+    ]);
+  }
+
   @override
   void onClose() {
     _stopBannerAutoScroll();

@@ -29,7 +29,8 @@ class AppDeviceUtility {
 
   static void setFullScreen(bool enable) {
     SystemChrome.setEnabledSystemUIMode(
-        enable ? SystemUiMode.immersiveSticky : SystemUiMode.edgeToEdge);
+      enable ? SystemUiMode.immersiveSticky : SystemUiMode.edgeToEdge,
+    );
   }
 
   static double getScreenHeight() {
@@ -77,7 +78,8 @@ class AppDeviceUtility {
   }
 
   static Future<void> setPreferredOrientations(
-      List<DeviceOrientation> orientations) async {
+    List<DeviceOrientation> orientations,
+  ) async {
     await SystemChrome.setPreferredOrientations(orientations);
   }
 
@@ -86,8 +88,10 @@ class AppDeviceUtility {
   }
 
   static void showStatusBar() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
+    );
   }
 
   static Future<bool> hasInternetConnection() async {
@@ -107,11 +111,37 @@ class AppDeviceUtility {
     return Platform.isAndroid;
   }
 
-  static void launchUrl(String url) async {
-    if (await canLaunchUrlString(url)) {
-      await launchUrlString(url);
-    } else {
-      throw 'Could not launch $url';
+  static Future<void> launchUrl(String url) async {
+    try {
+      if (url.isEmpty) {
+        debugPrint('URL is empty');
+        return;
+      }
+
+      String urlToLaunch = url;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        urlToLaunch = 'https://$url';
+      }
+
+      if (await canLaunchUrlString(urlToLaunch)) {
+        await launchUrlString(urlToLaunch);
+      } else {
+        debugPrint('Could not launch URL: $urlToLaunch');
+        Get.snackbar(
+          'Error',
+          'Could not open link. Please check your browser settings.',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 2),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error launching URL: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to open link',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 2),
+      );
     }
   }
 }

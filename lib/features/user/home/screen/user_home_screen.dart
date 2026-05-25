@@ -84,96 +84,99 @@ class UserHomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 8.h),
-              _buildSearchBar(),
-              SizedBox(height: 20.h),
-              _buildPromoBanner(controller),
-              SizedBox(height: 24.h),
-              _buildSectionHeader(
-                'all_categories'.tr,
-                onSeeAllTap: () {
-                  Get.to(() => const AvailableCategoryScreen());
-                },
-              ),
-              // SizedBox(height: 16.h),
-              Obx(() => _buildCategoryGrid(controller)),
-              SizedBox(height: 24.h),
-              _buildSectionHeader(
-                'popular_services'.tr,
-                onSeeAllTap: () {
-                  Get.to(
-                    () => GenericListingScreen<HomeJobModel>(
-                      title: 'popular_services'.tr,
-                      type: ListingType.popularServices,
-                      initialItems: controller.popularServices,
-                      fetchFunction: controller.fetchPopularServices,
-                      itemBuilder: (service) => _buildServiceCard(service),
+      body: RefreshIndicator(
+        onRefresh: controller.refreshAllData,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 8.h),
+                _buildSearchBar(),
+                SizedBox(height: 20.h),
+                _buildPromoBanner(controller),
+                SizedBox(height: 24.h),
+                _buildSectionHeader(
+                  'all_categories'.tr,
+                  onSeeAllTap: () {
+                    Get.to(() => const AvailableCategoryScreen());
+                  },
+                ),
+                SizedBox(height: 16.h),
+                Obx(() => _buildCategoryGrid(controller)),
+                SizedBox(height: 24.h),
+                _buildSectionHeader(
+                  'popular_services'.tr,
+                  onSeeAllTap: () {
+                    Get.to(
+                      () => GenericListingScreen<HomeJobModel>(
+                        title: 'popular_services'.tr,
+                        type: ListingType.popularServices,
+                        initialItems: controller.popularServices,
+                        fetchFunction: controller.fetchPopularServices,
+                        itemBuilder: (service) => _buildServiceCard(service),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: 16.h),
+                Obx(
+                  () => _buildSectionBody(
+                    isLoading: controller.isServicesLoading.value,
+                    errorMessage: controller.servicesErrorMessage.value,
+                    isEmpty: controller.popularServices.isEmpty,
+                    child: _buildServiceHorizontalList(
+                      controller.popularServices,
                     ),
-                  );
-                },
-              ),
-              SizedBox(height: 16.h),
-              Obx(
-                () => _buildSectionBody(
-                  isLoading: controller.isServicesLoading.value,
-                  errorMessage: controller.servicesErrorMessage.value,
-                  isEmpty: controller.popularServices.isEmpty,
-                  child: _buildServiceHorizontalList(
-                    controller.popularServices,
+                    shimmerChild: _buildServiceShimmerLoader(),
                   ),
-                  shimmerChild: _buildServiceShimmerLoader(),
                 ),
-              ),
-              SizedBox(height: 24.h),
-              _buildSectionHeader(
-                'recommended_experts'.tr,
-                onSeeAllTap: () {
-                  Get.to(
-                    () => GenericListingScreen<ExpertRecommendationModel>(
-                      title: 'recommended_experts'.tr,
-                      type: ListingType.recommendedExperts,
-                      initialItems: controller.recommendedExperts,
-                      fetchFunction: controller.fetchAllExperts,
-                      itemBuilder: (expert) => _buildExpertItem(expert),
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: 16.h),
-              _buildExpertCard(controller),
-              SizedBox(height: 24.h),
-              _buildSectionHeader(
-                'all_services'.tr,
-                onSeeAllTap: () {
-                  Get.to(
-                    () => GenericListingScreen<HomeJobModel>(
-                      title: 'all_services'.tr,
-                      type: ListingType.allServices,
-                      initialItems: controller.allServices,
-                      fetchFunction: controller.fetchAllServices,
-                      itemBuilder: (service) => _buildServiceCard(service),
-                    ),
-                  );
-                },
-              ),
-              Obx(
-                () => _buildSectionBody(
-                  isLoading: controller.isServicesLoading.value,
-                  errorMessage: controller.servicesErrorMessage.value,
-                  isEmpty: controller.allServices.isEmpty,
-                  child: _buildServiceGrid(controller.allServices),
-                  shimmerChild: _buildServiceGridShimmerLoader(),
+                SizedBox(height: 24.h),
+                _buildSectionHeader(
+                  'recommended_experts'.tr,
+                  onSeeAllTap: () {
+                    Get.to(
+                      () => GenericListingScreen<ExpertRecommendationModel>(
+                        title: 'recommended_experts'.tr,
+                        type: ListingType.recommendedExperts,
+                        initialItems: controller.recommendedExperts,
+                        fetchFunction: controller.fetchAllExperts,
+                        itemBuilder: (expert) => _buildExpertItem(expert),
+                      ),
+                    );
+                  },
                 ),
-              ),
-              SizedBox(height: 110.h), // Space for floating nav bar
-            ],
+                SizedBox(height: 16.h),
+                _buildExpertCard(controller),
+                SizedBox(height: 24.h),
+                _buildSectionHeader(
+                  'all_services'.tr,
+                  onSeeAllTap: () {
+                    Get.to(
+                      () => GenericListingScreen<HomeJobModel>(
+                        title: 'all_services'.tr,
+                        type: ListingType.allServices,
+                        initialItems: controller.allServices,
+                        fetchFunction: controller.fetchAllServices,
+                        itemBuilder: (service) => _buildServiceCard(service),
+                      ),
+                    );
+                  },
+                ),
+                Obx(
+                  () => _buildSectionBody(
+                    isLoading: controller.isServicesLoading.value,
+                    errorMessage: controller.servicesErrorMessage.value,
+                    isEmpty: controller.allServices.isEmpty,
+                    child: _buildServiceGrid(controller.allServices),
+                    shimmerChild: _buildServiceGridShimmerLoader(),
+                  ),
+                ),
+                SizedBox(height: 110.h), // Space for floating nav bar
+              ],
+            ),
           ),
         ),
       ),
@@ -276,7 +279,7 @@ class UserHomeScreen extends StatelessWidget {
   }
 
   Widget _buildPromoBanner(UserHomeController controller) {
-    final bannerHeight = 140.h;
+    final bannerHeight = 110.h;
 
     return Obx(() {
       if (controller.isBannerLoading.value) {
@@ -337,8 +340,13 @@ class UserHomeScreen extends StatelessWidget {
     final imageUrl = banner.image.trim();
     final link = banner.link.trim();
 
+    // 320:50 = 6.4:1 aspect ratio
+    const double bannerAspectRatio = 320 / 50;
+
     return GestureDetector(
-      onTap: link.isNotEmpty ? () => AppDeviceUtility.launchUrl(link) : null,
+      onTap: link.isNotEmpty
+          ? () async => await AppDeviceUtility.launchUrl(link)
+          : null,
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.symmetric(horizontal: 2.w),
@@ -348,63 +356,91 @@ class UserHomeScreen extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16.r),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              imageUrl.isNotEmpty
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _buildBannerImageFallback(),
-                    )
-                  : _buildBannerImageFallback(),
-              // Gradient for text readability
-              // Container(
-              //   decoration: BoxDecoration(
-              //     gradient: LinearGradient(
-              //       colors: [
-              //         Colors.black.withValues(alpha: 0.6),
-              //         Colors.transparent,
-              //       ],
-              //       begin: Alignment.centerLeft,
-              //       end: Alignment.centerRight,
-              //     ),
-              //   ),
-              // ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      title.isNotEmpty ? '' : 'Best Handyman Service',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: getTextStyle(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                        lineHeight: 20.sp,
+          child: AspectRatio(
+            aspectRatio: bannerAspectRatio, // ✅ 320x50 ratio maintain করবে
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Background image — যেকোনো size হলেও 320:50 box এ fit হবে
+                if (imageUrl.isNotEmpty)
+                  Image.network(
+                    imageUrl,
+                    fit: BoxFit
+                        .fill, // ✅ image crop না করে পুরো area তে show করবে
+                    width: double.infinity,
+                    height: double.infinity,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return _buildBannerImageFallback();
+                    },
+                    errorBuilder: (_, __, ___) => _buildBannerImageFallback(),
+                  )
+                else
+                  _buildBannerImageFallback(),
+
+                // Gradient overlay — text readable রাখবে যেকোনো image এর উপর
+                // Container(
+                //   decoration: BoxDecoration(
+                //     gradient: LinearGradient(
+                //       colors: [
+                //         Colors.black.withValues(alpha: 0.5),
+                //         Colors.transparent,
+                //       ],
+                //       begin: Alignment.centerLeft,
+                //       end: Alignment.centerRight,
+                //     ),
+                //   ),
+                // ),
+
+                // Text content — 320x50 এর জন্য compact padding
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 6.h,
+                  ),
+                  child: Row(
+                    // ✅ 320x50 banner এ Row layout বেশি মানানসই (height অনেক কম)
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (title.isNotEmpty)
+                              Text(
+                                title,
+                                maxLines: 1, // ✅ 50px height এ 1 line ই যথেষ্ট
+                                overflow: TextOverflow.ellipsis,
+                                style: getTextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11.sp,
+                                  fontWeight: FontWeight.w700,
+                                  lineHeight: 14.sp,
+                                ),
+                              ),
+                            if (title.isNotEmpty && description.isNotEmpty)
+                              SizedBox(height: 2.h),
+                            if (description.isNotEmpty)
+                              Text(
+                                description,
+                                maxLines: 1, // ✅ 50px height এ 1 line
+                                overflow: TextOverflow.ellipsis,
+                                style: getTextStyle(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  fontSize: 9.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      description.isNotEmpty
-                          ? ''
-                          : 'Trusted & Professional provider',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: getTextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -413,7 +449,7 @@ class UserHomeScreen extends StatelessWidget {
 
   Widget _buildBannerPlaceholder({required String message}) {
     return Container(
-      height: 140.h,
+      height: 110.h,
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(

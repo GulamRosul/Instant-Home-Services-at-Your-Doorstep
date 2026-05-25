@@ -483,6 +483,7 @@ class CreateJobController extends GetxController {
         'basePrice': basePriceController.text.trim(),
         'priceType': priceType.value,
         'includeService': includedServices,
+        'status': 'ACTIVE',
         'image': await MultipartFile.fromFile(
           uploadedImagePath.value,
           filename: uploadedImagePath.value.split('/').last,
@@ -504,7 +505,7 @@ class CreateJobController extends GetxController {
       EasyLoading.dismiss();
 
       AppLoggerHelper.info(
-        'Create job response status: ${response.statusCode}',
+        'Create job response status: ${response.statusCode} ${response.data}',
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
@@ -864,9 +865,7 @@ class CreateJobController extends GetxController {
               ),
               SizedBox(height: 24.h),
               Text(
-                isUpdate
-                    ? 'job_updated'.tr
-                    : 'job_published'.tr,
+                isUpdate ? 'job_updated'.tr : 'job_published'.tr,
                 textAlign: TextAlign.center,
                 style: getTextStyle(
                   fontSize: 14.sp,

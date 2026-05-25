@@ -133,6 +133,12 @@ class PrivacyPolicyScreen extends StatelessWidget {
                           margin: Margins(bottom: Margin(4.h)),
                         ),
                         "br": Style(display: Display.none),
+                        "hr": Style(
+                          margin: Margins(
+                            top: Margin(16.h),
+                            bottom: Margin(16.h),
+                          ),
+                        ),
                       },
                     ),
                   ],
@@ -154,17 +160,34 @@ class PrivacyPolicyScreen extends StatelessWidget {
     // Remove <o:p> tags (MS Word artifacts)
     html = html.replaceAll(RegExp(r'<o:p[^>]*>.*?</o:p>', dotAll: true), '');
 
-    // Remove paragraphs that contain only &nbsp; or whitespace
-    html = html.replaceAll(
-      RegExp(
-        r'<p[^>]*>\s*(<b[^>]*>)?\s*(&nbsp;)?\s*(</b>)?\s*</p>',
-        dotAll: true,
-      ),
-      '',
-    );
+    // Remove <br> and replace &nbsp; with a standard space
+    html = html.replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '');
+    html = html.replaceAll('&nbsp;', ' ');
 
-    // Remove standalone <br> tags
-    html = html.replaceAll(RegExp(r'<br\s*/?>'), '');
+    // Replace newlines and carriage returns with spaces to prevent empty text node height issues
+    html = html.replaceAll('\n', ' ');
+    html = html.replaceAll('\r', ' ');
+
+    // Remove alignment attributes that can cause flutter_html to expand views incorrectly
+    html = html.replaceAll(RegExp(r'\salign="[^"]*"', caseSensitive: false), '');
+
+    // Strip all attributes from <hr> to prevent massive height bugs (e.g., size="2" misinterpreted)
+    html = html.replaceAll(RegExp(r'<hr[^>]*>', caseSensitive: false), '<hr>');
+
+    // Iteratively remove completely empty structural tags
+    bool changed = true;
+    while (changed) {
+      String newHtml = html
+          .replaceAll(RegExp(r'<p[^>]*>\s*</p>', caseSensitive: false), '')
+          .replaceAll(RegExp(r'<div[^>]*>\s*</div>', caseSensitive: false), '')
+          .replaceAll(RegExp(r'<ul[^>]*>\s*</ul>', caseSensitive: false), '')
+          .replaceAll(RegExp(r'<li[^>]*>\s*</li>', caseSensitive: false), '')
+          .replaceAll(RegExp(r'<span[^>]*>\s*</span>', caseSensitive: false), '');
+      if (newHtml == html) {
+        changed = false;
+      }
+      html = newHtml;
+    }
 
     return html;
   }

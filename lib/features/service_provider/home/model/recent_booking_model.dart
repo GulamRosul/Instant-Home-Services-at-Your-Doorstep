@@ -18,6 +18,7 @@ class RecentBookingModel {
     required this.createdAt,
     required this.clientId,
     required this.providerId,
+    this.jobThumbnail,
   });
 
   final String id;
@@ -38,6 +39,7 @@ class RecentBookingModel {
   final DateTime? createdAt;
   final String? clientId;
   final String? providerId;
+  final String? jobThumbnail;
 
   factory RecentBookingModel.fromJson(Map<String, dynamic> json) {
     return RecentBookingModel(
@@ -60,6 +62,7 @@ class RecentBookingModel {
       createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
       clientId: json['clientId']?.toString(),
       providerId: json['providerId']?.toString(),
+      jobThumbnail: json['job']?['thumbnail']?.toString(),
     );
   }
 
@@ -82,6 +85,7 @@ class RecentBookingModel {
     DateTime? createdAt,
     String? clientId,
     String? providerId,
+    String? jobThumbnail,
   }) {
     return RecentBookingModel(
       id: id ?? this.id,
@@ -102,6 +106,7 @@ class RecentBookingModel {
       createdAt: createdAt ?? this.createdAt,
       clientId: clientId ?? this.clientId,
       providerId: providerId ?? this.providerId,
+      jobThumbnail: jobThumbnail ?? this.jobThumbnail,
     );
   }
 }

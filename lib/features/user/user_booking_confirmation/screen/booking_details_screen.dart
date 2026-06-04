@@ -371,7 +371,7 @@ class BookingDetailsScreen extends StatelessWidget {
                     Row(
                       children: [
                         ...List.generate(
-                          5,
+                          service?.averageRating.round() ?? 0,
                           (i) => Icon(
                             Icons.star,
                             color: Colors.orange,
@@ -382,14 +382,14 @@ class BookingDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text(
-                  " 4.8 (170 Reviews)",
-                  style: getTextStyle(
-                    fontSize: 11.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+                // Text(
+                //   "",
+                //   style: getTextStyle(
+                //     fontSize: 11.sp,
+                //     color: Colors.black,
+                //     fontWeight: FontWeight.w400,
+                //   ),
+                // ),
               ],
             ),
           ),

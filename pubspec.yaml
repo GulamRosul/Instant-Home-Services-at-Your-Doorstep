@@ -52,6 +52,7 @@ dependencies:
   json_annotation: ^4.9.0
   build_runner: ^2.4.13
   json_serializable: ^6.9.0
+  pub_semver: ^2.1.4
   flutter_svg: ^2.2.3
   image_picker: ^1.2.1
   flutter_map: ^8.2.2
@@ -74,6 +75,8 @@ dependencies:
   wakelock_plus: ^1.2.4
   flutter_sslcommerz: ^3.0.2
   flutter_html: ^3.0.0
+  flutter_launcher_icons: ^0.14.4
+  package_info_plus: ^8.3.1
 
 dev_dependencies:
   flutter_test:
@@ -143,3 +146,8 @@ flutter:
           weight: 600
         - asset: assets/fonts/Geist-Bold.ttf
           weight: 700
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"

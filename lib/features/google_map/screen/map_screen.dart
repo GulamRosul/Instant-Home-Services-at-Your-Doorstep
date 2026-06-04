@@ -861,7 +861,7 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        '${controller.personCost.value}',
+                        controller.personCost.value,
                         style: getTextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w700,

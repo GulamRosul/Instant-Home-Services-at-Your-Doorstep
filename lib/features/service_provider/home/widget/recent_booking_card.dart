@@ -27,12 +27,27 @@ class RecentBookingCard extends StatelessWidget {
           // Service Image
           ClipRRect(
             borderRadius: BorderRadius.circular(3.r),
-            child: Image.asset(
-              ImagePath.servicecard,
-              width: 50.w,
-              height: 50.w,
-              fit: BoxFit.cover,
-            ),
+            child: booking.jobThumbnail != null
+                ? Image.network(
+                    booking.jobThumbnail!,
+                    width: 50.w,
+                    height: 50.w,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        ImagePath.servicecard,
+                        width: 50.w,
+                        height: 50.w,
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  )
+                : Image.asset(
+                    ImagePath.servicecard,
+                    width: 50.w,
+                    height: 50.w,
+                    fit: BoxFit.cover,
+                  ),
           ),
           SizedBox(width: 12.w),
 

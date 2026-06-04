@@ -5,15 +5,13 @@ class ApiEndpoints {
   //     'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
   // static const String baseUrl = 'https://protiva-backend-ukw2.onrender.com/api/v1';
   // static const String baseUrl = 'http://13.60.247.63/api/v1';
-    static const String baseUrl = 'https://api.kaajbd.com.bd/api/v1';
-  // static const String baseUrl =
-  //     'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
+  // static const String baseUrl = 'https://api.kaajbd.com.bd/api/v1';
+  static const String baseUrl =
+      'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
 
   /// Socket.IO Server URL (same host as API)
-  static const String socketMessageUrl =
-      'https://api.kaajbd.com.bd/messaging';
-  static const String socketTrackingUrl =
-      'https://api.kaajbd.com.bd/tracking';
+  static const String socketMessageUrl = '$baseUrl/messaging';
+  static const String socketTrackingUrl = '$baseUrl/tracking';
 
   //authentication
   static const String register = '/auth/register';
@@ -104,4 +102,10 @@ class ApiEndpoints {
 
   //reviews
   static String postReview = '/review/give-review';
+
+  //calls
+  static const String callInvite = '/calls/invite';
+
+  //version check
+  static const String versionCheck = '/app-version-config/find';
 }

@@ -21,13 +21,46 @@ class ServiceDetailsStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Category Section
-        Text(
-          'category'.tr,
-          style: getTextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF2D2D2D),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'category'.tr,
+              style: getTextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF2D2D2D),
+              ),
+            ),
+            Obx(
+              () => GestureDetector(
+                onTap: controller.isCategoriesLoading.value
+                    ? null
+                    : () => controller.fetchCategories(),
+                child: Container(
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: controller.isCategoriesLoading.value
+                        ? Colors.grey.shade200
+                        : Color(0xFF7079F0),
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: controller.isCategoriesLoading.value
+                      ? SizedBox(
+                          width: 16.w,
+                          height: 16.w,
+                          child: const CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.grey,
+                            ),
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Icon(Icons.refresh, size: 18.w, color: Colors.white),
+                ),
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 12.h),
         Obx(() {
@@ -104,13 +137,52 @@ class ServiceDetailsStep extends StatelessWidget {
         SizedBox(height: 24.h),
 
         // Sub-Category Section
-        Text(
-          'sub_category'.tr,
-          style: getTextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF2D2D2D),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'sub_category'.tr,
+              style: getTextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF2D2D2D),
+              ),
+            ),
+            Obx(() => GestureDetector(
+              onTap: (controller.selectedCategoryId.value.isEmpty ||
+                      controller.isSubCategoriesLoading.value)
+                  ? null
+                  : () => controller.fetchSubCategories(
+                      controller.selectedCategoryId.value),
+              child: Container(
+                padding: EdgeInsets.all(8.w),
+                decoration: BoxDecoration(
+                  color: (controller.selectedCategoryId.value.isEmpty ||
+                          controller.isSubCategoriesLoading.value)
+                      ? Colors.grey.shade200
+                      : Color(0xFF7079F0),
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
+                child: controller.isSubCategoriesLoading.value
+                    ? SizedBox(
+                      width: 16.w,
+                      height: 16.w,
+                      child: const CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.grey),
+                        strokeWidth: 2,
+                      ),
+                    )
+                    : Icon(
+                      Icons.refresh,
+                      size: 18.w,
+                      color: controller.selectedCategoryId.value.isEmpty
+                          ? Colors.grey.shade600
+                          : Colors.white,
+                    ),
+              ),
+            )),
+          ],
         ),
         SizedBox(height: 12.h),
         Obx(() {
@@ -526,7 +598,7 @@ class ServiceDetailsStep extends StatelessWidget {
               controller.addService();
               Get.back();
             },
-            child:  Text('add'.tr),
+            child: Text('add'.tr),
           ),
         ],
       ),

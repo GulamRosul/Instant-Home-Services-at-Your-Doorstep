@@ -61,6 +61,16 @@
         android:name="com.zegocloud.uikit.call.ZegoCallService"
         android:exported="false"
         android:foregroundServiceType="phoneCall|microphone|camera"/>
+
+
+        <receiver
+    android:name=".YourCustomBroadcastReceiver"
+    android:enabled="true"
+    android:exported="false">
+    <intent-filter>
+        <action android:name="com.zegocloud.zegouikit.call.fcm" />
+    </intent-filter>
+</receiver>
         
     </application>
     <!-- Required to query activities that can process text, see:

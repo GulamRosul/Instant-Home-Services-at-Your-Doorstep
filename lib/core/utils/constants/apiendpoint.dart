@@ -5,9 +5,9 @@ class ApiEndpoints {
   //     'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
   // static const String baseUrl = 'https://protiva-backend-ukw2.onrender.com/api/v1';
   // static const String baseUrl = 'http://13.60.247.63/api/v1';
-  // static const String baseUrl = 'https://api.kaajbd.com.bd/api/v1';
-  static const String baseUrl =
-      'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
+  static const String baseUrl = 'https://api.kaajbd.com.bd/api/v1';
+  // static const String baseUrl =
+  //     'https://cf8pq2hd-30011.asse.devtunnels.ms/api/v1';
 
   /// Socket.IO Server URL (same host as API)
   static const String socketMessageUrl = '$baseUrl/messaging';

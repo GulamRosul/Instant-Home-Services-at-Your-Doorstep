@@ -159,24 +159,24 @@ class VersionCheckController extends GetxController {
         backgroundColor: Colors.white,
 
         title: Text(
-          'Exit App',
+          'exit_app'.tr,
           style: getTextStyle(
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black87,
           ),
         ),
-        content: Text('This update is required. Close the app?', 
+        content: Text('this_update_is_required'.tr, 
           style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             color: Colors.black54,),),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Cancel', style: getTextStyle(
+          TextButton(onPressed: () => Get.back(), child: Text('cancel'.tr, style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black87,),)),
-          TextButton(onPressed: () => _exitApp(), child: Text('Exit', style: getTextStyle(
+          TextButton(onPressed: () => _exitApp(), child: Text('exit'.tr, style: getTextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black87,),)),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
@@ -51,7 +52,7 @@ class VersionCheckDialogue extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
             Text(
-              isForceUpdate ? 'Update Required' : 'Update Available',
+              isForceUpdate ? 'update_required'.tr : 'update_available'.tr,
               style: getTextStyle(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w700,
@@ -60,7 +61,7 @@ class VersionCheckDialogue extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Current: v$currentVersion | Latest: v$latestVersion',
+              '${'current'.tr}: v$currentVersion | ${'latest'.tr}: v$latestVersion',
               textAlign: TextAlign.center,
               style: getTextStyle(
                 fontSize: 13.sp,
@@ -71,8 +72,8 @@ class VersionCheckDialogue extends StatelessWidget {
             SizedBox(height: 16.h),
             Text(
               isForceUpdate
-                  ? 'A critical update is available. Please update to continue using the app.'
-                  : 'A new version is available with improvements and bug fixes.',
+                  ? 'critical_update_available'.tr
+                  : 'new_version_available'.tr,
               textAlign: TextAlign.center,
               style: getTextStyle(
                 fontSize: 14.sp,
@@ -83,7 +84,7 @@ class VersionCheckDialogue extends StatelessWidget {
             ),
             SizedBox(height: 32.h),
             CustomButton(
-              text: 'Update Now',
+              text: 'update_now'.tr,
               backgroundColor: AppColors.primary,
               textColor: Colors.white,
               borderRadius: 8.r,
@@ -103,7 +104,7 @@ class VersionCheckDialogue extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
-                  isForceUpdate ? 'Close App' : 'Later',
+                  isForceUpdate ? 'close_app'.tr : 'later'.tr,
                   style: getTextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,

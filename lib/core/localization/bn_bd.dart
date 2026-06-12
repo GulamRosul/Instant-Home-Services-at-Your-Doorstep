@@ -183,5 +183,19 @@ const Map<String, String> bnBD = {
   'location_permission_permanently_denied': 'অবস্থান অনুমতি স্থায়ভাবে অস্বীকার করা হয়েছে। চালিয়ে যেতে সেটিংস খুলুন।',
   'selected_location': 'নির্বাচিত স্থান',
   'user_location': 'ব্যবহারকারীর অবস্থান',
+
+    //update check dialogue
+  'update_required': 'আপডেট প্রয়োজন',
+  'update_available': 'আপডেট উপলব্ধ',
+  'current': 'বর্তমান',
+  'latest': 'সবচেয়ে নতুন',
+  'critical_update_available': 'একটি গুরুত্বপূর্ণ আপডেট উপলব্ধ আছে। অ্যাপটি ব্যবহার চালিয়ে যেতে অনুগ্রহ করে আপডেট করুন।',
+  'new_version_available': 'উন্নতি ও ত্রুটি সংশোধন সহ একটি নতুন সংস্করণ উপলব্ধ আছে।',
+   'update_now': 'এখন আপডেট করুন',
+  'later': 'পরে',
+  'close_app': 'অ্যাপ বন্ধ করুন',
+  'exit_app': 'অ্যাপ থেকে বেরিয়ে যান',
+  'this_update_is_required': 'এই আপডেটটি প্রয়োজন। অ্যাপটি বন্ধ করবেন?',
+  'exit': 'বেরিয়ে যান',
 };
 

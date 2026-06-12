@@ -183,11 +183,20 @@ const Map<String, String> enUS = {
   'location_permission_permanently_denied': 'Location permission is permanently denied. Open settings to continue.',
   'selected_location': 'Selected location',
   'user_location': 'User location',
-  // '': '',
-  // '': '',
-  // '': '',
-  
 
+  //update check dialogue
+  'update_required': 'Update Required',
+  'update_available': 'Update Available',
+  'current': 'Current',
+  'latest': 'Latest',
+  'critical_update_available': 'A critical update is available. Please update to continue using the app.',
+  'new_version_available': 'A new version is available with improvements and bug fixes.',
+  'update_now': 'Update Now',
+  'later': 'Later',
+  'close_app': 'Close App',
+  'exit_app': 'Exit App',
+  'this_update_is_required': 'This update is required. Close the app?',
+  'exit': 'Exit',
 
   
 };

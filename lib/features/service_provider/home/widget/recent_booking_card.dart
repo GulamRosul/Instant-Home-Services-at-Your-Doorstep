@@ -121,15 +121,15 @@ class RecentBookingCard extends StatelessWidget {
                 /// Rating Row
                 Row(
                   children: [
-                    ...List.generate(
-                      5,
-                      (index) => Icon(
-                        Icons.star_rounded,
-                        color: Color(0xFFFF8113),
-                        size: 12.sp,
-                      ),
-                    ),
-                    SizedBox(width: 4.w),
+                    // ...List.generate(
+                    //   5,
+                    //   (index) => Icon(
+                    //     Icons.star_rounded,
+                    //     color: Color(0xFFFF8113),
+                    //     size: 12.sp,
+                    //   ),
+                    // ),
+                    // SizedBox(width: 4.w),
                     Expanded(
                       child: Text(
                         booking.preferredTime.isNotEmpty

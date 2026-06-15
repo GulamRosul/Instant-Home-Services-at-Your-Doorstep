@@ -4,13 +4,15 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/common/widgets/custom_button.dart';
+import 'package:protiva502/core/services/booking_id_service.dart';
 import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
 
 class ProviderBookingDetailsScreen extends StatelessWidget {
-  const ProviderBookingDetailsScreen({super.key});
+   ProviderBookingDetailsScreen({super.key});
+  final bookingIdService = BookingIdService();
 
-  @override
+  @override 
   Widget build(BuildContext context) {
     final RecentBookingModel booking = Get.arguments as RecentBookingModel;
     final controller = Get.find<BookingController>();
@@ -38,16 +40,39 @@ class ProviderBookingDetailsScreen extends StatelessWidget {
                           color: Colors.black,
                         ),
                       ),
-                      Text(
-                        '${'booking_id'.tr} : ${booking.id}',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: getTextStyle(
-                          fontSize: 12.sp,
-                          color: const Color(0xFF334155),
-                          fontWeight: FontWeight.w500,
+                      Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${'booking_id'.tr}: ${bookingIdService.getTrimmedBookingId(booking.id)}',
+                            style: getTextStyle(
+                              fontSize: 12.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
-                      ),
+
+                        /// Copy Icon with ✔ feedback
+                        ValueListenableBuilder<bool>(
+                          valueListenable: bookingIdService.isCopied,
+                          builder: (context, copied, _) {
+                            return GestureDetector(
+                              onTap: () =>
+                                  bookingIdService.copyBookingId(booking.id),
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 6.w),
+                                child: Icon(
+                                  copied ? Icons.check_circle : Icons.copy,
+                                  size: 16.sp,
+                                  color: copied ? Colors.green : Colors.grey,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                     ],
                   ),
                 ),

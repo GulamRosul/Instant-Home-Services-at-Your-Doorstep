@@ -3,9 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/core/common/styles/global_text_style.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
+import 'package:protiva502/features/service_provider/booking/controller/booking_controller.dart';
 import 'package:protiva502/features/service_provider/home/controller/provider_home_controller.dart';
 import 'package:protiva502/features/service_provider/home/model/recent_booking_model.dart';
-import 'package:protiva502/features/user/provoder_details/screen/provoder_details_screen.dart';
+import 'package:protiva502/routes/app_routes.dart';
 
 class RecentBookingCard extends StatelessWidget {
   const RecentBookingCard({super.key, required this.booking});
@@ -145,10 +146,13 @@ class RecentBookingCard extends StatelessWidget {
                     Spacer(),
                     GestureDetector(
                       onTap: () {
-                        Get.to(
-                          () => ProviderDetailsScreen(
-                            providerId: booking.providerId ?? '',
-                          ),
+                        if (!Get.isRegistered<BookingController>()) {
+                          Get.put(BookingController());
+                        }
+
+                        Get.toNamed(
+                          AppRoute.providerBookingDetails,
+                          arguments: booking,
                         );
                       },
                       child: Text(

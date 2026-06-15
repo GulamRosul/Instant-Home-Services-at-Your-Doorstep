@@ -182,6 +182,8 @@ class PaymentController extends GetxController {
         data: request.toJson(),
       );
 
+      debugPrint('   Payment Initiation Response: ${response.data}');
+
       if ((response.statusCode == 201 || response.statusCode == 200) &&
           response.data['data'] != null) {
         return PaymentInitiateResponse.fromJson(response.data['data']);
@@ -227,7 +229,7 @@ class PaymentController extends GetxController {
 
       SSLCTransactionInfoModel result = await sslcommerz.payNow();
 
-      debugPrint('💳 Payment Result:');
+      debugPrint('   Payment Result:');
       debugPrint('   Status: ${result.status}');
       debugPrint('   Amount: ${result.amount}');
       debugPrint('   TranID: ${result.tranId}');
@@ -312,7 +314,7 @@ class PaymentController extends GetxController {
     String transactionId,
   ) async {
     try {
-      debugPrint('❌ Payment Failed: ${result.status}');
+      debugPrint('   Payment Failed: ${result.status}');
       debugPrint('   Risk Title: ${result.riskTitle}');
       debugPrint('   Amount: ${result.amount}');
       debugPrint('   Card Brand: ${result.cardBrand}');

@@ -377,7 +377,7 @@ class AppRoute {
     ),
     GetPage(
       name: providerBookingDetails,
-      page: () => const ProviderBookingDetailsScreen(),
+      page: () =>  ProviderBookingDetailsScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

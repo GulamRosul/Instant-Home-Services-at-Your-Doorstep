@@ -87,6 +87,7 @@ class CallService {
       userID: normalizedUserId,
       userName: userName.trim().isEmpty ? 'User' : userName,
       plugins: [ZegoUIKitSignalingPlugin()],
+      // resourceID: 'Zego_Call',
 
       notificationConfig: ZegoCallInvitationNotificationConfig(
         androidNotificationConfig: ZegoCallAndroidNotificationConfig(
@@ -100,6 +101,7 @@ class CallService {
         ),
         iOSNotificationConfig: ZegoCallIOSNotificationConfig(
           systemCallingIconName: "CallKitDefaultIcon",
+          isSandboxEnvironment: true,
         ),
       ),
 
@@ -184,6 +186,7 @@ class CallService {
         callID: callID,
         notificationTitle: 'Incoming call',
         notificationMessage: '$callerName is calling you',
+        resourceID: 'Zego_Call',
       );
     } catch (e) {
       AppLoggerHelper.error('Error starting audio call: $e');

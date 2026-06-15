@@ -10,8 +10,8 @@ class ApiEndpoints {
   //     'https://cf8pq2hd-30011.asse.devtunnels.ms/api/v1';
 
   /// Socket.IO Server URL (same host as API)
-  static const String socketMessageUrl = '$baseUrl/messaging';
-  static const String socketTrackingUrl = '$baseUrl/tracking';
+  static const String socketMessageUrl = 'https://api.kaajbd.com.bd/messaging';
+  static const String socketTrackingUrl = 'https://api.kaajbd.com.bd/tracking';
 
   //authentication
   static const String register = '/auth/register';

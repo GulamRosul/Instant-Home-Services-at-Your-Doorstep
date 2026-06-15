@@ -33,15 +33,15 @@ class BookingController extends GetxController {
     final rejectedCount = bookings
         .where((b) => statusLabelOf(b) == 'Rejected')
         .length;
-    final inProgressCount = bookings
-        .where((b) => statusLabelOf(b) == 'In-Progress')
+    final completedCount = bookings
+        .where((b) => statusLabelOf(b) == 'Completed')
         .length;
 
     return [
       '${'pending'.tr} (${pendingCount.toString().padLeft(2, '0')})',
       '${'accepted'.tr} (${acceptedCount.toString().padLeft(2, '0')})',
       '${'rejected'.tr} (${rejectedCount.toString().padLeft(2, '0')})',
-      '${'in_progress'.tr} (${inProgressCount.toString().padLeft(2, '0')})',
+      '${'completed'.tr} (${completedCount.toString().padLeft(2, '0')})',
     ];
   }
 
@@ -58,7 +58,7 @@ class BookingController extends GetxController {
         status = 'Rejected';
         break;
       case 3:
-        status = 'In-Progress';
+        status = 'Completed';
         break;
     }
 
@@ -72,14 +72,14 @@ class BookingController extends GetxController {
     final acceptedCount = bookings
         .where((b) => statusLabelOf(b) == 'Accepted')
         .length;
-    final inProgressCount = bookings
-        .where((b) => statusLabelOf(b) == 'In-Progress')
+    final completedCount = bookings
+        .where((b) => statusLabelOf(b) == 'Completed')
         .length;
     final totalRevenue = bookings
         .where(
           (b) =>
-              statusLabelOf(b) == 'Accepted' ||
-              statusLabelOf(b) == 'In-Progress',
+              // statusLabelOf(b) == 'Accepted' ||
+              statusLabelOf(b) == 'Completed',
         )
         .fold<double>(0.0, (sum, b) => sum + b.serviceAmount);
 
@@ -95,7 +95,7 @@ class BookingController extends GetxController {
         'icon': 'confirmed',
       },
       {
-        'value': inProgressCount.toString().padLeft(2, '0'),
+        'value': completedCount.toString().padLeft(2, '0'),
         'label': 'completed_service'.tr,
         'icon': 'star',
       },
@@ -212,8 +212,8 @@ class BookingController extends GetxController {
       case 'REJECTED':
         return 'Rejected';
       case 'IN_PROGRESS':
-      case 'IN-PROGRESS':
-        return 'In-Progress';
+      case 'COMPLETED':
+        return 'Completed';
       default:
         return booking.status.isEmpty ? 'Pending' : booking.status;
     }

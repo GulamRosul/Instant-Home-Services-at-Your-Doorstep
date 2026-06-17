@@ -211,7 +211,8 @@ class BookingDetailsScreen extends StatelessWidget {
                             style: getTextStyle(
                               fontSize: 12.sp,
                               color: Colors.blue,
-                              decoration: TextDecoration.underline,
+                              // decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],

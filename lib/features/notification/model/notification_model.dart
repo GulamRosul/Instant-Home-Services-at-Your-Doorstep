@@ -32,9 +32,11 @@ class NotificationModel {
       message: json['message'] as String,
       data: json['data'],
       isRead: json['isRead'] as bool,
-      readAt: json['readAt'] != null ? DateTime.parse(json['readAt']) : null,
       actionUrl: json['actionUrl'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      readAt: json['readAt'] != null
+          ? DateTime.parse(json['readAt']).toLocal()
+          : null,
+      createdAt: DateTime.parse(json['createdAt'] as String).toLocal(),
     );
   }
 

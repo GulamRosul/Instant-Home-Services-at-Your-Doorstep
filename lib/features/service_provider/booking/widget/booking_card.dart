@@ -71,15 +71,39 @@ class BookingCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.r),
-                child: Image.asset(
-                  ImagePath.servicecard,
-                  width: 70.w,
-                  height: 70.h,
-                  fit: BoxFit.cover,
-                ),
-              ),
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(8.r),
+              //   child: Image.asset(
+              //     ImagePath.servicecard,
+              //     width: 70.w,
+              //     height: 70.h,
+              //     fit: BoxFit.cover,
+              //   ),
+              // ),
+                        ClipRRect(
+            borderRadius: BorderRadius.circular(3.r),
+            child: booking.jobThumbnail != null
+                ? Image.network(
+                    booking.jobThumbnail!,
+                    width: 60.w,
+                    height: 60.w,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        ImagePath.servicecard,
+                        width: 60.w,
+                        height: 60.w,
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  )
+                : Image.asset(
+                    ImagePath.servicecard,
+                    width: 60.w,
+                    height: 60.w,
+                    fit: BoxFit.cover,
+                  ),
+          ),
               SizedBox(width: 12.w),
               Expanded(
                 child: Column(

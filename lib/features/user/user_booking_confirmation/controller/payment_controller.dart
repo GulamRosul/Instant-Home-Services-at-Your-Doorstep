@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter_sslcommerz/sslcommerz.dart';
 import 'package:flutter_sslcommerz/model/SSLCTransactionInfoModel.dart';
@@ -23,6 +24,7 @@ class PaymentController extends GetxController {
   var isApplyingCoupon = false.obs;
   var selectedCoupon = Rxn<CouponResponse>();
   var discountedAmount = 0.0.obs;
+  final RxBool isTermsAccepted = false.obs;
 
   // Controllers
   final amountController = TextEditingController();
@@ -130,6 +132,15 @@ class PaymentController extends GetxController {
 
   // --- Payment SDK Logic ---
   Future<void> makePayment() async {
+    if (!isTermsAccepted.value) {
+      Get.snackbar(
+        'Terms Required',
+        'Please agree to the Terms & Conditions before proceeding.',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade800,
+      );
+      return;
+    }
     final amountValue = double.tryParse(amountController.text) ?? 0;
 
     if (bookingId.isEmpty || amountValue <= 0) {
@@ -182,7 +193,10 @@ class PaymentController extends GetxController {
         data: request.toJson(),
       );
 
-      debugPrint('   Payment Initiation Response: ${response.data}');
+      debugPrint(
+        '   Payment Initiation Response: '
+        '${_redactSensitivePaymentData(response.data)}',
+      );
 
       if ((response.statusCode == 201 || response.statusCode == 200) &&
           response.data['data'] != null) {
@@ -230,17 +244,26 @@ class PaymentController extends GetxController {
       SSLCTransactionInfoModel result = await sslcommerz.payNow();
 
       debugPrint('   Payment Result:');
+      debugPrint('   API Connect: ${result.aPIConnect}');
       debugPrint('   Status: ${result.status}');
       debugPrint('   Amount: ${result.amount}');
+      debugPrint('   Store Amount: ${result.storeAmount}');
+      debugPrint('   Currency: ${result.currencyType}');
       debugPrint('   TranID: ${result.tranId}');
       debugPrint('   ValID: ${result.valId}');
+      debugPrint('   Bank TranID: ${result.bankTranId}');
       debugPrint('   Risk: ${result.riskTitle}');
       debugPrint('   Card Brand: ${result.cardBrand}');
       debugPrint('   Card Issuer: ${result.cardIssuer}');
       debugPrint('   Card Type: ${result.cardType}');
 
+      final apiConnect = result.aPIConnect?.toLowerCase() ?? '';
       final status = result.status?.toLowerCase() ?? '';
-      if (status == 'success' || status == 'valid') {
+      if (apiConnect.isNotEmpty && apiConnect != 'done') {
+        _handlePaymentFailed(result, paymentData.transactionId);
+      } else if (status == 'success' ||
+          status == 'valid' ||
+          status == 'validated') {
         _handlePaymentSuccess(result, paymentData.transactionId);
       } else if (status == 'failed') {
         _handlePaymentFailed(result, paymentData.transactionId);
@@ -268,27 +291,61 @@ class PaymentController extends GetxController {
     try {
       debugPrint('Payment Success: ${result.status}');
 
-      final valId = result.valId ?? transactionId;
-      final confirmedAmount =
-          num.tryParse(result.amount ?? '') ??
-          (double.tryParse(amountController.text) ?? 0);
+      final valId = result.valId;
+      final sdkTranId = result.tranId;
+
+      if (valId == null || valId.trim().isEmpty) {
+        throw Exception('Missing SSLCommerz validation id');
+      }
+
+      if (sdkTranId == null || sdkTranId.trim().isEmpty) {
+        throw Exception('Missing SSLCommerz transaction id');
+      }
+
+      if (sdkTranId != transactionId) {
+        throw Exception('SSLCommerz transaction id mismatch');
+      }
 
       final confirmRequest = PaymentConfirmRequest(
+        bookingId: bookingId.value,
+        transactionId: transactionId,
         valId: valId,
-        tranId: transactionId,
-        amount: confirmedAmount,
+        amount:
+            double.tryParse(result.amount ?? '') ??
+            double.tryParse(amountController.text) ??
+            0.0,
+        platform: defaultTargetPlatform.name,
+        apiConnect: result.aPIConnect,
+        status: result.status,
+        sessionKey: result.sessionkey,
+        storeAmount: result.storeAmount,
+        currency: result.currencyType ?? 'BDT',
+        bankTranId: result.bankTranId,
+        cardType: result.cardType,
+        cardNo: result.cardNo,
+        cardIssuer: result.cardIssuer,
+        cardBrand: result.cardBrand,
+        cardIssuerCountry: result.cardIssuerCountry,
+        cardIssuerCountryCode: result.cardIssuerCountryCode,
+        tranDate: result.tranDate,
+        validatedOn: result.validatedOn,
+        gwVersion: result.gwVersion,
+        riskLevel: result.riskLevel,
+        riskTitle: result.riskTitle,
       );
 
+      debugPrint('📡 Confirm payload: ${confirmRequest.toJson()}');
       final confirmResponse = await _apiClient.post(
         ApiEndpoints.paymentConfirm,
         data: confirmRequest.toJson(),
       );
+      debugPrint('📡 Confirm status: ${confirmResponse.statusCode}');
+      debugPrint('📡 Confirm body: ${confirmResponse.data}');
 
       if (confirmResponse.statusCode == 200 ||
           confirmResponse.statusCode == 201) {
         _showSuccessDialog();
         Get.offAll(() => const MainNavigationScreen());
-        // Switch to bookings tab (index 1) after navigation
         WidgetsBinding.instance.addPostFrameCallback((_) {
           final navController = Get.find<BottomNavController>();
           navController.changeTab(1);
@@ -398,6 +455,26 @@ class PaymentController extends GetxController {
     Future.delayed(const Duration(seconds: 3), () {
       Get.offAll(() => const MainNavigationScreen());
     });
+  }
+
+  Object? _redactSensitivePaymentData(Object? value) {
+    if (value is Map) {
+      return value.map((key, data) {
+        final normalizedKey = key.toString().toLowerCase();
+        if (normalizedKey.contains('password') ||
+            normalizedKey.contains('passwd')) {
+          return MapEntry(key, '***');
+        }
+
+        return MapEntry(key, _redactSensitivePaymentData(data));
+      });
+    }
+
+    if (value is List) {
+      return value.map(_redactSensitivePaymentData).toList();
+    }
+
+    return value;
   }
 
   @override

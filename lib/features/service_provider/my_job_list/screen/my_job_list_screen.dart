@@ -232,12 +232,12 @@ class MyJobListScreen extends StatelessWidget {
                         ? Image.network(
                             item.thumbnail,
                             width: 60.w,
-                            height: 40.w,
+                            height: 60.w,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
                                 width: 60.w,
-                                height: 40.w,
+                                height: 60.w,
                                 color: Colors.grey[300],
                                 child: Icon(Icons.image_not_supported),
                               );
@@ -245,35 +245,35 @@ class MyJobListScreen extends StatelessWidget {
                           )
                         : Container(
                             width: 60.w,
-                            height: 40.w,
+                            height: 60.w,
                             color: Colors.grey[300],
                             child: Icon(Icons.image),
                           ),
                   ),
-                  SizedBox(height: 8.h),
-                  if (ratingValue > 0)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(IconPath.star, height: 14.h),
-                        Text(
-                          ' ${ratingValue.toStringAsFixed(1)} ',
-                          style: getTextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    )
-                  else
-                    Text(
-                      'no_rating'.tr,
-                      style: getTextStyle(
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey,
-                      ),
-                    ),
+                  // SizedBox(height: 8.h),
+                  // if (ratingValue > 0)
+                  //   Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       SvgPicture.asset(IconPath.star, height: 14.h),
+                  //       Text(
+                  //         ' ${ratingValue.toStringAsFixed(1)} ',
+                  //         style: getTextStyle(
+                  //           fontSize: 12.sp,
+                  //           fontWeight: FontWeight.w400,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   )
+                  // else
+                  //   Text(
+                  //     'no_rating'.tr,
+                  //     style: getTextStyle(
+                  //       fontSize: 10.sp,
+                  //       fontWeight: FontWeight.w400,
+                  //       color: Colors.grey,
+                  //     ),
+                  //   ),
                 ],
               ),
               SizedBox(width: 12.w),
@@ -408,30 +408,30 @@ class MyJobListScreen extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: _buildJobStat(
-                  Icons.visibility_outlined,
-                  "${item.views} ${'views'.tr}",
-                ),
-              ),
-              Flexible(
-                child: _buildJobStat(
-                  Icons.description_outlined,
-                  "${item.clicks} ${'clicks'.tr}",
-                ),
-              ),
-              Flexible(
-                child: _buildJobStat(
-                  Icons.calendar_month_outlined,
-                  "${item.totalBookings} ${'bookings'.tr}",
-                ),
-              ),
-            ],
-          ),
+          // SizedBox(height: 12.h),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Flexible(
+          //       child: _buildJobStat(
+          //         Icons.visibility_outlined,
+          //         "${item.views} ${'views'.tr}",
+          //       ),
+          //     ),
+          //     Flexible(
+          //       child: _buildJobStat(
+          //         Icons.description_outlined,
+          //         "${item.clicks} ${'clicks'.tr}",
+          //       ),
+          //     ),
+          //     Flexible(
+          //       child: _buildJobStat(
+          //         Icons.calendar_month_outlined,
+          //         "${item.totalBookings} ${'bookings'.tr}",
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );

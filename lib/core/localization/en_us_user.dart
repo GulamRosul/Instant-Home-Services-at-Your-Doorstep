@@ -143,7 +143,7 @@ const Map<String, String> enUSUser = {
   'message': 'Message',
   'add_short_description': 'Add short description..',
   'terms_of_service_agreement':
-      'By clicking "Go to checkout", you agree to our ',
+      'By clicking "Next", you agree to our ',
   'selected_service': 'Selected Service',
   'service_details': 'Service details',
 
@@ -182,6 +182,8 @@ const Map<String, String> enUSUser = {
   'enter_coupon_code': 'Enter coupon code',
   'payment_failed': 'Payment failed. Please try again.',
   'proceed_to_payment': 'Proceed to Payment',
+  'agree_to':'I agree to the ',
+  'refund_policy': 'Refund Policy',
 
   // Success Dialog
   'congratulations': 'Congratulations!',

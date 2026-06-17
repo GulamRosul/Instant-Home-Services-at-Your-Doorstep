@@ -35,35 +35,35 @@ class ActiveJobCard extends StatelessWidget {
                         ? Image.network(
                             job.thumbnail,
                             width: 60.w,
-                            height: 40.w,
+                            height: 60.w,
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Image.asset(
                               ImagePath.servicecard,
                               width: 60.w,
-                              height: 40.w,
+                              height: 60.w,
                               fit: BoxFit.cover,
                             ),
                           )
                         : Image.asset(
                             ImagePath.servicecard,
                             width: 60.w,
-                            height: 40.w,
+                            height: 60.w,
                             fit: BoxFit.cover,
                           ),
                   ),
                   SizedBox(height: 6.h),
-                  Row(
-                    children: [
-                      SvgPicture.asset(IconPath.star, height: 15),
-                      Text(
-                        ' ${job.averageRating.toStringAsFixed(1)} ',
-                        style: getTextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     SvgPicture.asset(IconPath.star, height: 15),
+                  //     Text(
+                  //       ' ${job.averageRating.toStringAsFixed(1)} ',
+                  //       style: getTextStyle(
+                  //         fontSize: 12.sp,
+                  //         fontWeight: FontWeight.w600,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
               SizedBox(width: 12.w),
@@ -142,30 +142,30 @@ class ActiveJobCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: _buildJobStat(
-                  Icons.visibility_outlined,
-                  "${job.views} views",
-                ),
-              ),
-              Flexible(
-                child: _buildJobStat(
-                  Icons.description_outlined,
-                  "${job.clicks} clicks",
-                ),
-              ),
-              Flexible(
-                child: _buildJobStat(
-                  Icons.calendar_month_outlined,
-                  "${job.totalBookings} bookings",
-                ),
-              ),
-            ],
-          ),
+          // SizedBox(height: 10.h),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Flexible(
+          //       child: _buildJobStat(
+          //         Icons.visibility_outlined,
+          //         "${job.views} views",
+          //       ),
+          //     ),
+          //     Flexible(
+          //       child: _buildJobStat(
+          //         Icons.description_outlined,
+          //         "${job.clicks} clicks",
+          //       ),
+          //     ),
+          //     Flexible(
+          //       child: _buildJobStat(
+          //         Icons.calendar_month_outlined,
+          //         "${job.totalBookings} bookings",
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );

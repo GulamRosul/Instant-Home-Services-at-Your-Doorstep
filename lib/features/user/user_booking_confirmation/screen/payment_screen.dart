@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ import 'package:protiva502/core/services/booking_id_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/controller/payment_controller.dart';
 import 'package:protiva502/features/user/user_booking_confirmation/widget/booking_step_progress.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PaymentScreen extends StatelessWidget {
   PaymentScreen({super.key});
@@ -21,42 +23,63 @@ class PaymentScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: 'book_service'.tr),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            SizedBox(height: 20.h),
-
-            // Custom Stepper
-            const BookingStepProgress(currentStep: 3),
-            SizedBox(height: 24.h),
-
-            // Payment Summary
-            _buildPaymentSummary(controller),
-            SizedBox(height: 30.h),
-
-            // Coupon Input
-            _buildCouponInput(controller),
-            SizedBox(height: 30.h),
-
-            // Checkout Button
-            Obx(
-              () => CustomButton(
-                text: controller.isPaymentProcessing.value
-                    ? 'processing'.tr
-                    : 'proceed_to_payment'.tr,
-                onPressed: controller.isPaymentProcessing.value
-                    ? null
-                    : controller.makePayment,
-                backgroundColor: const Color(0xFF1E293B),
-                textColor: Colors.white,
+      // ✅ Use Column to separate scrollable content from sticky bottom
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(),
+                  SizedBox(height: 20.h),
+                  const BookingStepProgress(currentStep: 3),
+                  SizedBox(height: 24.h),
+                  _buildPaymentSummary(controller),
+                  SizedBox(height: 30.h),
+                  _buildCouponInput(controller),
+                  SizedBox(height: 30.h),
+                ],
               ),
             ),
-            SizedBox(height: 50.h),
-          ],
-        ),
+          ),
+
+          // ✅ Sticky bottom area
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: Colors.grey.shade200)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Terms checkbox
+                _buildTermsCheckbox(controller),
+                SizedBox(height: 16.h),
+
+                // Payment button
+                Obx(
+                  () => CustomButton(
+                    text: controller.isPaymentProcessing.value
+                        ? 'processing'.tr
+                        : 'proceed_to_payment'.tr,
+                    onPressed:
+                        (controller.isPaymentProcessing.value ||
+                            !controller.isTermsAccepted.value)
+                        ? null
+                        : controller.makePayment,
+                    backgroundColor: controller.isTermsAccepted.value
+                        ? const Color(0xFF1E293B)
+                        : Colors.grey.shade400,
+                    textColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -98,7 +121,9 @@ class PaymentScreen extends StatelessWidget {
       ),
       child: Obx(
         () => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Booking ID row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -128,9 +153,7 @@ class PaymentScreen extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-
                     SizedBox(width: 6.w),
-
                     ValueListenableBuilder<bool>(
                       valueListenable: bookingIdService.isCopied,
                       builder: (context, copied, _) {
@@ -153,22 +176,63 @@ class PaymentScreen extends StatelessWidget {
             SizedBox(height: 12.h),
             Divider(color: Colors.grey.shade300),
             SizedBox(height: 12.h),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+            // Original price
+            _buildPriceRow(
+              label: 'Original Price',
+              value: '৳${controller.originalAmount.value.toStringAsFixed(2)}',
+              labelColor: Colors.grey.shade700,
+              valueColor: Colors.black,
+            ),
+
+            // Discount row — only show if coupon applied
+            if (controller.selectedCoupon.value != null) ...[
+              SizedBox(height: 8.h),
+              _buildPriceRow(
+                label:
+                    'Discount (${controller.selectedCoupon.value!.couponCode} · ${controller.selectedCoupon.value!.discountPercentage}%)',
+                value:
+                    '- ৳${((controller.originalAmount.value * controller.selectedCoupon.value!.discountPercentage) / 100).toStringAsFixed(2)}',
+                labelColor: Colors.green.shade700,
+                valueColor: Colors.green.shade700,
+                labelFontSize: 12.sp,
+              ),
+              SizedBox(height: 12.h),
+              Divider(color: Colors.grey.shade300),
+              SizedBox(height: 8.h),
+            ] else ...[
+              SizedBox(height: 12.h),
+              Divider(color: Colors.grey.shade300),
+              SizedBox(height: 8.h),
+            ],
+
+            // Total payable
+            // _buildPriceRow(
+            //   label: 'Total Payable',
+            //   value: '৳${controller.amountController.text}',
+            //   labelColor: Colors.black,
+            //   valueColor: AppColors.primary,
+            //   fontWeight: FontWeight.w700,
+            //   fontSize: 16.sp,
+            // ),
+            // Replace the static Total Payable row with this:
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "Total Amount:",
+                  'Total Payable',
                   style: getTextStyle(
                     fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 8.h),
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "৳",
+                      '৳',
                       style: getTextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
@@ -176,19 +240,20 @@ class PaymentScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 8.w),
-                    Expanded(
+                    SizedBox(
+                      width: 120.w, // ✅ fixed width so it doesn't overflow
                       child: CustomTextField(
                         controller: controller.amountController,
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        hintText: "Enter amount",
+                        hintText: '0.00',
                         backgroundColor: Colors.white,
                         borderColor: Colors.grey.shade300,
                         borderRadius: 8,
                         contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 10.h,
+                          horizontal: 10.w,
+                          vertical: 8.h,
                         ),
                       ),
                     ),
@@ -199,6 +264,39 @@ class PaymentScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  // Helper widget
+  Widget _buildPriceRow({
+    required String label,
+    required String value,
+    required Color labelColor,
+    required Color valueColor,
+    FontWeight fontWeight = FontWeight.w500,
+    double? fontSize,
+    double? labelFontSize,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: getTextStyle(
+            fontSize: labelFontSize ?? fontSize ?? 14.sp,
+            fontWeight: fontWeight,
+            color: labelColor,
+          ),
+        ),
+        Text(
+          value,
+          style: getTextStyle(
+            fontSize: fontSize ?? 14.sp,
+            fontWeight: fontWeight,
+            color: valueColor,
+          ),
+        ),
+      ],
     );
   }
 
@@ -248,57 +346,129 @@ class PaymentScreen extends StatelessWidget {
           ],
         ),
         // Show selected coupon info
-        Obx(() {
-          if (controller.selectedCoupon.value != null) {
-            final coupon = controller.selectedCoupon.value!;
-            final discount =
-                (controller.originalAmount.value * coupon.discountPercentage) /
-                100;
-            return Padding(
-              padding: EdgeInsets.only(top: 12.h),
-              child: Container(
-                padding: EdgeInsets.all(12.r),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade50,
-                  borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(color: Colors.green.shade300),
+        // Obx(() {
+        //   if (controller.selectedCoupon.value != null) {
+        //     final coupon = controller.selectedCoupon.value!;
+        //     final discount =
+        //         (controller.originalAmount.value * coupon.discountPercentage) /
+        //         100;
+        //     return Padding(
+        //       padding: EdgeInsets.only(top: 12.h),
+        //       child: Container(
+        //         padding: EdgeInsets.all(12.r),
+        //         decoration: BoxDecoration(
+        //           color: Colors.green.shade50,
+        //           borderRadius: BorderRadius.circular(8.r),
+        //           border: Border.all(color: Colors.green.shade300),
+        //         ),
+        //         child: Row(
+        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //           children: [
+        //             Column(
+        //               crossAxisAlignment: CrossAxisAlignment.start,
+        //               children: [
+        //                 Text(
+        //                   '✓ ${coupon.couponCode} Applied',
+        //                   style: getTextStyle(
+        //                     fontSize: 12.sp,
+        //                     fontWeight: FontWeight.w600,
+        //                     color: Colors.green.shade700,
+        //                   ),
+        //                 ),
+        //                 SizedBox(height: 4.h),
+        //                 Text(
+        //                   'Discount: ${coupon.discountPercentage}% (৳${discount.toStringAsFixed(2)})',
+        //                   style: getTextStyle(
+        //                     fontSize: 11.sp,
+        //                     color: Colors.green.shade600,
+        //                   ),
+        //                 ),
+        //               ],
+        //             ),
+        //             GestureDetector(
+        //               onTap: controller.removeCoupon,
+        //               child: Icon(Icons.close, size: 18.sp, color: Colors.red),
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //     );
+        //   }
+        //   return const SizedBox.shrink();
+        // }),
+      ],
+    );
+  }
+
+  Widget _buildTermsCheckbox(PaymentController controller) {
+    return Obx(
+      () => GestureDetector(
+        onTap: () => controller.isTermsAccepted.value =
+            !controller.isTermsAccepted.value,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 20.w,
+              height: 20.h,
+              child: Checkbox(
+                value: controller.isTermsAccepted.value,
+                onChanged: (val) =>
+                    controller.isTermsAccepted.value = val ?? false,
+                activeColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.r),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: getTextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey.shade600,
+                  ),
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '✓ ${coupon.couponCode} Applied',
-                          style: getTextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.green.shade700,
-                          ),
-                        ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          'Discount: ${coupon.discountPercentage}% (৳${discount.toStringAsFixed(2)})',
-                          style: getTextStyle(
-                            fontSize: 11.sp,
-                            color: Colors.green.shade600,
-                          ),
-                        ),
-                      ],
+                     TextSpan(text: 'agree_to'.tr),
+                    _linkSpan(
+                      'terms_conditions'.tr,
+                      'https://kaajbd.com.bd/about-us-2/terms-of-service/',
                     ),
-                    GestureDetector(
-                      onTap: controller.removeCoupon,
-                      child: Icon(Icons.close, size: 18.sp, color: Colors.red),
+                     TextSpan(text: ', '),
+                    _linkSpan(
+                      'privacy_policy'.tr,
+                      'https://kaajbd.com.bd/about-us-2/privacy-policy/',
                     ),
+                     TextSpan(text: ', ${'and'.tr} '),
+                    _linkSpan(
+                      'refund_policy'.tr,
+                      'https://kaajbd.com.bd/refund-policy/',
+                    ),
+                     TextSpan(text: '.'),
                   ],
                 ),
               ),
-            );
-          }
-          return const SizedBox.shrink();
-        }),
-      ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  TextSpan _linkSpan(String text, String url) {
+    return TextSpan(
+      text: text,
+      style: getTextStyle(
+        fontSize: 12.sp,
+        color: AppColors.primary,
+        fontWeight: FontWeight.w500,
+      ),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () =>
+            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
     );
   }
 }

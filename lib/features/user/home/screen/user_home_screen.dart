@@ -361,12 +361,11 @@ class UserHomeScreen extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Background image — যেকোনো size হলেও 320:50 box এ fit হবে
+                // Background image
                 if (imageUrl.isNotEmpty)
                   Image.network(
                     imageUrl,
-                    fit: BoxFit
-                        .fill, // ✅ image crop না করে পুরো area তে show করবে
+                    fit: BoxFit.fill,
                     width: double.infinity,
                     height: double.infinity,
                     loadingBuilder: (context, child, loadingProgress) {
@@ -378,7 +377,7 @@ class UserHomeScreen extends StatelessWidget {
                 else
                   _buildBannerImageFallback(),
 
-                // Gradient overlay — text readable রাখবে যেকোনো image এর উপর
+                // Gradient overlay
                 // Container(
                 //   decoration: BoxDecoration(
                 //     gradient: LinearGradient(
@@ -645,165 +644,180 @@ class UserHomeScreen extends StatelessWidget {
   }
 
   Widget _buildServiceCard(HomeJobModel service) {
-  return GestureDetector(
-    onTap: () {
-      Get.to(
-        () => const JobDetailsViewScreen(),
-        arguments: _mapHomeJobToJobModel(service),
-      );
-    },
-    child: Container(
-      margin: EdgeInsets.only(right: 8.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
+    return SizedBox(
+      width: 200.w,
+      child: GestureDetector(
+        onTap: () {
+          Get.to(
+            () => const JobDetailsViewScreen(),
+            arguments: _mapHomeJobToJobModel(service),
+          );
+        },
+        child: Container(
+          margin: EdgeInsets.only(right: 8.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min, // ← shrink-wraps to content
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-            child: service.thumbnail.isNotEmpty
-                ? Image.network(
-                    service.thumbnail,
-                    height: 95.h,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Image.asset(
-                      ImagePath.servicecard,
-                      height: 95.h,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                : Image.asset(
-                    ImagePath.servicecard,
-                    height: 95.h,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8.r),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min, // ← shrink-wraps to content
-              children: [
-                Text(
-                  service.title,
-                  style: getTextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                    lineHeight: 15.sp,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.to(
-                      () => ProviderDetailsScreen(providerId: service.userId),
-                    );
-                  },
-                  child: Text(
-                    service.userFirstName.isNotEmpty
-                        ? service.userFirstName
-                        : 'Service details',
-                    style: getTextStyle(
-                      fontSize: 10.sp,
-                      color: AppColors.textBlue,
-                      decorationColor: AppColors.textBlue,
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.w600,
-                      lineHeight: 15.sp,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.location_on, size: 10.sp, color: Colors.blue),
-                    Text(
-                      ' ${'remote_service'.tr}',
-                      style: getTextStyle(
-                        fontSize: 10.sp,
-                        color: AppColors.textSecondary,
-                        lineHeight: 18.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    ...List.generate(
-                      5,
-                      (i) => Icon(
-                        i < service.averageRating.round()
-                            ? Icons.star
-                            : Icons.star_border,
-                        color: Colors.orange,
-                        size: 10.sp,
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        " ${service.averageRating.toStringAsFixed(1)} (${service.totalBookings} ${'bookings_label'.tr})",
-                        style: getTextStyle(
-                          fontSize: 9.sp,
-                          color: AppColors.textSecondary,
-                          fontWeight: FontWeight.w500,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
+                child: service.thumbnail.isNotEmpty
+                    ? Image.network(
+                        service.thumbnail,
+                        height: 95.h,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Image.asset(
+                          ImagePath.servicecard,
+                          height: 95.h,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
                         ),
+                      )
+                    : Image.asset(
+                        ImagePath.servicecard,
+                        height: 95.h,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8.r),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      service.title,
+                      style: getTextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        lineHeight: 15.sp,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(
+                          () =>
+                              ProviderDetailsScreen(providerId: service.userId),
+                        );
+                      },
+                      child: Text(
+                        service.userFirstName.isNotEmpty
+                            ? service.userFirstName
+                            : 'Service details',
+                        style: getTextStyle(
+                          fontSize: 10.sp,
+                          color: AppColors.textBlue,
+                          decorationColor: AppColors.textBlue,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.w600,
+                          lineHeight: 15.sp,
+                        ),
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    Flexible(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            size: 10.sp,
+                            color: Colors.blue,
+                          ),
+                          Flexible(
+                            child: Text(
+                              ' ${'remote_service'.tr}',
+                              style: getTextStyle(
+                                fontSize: 10.sp,
+                                color: AppColors.textSecondary,
+                                lineHeight: 18.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      child: Row(
+                        children: [
+                          ...List.generate(
+                            5,
+                            (i) => Icon(
+                              i < service.averageRating.round()
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: Colors.orange,
+                              size: 10.sp,
+                            ),
+                          ),
+                          Flexible(
+                            child: Text(
+                              " ${service.averageRating.toStringAsFixed(1)} (${service.totalBookings} ${'bookings_label'.tr})",
+                              style: getTextStyle(
+                                fontSize: 9.sp,
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      '${'start_from'.tr} ${service.basePrice.toStringAsFixed(0)} ৳',
+                      style: getTextStyle(
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 6.h),
+                    CustomButton(
+                      text: 'book_now'.tr,
+                      height: 30.h,
+                      backgroundColor: AppColors.textPurple,
+                      borderRadius: 6.r,
+                      onPressed: () {
+                        if (!StorageService.isLoggedIn) {
+                          showLoginAlertDialog();
+                          return;
+                        }
+                        Get.to(
+                          () => const BookingDetailsScreen(),
+                          arguments: service,
+                        );
+                      },
+                      textColor: Colors.white,
+                    ),
                   ],
                 ),
-                Text(
-                  '${'start_from'.tr} ${service.basePrice.toStringAsFixed(0)} ৳',
-                  style: getTextStyle(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 6.h),
-                CustomButton(
-                  text: 'book_now'.tr,
-                  height: 30.h,
-                  backgroundColor: AppColors.textPurple,
-                  borderRadius: 6.r,
-                  onPressed: () {
-                    if (!StorageService.isLoggedIn) {
-                      showLoginAlertDialog();
-                      return;
-                    }
-                    Get.to(
-                      () => const BookingDetailsScreen(),
-                      arguments: service,
-                    );
-                  },
-                  textColor: Colors.white,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   JobModel _mapHomeJobToJobModel(HomeJobModel service) {
     return JobModel(

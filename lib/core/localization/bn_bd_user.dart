@@ -146,7 +146,7 @@ const Map<String, String> bnBDUser = {
   'location_details': 'অবস্থানের বিবরণ',
   'message': 'বার্তা',
   'add_short_description': 'সংক্ষিপ্ত বিবরণ যোগ করুন..',
-  'terms_of_service_agreement': 'চেকআউটে ক্লিক করে, আপনি আমাদের সম্মতি জানান ',
+  'terms_of_service_agreement': 'পরবর্তীতে ক্লিক করার মাধ্যমে, আপনি সম্মত হচ্ছেন ',
   'selected_service': 'নির্বাচিত সেবা',
   'service_details': 'সেবার বিবরণ',
 
@@ -183,6 +183,8 @@ const Map<String, String> bnBDUser = {
   'coupon_applied': 'কুপন সফলভাবে প্রয়োগ করা হয়েছে! নতুন মোট: ',
   'enter_coupon_code': 'কুপন কোড প্রবেশ করুন',
   'proceed_to_payment': 'পেমেন্টে প্রস্তুত হন',
+  'agree_to':'আমি সম্মত ',
+  'refund_policy': 'ফেরত নীতিতে',
 
   // Success Dialog
   'congratulations': 'অভিনন্দন!',

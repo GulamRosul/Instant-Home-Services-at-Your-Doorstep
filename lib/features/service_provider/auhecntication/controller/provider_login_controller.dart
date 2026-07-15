@@ -14,10 +14,11 @@ import 'package:protiva502/features/service_provider/provider_navber/screen/prov
 
 class ProviderLoginController extends GetxController {
   static const String _baseUrl = ApiEndpoints.baseUrl;
-      // 'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
-      // 'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
+  // 'https://x3081msx-3000.asse.devtunnels.ms/api/v1';
+  // 'https://1z13k3v3-3000.inc1.devtunnels.ms/api/v1';
   static const String _loginEndpoint = '$_baseUrl/auth/login';
   static const String _defaultDeviceId = '21';
+  static const String _expectedRole = 'provider';
 
   // Text Editing Controllers
   final userEmailController = TextEditingController();
@@ -116,6 +117,19 @@ class ProviderLoginController extends GetxController {
           // ... (existing success logic)
           final data = responseData?['data'] as Map<String, dynamic>?;
           final user = data?['user'] as Map<String, dynamic>?;
+          final role = user?['role']?.toString();
+
+          if (!_isExpectedRole(role)) {
+            debugPrint(
+              'Provider login role mismatch. Expected $_expectedRole but received $role',
+            );
+            Get.snackbar(
+              'error'.tr,
+              'provider_cannot_login_as_user'.tr,
+              snackPosition: SnackPosition.BOTTOM,
+            );
+            return;
+          }
 
           await StorageService.makeLoggedIn();
           await SecureStorageService.saveToken(
@@ -195,11 +209,8 @@ class ProviderLoginController extends GetxController {
     }
   }
 
-  String _extractMessage(Map<String, dynamic>? responseData) {
-    return responseData?['message']?.toString() ??
-        responseData?['data']?['message']?.toString() ??
-        responseData?['error']?.toString() ??
-        'Something went wrong';
+  bool _isExpectedRole(String? role) {
+    return role?.trim().toLowerCase() ==  _expectedRole.toLowerCase();
   }
 
   @override

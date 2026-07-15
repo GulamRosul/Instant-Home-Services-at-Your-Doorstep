@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/services.dart';
@@ -23,6 +24,10 @@ class SecureStorageService {
     return _readValue(_tokenKey);
   }
 
+  static Future<String?> getRefreshToken() async {
+    return _readValue(_refreshTokenKey);
+  }
+
   static Future<void> saveFcmToken(String token) async {
     await _writeValue(_fcmTokenKey, token);
   }
@@ -40,6 +45,56 @@ class SecureStorageService {
       log('Secure storage clear failed, using fallback storage: $error');
       await _clearFallbackStorage();
     }
+  }
+
+  static Future<bool> hasValidAccessToken() async {
+    final token = await getToken();
+
+    if (token == null || token.isEmpty) {
+      return false;
+    }
+
+    final expiry = _getTokenExpiry(token);
+    if (expiry == null) {
+      return false;
+    }
+
+    return expiry.isAfter(DateTime.now().toUtc());
+  }
+
+  static DateTime? _getTokenExpiry(String token) {
+    final parts = token.split('.');
+    if (parts.length != 3) return null;
+
+    try {
+      final payload = _decodeBase64Url(parts[1]);
+      final expMatch = RegExp(r'"exp"\s*:\s*(\d+)').firstMatch(payload);
+      if (expMatch == null) return null;
+
+      final expSeconds = int.tryParse(expMatch.group(1)!);
+      if (expSeconds == null) return null;
+
+      return DateTime.fromMillisecondsSinceEpoch(
+        expSeconds * 1000,
+        isUtc: true,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static String _decodeBase64Url(String input) {
+    var normalized = input.replaceAll('-', '+').replaceAll('_', '/');
+    switch (normalized.length % 4) {
+      case 2:
+        normalized += '==';
+        break;
+      case 3:
+        normalized += '=';
+        break;
+    }
+
+    return utf8.decode(base64Decode(normalized));
   }
 
   static Future<void> _writeValue(String key, String value) async {

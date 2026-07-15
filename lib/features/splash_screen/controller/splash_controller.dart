@@ -15,20 +15,32 @@ class SplashController extends GetxController {
     startTimer();
   }
 
-  void startTimer() {
-    Timer(const Duration(seconds: 3), () async {
-      await _versionCheckController.checkForUpdate();
+  // void startTimer() {
+  //   Timer(const Duration(seconds: 3), () async {
+  //     await _versionCheckController.checkForUpdate();
 
-      if (_versionCheckController.isBlockedByForceUpdate) {
-        return; // ❌ STOP navigation
-      }
+  //     if (_versionCheckController.isBlockedByForceUpdate) {
+  //       return; // ❌ STOP navigation
+  //     }
 
-      _navigateToNextScreen(); // ✅ only if safe
-    });
+  //     _navigateToNextScreen(); // ✅ only if safe
+  //   });
+  // }
+
+  void startTimer() async {
+    await Future.wait([
+      Future.delayed(const Duration(seconds: 3)),
+      _versionCheckController.checkForUpdate(),
+    ]);
+
+    if (_versionCheckController.isBlockedByForceUpdate) return;
+    await _navigateToNextScreen();
   }
 
-  void _navigateToNextScreen() {
-    if (StorageService.hasActiveSession()) {
+  Future<void> _navigateToNextScreen() async {
+    final hasValidToken = await StorageService.hasValidAccessToken();
+
+    if (hasValidToken && StorageService.hasActiveSession()) {
       final role = StorageService.getRole()?.toLowerCase() ?? '';
 
       if (role.contains('provider') || role.contains('service_provider')) {
@@ -40,6 +52,7 @@ class SplashController extends GetxController {
       return;
     }
 
+    await StorageService.makeLoggedOut();
     Get.offNamed(AppRoute.secondOnboardingScreen);
   }
 }

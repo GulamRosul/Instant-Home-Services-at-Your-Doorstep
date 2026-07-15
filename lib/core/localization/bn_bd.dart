@@ -3,8 +3,8 @@ const Map<String, String> bnBD = {
   'select_role': 'ভূমিকা নির্বাচন করুন',
   'select_role_subtitle':
       'আপনার ভূমিকা নির্বাচন করুন এবং প্রাসঙ্গিক বৈশিষ্ট্যগুলি আনলক করুন',
-  'sign_up_client': 'ক্লায়েন্ট হিসাবে সাইন আপ করুন',
-  'sign_up_provider': 'সেবা প্রদানকারী হিসাবে সাইন আপ করুন',
+  'sign_in_client': 'ক্লায়েন্ট হিসাবে সাইন ইন করুন',
+  'sign_in_provider': 'সেবা প্রদানকারী হিসাবে সাইন ইন করুন',
   'continue_as': 'এর মতো চালিয়ে যান',
   'guest': 'অতিথি',
 
@@ -25,7 +25,7 @@ const Map<String, String> bnBD = {
   'sign_in': 'সাইন ইন',
   'dont_have_account': 'অ্যাকাউন্ট নেই? ',
   'sign_up': 'সাইন আপ',
-    'verify_email': 'ইমেল যাচাই করুন',
+  'verify_email': 'ইমেল যাচাই করুন',
   'please_verify_your_email_first': 'আপনার ইমেল প্রথমে যাচাই করুন।',
   'verify_email_desc': 'আপনার ইমেল যাচাইয়ের জন্য আমরা একটি OTP পাঠাব।',
   'back_to_login': 'লগইনে ফিরে যান',
@@ -37,6 +37,10 @@ const Map<String, String> bnBD = {
   'password_wrong': 'আপনার পাসওয়ার্ড ভুল',
   'email_wrong': 'আপনার ইমেল ভুল',
   'fill_all_fields': 'সমস্ত ক্ষেত্র পূরণ করুন',
+  'user_cannot_login_as_provider':
+      'ব্যবহারকারী অ্যাকাউন্ট থেকে সেবা প্রদানকারী লগইনে সাইন ইন করা যাবে না।',
+  'provider_cannot_login_as_user':
+      'সেবা প্রদানকারী অ্যাকাউন্ট থেকে ব্যবহারকারী লগইনে সাইন ইন করা যাবে না।',
 
   // Forgot Password
   'reset_password': 'আপনার পাসওয়ার্ড রিসেট করুন',
@@ -110,7 +114,7 @@ const Map<String, String> bnBD = {
   'required_field': 'আবশ্যিক ক্ষেত্র',
   'save_changes': 'সংরক্ষণ করুন',
 
- //settings screen
+  //settings screen
   'change_password': 'পাসওয়ার্ড পরিবর্তন',
   'current_password': 'বর্তমান পাসওয়ার্ড',
   'new_password': 'নতুন পাসওয়ার্ড',
@@ -126,7 +130,7 @@ const Map<String, String> bnBD = {
   'new_password_length': 'নতুন পাসওয়ার্ড অবশ্যই 8টি অক্ষরের বেশি হতে হবে',
   'passwords_do_not_match': 'নতুন পাসওয়ার্ড এবং নিশ্চিতকরণ পাসওয়ার্ড মেলে না',
 
-   //social media screen
+  //social media screen
   'social_media': 'সোশ্যাল মিডিয়া',
   'facebook': 'ফেসবুক',
   'whatsapp': 'হোয়াটসঅ্যাপ',
@@ -136,7 +140,8 @@ const Map<String, String> bnBD = {
   'stay_updated': 'আপডেট থাকুন',
   'follow_us_on_social_media':
       'সোশ্যাল মিডিয়ায় আমাদের অনুসরণ করুন আপডেট, টিপস এবং এক্সক্লুসিভ কন্টেন্টের জন্য',
-  'join_our_community': 'আমাদের কমিউনিটিতে যোগ দিন এবং গুরুত্বপূর্ণ আপডেট, নতুন বৈশিষ্ট্য, এবং বিশেষ ঘোষণা হারাবেন না।',
+  'join_our_community':
+      'আমাদের কমিউনিটিতে যোগ দিন এবং গুরুত্বপূর্ণ আপডেট, নতুন বৈশিষ্ট্য, এবং বিশেষ ঘোষণা হারাবেন না।',
 
   //privacy policy screen
   'last_updated': 'শেষ আপডেট: ',
@@ -152,8 +157,7 @@ const Map<String, String> bnBD = {
   'views': 'দেখা',
   'clicks': 'ক্লিক',
 
-
-    //notifications
+  //notifications
   'clear_all': 'সব মুছে ফেলুন',
   'please_sign_in_to_view_notifications': 'নোটিফিকেশন দেখতে সাইন ইন করুন।',
   'no_notifications': 'নোটিফিকেশন পাওয়া যায়নি',
@@ -161,41 +165,49 @@ const Map<String, String> bnBD = {
   'today': 'আজ',
   'yesterday': 'গত',
 
-    //map screen
+  //map screen
   'pick_location': 'স্থান নির্বাচন করুন',
   'search_destination': 'গন্তব্য খুঁজুন',
   'track': 'ট্র্যাক করুন',
   'map_unavailable': 'Google Maps এখন উপলব্ধ নেই।',
-  'search_hint': 'আপনি এখনও উপরের স্থানটি খুঁজতে পারেন এবং এটি বুকিংয়ের জন্য ব্যবহার করা হবে।',
+  'search_hint':
+      'আপনি এখনও উপরের স্থানটি খুঁজতে পারেন এবং এটি বুকিংয়ের জন্য ব্যবহার করা হবে।',
   'search_hint_track': 'আপনি এখনও উপরের স্থানটি খুঁজতে পারেন।',
-  'map_tap_hint': 'মানচিত্রে ট্যাপ করুন বা একটি স্থান খুঁজুন যাতে আপনার বুকিংয়ের জন্য সেই অবস্থানটি ব্যবহার করা যায়।',
-  'route_ready': 'রুট প্রস্তুত। গন্তব্য পরিবর্তনের জন্য মানচিত্রের অন্যতম বিন্দুতে ট্যাপ করুন বা আবার খোঁজুন।',
-  'create_route_hint': 'রুট তৈরি করতে ম্যাপের যেকোনো জায়গায় ট্যাপ করুন অথবা কোনো জায়গা অনুসন্ধান করুন।',
+  'map_tap_hint':
+      'মানচিত্রে ট্যাপ করুন বা একটি স্থান খুঁজুন যাতে আপনার বুকিংয়ের জন্য সেই অবস্থানটি ব্যবহার করা যায়।',
+  'route_ready':
+      'রুট প্রস্তুত। গন্তব্য পরিবর্তনের জন্য মানচিত্রের অন্যতম বিন্দুতে ট্যাপ করুন বা আবার খোঁজুন।',
+  'create_route_hint':
+      'রুট তৈরি করতে ম্যাপের যেকোনো জায়গায় ট্যাপ করুন অথবা কোনো জায়গা অনুসন্ধান করুন।',
   'estimated_arrival': 'আনুমানিক আগমন',
-   'distance': 'দূরত্ব',
+  'distance': 'দূরত্ব',
   'service_cost': 'পরিষেবা খরচ',
   'estimated_earnings': 'আনুমানিক আয়',
   'call': 'কল',
   'message': 'বার্তা',
   'map_initialization_error': 'এই ডিভাইসে গুগল ম্যাপস চালু করা যায়নি।',
-  'location_services_off': 'অবস্থান পরিষেবাগুলি বন্ধ রয়েছে। অনুগ্রহ করে সেগুলি সক্ষম করুন এবং আবার চেষ্টা করুন।',
-  'location_permission_required': 'অবস্থান অনুমতি প্রয়োজন সেবা ঠিকানা নির্বাচন করতে।',
-  'location_permission_permanently_denied': 'অবস্থান অনুমতি স্থায়ভাবে অস্বীকার করা হয়েছে। চালিয়ে যেতে সেটিংস খুলুন।',
+  'location_services_off':
+      'অবস্থান পরিষেবাগুলি বন্ধ রয়েছে। অনুগ্রহ করে সেগুলি সক্ষম করুন এবং আবার চেষ্টা করুন।',
+  'location_permission_required':
+      'অবস্থান অনুমতি প্রয়োজন সেবা ঠিকানা নির্বাচন করতে।',
+  'location_permission_permanently_denied':
+      'অবস্থান অনুমতি স্থায়ভাবে অস্বীকার করা হয়েছে। চালিয়ে যেতে সেটিংস খুলুন।',
   'selected_location': 'নির্বাচিত স্থান',
   'user_location': 'ব্যবহারকারীর অবস্থান',
 
-    //update check dialogue
+  //update check dialogue
   'update_required': 'আপডেট প্রয়োজন',
   'update_available': 'আপডেট উপলব্ধ',
   'current': 'বর্তমান',
   'latest': 'সবচেয়ে নতুন',
-  'critical_update_available': 'একটি গুরুত্বপূর্ণ আপডেট উপলব্ধ আছে। অ্যাপটি ব্যবহার চালিয়ে যেতে অনুগ্রহ করে আপডেট করুন।',
-  'new_version_available': 'উন্নতি ও ত্রুটি সংশোধন সহ একটি নতুন সংস্করণ উপলব্ধ আছে।',
-   'update_now': 'এখন আপডেট করুন',
+  'critical_update_available':
+      'একটি গুরুত্বপূর্ণ আপডেট উপলব্ধ আছে। অ্যাপটি ব্যবহার চালিয়ে যেতে অনুগ্রহ করে আপডেট করুন।',
+  'new_version_available':
+      'উন্নতি ও ত্রুটি সংশোধন সহ একটি নতুন সংস্করণ উপলব্ধ আছে।',
+  'update_now': 'এখন আপডেট করুন',
   'later': 'পরে',
   'close_app': 'অ্যাপ বন্ধ করুন',
   'exit_app': 'অ্যাপ থেকে বেরিয়ে যান',
   'this_update_is_required': 'এই আপডেটটি প্রয়োজন। অ্যাপটি বন্ধ করবেন?',
   'exit': 'বেরিয়ে যান',
 };
-

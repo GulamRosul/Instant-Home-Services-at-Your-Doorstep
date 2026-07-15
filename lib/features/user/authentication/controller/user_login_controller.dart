@@ -12,6 +12,7 @@ import 'package:protiva502/features/notification/controller/notification_control
 
 class UserLoginController extends GetxController {
   final ApiClient _apiClient = ApiClient();
+  static const String _expectedRole = 'CLIENT';
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -148,6 +149,18 @@ class UserLoginController extends GetxController {
       debugPrint('👤 [LOGIN] Role: $role');
       debugPrint('👤 [LOGIN] Avatar: $avatar');
 
+      if (!_isExpectedRole(role)) {
+        debugPrint(
+          '❌ [LOGIN] Role mismatch. Expected $_expectedRole but received $role',
+        );
+        Get.snackbar(
+          'Access Restricted'.tr,
+          'provider_cannot_login_as_user'.tr,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
       await StorageService.makeLoggedIn();
       debugPrint('💾 [LOGIN] Marked as logged in');
 
@@ -218,6 +231,10 @@ class UserLoginController extends GetxController {
       isLoading.value = false;
       debugPrint('🏁 [LOGIN] Login process completed');
     }
+  }
+
+  bool _isExpectedRole(String? role) {
+    return role?.trim().toLowerCase() == _expectedRole.toLowerCase();
   }
 
   Future<void> sendOtp() async {

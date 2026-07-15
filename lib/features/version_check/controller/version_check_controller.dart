@@ -139,19 +139,21 @@ class VersionCheckController extends GetxController {
     );
   }
 
-  Future<void> _openAppStore() async {
-    final storeUrl = _getStoreUrl();
-    try {
-      if (await canLaunchUrl(Uri.parse(storeUrl!))) {
-        await launchUrl(
-          Uri.parse(storeUrl),
-          mode: LaunchMode.externalApplication,
-        );
-      }
-    } catch (e) {
-      debugPrint('Error opening app store: $e');
-    }
+Future<void> _openAppStore() async {
+  final storeUrl = _getStoreUrl();
+  if (storeUrl == null || storeUrl.isEmpty) {
+    debugPrint('Store URL is null');
+    return;
   }
+  try {
+    final uri = Uri.parse(storeUrl); // একবার parse করুন
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  } catch (e) {
+    debugPrint('Error opening app store: $e');
+  }
+}
 
   void _showExitConfirmation() {
     Get.dialog(
@@ -186,7 +188,11 @@ class VersionCheckController extends GetxController {
     );
   }
 
-  void _exitApp() {
+void _exitApp() {
+  if (Platform.isAndroid) {
     SystemNavigator.pop();
+  } else {
+    exit(0); // import 'dart:io'
   }
+}
 }

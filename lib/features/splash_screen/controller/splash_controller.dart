@@ -15,17 +15,27 @@ class SplashController extends GetxController {
     startTimer();
   }
 
-  void startTimer() {
-    Timer(const Duration(seconds: 3), () async {
-      await _versionCheckController.checkForUpdate();
+  // void startTimer() {
+  //   Timer(const Duration(seconds: 3), () async {
+  //     await _versionCheckController.checkForUpdate();
 
-      if (_versionCheckController.isBlockedByForceUpdate) {
-        return; // ❌ STOP navigation
-      }
+  //     if (_versionCheckController.isBlockedByForceUpdate) {
+  //       return; // ❌ STOP navigation
+  //     }
 
-      _navigateToNextScreen(); // ✅ only if safe
-    });
-  }
+  //     _navigateToNextScreen(); // ✅ only if safe
+  //   });
+  // }
+
+  void startTimer() async {
+  await Future.wait([
+    Future.delayed(const Duration(seconds: 3)),
+    _versionCheckController.checkForUpdate(),
+  ]);
+ 
+  if (_versionCheckController.isBlockedByForceUpdate) return;
+  _navigateToNextScreen();
+}
 
   void _navigateToNextScreen() {
     if (StorageService.hasActiveSession()) {

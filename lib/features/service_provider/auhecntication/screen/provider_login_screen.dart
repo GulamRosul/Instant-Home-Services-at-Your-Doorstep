@@ -124,27 +124,27 @@ class ProviderLoginScreen extends StatelessWidget {
                 textColor: Colors.white,
               ),
             ),
-            SizedBox(height: 24.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "dont_have_account".tr,
-                  style: getTextStyle(fontSize: 14.sp, color: Colors.black),
-                ),
-                GestureDetector(
-                  onTap: controller.navigateToSignUp,
-                  child: Text(
-                    "sign_up".tr,
-                    style: getTextStyle(
-                      fontSize: 14.sp,
-                      color: const Color(0xFF7079F0),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            // SizedBox(height: 24.h),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text(
+            //       "dont_have_account".tr,
+            //       style: getTextStyle(fontSize: 14.sp, color: Colors.black),
+            //     ),
+            //     GestureDetector(
+            //       onTap: controller.navigateToSignUp,
+            //       child: Text(
+            //         "sign_up".tr,
+            //         style: getTextStyle(
+            //           fontSize: 14.sp,
+            //           color: const Color(0xFF7079F0),
+            //           fontWeight: FontWeight.w600,
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             SizedBox(height: 40.h),
           ],
         ),

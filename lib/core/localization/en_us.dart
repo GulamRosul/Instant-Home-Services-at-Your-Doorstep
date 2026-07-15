@@ -3,8 +3,8 @@ const Map<String, String> enUS = {
   'select_role': 'Select Role',
   'select_role_subtitle':
       'Select your role to continue and unlock relevant features',
-  'sign_up_client': 'Sign Up to continue as a client',
-  'sign_up_provider': 'Sign Up to continue as Service Provider',
+  'sign_in_client': 'Sign In to continue as a client',
+  'sign_in_provider': 'Sign In to continue as Service Provider',
   'continue_as': 'Continue as',
   'guest': 'Guest',
 
@@ -37,7 +37,11 @@ const Map<String, String> enUS = {
   'password_wrong': 'Your password is wrong',
   'email_wrong': 'Your email is wrong',
   'fill_all_fields': 'Please fill in all fields',
-
+  'user_cannot_login_as_provider':
+      'User accounts cannot sign in from the service provider login.',
+  'provider_cannot_login_as_user':
+      'Service provider accounts cannot sign in from the user login.',
+  'access_restricted': 'Access Restricted',
   // Forgot Password
   'reset_password': 'Reset your password',
   'enter_email_otp': 'Enter your email address to receive an OTP code.',
@@ -136,7 +140,8 @@ const Map<String, String> enUS = {
   'stay_updated': 'Stay Updated',
   'follow_us_on_social_media':
       'Follow us on social media for updates, tips, and exclusive content',
-  'join_our_community': 'Join our community and never miss important updates, new features, and special announcements.',
+  'join_our_community':
+      'Join our community and never miss important updates, new features, and special announcements.',
 
   //privacy policy screen
   'last_updated': 'Last Updated: ',
@@ -152,10 +157,10 @@ const Map<String, String> enUS = {
   'views': 'Views',
   'clicks': 'Clicks',
 
-
   //notifications
   'clear_all': 'Clear All',
-  'please_sign_in_to_view_notifications': 'Please sign in to view your notifications.',
+  'please_sign_in_to_view_notifications':
+      'Please sign in to view your notifications.',
   'no_notifications': 'No Notifications Yet',
   'close': 'Close',
   'today': 'Today',
@@ -166,21 +171,29 @@ const Map<String, String> enUS = {
   'search_destination': 'Search destination',
   'track': 'Track',
   'map_unavailable': 'Google Maps is unavailable right now.',
-  'search_hint': 'You can still search for a location above and it will be used for the booking.',
+  'search_hint':
+      'You can still search for a location above and it will be used for the booking.',
   'search_hint_track': 'You can still search for a location above.',
-  'map_tap_hint': 'Tap on the map or search for a place to use that location in your booking.',
-  'route_ready': 'Route ready. Tap another point on the map or search again to change the destination.',
-  'create_route_hint': 'Tap anywhere on the map or search for a place to create a route.',
+  'map_tap_hint':
+      'Tap on the map or search for a place to use that location in your booking.',
+  'route_ready':
+      'Route ready. Tap another point on the map or search again to change the destination.',
+  'create_route_hint':
+      'Tap anywhere on the map or search for a place to create a route.',
   'estimated_arrival': 'Estimated Arrival',
-   'distance': 'Distance',
+  'distance': 'Distance',
   'service_cost': 'Service Cost',
   'estimated_earnings': 'Estimated Earnings',
   'call': 'Call',
   'message': 'Message',
-  'map_initialization_error': 'Google Maps could not be initialized on this device.',
-  'location_services_off': 'Location services are turned off. Please enable them and try again.',
-  'location_permission_required': 'Location permission is required to choose a service address.',
-  'location_permission_permanently_denied': 'Location permission is permanently denied. Open settings to continue.',
+  'map_initialization_error':
+      'Google Maps could not be initialized on this device.',
+  'location_services_off':
+      'Location services are turned off. Please enable them and try again.',
+  'location_permission_required':
+      'Location permission is required to choose a service address.',
+  'location_permission_permanently_denied':
+      'Location permission is permanently denied. Open settings to continue.',
   'selected_location': 'Selected location',
   'user_location': 'User location',
 
@@ -189,17 +202,14 @@ const Map<String, String> enUS = {
   'update_available': 'Update Available',
   'current': 'Current',
   'latest': 'Latest',
-  'critical_update_available': 'A critical update is available. Please update to continue using the app.',
-  'new_version_available': 'A new version is available with improvements and bug fixes.',
+  'critical_update_available':
+      'A critical update is available. Please update to continue using the app.',
+  'new_version_available':
+      'A new version is available with improvements and bug fixes.',
   'update_now': 'Update Now',
   'later': 'Later',
   'close_app': 'Close App',
   'exit_app': 'Exit App',
   'this_update_is_required': 'This update is required. Close the app?',
   'exit': 'Exit',
-
-  
-
-  
 };
-

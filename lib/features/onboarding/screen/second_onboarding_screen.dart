@@ -6,9 +6,9 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
-import 'package:protiva502/features/service_provider/auhecntication/screen/provider_registration_screen_01.dart';
+import 'package:protiva502/features/service_provider/auhecntication/screen/provider_login_screen.dart';
 import 'package:protiva502/features/onboarding/controller/language_controller.dart';
-import 'package:protiva502/features/user/authentication/screen/user_reg_screen.dart';
+import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 
 class SecondOnboardingScreen extends StatelessWidget {
   SecondOnboardingScreen({super.key});
@@ -144,12 +144,12 @@ class SecondOnboardingScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(left: 20.w, right: 20.w),
               child: CustomButton(
-                text: 'sign_up_client'.tr,
+                text: 'sign_in_client'.tr,
                 backgroundColor: Colors.white,
                 borderColor: Colors.black,
                 textColor: Colors.black,
                 onPressed: () {
-                  Get.to(() => UserRegScreen());
+                  Get.to(() => UserLoginScreen());
                 },
               ),
             ),
@@ -158,9 +158,9 @@ class SecondOnboardingScreen extends StatelessWidget {
               padding: EdgeInsets.only(left: 20.w, right: 20.w),
               child: CustomButton(
                 onPressed: () {
-                  Get.to(() => ProviderRegistrationScreen01());
+                  Get.to(() => ProviderLoginScreen());
                 },
-                text: 'sign_up_provider'.tr,
+                text: 'sign_in_provider'.tr,
                 backgroundColor: Colors.white,
                 borderColor: Colors.black,
                 textColor: Colors.black,

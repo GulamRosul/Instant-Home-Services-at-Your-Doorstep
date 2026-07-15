@@ -210,7 +210,7 @@ class ProviderLoginController extends GetxController {
   }
 
   bool _isExpectedRole(String? role) {
-    return role?.trim().toLowerCase() == _expectedRole;
+    return role?.trim().toLowerCase() ==  _expectedRole.toLowerCase();
   }
 
   @override

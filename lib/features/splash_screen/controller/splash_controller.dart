@@ -28,17 +28,19 @@ class SplashController extends GetxController {
   // }
 
   void startTimer() async {
-  await Future.wait([
-    Future.delayed(const Duration(seconds: 3)),
-    _versionCheckController.checkForUpdate(),
-  ]);
- 
-  if (_versionCheckController.isBlockedByForceUpdate) return;
-  _navigateToNextScreen();
-}
+    await Future.wait([
+      Future.delayed(const Duration(seconds: 3)),
+      _versionCheckController.checkForUpdate(),
+    ]);
 
-  void _navigateToNextScreen() {
-    if (StorageService.hasActiveSession()) {
+    if (_versionCheckController.isBlockedByForceUpdate) return;
+    await _navigateToNextScreen();
+  }
+
+  Future<void> _navigateToNextScreen() async {
+    final hasValidToken = await StorageService.hasValidAccessToken();
+
+    if (hasValidToken && StorageService.hasActiveSession()) {
       final role = StorageService.getRole()?.toLowerCase() ?? '';
 
       if (role.contains('provider') || role.contains('service_provider')) {
@@ -50,6 +52,7 @@ class SplashController extends GetxController {
       return;
     }
 
+    await StorageService.makeLoggedOut();
     Get.offNamed(AppRoute.secondOnboardingScreen);
   }
 }

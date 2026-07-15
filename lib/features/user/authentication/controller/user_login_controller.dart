@@ -12,7 +12,7 @@ import 'package:protiva502/features/notification/controller/notification_control
 
 class UserLoginController extends GetxController {
   final ApiClient _apiClient = ApiClient();
-  static const String _expectedRole = 'user';
+  static const String _expectedRole = 'CLIENT';
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -234,7 +234,7 @@ class UserLoginController extends GetxController {
   }
 
   bool _isExpectedRole(String? role) {
-    return role?.trim().toLowerCase() == _expectedRole;
+    return role?.trim().toLowerCase() == _expectedRole.toLowerCase();
   }
 
   Future<void> sendOtp() async {

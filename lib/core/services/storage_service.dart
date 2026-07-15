@@ -77,6 +77,10 @@ class StorageService {
     return isLoggedIn;
   }
 
+  static Future<bool> hasValidAccessToken() async {
+    return SecureStorageService.hasValidAccessToken();
+  }
+
   static String getDisplayName() {
     final firstName = getFirstName()?.trim() ?? '';
     final lastName = getLastName()?.trim() ?? '';

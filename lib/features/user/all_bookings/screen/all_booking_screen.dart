@@ -7,7 +7,6 @@ import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/services/booking_id_service.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
-import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
 import 'package:protiva502/features/user/all_bookings/controller/all_booking_controller.dart';
 import 'package:protiva502/features/user/all_bookings/model/all_booking_model.dart';
 import 'package:protiva502/features/user/all_bookings/widget/review_widget.dart';

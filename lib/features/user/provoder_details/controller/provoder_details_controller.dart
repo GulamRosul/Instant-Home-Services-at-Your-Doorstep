@@ -227,7 +227,7 @@ class ProviderDetailsController extends GetxController {
     );
 
     Get.to(() => const JobDetailsViewScreen(), arguments: jobModel);
-    }
+  }
 
   Map<String, dynamic>? _asMap(dynamic value) {
     if (value is Map<String, dynamic>) {

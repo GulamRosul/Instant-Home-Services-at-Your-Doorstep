@@ -97,7 +97,8 @@ class ProviderDetailsScreen extends StatelessWidget {
                       radius: 45.r,
                       backgroundImage: (details.avatar ?? '').trim().isNotEmpty
                           ? NetworkImage(details.avatar!.trim())
-                          : const AssetImage(ImagePath.profile) as ImageProvider,
+                          : const AssetImage(ImagePath.profile)
+                                as ImageProvider,
                     ),
                     if (controller.isVerified)
                       CircleAvatar(
@@ -337,7 +338,7 @@ class ProviderDetailsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
                 SizedBox(
-                  height: 250.h,
+                  height: 260.h,
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     scrollDirection: Axis.horizontal,
@@ -407,99 +408,102 @@ class ProviderDetailsScreen extends StatelessWidget {
     ProviderDetailsController controller,
     ProviderJobModel service,
   ) {
-    return Container(
-      width: 180.w,
-      margin: EdgeInsets.only(right: 16.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-            child: service.thumbnail.trim().isNotEmpty
-                ? Image.network(
-                    service.thumbnail,
-                    height: 100.h,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Image.asset(
+    return GestureDetector(
+      onTap: () => controller.bookSpecificService(service.id),
+      child: Container(
+        width: 180.w,
+        margin: EdgeInsets.only(right: 16.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
+              child: service.thumbnail.trim().isNotEmpty
+                  ? Image.network(
+                      service.thumbnail,
+                      height: 90.h,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Image.asset(
+                        ImagePath.servicecard,
+                        height: 90.h,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Image.asset(
                       ImagePath.servicecard,
-                      height: 100.h,
+                      height: 90.h,
                       width: double.infinity,
                       fit: BoxFit.cover,
                     ),
-                  )
-                : Image.asset(
-                    ImagePath.servicecard,
-                    height: 100.h,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8.r),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  service.title,
-                  style: getTextStyle(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  service.description.isNotEmpty
-                      ? service.description
-                      : 'Professional service from this provider.',
-                  style: getTextStyle(
-                    fontSize: 10.sp,
-                    color: AppColors.textSecondary,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 4.h),
-                Row(
-                  children: [
-                    ...List.generate(
-                      5,
-                      (i) => Icon(
-                        i < service.averageRating.round()
-                            ? Icons.star
-                            : Icons.star_border,
-                        color: Colors.orange,
-                        size: 12.sp,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  "Start From ${service.basePrice.toStringAsFixed(service.basePrice % 1 == 0 ? 0 : 2)} ৳",
-                  style: getTextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                CustomButton(
-                  text: "View details",
-                  onPressed: () => controller.bookSpecificService(service.id),
-                  backgroundColor: AppColors.textPurple,
-                  textColor: Colors.white,
-                  height: 30.h,
-                ),
-              ],
             ),
-          ),
-        ],
+            Padding(
+              padding: EdgeInsets.all(8.r),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    service.title,
+                    style: getTextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    service.description.isNotEmpty
+                        ? service.description
+                        : 'Professional service from this provider.',
+                    style: getTextStyle(
+                      fontSize: 10.sp,
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4.h),
+                  Row(
+                    children: [
+                      ...List.generate(
+                        5,
+                        (i) => Icon(
+                          i < service.averageRating.round()
+                              ? Icons.star
+                              : Icons.star_border,
+                          color: Colors.orange,
+                          size: 12.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    "Start From ${service.basePrice.toStringAsFixed(service.basePrice % 1 == 0 ? 0 : 2)} ৳",
+                    style: getTextStyle(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  CustomButton(
+                    text: "View details",
+                    onPressed: () => controller.bookSpecificService(service.id),
+                    backgroundColor: AppColors.textPurple,
+                    textColor: Colors.white,
+                    height: 30.h,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

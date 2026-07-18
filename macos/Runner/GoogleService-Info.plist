@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.kaajbd.protiva502</string>
+	<string>com.kaajbd.protiva502.iosapp</string>
 	<key>PROJECT_ID</key>
 	<string>kaajbd-603b3</string>
 	<key>STORAGE_BUCKET</key>

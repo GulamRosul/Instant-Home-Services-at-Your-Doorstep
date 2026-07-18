@@ -230,9 +230,9 @@ const Map<String, String> enUSUser = {
   'add_feedback': 'Add feedback',
   'submit': 'Submit',
 
-  //  '': '',
-  //  '': '',
-  //  '': '',
+   'login_required': 'Login required',
+   'please_log_in_or_create_an_account_to_continue': 'Please log in or create an account to continue.',
+   'continue_browsing': 'Continue browsing',
   //  '': '',
   //  '': '',
   //  '': '',

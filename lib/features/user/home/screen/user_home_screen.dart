@@ -15,6 +15,7 @@ import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/image_path.dart';
 import 'package:protiva502/core/utils/helpers/app_helper.dart';
 import 'package:protiva502/features/profile/screen/profile_screen.dart';
+import 'package:protiva502/features/social_media/controller/social_media_controller.dart';
 import 'package:protiva502/features/user/authentication/widget/log_in_alert_dialogue.dart';
 import 'package:protiva502/features/user/home/controller/user_home_controller.dart';
 import 'package:protiva502/features/user/home/controller/generic_listing_controller.dart';
@@ -63,6 +64,7 @@ class UserHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UserHomeController());
+    final socialMediaController = Get.put(SocialMediaController());
 
     return Scaffold(
       extendBody: true,
@@ -178,6 +180,21 @@ class UserHomeScreen extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 96.h),
+        child: FloatingActionButton(
+          shape: const CircleBorder(),
+          onPressed: () {
+            socialMediaController.launchSocialUrl(
+              socialMediaController.whatsappUrl,
+            );
+          },
+          backgroundColor: Colors.white,
+          mini: false,
+          child: SvgPicture.asset(IconPath.whatsapp),
         ),
       ),
     );

@@ -7,6 +7,7 @@ import 'package:protiva502/core/common/widgets/custom_button.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/core/utils/constants/icon_path.dart';
 import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
+import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 
 // ignore: unused_element
 
@@ -48,7 +49,7 @@ class LoginAlertDialog extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             Text(
-              'Login required',
+              'login_required'.tr,
               style: getTextStyle(
                 fontSize: 17.sp,
                 fontWeight: FontWeight.w500,
@@ -57,7 +58,7 @@ class LoginAlertDialog extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             Text(
-              'Please log in or create an account to continue.',
+              'please_log_in_or_create_an_account_to_continue'.tr,
               textAlign: TextAlign.center,
               style: getTextStyle(
                 fontSize: 13.sp,
@@ -67,14 +68,14 @@ class LoginAlertDialog extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
             CustomButton(
-              text: 'Log in',
+              text: 'log_in'.tr,
               backgroundColor: const Color(0xFF534AB7),
               textColor: Colors.white,
               borderRadius: 8.r,
               height: 44.h,
               onPressed: () {
                 Get.back();
-                Get.to(() => SecondOnboardingScreen());
+                Get.to(() => UserLoginScreen());
               },
             ),
             SizedBox(height: 10.h),
@@ -94,7 +95,7 @@ class LoginAlertDialog extends StatelessWidget {
             TextButton(
               onPressed: () => Get.back(),
               child: Text(
-                'Continue browsing',
+                'continue_browsing'.tr,
                 style: getTextStyle(
                   fontSize: 13.sp,
                   color: AppColors.textSecondary,

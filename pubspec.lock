@@ -562,10 +562,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_callkit_incoming
-      sha256: "993fb0f0cd990961072f0d13ff815a91773f92bfa1895be17d3366b2225ec9cd"
+      sha256: "3589deb8b71e43f2d520a9c8a5240243f611062a8b246cdca4b1fda01fbbf9b8"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.8"
+    version: "3.0.0"
   flutter_easyloading:
     dependency: "direct main"
     description:
@@ -2144,18 +2144,18 @@ packages:
     dependency: transitive
     description:
       name: zego_uikit
-      sha256: c0f47744ead118b3638d429cbc5606f37a35e73954eda9c25b0caf5fef3be8fc
+      sha256: "9595ff1aa91b994345b0c25ab6d7e7ebb80be3f4e847cc6f078c4eb0118a76e2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.28.46"
+    version: "2.29.1"
   zego_uikit_prebuilt_call:
     dependency: "direct main"
     description:
       name: zego_uikit_prebuilt_call
-      sha256: d27d0e6c093579568179db4cdf31cf04abe58e778930a48de017aa66e262b072
+      sha256: "5af95eedbab93b7a87e0f0ae6db87c655c154153eb488bd04f36926f33a56e7c"
       url: "https://pub.dev"
     source: hosted
-    version: "4.23.0"
+    version: "4.24.2"
   zego_uikit_signaling_plugin:
     dependency: "direct main"
     description:

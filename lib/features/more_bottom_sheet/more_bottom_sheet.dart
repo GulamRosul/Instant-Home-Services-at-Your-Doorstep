@@ -235,7 +235,7 @@ class MoreBottomSheet extends StatelessWidget {
                         Get.back(); // Close bottom sheet
                         // await CallService.instance.uninitialize();
                         await StorageService.clearAll();
-                        Get.offAllNamed(AppRoute.getSecondOnboardingScreen());
+                        Get.offAllNamed(AppRoute.getUserLoginScreen());
                       },
                       style:
                           ElevatedButton.styleFrom(

@@ -196,7 +196,7 @@ class AppRoute {
     // ),
     GetPage(
       name: userLoginScreen,
-      page: () => const UserLoginScreen(),
+      page: () =>  UserLoginScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

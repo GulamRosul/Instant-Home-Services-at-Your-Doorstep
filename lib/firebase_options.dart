@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '242025959192',
     projectId: 'kaajbd-603b3',
     storageBucket: 'kaajbd-603b3.firebasestorage.app',
-    iosBundleId: 'com.kaajbd.protiva502',
+    iosBundleId: 'com.kaajbd.protiva502.iosapp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '242025959192',
     projectId: 'kaajbd-603b3',
     storageBucket: 'kaajbd-603b3.firebasestorage.app',
-    iosBundleId: 'com.kaajbd.protiva502',
+    iosBundleId: 'com.kaajbd.protiva502.iosapp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

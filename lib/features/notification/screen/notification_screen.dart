@@ -6,6 +6,7 @@ import 'package:protiva502/core/common/widgets/custom_appbar.dart';
 import 'package:protiva502/core/utils/constants/colors.dart';
 import 'package:protiva502/features/notification/controller/notification_controller.dart';
 import 'package:protiva502/features/onboarding/screen/second_onboarding_screen.dart';
+import 'package:protiva502/features/user/authentication/screen/user_login_screen.dart';
 
 class NotificationScreen extends GetView<NotificationController> {
   const NotificationScreen({super.key});
@@ -61,7 +62,7 @@ class NotificationScreen extends GetView<NotificationController> {
                     ),
                     SizedBox(height: 16.h),
                     OutlinedButton(
-                      onPressed: () => Get.to(() => SecondOnboardingScreen()),
+                      onPressed: () => Get.to(() => UserLoginScreen()),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppColors.textPurple),
                         padding: EdgeInsets.symmetric(

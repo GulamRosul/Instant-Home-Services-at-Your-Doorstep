@@ -9,10 +9,10 @@ import 'package:protiva502/core/utils/constants/apiendpoint.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/features/bottom_nav/screen/main_navigation_screen.dart';
 import 'package:protiva502/features/notification/controller/notification_controller.dart';
+import 'package:protiva502/features/service_provider/provider_navber/screen/provider_navbar_screen.dart';
 
 class UserLoginController extends GetxController {
   final ApiClient _apiClient = ApiClient();
-  static const String _expectedRole = 'CLIENT';
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -66,6 +66,7 @@ class UserLoginController extends GetxController {
 
       // Get FCM token - initialize notification controller if not already done
       String deviceId = '21'; // Default device ID
+      debugPrint('📱 [LOGIN] Default device-id set to: $deviceId');
       try {
         final notificationController =
             Get.isRegistered<NotificationController>()
@@ -149,18 +150,6 @@ class UserLoginController extends GetxController {
       debugPrint('👤 [LOGIN] Role: $role');
       debugPrint('👤 [LOGIN] Avatar: $avatar');
 
-      if (!_isExpectedRole(role)) {
-        debugPrint(
-          '❌ [LOGIN] Role mismatch. Expected $_expectedRole but received $role',
-        );
-        Get.snackbar(
-          'Access Restricted'.tr,
-          'provider_cannot_login_as_user'.tr,
-          snackPosition: SnackPosition.BOTTOM,
-        );
-        return;
-      }
-
       await StorageService.makeLoggedIn();
       debugPrint('💾 [LOGIN] Marked as logged in');
 
@@ -207,7 +196,7 @@ class UserLoginController extends GetxController {
         debugPrint('📱 [LOGIN] FCM Token confirmed: $fcmToken');
       }
 
-      Get.offAll(() => const MainNavigationScreen());
+      await _navigateByRole(role);
     } catch (e, stackTrace) {
       debugPrint('❌ [LOGIN] Exception caught: $e');
       debugPrint('❌ [LOGIN] Stack trace: $stackTrace');
@@ -233,8 +222,15 @@ class UserLoginController extends GetxController {
     }
   }
 
-  bool _isExpectedRole(String? role) {
-    return role?.trim().toLowerCase() == _expectedRole.toLowerCase();
+  Future<void> _navigateByRole(String? role) async {
+    final normalizedRole = role?.trim().toLowerCase() ?? '';
+
+    if (normalizedRole == 'provider') {
+      Get.offAll(() => const ProviderNavbarScreen());
+      return;
+    }
+
+    Get.offAll(() => const MainNavigationScreen());
   }
 
   Future<void> sendOtp() async {

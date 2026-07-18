@@ -232,4 +232,8 @@ const Map<String, String> bnBDUser = {
   'add_feedback': 'প্রতিক্রিয়া যোগ করুন',
   'submit': 'জমা দিন',
 
+    'login_required': 'লগইন প্রয়োজন',
+   'please_log_in_or_create_an_account_to_continue': 'চালিয়ে যেতে লগইন করুন বা একটি অ্যাকাউন্ট তৈরি করুন।',
+   'continue_browsing': 'ব্রাউজিং চালিয়ে যান',
+
 };

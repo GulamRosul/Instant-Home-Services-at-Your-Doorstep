@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/features/version_check/controller/version_check_controller.dart';
 import 'package:protiva502/routes/app_routes.dart';
@@ -39,8 +40,11 @@ class SplashController extends GetxController {
 
   Future<void> _navigateToNextScreen() async {
     final hasValidToken = await StorageService.hasValidAccessToken();
+    final refreshToken = await SecureStorageService.getRefreshToken();
+    final hasRefreshToken = refreshToken != null && refreshToken.isNotEmpty;
 
-    if (hasValidToken && StorageService.hasActiveSession()) {
+    if (StorageService.hasActiveSession() &&
+        (hasValidToken || hasRefreshToken)) {
       final role = StorageService.getRole()?.toLowerCase() ?? '';
 
       if (role.contains('provider') || role.contains('service_provider')) {
@@ -53,6 +57,6 @@ class SplashController extends GetxController {
     }
 
     await StorageService.makeLoggedOut();
-    Get.offNamed(AppRoute.secondOnboardingScreen);
+    Get.offNamed(AppRoute.userLoginScreen);
   }
 }

@@ -293,7 +293,7 @@ func transactionCompleted(withTransactionData transactionData: TransactionDetail
 Use a `MethodChannel`, for example:
 
 ```dart
-const _sslcommerzChannel = MethodChannel('com.kaajbd.protiva502/sslcommerz');
+const _sslcommerzChannel = MethodChannel('com.kaajbd.protiva502.iosapp/sslcommerz');
 ```
 
 Flutter side flow:

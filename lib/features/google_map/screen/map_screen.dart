@@ -568,7 +568,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 15,
                       offset: const Offset(0, -5),
                     ),
@@ -649,7 +649,7 @@ class _MapScreenState extends State<MapScreen> {
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
+              color: Colors.black.withValues(alpha: 0.15),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -739,7 +739,7 @@ class _MapScreenState extends State<MapScreen> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 15,
             offset: const Offset(0, -5),
           ),
@@ -1082,7 +1082,7 @@ class _MapScreenState extends State<MapScreen> {
               text: 'help_support'.tr,
               backgroundColor: Colors.white,
               textColor: AppColors.textSecondary,
-              borderColor: AppColors.textSecondary.withOpacity(0.5),
+              borderColor: AppColors.textSecondary.withValues(alpha: 0.5),
               onPressed: () async {
                 final Uri phoneUri = Uri(scheme: 'tel', path: '+8809614502297');
                 try {

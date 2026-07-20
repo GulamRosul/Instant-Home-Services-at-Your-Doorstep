@@ -262,7 +262,7 @@ class CardPaymentSection extends StatelessWidget {
                           FieldLabel(label: "Country:"),
                           Obx(
                             () => CustomPopupMenu(
-                              backgroundcolor: Colors.white.value.toString(),
+                              backgroundcolor: Colors.white.toARGB32().toString(),
                               value:
                                   controller.selectedCountry.value ??
                                   'Select Country',

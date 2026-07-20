@@ -318,7 +318,7 @@ class _AudioCallPageState extends State<AudioCallPage> {
         height: size.height,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white.withOpacity(0.15),
+          color: Colors.white.withValues(alpha: 0.15),
           border: Border.all(color: Colors.white24, width: 2),
         ),
         alignment: Alignment.center,
@@ -405,7 +405,7 @@ class _AudioCallPageState extends State<AudioCallPage> {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.12),
+                        color: Colors.white.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -439,7 +439,7 @@ class _AudioCallPageState extends State<AudioCallPage> {
                             Text(
                               _statusText,
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.75),
+                                color: Colors.white.withValues(alpha: 0.75),
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                               ),

@@ -199,7 +199,7 @@ class _DebugLogsScreenState extends State<DebugLogsScreen> {
                     Text(
                       '[${log.category}] ${log.timestamp.toIso8601String().split('T')[1].split('.')[0]}',
                       style: TextStyle(
-                        color: textColor.withOpacity(0.6),
+                        color: textColor.withValues(alpha: 0.6),
                         fontSize: 11,
                       ),
                     ),
@@ -209,7 +209,7 @@ class _DebugLogsScreenState extends State<DebugLogsScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: textColor.withOpacity(0.1),
+                  color: textColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -228,13 +228,13 @@ class _DebugLogsScreenState extends State<DebugLogsScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
                 log.data.toString(),
                 style: TextStyle(
-                  color: textColor.withOpacity(0.7),
+                  color: textColor.withValues(alpha: 0.7),
                   fontSize: 11,
                   fontFamily: 'monospace',
                 ),

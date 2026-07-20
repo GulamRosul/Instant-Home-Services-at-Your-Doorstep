@@ -181,12 +181,12 @@ PODS:
     - Flutter
   - zego_express_engine (3.23.0):
     - Flutter
-  - zego_uikit (2.28.46):
+  - zego_uikit (2.29.0):
     - Flutter
     - Masonry
     - zego_express_engine
     - ZegoUIKitReport (= 0.2.10)
-  - zego_uikit_prebuilt_call (4.23.0):
+  - zego_uikit_prebuilt_call (4.24.2):
     - Flutter
   - zego_uikit_signaling_plugin (2.8.19):
     - Flutter
@@ -396,8 +396,8 @@ SPEC CHECKSUMS:
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
   zego_callkit: 8e3bc2e9fc6895cff1b27841b1de1100344d2613
   zego_express_engine: 9b73b5b83129ee033287f6597fd5d700b84b27c8
-  zego_uikit: b2bbb0b78cacdf8e20ba34adc6fe7b5eeb4e164d
-  zego_uikit_prebuilt_call: 24898bc45c0a888911240b74d032029da5b1a55a
+  zego_uikit: ef50efb1fa64b6fda4b298a15ffd5fa27b65aa77
+  zego_uikit_prebuilt_call: 974aa1870e572ff74bbb439fcb58a3005cdd9113
   zego_uikit_signaling_plugin: ffced40608c89b1ac0241a6194dacb9bc5af19b7
   zego_zim: a134135a495ddbfbdcc59353288eff96e9cd0416
   zego_zpns: e2ef9b972e9b6be00b78b32b71c550c426584752

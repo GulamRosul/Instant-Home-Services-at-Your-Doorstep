@@ -149,7 +149,7 @@ class NotificationScreen extends GetView<NotificationController> {
           border: Border.all(
             color: item['isRead']
                 ? Colors.grey.shade200
-                : AppColors.textPurple.withOpacity(0.1),
+                : AppColors.textPurple.withValues(alpha: 0.1),
           ),
         ),
         child: Row(
@@ -279,7 +279,7 @@ class NotificationScreen extends GetView<NotificationController> {
     return Container(
       padding: EdgeInsets.all(8.r),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: color, size: 20.sp),

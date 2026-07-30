@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:protiva502/core/services/api_client.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
+import 'package:protiva502/routes/app_routes.dart';
 import 'package:protiva502/features/notification/controller/notification_controller.dart';
 
 class SettingsController extends GetxController {
@@ -28,6 +29,7 @@ class SettingsController extends GetxController {
 
   // Loading state
   final isLoading = false.obs;
+  final isDeleteLoading = false.obs;
 
   late NotificationController _notificationController;
 
@@ -69,16 +71,16 @@ class SettingsController extends GetxController {
   void toggleEmailNotifications(bool val) => emailNotifications.value = val;
   void toggleSmsNotifications(bool val) => smsNotifications.value = val;
 
-  Future<void> changePassword() async {
+  Future<bool> changePassword() async {
     final validationMessage = _validatePasswords();
 
     if (validationMessage != null) {
       _showSnackBar('Error', validationMessage);
-      return;
+      return false;
     }
 
     if (isLoading.value) {
-      return;
+      return false;
     }
 
     try {
@@ -116,12 +118,14 @@ class SettingsController extends GetxController {
           animationDuration: const Duration(milliseconds: 400),
         );
         log('✅ Password Changed Successfully', name: 'SettingsController');
+        return true;
       } else {
         Get.snackbar(
           'error'.tr,
           'password_update_failed'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
+        return false;
       }
     } catch (e) {
       log('❌ Change Password Error: $e', name: 'SettingsController');
@@ -130,8 +134,49 @@ class SettingsController extends GetxController {
         'password_update_failed'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
+      return false;
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<bool> deleteAccount() async {
+    if (isDeleteLoading.value) {
+      return false;
+    }
+
+    try {
+      isDeleteLoading.value = true;
+
+      final response = await ApiClient().delete(ApiEndpoints.deleteMyAccount);
+
+      log(
+        '🗑️ Delete Account Response: ${response.statusCode}',
+        name: 'SettingsController',
+      );
+
+      if (response.statusCode == 200) {
+        await StorageService.clearAll();
+        Get.offAllNamed(AppRoute.getUserLoginScreen());
+        return true;
+      }
+
+      Get.snackbar(
+        'error'.tr,
+        'failed_to_delete_account'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return false;
+    } catch (e) {
+      log('❌ Delete Account Error: $e', name: 'SettingsController');
+      Get.snackbar(
+        'error'.tr,
+        'failed_to_delete_account'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return false;
+    } finally {
+      isDeleteLoading.value = false;
     }
   }
 

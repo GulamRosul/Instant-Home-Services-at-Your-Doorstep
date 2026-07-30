@@ -59,6 +59,7 @@ class VersionCheckController extends GetxController {
       print('current version: $_currentVersion');
       print('Device platform: ${Platform.operatingSystem}');
       print('Version config response: ${response.data}');
+      
 
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -120,24 +121,49 @@ class VersionCheckController extends GetxController {
         : _versionConfig.iosStoreUrl;
   }
 
+  // void _showUpdateDialog(bool isForceUpdate) {
+  //   // final shouldForce = isForceUpdate || _getForceUpdateFlag();
+  //   final shouldForce = _getForceUpdateFlag() || isForceUpdate;
+
+  //   if (shouldForce) {
+  //     isBlockedByForceUpdate = true; // 🔥 ADD THIS
+  //   }
+
+  //   Get.dialog(
+  //     VersionCheckDialogue(
+  //       currentVersion: _currentVersion,
+  //       latestVersion: _getLatestVersion(),
+  //       isForceUpdate: shouldForce,
+  //       onUpdate: () => _openAppStore(),
+  //       onCancel: () => shouldForce ? _showExitConfirmation() : Get.back(),
+  //     ),
+  //     barrierDismissible: false,
+  //   );
+  // }
+
   void _showUpdateDialog(bool isForceUpdate) {
-    final shouldForce = isForceUpdate || _getForceUpdateFlag();
+  final shouldForce = _getForceUpdateFlag();
 
-    if (shouldForce) {
-      isBlockedByForceUpdate = true; // 🔥 ADD THIS
-    }
+  // 🔍 ADD DEBUG LOGS HERE
+  print("Min Required Force (version check): $isForceUpdate");
+  print("API Force Flag: ${_getForceUpdateFlag()}");
+  print("Final Force (used in UI): $shouldForce");
 
-    Get.dialog(
-      VersionCheckDialogue(
-        currentVersion: _currentVersion,
-        latestVersion: _getLatestVersion(),
-        isForceUpdate: shouldForce,
-        onUpdate: () => _openAppStore(),
-        onCancel: () => shouldForce ? _showExitConfirmation() : Get.back(),
-      ),
-      barrierDismissible: false,
-    );
+  if (shouldForce) {
+    isBlockedByForceUpdate = true;
   }
+
+  Get.dialog(
+    VersionCheckDialogue(
+      currentVersion: _currentVersion,
+      latestVersion: _getLatestVersion(),
+      isForceUpdate: shouldForce,
+      onUpdate: () => _openAppStore(),
+      onCancel: () => shouldForce ? _showExitConfirmation() : Get.back(),
+    ),
+    barrierDismissible: false,
+  );
+}
 
 Future<void> _openAppStore() async {
   final storeUrl = _getStoreUrl();

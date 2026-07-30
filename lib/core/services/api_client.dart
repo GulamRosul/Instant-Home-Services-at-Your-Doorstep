@@ -178,12 +178,20 @@ class ApiClient {
         return _classifyRefreshFailure(response.statusCode);
       }
 
-      final data = response.data;
+      final responseData = response.data;
+      final data = responseData is Map<String, dynamic>
+          ? (responseData['data'] is Map<String, dynamic>
+                ? responseData['data'] as Map<String, dynamic>
+                : responseData)
+          : null;
+
       final newAccessToken = data?['accessToken']?.toString();
       final newRefreshToken = data?['refreshToken']?.toString();
 
       if (newAccessToken == null || newAccessToken.isEmpty) {
-        debugPrint('❌ [API CLIENT] Refresh response missing accessToken');
+        debugPrint(
+          '❌ [API CLIENT] Refresh response missing accessToken. Payload: $responseData',
+        );
         return const _RefreshResult.invalidRefreshToken();
       }
 

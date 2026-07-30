@@ -29,6 +29,7 @@ const Map<String, String> bnBD = {
   'please_verify_your_email_first': 'আপনার ইমেল প্রথমে যাচাই করুন।',
   'verify_email_desc': 'আপনার ইমেল যাচাইয়ের জন্য আমরা একটি OTP পাঠাব।',
   'back_to_login': 'লগইনে ফিরে যান',
+  'log_in': 'লগ ইন',
 
   // Login Validation Errors
   'email_empty': 'ইমেল লিখুন',
@@ -129,6 +130,12 @@ const Map<String, String> bnBD = {
   'password_changed_successfully': 'পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে',
   'new_password_length': 'নতুন পাসওয়ার্ড অবশ্যই 8টি অক্ষরের বেশি হতে হবে',
   'passwords_do_not_match': 'নতুন পাসওয়ার্ড এবং নিশ্চিতকরণ পাসওয়ার্ড মেলে না',
+  'update_password_reminder': 'আপনার অ্যাকাউন্ট পাসওয়ার্ড আপডেট করুন',
+  'delete_account_reminder': 'আপনার অ্যাকাউন্ট এবং ডেটা স্থায়ীভাবে সরান',
+  'delete_account': 'অ্যাকাউন্ট মুছুন',
+  'delete_account_confirmation': 'অ্যাকাউন্ট মুছে ফেলা হবে?',
+  'delete_account_description': 'এটি আপনার অ্যাকাউন্ট, প্রোফাইল ডেটা এবং অ্যাপ্লিকেশনে অ্যাক্সেস স্থায়ীভাবে মুছে দেবে। এই ক্রিয়াটি পূর্বাবস্থায় ফেরানো যাবে না।',
+  'deleting': 'মুছে ফেলা হচ্ছে...',
 
   //social media screen
   'social_media': 'সোশ্যাল মিডিয়া',

@@ -29,6 +29,7 @@ const Map<String, String> enUS = {
   'please_verify_your_email_first': 'Please verify your email first.',
   'verify_email_desc': 'We will send an OTP to your email for verification.',
   'back_to_login': 'Back to Login',
+  'log_in': 'Log In',
 
   // Login Validation Errors
   'email_empty': 'Enter email',
@@ -129,6 +130,12 @@ const Map<String, String> enUS = {
   'password_changed_successfully': 'Password changed successfully',
   'new_password_length': 'New password must be at least 8 characters long',
   'passwords_do_not_match': 'New password and confirm password do not match',
+  'update_password_reminder': 'Update your account password',
+  'delete_account_reminder': 'Permanently remove your account and data',
+  'delete_account': 'Delete Account',
+  'delete_account_confirmation': 'Delete account?',
+  'delete_account_description': 'This will permanently delete your account, profile data, and access to the app. This action cannot be undone.',
+  'deleting': 'Deleting...',
 
   //social media screen
   'social_media': 'Social Media',

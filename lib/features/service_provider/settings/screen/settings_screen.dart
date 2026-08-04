@@ -121,7 +121,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 6.h),
                     Text(
-                      'Enter your current password and choose a new one.',
+                      'update_password_instructions'.tr,
                       style: getTextStyle(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,

@@ -136,6 +136,8 @@ const Map<String, String> bnBD = {
   'delete_account_confirmation': 'অ্যাকাউন্ট মুছে ফেলা হবে?',
   'delete_account_description': 'এটি আপনার অ্যাকাউন্ট, প্রোফাইল ডেটা এবং অ্যাপ্লিকেশনে অ্যাক্সেস স্থায়ীভাবে মুছে দেবে। এই ক্রিয়াটি পূর্বাবস্থায় ফেরানো যাবে না।',
   'deleting': 'মুছে ফেলা হচ্ছে...',
+  'update_password_instructions': 'আপনার বর্তমান পাসওয়ার্ড লিখুন এবং একটি নতুন পাসওয়ার্ড চয়ন করুন।',
+
 
   //social media screen
   'social_media': 'সোশ্যাল মিডিয়া',

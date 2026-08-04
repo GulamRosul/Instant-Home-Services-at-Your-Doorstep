@@ -151,7 +151,7 @@ class SettingsController extends GetxController {
       final response = await ApiClient().delete(ApiEndpoints.deleteMyAccount);
 
       log(
-        '🗑️ Delete Account Response: ${response.statusCode}',
+        '🗑️ Delete Account Response: ${response.statusCode} ${response.data}',
         name: 'SettingsController',
       );
 

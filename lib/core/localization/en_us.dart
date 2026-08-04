@@ -136,6 +136,7 @@ const Map<String, String> enUS = {
   'delete_account_confirmation': 'Delete account?',
   'delete_account_description': 'This will permanently delete your account, profile data, and access to the app. This action cannot be undone.',
   'deleting': 'Deleting...',
+  'update_password_instructions': 'Enter your current password and choose a new one.',
 
   //social media screen
   'social_media': 'Social Media',

@@ -214,29 +214,55 @@
 //   }
 // }
 
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:protiva502/core/utils/logging/logger.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/call_const.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
+import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:protiva502/features/audio_call/screens/audio_call.dart';
 // Import audioplayers to fix the underlying audio crash configuration
-import 'package:audioplayers/audioplayers.dart'; 
+import 'package:audioplayers/audioplayers.dart';
 
 class CallService {
   CallService._();
   static final CallService instance = CallService._();
 
   String? _initializedUserId;
+  GlobalKey<NavigatorState>? _navigatorKey;
+  String? lastError;
+  final ValueNotifier<String> _outgoingCallStatus = ValueNotifier('Calling...');
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   void setNavigatorKey(GlobalKey<NavigatorState> navigatorKey) {
+    _navigatorKey = navigatorKey;
     ZegoUIKitPrebuiltCallInvitationService().setNavigatorKey(navigatorKey);
+  }
+
+  void _showUnansweredCall(List<ZegoCallUser> callees) {
+    final navigator = _navigatorKey?.currentState;
+    if (navigator == null || callees.isEmpty) return;
+
+    // The invitation page is dismissed by Zego before this callback. Deferring
+    // one frame ensures the result page is placed on the app navigator.
+    Future<void>.delayed(const Duration(milliseconds: 250), () async {
+      final currentNavigator = _navigatorKey?.currentState;
+      if (currentNavigator == null) return;
+      await currentNavigator.push(
+        MaterialPageRoute<void>(
+          builder: (_) => CallUnansweredPage(
+            userName: callees.first.name.trim().isEmpty
+                ? 'the recipient'
+                : callees.first.name,
+          ),
+        ),
+      );
+    });
   }
 
   Future<void> _initializeLocalNotifications() async {
@@ -299,18 +325,20 @@ class CallService {
       await invitationService.uninit();
     }
 
-    // CRITICAL FIX: Explicitly configure global context to allow mixWithOthers 
+    // CRITICAL FIX: Explicitly configure global context to allow mixWithOthers
     // with a valid playback category before Zego starts up its ringtone service.
     try {
-      await AudioPlayer.global.setAudioContext(AudioContext(
-        iOS: AudioContextIOS(
-          category: AVAudioSessionCategory.playAndRecord,
-          options: const {
-            AVAudioSessionOptions.mixWithOthers,
-            AVAudioSessionOptions.defaultToSpeaker,
-          },
+      await AudioPlayer.global.setAudioContext(
+        AudioContext(
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.playAndRecord,
+            options: const {
+              AVAudioSessionOptions.mixWithOthers,
+              AVAudioSessionOptions.defaultToSpeaker,
+            },
+          ),
         ),
-      ));
+      );
     } catch (e) {
       AppLoggerHelper.error('Error setting global audio context: $e');
     }
@@ -335,6 +363,25 @@ class CallService {
         iOSNotificationConfig: ZegoCallIOSNotificationConfig(
           systemCallingIconName: "CallKitDefaultIcon",
           isSandboxEnvironment: kDebugMode,
+        ),
+      ),
+      uiConfig: ZegoCallInvitationUIConfig(
+        inviter: ZegoCallInvitationInviterUIConfig(
+          showCallingText: false,
+          foregroundBuilder: (context, size, info) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 190),
+                child: ValueListenableBuilder<String>(
+                  valueListenable: _outgoingCallStatus,
+                  builder: (_, status, __) => Text(
+                    status,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
 
@@ -380,24 +427,41 @@ class CallService {
           },
         ),
         onCallEnd: (event, defaultAction) async {
-          AppLoggerHelper.info('Call ended - disabling wake lock & resetting audio');
+          AppLoggerHelper.info(
+            'Call ended - disabling wake lock & resetting audio',
+          );
           _disableWakeLock();
-          
-          // CRITICAL FIX: Revert audio session to simple ambient playback 
+
+          // CRITICAL FIX: Revert audio session to simple ambient playback
           // so the hardware channel releases properly for subsequent calls.
           try {
-            await AudioPlayer.global.setAudioContext(AudioContext(
-              iOS: AudioContextIOS(
-                category: AVAudioSessionCategory.ambient,
-                options: const {},
+            await AudioPlayer.global.setAudioContext(
+              AudioContext(
+                iOS: AudioContextIOS(
+                  category: AVAudioSessionCategory.ambient,
+                  options: const {},
+                ),
               ),
-            ));
+            );
           } catch (e) {
             AppLoggerHelper.error('Error resetting audio context: $e');
           }
 
-          // Trigger Zego default teardown actions 
+          // Trigger Zego default teardown actions
           defaultAction.call();
+        },
+      ),
+      invitationEvents: ZegoUIKitPrebuiltCallInvitationEvents(
+        onInvitationUserStateChanged: (users) {
+          if (users.any((user) => user.state.name == 'received')) {
+            _outgoingCallStatus.value = 'Ringing...';
+          } else if (users.any((user) => user.state.name == 'offline')) {
+            _outgoingCallStatus.value = 'Calling...';
+          }
+        },
+        onOutgoingCallTimeout: (callID, callees, isVideoCall) {
+          AppLoggerHelper.info('Call $callID was unanswered after 30 seconds');
+          _showUnansweredCall(callees);
         },
       ),
     );
@@ -410,8 +474,30 @@ class CallService {
     final userId = StorageService.getUserId()?.trim();
     final userName = StorageService.getDisplayName();
     if (userId != null && userId.isNotEmpty) {
-      await initialize(userID: userId, userName: userName ?? 'User');
+      await initialize(userID: userId, userName: userName);
     }
+  }
+
+  Future<void> _reinitializeFromStorage() async {
+    final invitationService = ZegoUIKitPrebuiltCallInvitationService();
+    if (invitationService.isInit) {
+      await invitationService.uninit();
+    }
+    _initializedUserId = null;
+    await initializeFromStorage();
+  }
+
+  Future<String> _waitForSignalingConnection() async {
+    var signalingState = ZegoUIKit().getSignalingPlugin().getConnectionState();
+    for (
+      var attempt = 0;
+      signalingState.name != 'connected' && attempt < 25;
+      attempt++
+    ) {
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      signalingState = ZegoUIKit().getSignalingPlugin().getConnectionState();
+    }
+    return signalingState.name;
   }
 
   Future<bool> startAudioCall({
@@ -419,23 +505,67 @@ class CallService {
     required String targetUserName,
     String? callID,
   }) async {
+    lastError = null;
+    _outgoingCallStatus.value = 'Calling...';
+    final normalizedTargetUserId = targetUserId.trim();
+    if (normalizedTargetUserId.isEmpty) {
+      lastError = 'Receiver information is unavailable.';
+      return false;
+    }
+
     try {
+      final invitationService = ZegoUIKitPrebuiltCallInvitationService();
+      if (!invitationService.isInit) {
+        AppLoggerHelper.warning(
+          'Call invitation service was not initialized; initializing from storage.',
+        );
+        await initializeFromStorage();
+      }
+
+      if (!invitationService.isInit) {
+        lastError =
+            'Call service is not ready. Please sign in again and retry.';
+        AppLoggerHelper.error(lastError!);
+        return false;
+      }
+
+      var signalingState = await _waitForSignalingConnection();
+      if (signalingState != 'connected') {
+        AppLoggerHelper.warning(
+          'Zego signaling is disconnected; reinitializing the call service.',
+        );
+        await _reinitializeFromStorage();
+        signalingState = await _waitForSignalingConnection();
+      }
+      AppLoggerHelper.info('Zego signaling state before call: $signalingState');
+      if (signalingState != 'connected') {
+        lastError = 'Call service is unavailable ($signalingState).';
+        AppLoggerHelper.warning(lastError!);
+        return false;
+      }
+
       final callerName = StorageService.getDisplayName();
 
       AppLoggerHelper.info(
         'Initiating audio call to $targetUserId ($targetUserName) from $callerName',
       );
 
-      return await ZegoUIKitPrebuiltCallInvitationService().send(
-        invitees: [ZegoCallUser(targetUserId, targetUserName)],
+      final didSend = await ZegoUIKitPrebuiltCallInvitationService().send(
+        invitees: [ZegoCallUser(normalizedTargetUserId, targetUserName)],
         isVideoCall: false,
         callID: callID,
         notificationTitle: 'Incoming call',
         notificationMessage: '$callerName is calling you',
         resourceID: 'Zego_Call',
+        timeoutSeconds: 30,
       );
+      if (!didSend) {
+        lastError = 'Unable to start the call. Please try again.';
+      }
+      return didSend;
     } catch (e) {
       AppLoggerHelper.error('Error starting audio call: $e');
+      lastError = 'Unable to start the call. Please try again.';
       return false;
     }
   }

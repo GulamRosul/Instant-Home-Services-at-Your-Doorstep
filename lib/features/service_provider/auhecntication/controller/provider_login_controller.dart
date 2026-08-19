@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:protiva502/core/services/call_service.dart';
+// import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
@@ -149,10 +149,10 @@ class ProviderLoginController extends GetxController {
             avatar: user?['avatar']?.toString(),
           );
 
-          await CallService.instance.initialize(
-            userID: user?['id']?.toString() ?? '',
-            userName: StorageService.getDisplayName(),
-          );
+          // await CallService.instance.initialize(
+          //   userID: user?['id']?.toString() ?? '',
+          //   userName: StorageService.getDisplayName(),
+          // );
 
           // Get FCM token for logging (controller should already be initialized)
           String? fcmToken;

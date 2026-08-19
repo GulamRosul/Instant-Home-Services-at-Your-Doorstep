@@ -444,26 +444,48 @@ class TrackProviderController extends GetxController {
 
   bool _isCallInProgress = false;
 
-void callPerson() async {
-  if (_isCallInProgress) return;
-  _isCallInProgress = true;
+  void callPerson() async {
+    if (_isCallInProgress) return;
 
-  try {
+    final otherUserId = _otherUserId?.trim() ?? '';
+    final currentUserId = (_currentUserId ?? StorageService.getUserId() ?? '')
+        .trim();
     final baseId = bookingId.value.replaceAll('#', '').trim();
-    final uniqueCallId = '${baseId}_${DateTime.now().millisecondsSinceEpoch}';
 
+    if (otherUserId.isEmpty || otherUserId == currentUserId) {
+      Get.snackbar(
+        'Call unavailable',
+        'The recipient is not available for a call.',
+      );
+      return;
+    }
 
-    await CallService.instance.startAudioCall(
-      targetUserId: _otherUserId!,
-      targetUserName: personName.value,
-      callID: uniqueCallId,
-    );
+    if (baseId.isEmpty) {
+      Get.snackbar('Call unavailable', 'Booking information is missing.');
+      return;
+    }
 
-  } finally {
-    _isCallInProgress = false;
+    _isCallInProgress = true;
+
+    try {
+      final uniqueCallId = '${baseId}_${DateTime.now().millisecondsSinceEpoch}';
+
+      final didSend = await CallService.instance.startAudioCall(
+        targetUserId: otherUserId,
+        targetUserName: personName.value,
+        callID: uniqueCallId,
+      );
+      if (!didSend) {
+        Get.snackbar(
+          'Call unavailable',
+          CallService.instance.lastError ??
+              'Unable to start the call. Please try again.',
+        );
+      }
+    } finally {
+      _isCallInProgress = false;
+    }
   }
-}
-
 
   void messagePerson() {
     // Extract raw booking ID without # symbol

@@ -66,7 +66,7 @@ packages:
     source: hosted
     version: "0.2.4"
   audioplayers:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: audioplayers
       sha256: "2ba4bb2944baacbdd5372ff8254a8e7feb8c10d7739545e392f5605a8f618745"
@@ -2133,7 +2133,7 @@ packages:
     source: hosted
     version: "2.14.2"
   zego_uikit:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: zego_uikit
       sha256: "9595ff1aa91b994345b0c25ab6d7e7ebb80be3f4e847cc6f078c4eb0118a76e2"

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:protiva502/app.dart';
 import 'package:protiva502/core/localization/localization_service.dart';
-import 'package:protiva502/core/services/call_service.dart';
+// import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/app_lifecycle_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/firebase_notification_service.dart';
@@ -52,9 +52,9 @@ Future<void> main() async {
   }
   debugPrint('🔑 [MAIN] FCM token ready: ${fcm ?? 'not available'}');
 
-  // ✅ Set navigator key once using appNavigatorKey and initialize call service
-  CallService.instance.setNavigatorKey(appNavigatorKey);
-  await CallService.instance.initializeFromStorage();
+  // ✅ Call service initialization commented out for initial release (Zego VoIP disabled)
+  // CallService.instance.setNavigatorKey(appNavigatorKey);
+  // await CallService.instance.initializeFromStorage();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

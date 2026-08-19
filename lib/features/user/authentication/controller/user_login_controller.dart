@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:protiva502/core/services/api_client.dart';
-import 'package:protiva502/core/services/call_service.dart';
+// import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
@@ -167,10 +167,10 @@ class UserLoginController extends GetxController {
       await SecureStorageService.saveToken(token);
       debugPrint('🔐 [LOGIN] Access token saved');
 
-      await CallService.instance.initialize(
-        userID: userId ?? '',
-        userName: StorageService.getDisplayName(),
-      );
+      // await CallService.instance.initialize(
+      //   userID: userId ?? '',
+      //   userName: StorageService.getDisplayName(),
+      // );
 
       final refreshToken = data?["refreshToken"]?.toString();
       debugPrint('🔄 [LOGIN] Refresh token exists: ${refreshToken != null}');

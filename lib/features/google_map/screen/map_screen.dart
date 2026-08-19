@@ -958,33 +958,33 @@ class _MapScreenState extends State<MapScreen> {
               () => controller.userRole.value == "CLIENT"
                   ? Row(
                       children: [
-                        Expanded(
-                          child: Container(
-                            height: 48.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.textPurple,
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: controller.callPerson,
-                                borderRadius: BorderRadius.circular(8.r),
-                                child: Center(
-                                  child: Text(
-                                    'call'.tr,
-                                    style: getTextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
+                        // Expanded(
+                        //   child: Container(
+                        //     height: 48.h,
+                        //     decoration: BoxDecoration(
+                        //       color: AppColors.textPurple,
+                        //       borderRadius: BorderRadius.circular(8.r),
+                        //     ),
+                        //     child: Material(
+                        //       color: Colors.transparent,
+                        //       child: InkWell(
+                        //         onTap: controller.callPerson,
+                        //         borderRadius: BorderRadius.circular(8.r),
+                        //         child: Center(
+                        //           child: Text(
+                        //             'call'.tr,
+                        //             style: getTextStyle(
+                        //               fontSize: 14.sp,
+                        //               fontWeight: FontWeight.w600,
+                        //               color: Colors.white,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                        // SizedBox(width: 12.w),
                         Expanded(
                           child: GestureDetector(
                             onTap: controller.messagePerson,
@@ -1018,33 +1018,33 @@ class _MapScreenState extends State<MapScreen> {
                     )
                   : Row(
                       children: [
-                        Expanded(
-                          child: Container(
-                            height: 48.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.textPurple,
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: controller.callPerson,
-                                borderRadius: BorderRadius.circular(8.r),
-                                child: Center(
-                                  child: Text(
-                                    'call'.tr,
-                                    style: getTextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
+                        // Expanded(
+                        //   child: Container(
+                        //     height: 48.h,
+                        //     decoration: BoxDecoration(
+                        //       color: AppColors.textPurple,
+                        //       borderRadius: BorderRadius.circular(8.r),
+                        //     ),
+                        //     child: Material(
+                        //       color: Colors.transparent,
+                        //       child: InkWell(
+                        //         onTap: controller.callPerson,
+                        //         borderRadius: BorderRadius.circular(8.r),
+                        //         child: Center(
+                        //           child: Text(
+                        //             'call'.tr,
+                        //             style: getTextStyle(
+                        //               fontSize: 14.sp,
+                        //               fontWeight: FontWeight.w600,
+                        //               color: Colors.white,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                        // SizedBox(width: 12.w),
                         Expanded(
                           child: GestureDetector(
                             onTap: controller.messagePerson,

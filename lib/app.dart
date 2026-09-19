@@ -13,7 +13,6 @@ import 'core/utils/theme/theme.dart';
 
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
-// class Protiva502 extends StatelessWidget {
 //   const Protiva502({super.key});
 class Protiva502 extends StatefulWidget {
   const Protiva502({super.key});

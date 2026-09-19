@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-// import 'package:protiva502/core/services/call_service.dart';
+import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/core/utils/constants/apiendpoint.dart';
@@ -20,7 +20,7 @@ class ProviderLoginController extends GetxController {
   static const String _defaultDeviceId = '21';
   static const String _expectedRole = 'provider';
 
-  // Text Editing Controllers
+  // Text Editing Controllers.
   final userEmailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -149,10 +149,10 @@ class ProviderLoginController extends GetxController {
             avatar: user?['avatar']?.toString(),
           );
 
-          // await CallService.instance.initialize(
-          //   userID: user?['id']?.toString() ?? '',
-          //   userName: StorageService.getDisplayName(),
-          // );
+          await CallService.instance.initialize(
+            userID: user?['id']?.toString() ?? '',
+            userName: StorageService.getDisplayName(),
+          );
 
           // Get FCM token for logging (controller should already be initialized)
           String? fcmToken;
@@ -210,7 +210,7 @@ class ProviderLoginController extends GetxController {
   }
 
   bool _isExpectedRole(String? role) {
-    return role?.trim().toLowerCase() ==  _expectedRole.toLowerCase();
+    return role?.trim().toLowerCase() == _expectedRole.toLowerCase();
   }
 
   @override

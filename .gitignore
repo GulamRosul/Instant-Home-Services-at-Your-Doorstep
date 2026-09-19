@@ -30,7 +30,13 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+build/
+**/build/
+android/build/
+ios/build/
+**/ephemeral/
+**/.swift_pm.lock
+**/local.properties
 /coverage/
 
 # Symbolication related

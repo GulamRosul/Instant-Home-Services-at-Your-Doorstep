@@ -7,7 +7,6 @@ import 'package:protiva502/app.dart';
 import 'package:protiva502/core/localization/localization_service.dart';
 import 'package:protiva502/core/services/call_service.dart';
 import 'package:protiva502/core/services/app_lifecycle_service.dart';
-import 'package:protiva502/core/services/secure_storage_service.dart';
 import 'package:protiva502/core/services/firebase_notification_service.dart';
 import 'package:protiva502/core/services/storage_service.dart';
 import 'package:protiva502/firebase_options.dart';
@@ -24,7 +23,6 @@ Future<void> main() async {
   ZegoUIKitPrebuiltCallInvitationService().useSystemCallingUI([
     ZegoUIKitSignalingPlugin(),
   ]);
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Ensure local notifications and FCM token are initialized before CallService
@@ -40,20 +38,12 @@ Future<void> main() async {
   // Put the NotificationController early so it can fetch and save the FCM token
   Get.put<NotificationController>(NotificationController(), permanent: true);
 
-  // Wait briefly (with retries) for the FCM token to be saved to secure storage
-  String? fcm;
-  int retries = 0;
-  const int maxRetries = 15;
-  while (retries < maxRetries) {
-    fcm = await SecureStorageService.getFcmToken();
-    if (fcm != null && fcm.isNotEmpty) break;
-    await Future.delayed(const Duration(milliseconds: 300));
-    retries++;
-  }
-  debugPrint('🔑 [MAIN] FCM token ready: ${fcm ?? 'not available'}');
-
+  // Initialize navigator key and Zego call service in the background
+  // after the UI is rendered. This avoids blocking startup on network calls.
   CallService.instance.setNavigatorKey(appNavigatorKey);
-  await CallService.instance.initializeFromStorage();
+  CallService.instance.initializeFromStorage().catchError((e) {
+    debugPrint('⚠️ [MAIN] CallService init error: $e');
+  });
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

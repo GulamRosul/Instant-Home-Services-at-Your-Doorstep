@@ -31,14 +31,14 @@ PODS:
   - SSLCommerzSDK (2.1.6)
   - zego_callkit (1.0.0):
     - Flutter
-  - zego_express_engine (3.24.1):
+  - zego_express_engine (3.25.0):
     - Flutter
-  - zego_uikit (2.29.0):
+  - zego_uikit (2.29.2):
     - Flutter
     - Masonry
     - zego_express_engine
     - ZegoUIKitReport (= 0.2.10)
-  - zego_uikit_prebuilt_call (4.24.2):
+  - zego_uikit_prebuilt_call (4.24.4):
     - Flutter
   - zego_uikit_signaling_plugin (2.8.21):
     - Flutter
@@ -133,9 +133,9 @@ SPEC CHECKSUMS:
   screen_brightness_ios: 5ed898fa50fa82a26171c086ca5e28228f932576
   SSLCommerzSDK: 19ed6ac3bef1164a03ed18e2ee584708ba776da4
   zego_callkit: 8e3bc2e9fc6895cff1b27841b1de1100344d2613
-  zego_express_engine: c5bb7c034b0618cecf84b109b8c5329fc73bc3a3
-  zego_uikit: ef50efb1fa64b6fda4b298a15ffd5fa27b65aa77
-  zego_uikit_prebuilt_call: 974aa1870e572ff74bbb439fcb58a3005cdd9113
+  zego_express_engine: d9138a65a37632c86b6aa8a5fd83ce6ca3c3a649
+  zego_uikit: 34b58a2df436f925086a5016519a9e5459f4b7a5
+  zego_uikit_prebuilt_call: edc149fae456338170c659505a20a6661398c345
   zego_uikit_signaling_plugin: a6949c394bb2932a1d4bb8c016ed037923e5f7a4
   zego_zim: 1f92e538dec9e159a91b7c186484f8b29eb2957e
   zego_zpns: 9b41a69051477ba7067fd2e27937d62d4a90d79e

@@ -177,20 +177,14 @@ code_sign_if_enabled() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/flutter_sslcommerz/flutter_sslcommerz.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/fluttertoast/fluttertoast.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/integration_test/integration_test.framework"
   install_framework "${PODS_XCFRAMEWORKS_BUILD_DIR}/SSLCommerzSDK/SSLCommerzSDK.framework"
 fi
 if [[ "$CONFIGURATION" == "Profile" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/flutter_sslcommerz/flutter_sslcommerz.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/fluttertoast/fluttertoast.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/integration_test/integration_test.framework"
   install_framework "${PODS_XCFRAMEWORKS_BUILD_DIR}/SSLCommerzSDK/SSLCommerzSDK.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/flutter_sslcommerz/flutter_sslcommerz.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/fluttertoast/fluttertoast.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/integration_test/integration_test.framework"
   install_framework "${PODS_XCFRAMEWORKS_BUILD_DIR}/SSLCommerzSDK/SSLCommerzSDK.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then

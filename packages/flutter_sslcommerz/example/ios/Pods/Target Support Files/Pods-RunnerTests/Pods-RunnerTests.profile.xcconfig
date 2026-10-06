@@ -1,8 +1,8 @@
 CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/flutter_sslcommerz" "${PODS_CONFIGURATION_BUILD_DIR}/fluttertoast" "${PODS_CONFIGURATION_BUILD_DIR}/integration_test" "${PODS_ROOT}/SSLCommerzSDK/Framework" "${PODS_XCFRAMEWORKS_BUILD_DIR}/SSLCommerzSDK"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/flutter_sslcommerz" "${PODS_ROOT}/SSLCommerzSDK/Framework" "${PODS_XCFRAMEWORKS_BUILD_DIR}/SSLCommerzSDK"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/flutter_sslcommerz/flutter_sslcommerz.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/fluttertoast/fluttertoast.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/integration_test/integration_test.framework/Headers"
-OTHER_LDFLAGS = $(inherited) -framework "SSLCommerzSDK" -framework "UIKit" -framework "flutter_sslcommerz" -framework "fluttertoast" -framework "integration_test"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/flutter_sslcommerz/flutter_sslcommerz.framework/Headers"
+OTHER_LDFLAGS = $(inherited) -framework "SSLCommerzSDK" -framework "flutter_sslcommerz"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_PODFILE_DIR_PATH = ${SRCROOT}/.

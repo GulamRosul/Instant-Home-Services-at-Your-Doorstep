@@ -38,6 +38,19 @@ ios/build/
 **/local.properties
 /coverage/
 
+# CocoaPods & Xcode
+**/Pods/
+**/.symlinks/
+**/xcuserdata/
+**/DerivedData/
+**/Flutter/Flutter.podspec
+**/Flutter/Generated.xcconfig
+**/Flutter/flutter_export_environment.sh
+
+# Gradle
+**/.gradle/
+
+
 # Symbolication related
 app.*.symbols
 
@@ -58,3 +71,4 @@ app.*.map.json
 .android/avd/
 .gitignore
 branch_structure.json
+temp_interactive_push.bat

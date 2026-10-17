@@ -39,6 +39,19 @@ ios/build/
 **/local.properties
 /coverage/
 
+# CocoaPods & Xcode
+**/Pods/
+**/.symlinks/
+**/xcuserdata/
+**/DerivedData/
+**/Flutter/Flutter.podspec
+**/Flutter/Generated.xcconfig
+**/Flutter/flutter_export_environment.sh
+
+# Gradle
+**/.gradle/
+
+
 # Symbolication related
 app.*.symbols
 

@@ -26,6 +26,7 @@ migrate_working_dir/
 **/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins-dependencies
+temp_auto_push.bat
 .pub-cache/
 .pub/
 build/
@@ -71,3 +72,4 @@ app.*.map.json
 .android/avd/
 .gitignore
 branch_structure.json
+temp_interactive_push.bat

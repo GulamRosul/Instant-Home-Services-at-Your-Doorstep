@@ -34,6 +34,7 @@ build/
 android/build/
 ios/build/
 **/ephemeral/
+temp_auto_push.bat
 **/.swift_pm.lock
 **/local.properties
 /coverage/
